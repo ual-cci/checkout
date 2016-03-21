@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "add-flash": "0.0.3",
     "body-parser": "^1.15.0",

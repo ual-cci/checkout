@@ -12,4 +12,5 @@ docker run -d \
     -p 80:80 \
     -e ME_CONFIG_OPTIONS_EDITORTHEME="ambiance" \
     -e ME_CONFIG_BASICAUTH_USERNAME="" \
+    --env-file .env
     lcc-checkout

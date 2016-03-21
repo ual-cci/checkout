@@ -25,7 +25,7 @@ ENV VCAP_APP_HOST="0.0.0.0"
 
 WORKDIR /app
 
-# COPY . /app
+COPY .env /app/
 RUN git clone https://github.com/lcc-tech/checkout.git /app
 RUN npm install
 
