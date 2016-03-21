@@ -16,6 +16,10 @@ RUN set -x \
 	&& apt-get purge --auto-remove -y ca-certificates curl \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
+	&& su -c "echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main' > /etc/apt/sources.list.d/git.list" \ 
+	&& apt-get update && apt-get install -y git-all
+
 EXPOSE 80
 
 # override some config defaults with values that will work better for docker
@@ -25,8 +29,10 @@ ENV VCAP_APP_HOST="0.0.0.0"
 
 WORKDIR /app
 
-COPY .env /app/
 RUN git clone https://github.com/lcc-tech/checkout.git /app
+
+COPY .env /app
+
 RUN npm install
 
 CMD ["tini", "--", "npm", "start"]
