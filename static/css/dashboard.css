@@ -1,0 +1,12 @@
+.navbar-brand, .navbar-nav {
+	position: relative;
+	z-index: 2
+}
+
+form[role=search] {
+    position: fixed;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1;
+}

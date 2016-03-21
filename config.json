@@ -1,0 +1,6 @@
+{
+	"name": "Checkout",
+	"port": "80",
+	"mongo": "mongodb://",
+	"secret": ""
+}
