@@ -1,4 +1,4 @@
-FRO node:5.6-slim
+FROM node:5.6-slim
 
 # grab tini for signal processing and zombie killing
 ENV TINI_VERSION 0.9.0
