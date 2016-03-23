@@ -9,7 +9,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for transaction in item.transactions | reverse %}
+			{% for transaction in item.transactions %}
 				{% set user = transaction.user %}
 				<tr {% if loop.first %}style="background-color: #ffffee;"{% endif %}>
 					<td>
