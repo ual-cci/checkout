@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node server.js"
+    "start": "npm update && node server.js"
   },
   "dependencies": {
     "add-flash": "0.0.3",
