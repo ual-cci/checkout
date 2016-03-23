@@ -42,7 +42,7 @@ app.get( '/create', function ( req, res ) {
 } )
 
 app.post( '/create', function( req, res ) {
-	if ( ! req.session.isAdmin && req.body.type == 'admin' ) {
+	if ( ! req.session.user.isAdmin && req.body.type == 'admin' ) {
 		req.add_flash( 'danger', 'Only admin users can grant admin access to an account' );
 		res.redirect( '/' + prefix + '/create' );
 		return;
@@ -56,7 +56,7 @@ app.post( '/create', function( req, res ) {
 		email: req.body.email,
 		course: req.body.course
 	}
-	console.log( user );
+
 	if ( user.name == '' ) {
 		req.add_flash( 'danger', 'The user must have a name' );
 		res.redirect( '/' + prefix + '/create' );
@@ -144,7 +144,7 @@ app.get( '/:id/edit', function( req, res ) {
 } )
 
 app.post( '/:id/edit', function( req, res ) {
-	if ( ! req.session.isAdmin && req.body.type == 'admin' ) {
+	if ( ! req.session.user.isAdmin && req.body.type == 'admin' ) {
 		req.add_flash( 'danger', 'Only admin users can grant admin access to an account' );
 		res.redirect( '/' + prefix + '/' + req.params.id );
 		return;
