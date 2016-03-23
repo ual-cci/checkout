@@ -20,7 +20,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1DD270288
 	&& su -c "echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main' > /etc/apt/sources.list.d/git.list" \ 
 	&& apt-get update && apt-get install -y git-all
 
-EXPOSE 80
+EXPOSE 8080 80
 
 # override some config defaults with values that will work better for docker
 ENV ME_CONFIG_MONGODB_SERVER="mongo"
@@ -28,11 +28,5 @@ ENV ME_CONFIG_MONGODB_ENABLE_ADMIN="true"
 ENV VCAP_APP_HOST="0.0.0.0"
 
 WORKDIR /app
-
-RUN git clone https://github.com/lcc-tech/checkout.git /app
-
-COPY .env /app
-
-RUN npm install
 
 CMD ["tini", "--", "npm", "start"]
