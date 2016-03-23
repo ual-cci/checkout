@@ -188,23 +188,27 @@ io.on( 'connection', function( socket ) {
 				}
 				
 				Users.findOne( { barcode: action.user }, function( err, user ) {
-					Items.update( { _id: action.item }, {
-						$push: {
-							transactions: {
-								date: new Date(),
-								user: user._id,
-								status: 'reserved'
+					if ( user != null ) {
+						Items.update( { _id: action.item }, {
+							$push: {
+								transactions: {
+									date: new Date(),
+									user: user._id,
+									status: 'reserved'
+								}
 							}
-						}
-					} ).then( function ( status ) {
-						if ( status.n == 1 ) {
-							socket.emit( 'flash', { type: 'success', message: 'Item reserved', barcode: item.barcode } );
-						} else {
+						} ).then( function ( status ) {
+							if ( status.n == 1 ) {
+								socket.emit( 'flash', { type: 'success', message: 'Item reserved', barcode: item.barcode } );
+							} else {
+								socket.emit( 'flash', { type: 'danger', message: 'There was an error reserving the item', barcode: item.barcode } );
+							}
+						}, function ( status ) {
 							socket.emit( 'flash', { type: 'danger', message: 'There was an error reserving the item', barcode: item.barcode } );
-						}
-					}, function ( status ) {
-						socket.emit( 'flash', { type: 'danger', message: 'There was an error reserving the item', barcode: item.barcode } );
-					} );
+						} );
+					} else {
+						socket.emit( 'flash', { type: 'danger', message: 'Invalid user', barcode: item.barcode } );
+					}
 				} );
 			} );
 		}
