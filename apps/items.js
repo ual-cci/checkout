@@ -282,14 +282,15 @@ app.post( '/:id/issue', function( req, res ) {
 			case 'reserved':
 			case 'available':
 				Users.findOne( { barcode: req.body.user }, function( err, userData ) {
-					if ( item.status == 'reserved' ) {
-						if ( userData.id != item.transactions[ item.transactions.length - 1 ].user ) {
-							req.add_flash( 'warning', 'Item is currently reserved by another user' );
-							res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
-							return;
-						}
-					}
 					if ( userData != null ) {
+						if ( item.status == 'reserved' ) {
+							if ( userData.id != item.transactions[ item.transactions.length - 1 ].user ) {
+								req.add_flash( 'warning', 'Item is currently reserved by another user' );
+								res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
+								return;
+							}
+						}
+						
 						if ( req.session.user.isStaff || req.session.user.id == userData._id ) {
 							Items.update( { _id: item._id }, {
 								$push: {
@@ -351,6 +352,7 @@ app.get( '/:id/return', function( req, res ) {
 // Reserve item
 app.post( '/:id/reserve', function( req, res ) {
 	Items.findById( req.params.id, function( err, item ) {
+	
 		if ( item == undefined ) {
 			req.add_flash( 'danger', 'Item not found' );
 			res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
@@ -372,25 +374,30 @@ app.post( '/:id/reserve', function( req, res ) {
 		}
 		
 		Users.findOne( { barcode: req.body.user }, function( err, user ) {
-			Items.update( { _id: req.params.id }, {
-				$push: {
-					transactions: {
-						date: new Date(),
-						user: user._id,
-						status: 'reserved'
+			if ( user != null ) {
+				Items.update( { _id: req.params.id }, {
+					$push: {
+						transactions: {
+							date: new Date(),
+							user: user._id,
+							status: 'reserved'
+						}
 					}
+				} ).then( function ( status ) {
+					if ( status.n == 1 ) {
+					req.add_flash( 'success', 'Item reserved');
+				} else {
+					req.add_flash( 'danger', 'There was an error updating the item' );
 				}
-			} ).then( function ( status ) {
-				if ( status.n == 1 ) {
-				req.add_flash( 'success', 'Item reserved');
-			} else {
-				req.add_flash( 'danger', 'There was an error updating the item' );
-			}
-			res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
-			}, function ( status ) {
-				req.add_flash( 'danger', 'There was an error updating the item' );
 				res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
-			} );
+				}, function ( status ) {
+					req.add_flash( 'danger', 'There was an error updating the item' );
+					res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
+				} );
+			} else {
+				req.add_flash( 'danger', 'Invalid user' );
+				res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
+			}
 		} );
 	} );
 } )
