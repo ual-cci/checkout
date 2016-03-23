@@ -57,7 +57,7 @@ socket.on( 'item', function( item ) {
 	} );
 
 	setTimeout( function() {
-		jQuery( '#modal' ).modal( 'hide' )
+		jQuery( modal ).modal( 'hide' )
 	}, 10000 );
 } );
 
@@ -69,7 +69,7 @@ socket.on( 'user', function( user ) {
 	jQuery( 'body' ).append( modal );
 	jQuery( modal ).modal();
 	setTimeout( function() {
-		jQuery( '#modal' ).modal( 'hide' )
+		jQuery( modal ).modal( 'hide' )
 	}, 10000 );
 } );
 
@@ -80,7 +80,7 @@ socket.on( 'create', function( url ) {
 socket.on( 'flash', function( msg ) {
 	var flash = jQuery( '<div class="alert alert-' + msg.type + '"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</div>' );
 	jQuery( flash ).insertAfter( 'h2' );
-	jQuery( '#modal' ).modal( 'hide' );
+	jQuery( '.modal' ).modal( 'hide' );
 	jQuery( '#cmd input' ).focus();
 	setTimeout( function() {
 		jQuery( flash ).fadeOut( function() {
