@@ -23,10 +23,14 @@ app.use( function( req, res, next ) {
 } );
 
 // Index
-app.get( '/', function ( req, res ) {	
-	Users.find().populate( 'course' ).exec( function( err, users ) {
-		res.render( prefix + '/users', { users: users } );
-	} )
+app.get( '/', function ( req, res ) {
+	Courses.find( function( err, courses ) {
+		var filter = {};
+		if ( req.query.course ) filter.course = req.query.course;
+		Users.find( filter ).populate( 'course' ).exec( function( err, users ) {
+			res.render( prefix + '/users', { users: users, courses: courses, selectedCourse: req.query.course } );
+		} )
+	} );
 } )
 
 // Create user

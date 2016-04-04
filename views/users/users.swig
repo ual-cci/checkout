@@ -10,6 +10,12 @@
 "></span> New</a>
 		</div>
 	</p>
+
+	<hr />
+
+	{% include 'partials/filter.swig' %}
+
+	<hr />
 	
 	{% include 'partials/user-list.swig' %}
 {% endblock %}
