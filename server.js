@@ -285,38 +285,43 @@ io.on( 'connection', function( socket ) {
 	socket.on( 'audit', function ( action ) {
 		if ( this.request.session.user && this.request.session.user.isStaff ) {
 			var itemFilter = {};
-			if ( action.itemBarcode ) itemFilter.barcode = action.itemBarcode;
-			if ( action.itemId ) itemFilter._id = action.itemId;
-			var loggedInUser = this.request.session.user;
-			Items.findOne( itemFilter, function( err, item ) {
-				if ( ! item && itemFilter.barcode ) {
-					socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter.barcode } );
-					return;
-				} else if ( ! item && itemFilter._id ) {
-					socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter._id } );
-					return;
-				} else if ( ! item ) {
-					socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: 'Error' } );
-					return;
-				}
-				Items.update( { _id: item._id }, {
-					$push: {
-						transactions: {
-							date: new Date(),
-							user: loggedInUser.id,
-							status: 'audited'
+			var val = /([A-Z]{2,4})  ?([0-9]{2})/.exec( action.itemBarcode.toUpperCase() );
+			if ( val ) {
+				if ( action.itemBarcode ) itemFilter.barcode = val[1] + ' ' + val[2];;
+				if ( action.itemId ) itemFilter._id = action.itemId;
+				var loggedInUser = this.request.session.user;
+				Items.findOne( itemFilter, function( err, item ) {
+					if ( ! item && itemFilter.barcode ) {
+						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter.barcode } );
+						return;
+					} else if ( ! item && itemFilter._id ) {
+						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter._id } );
+						return;
+					} else if ( ! item ) {
+						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: 'Error' } );
+						return;
+					}
+					Items.update( { _id: item._id }, {
+						$push: {
+							transactions: {
+								date: new Date(),
+								user: loggedInUser.id,
+								status: 'audited'
+							}
 						}
-					}
-				} ).then ( function ( status ) {
-					if ( status.n == 1 ) {
-						socket.emit( 'flash', { type: 'success', message: 'Audited', barcode: item.barcode } );
-					} else {
-						socket.emit( 'flash', { type: 'danger', message: 'Not found', barcode: item.barcode } );
-					}
-				}, function ( err ) {
-					socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: item.barcode } );
-				} );
-			} )
+					} ).then ( function ( status ) {
+						if ( status.n == 1 ) {
+							socket.emit( 'flash', { type: 'success', message: 'Audited', barcode: item.barcode } );
+						} else {
+							socket.emit( 'flash', { type: 'danger', message: 'Not found', barcode: item.barcode } );
+						}
+					}, function ( err ) {
+						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: item.barcode } );
+					} );
+				} )
+			} else {
+				socket.emit( 'flash', { type: 'danger', message: 'Format invalid', barcode: action.itemBarcode } );
+			};
 		}
 	} )
 
