@@ -6,6 +6,7 @@
 					<th>Status</th>
 					<th>Barcode</th>
 					<th>Name</th>
+					<th>Owner</th>
 					<th>Department</th>
 				</tr>
 			</thead>
@@ -13,11 +14,12 @@
 				{% for item in items %}
 					<tr>
 						<td>
-							{% include 'status.swig' %}
+							{% include '../../items/partials/status.swig' %}
 						</td>
 						<td>{{ item.barcode }}</td>
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 						{% set department = item.department %}
+						<td><a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a></td>
 						<td>{% include '../../departments/partials/department.swig' %}</td>
 					</tr>
 				{% endfor %}

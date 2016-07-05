@@ -4,6 +4,7 @@ var mongoose = require( 'mongoose' ),
 	users = require( __dirname + '/apps/users' ),
 	departments = require( __dirname + '/apps/departments' ),
 	items = require( __dirname + '/apps/items' ),
+	reports = require( __dirname + '/apps/reports' ),
 	profile = require( __dirname + '/apps/profile' );
 var	express = require( 'express' ),
 	flash = require( 'express-flash' ),
@@ -60,6 +61,7 @@ app.use( courses.path, courses );
 app.use( users.path, users );
 app.use( departments.path, departments );
 app.use( items.path, items );
+app.use( reports.path, reports );
 app.use( profile.path, profile );
 
 // Handle Index
@@ -186,7 +188,7 @@ io.on( 'connection', function( socket ) {
 					socket.emit( 'flash', { type: 'warning', message: 'Item is broken, return it before reserving it', barcode: item.barcode } );
 					return;
 				}
-				
+
 				Users.findOne( { barcode: action.user }, function( err, user ) {
 					if ( user != null ) {
 						Items.update( { _id: action.item }, {
@@ -356,7 +358,7 @@ io.on( 'connection', function( socket ) {
 				} );
 			}
 		} );
-		
+
 		// Item
 		socket.on( 'item', function( barcode ) {
 			if ( /([A-Z]{2,4}) ([0-9]{2})/.exec( barcode ) != null ) {

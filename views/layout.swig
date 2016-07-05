@@ -28,8 +28,26 @@
 									<li role="separator" class="divider"></li>
 									<li><a href="/items/create">New item</a></li>
 									<li><a href="/items/generate">Generate items</a></li>
+									<li role="separator" class="divider"></li>
 									<li><a href="/items/audit">Audit</a></li>
-									<li><a href="/items/report">Report</a></li>
+								</ul>
+							</li>
+							<li class="dropdown{% if currentModule == 'reports' %} active{% endif %}">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li class="dropdown-header">Course</li>
+									<li><a href="/reports/course">All Courses</a></li>
+									<li role="separator" class="divider"></li>
+									<li class="dropdown-header">Audit</li>
+									<li><a href="/reports/audited">Scanned</a></li>
+									<li><a href="/reports/missing">Missing</a></li>
+									<li role="separator" class="divider"></li>
+									<li class="dropdown-header">Status</li>
+									<li><a href="/reports/status/available">Available</a></li>
+									<li><a href="/reports/status/on-loan">On Loan</a></li>
+									<li><a href="/reports/status/new">New</a></li>
+									<li><a href="/reports/status/reserved">Reserved</a></li>
+									<li><a href="/reports/status/broken">Broken</a></li>
 								</ul>
 							</li>
 							<li{% if currentModule == 'users' %} class="active"{% endif %}><a href="/users">Users</a></li>

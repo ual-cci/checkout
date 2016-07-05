@@ -68,58 +68,9 @@ app.post( '/audit', function( req, res ) {
 		} );
 	} else {
 		req.add_flash( 'danger', 'Item barcode format invalid' );
-		res.redirect( '/items/audit' );	
+		res.redirect( '/items/audit' );
 	}
 } )
-
-// Report
-app.get( '/report', function( req, res ) {
-	Departments.find( function( err, departments ) {
-		var filter = {};
-		if ( req.query.department ) filter.department = req.query.department;
-		Items.find( filter ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-			var audited = [],
-				missing = [],
-				broken = [],
-				onloan = [],
-				reserved = [];
-
-			for ( i in items ) {
-				var item = items[i];
-
-				if ( item.audited ) {
-					audited.push( item );
-				} else {
-					missing.push( item );
-				}
-
-				var status = item.status;
-
-				if ( status == 'broken' ) {
-					broken.push( item );
-				}
-
-				if ( status == 'on-loan' ) {
-					onloan.push( item );
-				}
-
-				if ( status == 'reserved' ) {
-					reserved.push( item );
-				}
-			}
-
-			res.render( prefix + '/report', {
-				audited: audited,
-				broken: broken,
-				reserved: reserved,
-				onloan: onloan,
-				missing: missing,
-				departments: departments,
-				selectedDepartment: req.query.department
-			} );
-		} );
-	} );
-} );
 
 // Generate items
 app.get( '/generate', function ( req, res ) {
@@ -294,7 +245,7 @@ app.post( '/:id/issue', function( req, res ) {
 								return;
 							}
 						}
-						
+
 						if ( req.session.user.isStaff || req.session.user.id == userData._id ) {
 							Items.update( { _id: item._id }, {
 								$push: {
@@ -356,7 +307,7 @@ app.get( '/:id/return', function( req, res ) {
 // Reserve item
 app.post( '/:id/reserve', function( req, res ) {
 	Items.findById( req.params.id, function( err, item ) {
-	
+
 		if ( item == undefined ) {
 			req.add_flash( 'danger', 'Item not found' );
 			res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
@@ -376,7 +327,7 @@ app.post( '/:id/reserve', function( req, res ) {
 			res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
 			return;
 		}
-		
+
 		Users.findOne( { barcode: req.body.user }, function( err, user ) {
 			if ( user != null ) {
 				Items.update( { _id: req.params.id }, {

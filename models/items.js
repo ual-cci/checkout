@@ -49,7 +49,7 @@ var itemSchema = Schema( {
 itemSchema.virtual( 'status' ).get( function() {
 	if ( this.transactions.length == 0 ) return 'new';
 	var last_transaction = this.transactions[ this.transactions.length - 1 ];
-	
+
 	if ( last_transaction.status == 'audited' ) {
 		for ( i = this.transactions.length - 1; i >= 0; i-- ) {
 			if ( this.transactions[ i ].status != 'audited' ) {
