@@ -13,10 +13,6 @@ app.use( function( req, res, next ) {
 		req.session.requested = req.originalUrl;
 		req.add_flash( 'danger', 'Please login' );
 		res.redirect( '/login' );
-	} else if ( ! req.session.user.isStaff ) {
-		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'You must be staff to access this function' );
-		res.redirect( '/' );
 	} else {
 		next();
 	}
@@ -37,7 +33,7 @@ app.get( '/', function ( req, res ) {
 app.get( '/create', function ( req, res ) {
 	Courses.find( function( err, courses ) {
 		if ( courses.length > 0 ) {
-			res.render( prefix + '/create', { courses: courses, user: { name: '', course: '', value: '', notes: '', barcode: req.query.barcode } } );	
+			res.render( prefix + '/create', { courses: courses, user: { name: '', course: '', value: '', notes: '', barcode: req.query.barcode } } );
 		} else {
 			req.add_flash( 'warning', 'Create at least one course before creating users' )
 			res.redirect( '/' + prefix );
@@ -46,12 +42,6 @@ app.get( '/create', function ( req, res ) {
 } )
 
 app.post( '/create', function( req, res ) {
-	if ( ! req.session.user.isAdmin && req.body.type == 'admin' ) {
-		req.add_flash( 'danger', 'Only admin users can grant admin access to an account' );
-		res.redirect( '/' + prefix + '/create' );
-		return;
-	}
-
 	var user = {
 		_id: require( 'mongoose' ).Types.ObjectId(),
 		name: req.body.name,
@@ -123,14 +113,10 @@ app.get( '/:id', function( req, res ) {
 					}
 				}
 
-				if ( req.session.user.isStaff ) {
-					res.render( prefix + '/user', { user: user, onloan: onloan, pastloan: pastloan } );
-				} else {
-					res.render( prefix + '/user-minimal', { user: user, onloan: onloan, pastloan: pastloan } );
-				}
+				res.render( prefix + '/user', { user: user, onloan: onloan, pastloan: pastloan } );
 			} );
 		}
-	} )	
+	} )
 } )
 
 // Edit user
@@ -148,12 +134,6 @@ app.get( '/:id/edit', function( req, res ) {
 } )
 
 app.post( '/:id/edit', function( req, res ) {
-	if ( ! req.session.user.isAdmin && req.body.type == 'admin' ) {
-		req.add_flash( 'danger', 'Only admin users can grant admin access to an account' );
-		res.redirect( '/' + prefix + '/' + req.params.id );
-		return;
-	}
-
 	Users.update( { _id: req.params.id }, {
 		$set: {
 			name: req.body.name,

@@ -7,15 +7,11 @@ var prefix = 'courses';
 
 // Handle redirect
 app.use( function( req, res, next ) {
-	res.locals.currentModule = 'courses';
+	res.locals.currentModule = 'users';
 	if ( ! req.session.user ) {
 		req.session.requested = req.originalUrl;
 		req.add_flash( 'danger', 'Please login' );
 		res.redirect( '/login' );
-	} else if ( ! req.session.user.isAdmin ) {
-		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'You must be an admin to access this function' );
-		res.redirect( '/' );
 	} else {
 		next();
 	}

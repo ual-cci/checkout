@@ -25,9 +25,6 @@
 		<select id="type" name="type">
 			<option value="student" {% if user.type == 'student' %}selected{% endif %}>Student</option>
 			<option value="staff" {% if user.type == 'staff' %}selected{% endif %}>Staff</option>
-			{% if loggedInUser.isAdmin %}
-				<option value="admin" {% if user.type == 'admin' %}selected{% endif %}>Admin</option>
-			{% endif %}
 		</select>
 	</p>
 	<p>

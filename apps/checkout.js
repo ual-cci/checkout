@@ -1,10 +1,7 @@
 var prefix = 'checkout';
 
 var	express = require( 'express' ),
-	app = express(),
-	Items = require( __dirname + '/../models/items' ),
-	Users = require( __dirname + '/../models/users' ),
-	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId;
+	app = express();
 
 // Handle redirect
 app.use( function( req, res, next ) {
@@ -18,9 +15,8 @@ app.use( function( req, res, next ) {
 	}
 } );
 
-// Audited report
 app.get( '/', function( req, res ) {
-	res.render( prefix + '/dashboard' );
+	res.render( prefix + '/checkout' );
 } );
 
 module.exports = app;

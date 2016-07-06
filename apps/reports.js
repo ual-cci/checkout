@@ -13,17 +13,14 @@ app.use( function( req, res, next ) {
 		req.session.requested = req.originalUrl;
 		req.add_flash( 'danger', 'Please login' );
 		res.redirect( '/login' );
-	} else if ( ! req.session.user.isStaff ) {
-		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'You must be staff to access this function' );
-		res.redirect( '/' );
 	} else {
 		next();
 	}
 } );
 
 // Audited report
-app.get( '/audited', function( req, res ) {
+app.get( '/scanned', function( req, res ) {
+	res.locals.currentModule = 'audit';
 	var status = req.params.status;
 	Departments.find( function( err, departments ) {
 		var filter = {};
@@ -39,7 +36,7 @@ app.get( '/audited', function( req, res ) {
 			}
 
 			res.render( prefix + '/report', {
-				status: 'Audited',
+				status: 'Scanned',
 				items: result,
 				departments: departments,
 				selectedDepartment: req.query.department
@@ -50,6 +47,7 @@ app.get( '/audited', function( req, res ) {
 
 // Missing report
 app.get( '/missing', function( req, res ) {
+	res.locals.currentModule = 'audit';
 	var status = req.params.status;
 	Departments.find( function( err, departments ) {
 		var filter = {};

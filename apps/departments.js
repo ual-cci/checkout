@@ -7,22 +7,18 @@ var prefix = 'departments';
 
 // Handle redirect
 app.use( function( req, res, next ) {
-	res.locals.currentModule = 'departments';
+	res.locals.currentModule = 'items';
 	if ( ! req.session.user ) {
 		req.session.requested = req.originalUrl;
 		req.add_flash( 'danger', 'Please login' );
 		res.redirect( '/login' );
-	} else if ( ! req.session.user.isAdmin ) {
-		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'You must be an admin to access this function' );
-		res.redirect( '/' );
 	} else {
 		next();
 	}
 } );
 
 // Index
-app.get( '/', function ( req, res ) {	
+app.get( '/', function ( req, res ) {
 	Departments.find( function( err, departments ) {
 		res.render( prefix + '/departments', { departments: departments } );
 	} )
@@ -30,7 +26,7 @@ app.get( '/', function ( req, res ) {
 
 // Create
 app.get( '/create', function ( req, res ) {
-	res.render( prefix + '/create', { department: { name: '' } } );	
+	res.render( prefix + '/create', { department: { name: '' } } );
 } )
 
 app.post( '/create', function( req, res ) {

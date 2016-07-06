@@ -1,10 +1,12 @@
 {% extends '../admin.swig' %}
 
-{% block heading %}Audit Report{% endblock %}
+{% block heading %}Missing{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}
 
 {% block content %}
 	{% include '../items/partials/filter.swig' %}
+
+	<hr />
 
 	<h3>Missing items</h3>
 	<p>Items not scanned today that should have been scanned.</p>

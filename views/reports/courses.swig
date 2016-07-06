@@ -1,6 +1,6 @@
 {% extends '../admin.swig' %}
 
-{% block heading %}Course Reports{% endblock %}
+{% block heading %}On Loan By Course{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}
 
 {% block content %}
