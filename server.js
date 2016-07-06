@@ -6,7 +6,8 @@ var mongoose = require( 'mongoose' ),
 	items = require( __dirname + '/apps/items' ),
 	groups = require( __dirname + '/apps/groups' ),
 	reports = require( __dirname + '/apps/reports' ),
-	profile = require( __dirname + '/apps/profile' );
+	profile = require( __dirname + '/apps/profile' ),
+	checkout = require( __dirname + '/apps/checkout' );
 var	express = require( 'express' ),
 	flash = require( 'express-flash' ),
 	add_flash = require( 'add-flash' ),
@@ -66,6 +67,7 @@ app.use( items.path, items );
 app.use( groups.path, groups );
 app.use( reports.path, reports );
 app.use( profile.path, profile );
+app.use( checkout.path, checkout );
 
 // Handle Index
 app.get( '/', function ( req, res ) {
