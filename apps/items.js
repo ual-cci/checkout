@@ -3,6 +3,7 @@ var prefix = 'items';
 var	express = require( 'express' ),
 	app = express(),
 	Items = require( __dirname + '/../models/items' ),
+	Groups = require( __dirname + '/../models/groups' ),
 	Departments = require( __dirname + '/../models/departments' ),
 	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId;
 
@@ -27,7 +28,7 @@ app.get( '/', function ( req, res ) {
 	Departments.find( function( err, departments ) {
 		var filter = {};
 		if ( req.query.department ) filter.department = req.query.department;
-		Items.find( filter ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+		Items.find( filter ).populate( 'group' ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
 			if ( req.session.user.isStaff ) {
 				res.render( prefix + '/items', { items: items, departments: departments, selectedDepartment: req.query.department } );
 			} else {
@@ -75,13 +76,15 @@ app.post( '/audit', function( req, res ) {
 // Generate items
 app.get( '/generate', function ( req, res ) {
 	Departments.find( function( err, departments ) {
-		if ( departments.length > 0 ) {
-			req.add_flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
-			res.render( prefix + '/generate', { departments: departments } );
-		} else {
-			req.add_flash( 'warning', 'Create at least one department before creating items' )
-			res.redirect( '/' + prefix );
-		}
+		Groups.find( function( err, groups ) {
+			if ( departments.length > 0 ) {
+				req.add_flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
+				res.render( prefix + '/generate', { departments: departments, groups: groups } );
+			} else {
+				req.add_flash( 'warning', 'Create at least one department before creating items' )
+				res.redirect( '/' + prefix );
+			}
+		} );
 	} );
 } )
 
@@ -128,6 +131,7 @@ app.post( '/generate', function( req, res ) {
 			barcode: req.body.prefix.trim().toUpperCase(),
 			value: req.body.value,
 			department: req.body.department,
+			group: req.body.group,
 			notes: req.body.notes
 		}
 		var index = i.toString();
@@ -160,12 +164,14 @@ app.post( '/generate', function( req, res ) {
 // Create item
 app.get( '/create', function ( req, res ) {
 	Departments.find( function( err, departments ) {
-		if ( departments.length > 0 ) {
-			res.render( prefix + '/create', { departments: departments } );
-		} else {
-			req.add_flash( 'warning', 'Create at least one department before creating items' )
-			res.redirect( '/' + prefix );
-		}
+		Groups.find( function( err, groups ) {
+			if ( departments.length > 0 ) {
+				res.render( prefix + '/create', { departments: departments, groups: groups } );
+			} else {
+				req.add_flash( 'warning', 'Create at least one department before creating items' )
+				res.redirect( '/' + prefix );
+			}
+		} );
 	} );
 } )
 
@@ -176,6 +182,7 @@ app.post( '/create', function( req, res ) {
 		barcode: req.body.barcode.toUpperCase(),
 		value: req.body.value,
 		department: req.body.department,
+		group: req.body.group,
 		notes: req.body.notes
 	}
 
@@ -423,8 +430,10 @@ app.get( '/:id/edit', function( req, res ) {
 			req.add_flash( 'danger', 'Item not found' );
 			res.redirect( '/' + prefix );
 		} else {
-			Departments.find( function( err, departments ) {
-				res.render( prefix + '/edit', { item: item, departments: departments } );
+			Groups.find( function( err, groups ) {
+				Departments.find( function( err, departments ) {
+					res.render( prefix + '/edit', { item: item, groups: groups, departments: departments } );
+				} );
 			} );
 		}
 	} );
@@ -436,6 +445,7 @@ app.post( '/:id/edit', function( req, res ) {
 		$set: {
 			name: req.body.name,
 			barcode: req.body.barcode,
+			group: req.body.group,
 			department: req.body.department,
 			value: req.body.value,
 			notes: req.body.notes

@@ -5,6 +5,8 @@ var mongoose = require( 'mongoose' )
 	userSchema = Users.schema,
 	Departments = require( __dirname + '/departments' ),
 	departmentSchema = Departments.schema;
+	Groups = require( __dirname + '/groups' ),
+	groupsSchema = Groups.schema;
 
 var itemSchema = Schema( {
 	_id: ObjectId,
@@ -20,6 +22,10 @@ var itemSchema = Schema( {
 	department: {
 		type: ObjectId,
 		ref: 'Departments'
+	},
+	group: {
+		type: ObjectId,
+		ref: 'Groups'
 	},
 	notes: {
 		type: String

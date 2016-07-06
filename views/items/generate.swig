@@ -9,7 +9,16 @@
 			<label>Name:</label>
 			<input id="name" name="name" type="text" value="{{ item.name }}" required />
 			<input id="suffix" name="suffix" type="checkbox" checked /> <label for="suffix">Suffix name with index number</label>
-			
+
+		</p>
+		<p>
+			<label>Group:</label>
+			<select id="group" name="group">
+				<option value="" disabled selected>Select a group</option>
+				{% for group in groups %}
+					<option value="{{ group._id | raw }}"{% if ( group.id == item.group | raw ) %} selected{% endif %}>{{ group.name }}</option>
+				{% endfor %}
+			</select>
 		</p>
 		<p>
 			<label>Department:</label>

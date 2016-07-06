@@ -4,6 +4,7 @@ var mongoose = require( 'mongoose' ),
 	users = require( __dirname + '/apps/users' ),
 	departments = require( __dirname + '/apps/departments' ),
 	items = require( __dirname + '/apps/items' ),
+	groups = require( __dirname + '/apps/groups' ),
 	reports = require( __dirname + '/apps/reports' ),
 	profile = require( __dirname + '/apps/profile' );
 var	express = require( 'express' ),
@@ -24,6 +25,7 @@ var Courses = require( __dirname + '/models/courses' );
 var Users = require( __dirname + '/models/users' );
 var Departments = require( __dirname + '/models/departments' );
 var Items = require( __dirname + '/models/items' );
+var Groups = require( __dirname + '/models/groups' );
 
 app.use( express.static( __dirname + '/static' ) );
 app.use( body.json() );
@@ -61,6 +63,7 @@ app.use( courses.path, courses );
 app.use( users.path, users );
 app.use( departments.path, departments );
 app.use( items.path, items );
+app.use( groups.path, groups );
 app.use( reports.path, reports );
 app.use( profile.path, profile );
 
@@ -115,7 +118,7 @@ io.on( 'connection', function( socket ) {
 			if ( action.itemBarcode ) itemFilter.barcode = action.itemBarcode;
 			if ( action.itemId ) itemFilter._id = action.itemId;
 
-			Items.findOne( itemFilter, function( err, item ) {
+			Items.findOne( itemFilter ).populate( 'group' ).exec( function( err, item ) {
 				switch ( item.status ) {
 					case 'on-loan':
 						socket.emit( 'flash', { type: 'danger', message: 'Item on loan to another user', barcode: item.barcode } );
@@ -141,17 +144,51 @@ io.on( 'connection', function( socket ) {
 									}
 								}
 								if ( loggedInUser.isStaff || loggedInUser.id == user._id ) {
-									Items.update( { _id: item._id }, {
-										$push: {
-											transactions: {
-												date: new Date(),
-												user: user._id,
-												status: 'loaned'
+									if ( item.group != null && item.group.limiter != null ) {
+										Items.find( { group: item.group._id }, function( err, groupItems ) {
+											var count = 0;
+											for ( i in groupItems ) {
+												var groupItem = groupItems[i];
+												if ( groupItem.status == 'on-loan' ) {
+													var owner_transaction = 0;
+													for ( i = groupItem.transactions.length - 1; i >= 0; i-- ) {
+														if ( groupItem.transactions[ i ].status == 'loaned' ) {
+															last_transaction = groupItem.transactions[ i ];
+															break;
+														}
+													}
+													if ( last_transaction.user.toString() == user._id.toString() ) count++;
+												}
 											}
-										}
-									}, function ( err ) {
-										socket.emit( 'flash', { type: 'success', message: 'Item checked out', barcode: item.barcode } );
-									} );
+											if ( count >= item.group.limiter ) {
+												socket.emit( 'flash', { type: 'danger', message: 'You already have ' + count + ' of this type of item out.', barcode: item.barcode } );
+											} else {
+												Items.update( { _id: item._id }, {
+													$push: {
+														transactions: {
+															date: new Date(),
+															user: user._id,
+															status: 'loaned'
+														}
+													}
+												}, function ( err ) {
+													socket.emit( 'flash', { type: 'success', message: 'Item checked out', barcode: item.barcode } );
+												} );
+											}
+										} );
+									} else {
+										Items.update( { _id: item._id }, {
+											$push: {
+												transactions: {
+													date: new Date(),
+													user: user._id,
+													status: 'loaned'
+												}
+											}
+										}, function ( err ) {
+											socket.emit( 'flash', { type: 'success', message: 'Item checked out', barcode: item.barcode } );
+										} );
+									}
 								} else {
 									socket.emit( 'flash', { type: 'danger', message: 'Only staff can issue items to other users', barcode: item.barcode } );
 								}

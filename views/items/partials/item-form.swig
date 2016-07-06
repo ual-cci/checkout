@@ -8,6 +8,15 @@
 		<input id="barcode" name="barcode" type="text" value="{{ item.barcode }}" autocomplete="off" required />
 	</p>
 	<p>
+		<label>Group:</label>
+		<select id="group" name="group">
+			<option value="" disabled selected>Select a group</option>
+			{% for group in groups %}
+				<option value="{{ group._id | raw }}"{% if ( group.id == item.group | raw ) %} selected{% endif %}>{{ group.name }}</option>
+			{% endfor %}
+		</select>
+	</p>
+	<p>
 		<label>Department:</label>
 		<select id="department" name="department">
 			<option value="" disabled selected>Select a department</option>

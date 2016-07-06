@@ -55,6 +55,7 @@
 						{% if loggedInUser.isAdmin %}
 							<li{% if currentModule == 'courses' %} class="active"{% endif %}><a href="/courses">Courses</a></li>
 							<li{% if currentModule == 'departments' %} class="active"{% endif %}><a href="/departments">Departments</a></li>
+							<li{% if currentModule == 'groups' %} class="active"{% endif %}><a href="/groups">Groups</a></li>
 						{% endif %}
 					</ul>
 					<ul class="nav navbar-nav navbar-right">

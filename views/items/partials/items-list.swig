@@ -6,6 +6,7 @@
 					<th>Status</th>
 					<th>Barcode</th>
 					<th>Name</th>
+					<th>Group</th>
 					<th>Department</th>
 				</tr>
 			</thead>
@@ -17,6 +18,8 @@
 						</td>
 						<td>{{ item.barcode }}</td>
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
+						{% set group = item.group %}
+						<td>{% include '../../groups/partials/group.swig' %}</td>
 						{% set department = item.department %}
 						<td>{% include '../../departments/partials/department.swig' %}</td>
 					</tr>
