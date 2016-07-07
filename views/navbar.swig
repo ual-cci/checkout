@@ -55,6 +55,7 @@
 							<li><a href="/reports/status/on-loan">On Loan</a></li>
 							<li><a href="/reports/status/new">New</a></li>
 							<li><a href="/reports/status/reserved">Reserved</a></li>
+							<li><a href="/reports/status/lost">Lost</a></li>
 							<li><a href="/reports/status/broken">Broken</a></li>
 						</ul>
 					</li>

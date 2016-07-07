@@ -97,8 +97,7 @@ app.post( '/login', function ( req, res ) {
 
 // Handle logout
 app.get( '/logout', function ( req, res ) {
-	delete req.session.user;
-	delete req.session.requested;
+	req.session.destroy();
 	res.redirect( '/' );
 } );
 

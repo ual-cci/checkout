@@ -14,6 +14,7 @@
 				{% for item in items %}
 					<tr>
 						<td>
+							{% set status = item.status %}
 							{% include 'status.swig' %}
 						</td>
 						<td>{{ item.barcode }}</td>
