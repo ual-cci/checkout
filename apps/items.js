@@ -25,11 +25,7 @@ app.get( '/', function ( req, res ) {
 		var filter = {};
 		if ( req.query.department ) filter.department = req.query.department;
 		Items.find( filter ).populate( 'group' ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-			if ( req.session.user.isStaff ) {
-				res.render( prefix + '/items', { items: items, departments: departments, selectedDepartment: req.query.department } );
-			} else {
-				res.render( prefix + '/items-minimal', { items: items, departments: departments, selectedDepartment: req.query.department } );
-			}
+			res.render( prefix + '/items', { items: items, departments: departments, selectedDepartment: req.query.department } );
 		} );
 	} );
 } );
