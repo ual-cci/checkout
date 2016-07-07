@@ -1,7 +1,5 @@
 var sio = require( 'socket.io' );
-
 var swig = require( 'swig' );
-
 var Items = require( __dirname + '/../models/items' ),
 	Users = require( __dirname + '/../models/users' ),
 	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId;
@@ -232,131 +230,141 @@ module.exports = function( server ) {
 		socket.on( 'issue', function( action ) {
 			if ( this.request.session.user ) {
 				var loggedInUser = this.request.session.user;
+				console.log( action );
 				Items.findOne( { barcode: action.item } ).populate( 'group' ).exec( function( err, item ) {
-					switch ( item.status ) {
-						case 'on-loan':
-							socket.emit( 'flash', { type: 'danger', message: 'Item on loan to another user', barcode: item.barcode } );
-							if ( action.mode == 'item' ) {
-								sendItemModule( socket, action.item );
-							} else if ( action.mode == 'user' ) {
-								sendUserModule( socket, action.user );
-							}
-							break;
-						case 'lost':
-							socket.emit( 'flash', { type: 'danger', message: 'Item is currently lost', barcode: item.barcode } );
-							if ( action.mode == 'item' ) {
-								sendItemModule( socket, action.item );
-							} else if ( action.mode == 'user' ) {
-								sendUserModule( socket, action.user );
-							}
-							break;
-						case 'broken':
-							socket.emit( 'flash', { type: 'danger', message: 'Item is currently broken', barcode: item.barcode } );
-							if ( action.mode == 'item' ) {
-								sendItemModule( socket, action.item );
-							} else if ( action.mode == 'user' ) {
-								sendUserModule( socket, action.user );
-							}
-							break;
-						case 'new':
-							socket.emit( 'flash', { type: 'danger', message: 'Item has not yet been activated, audit the item before issuing it', barcode: item.barcode } );
-							if ( action.mode == 'item' ) {
-								sendItemModule( socket, action.item );
-							} else if ( action.mode == 'user' ) {
-								sendUserModule( socket, action.user );
-							}
-							break;
-						case 'reserved':
-						case 'available':
-							Users.findOne( { barcode: action.user }, function( err, user ) {
-								if ( user != null ) {
-									if ( item.status == 'reserved' ) {
-										if ( user.id != item.transactions[ item.transactions.length - 1 ].user ) {
-											socket.emit( 'flash', { type: 'danger', message: 'Item is currently reserved by another user', barcode: item.barcode } );
-											if ( action.mode == 'item' ) {
-												sendItemModule( socket, action.item );
-											} else if ( action.mode == 'user' ) {
-												sendUserModule( socket, action.user );
-											}
-											return;
-										}
-									}
-									if ( item.group != null && item.group.limiter != null ) {
-										Items.find( { group: item.group._id }, function( err, groupItems ) {
-											var count = 0;
-											for ( i in groupItems ) {
-												var groupItem = groupItems[i];
-												if ( groupItem.status == 'on-loan' ) {
-													var owner_transaction = 0;
-													for ( i = groupItem.transactions.length - 1; i >= 0; i-- ) {
-														if ( groupItem.transactions[ i ].status == 'loaned' ) {
-															last_transaction = groupItem.transactions[ i ];
-															break;
-														}
-													}
-													if ( last_transaction.user.toString() == user._id.toString() ) count++;
-												}
-											}
-											if ( count >= item.group.limiter ) {
-												socket.emit( 'flash', { type: 'danger', message: 'You already have ' + count + ' of this type of item out.', barcode: item.barcode } );
+					if ( item != undefined ) {
+						switch ( item.status ) {
+							case 'on-loan':
+								socket.emit( 'flash', { type: 'danger', message: 'Item on loan to another user', barcode: item.barcode } );
+								if ( action.mode == 'item' ) {
+									sendItemModule( socket, action.item );
+								} else if ( action.mode == 'user' ) {
+									sendUserModule( socket, action.user );
+								}
+								break;
+							case 'lost':
+								socket.emit( 'flash', { type: 'danger', message: 'Item is currently lost', barcode: item.barcode } );
+								if ( action.mode == 'item' ) {
+									sendItemModule( socket, action.item );
+								} else if ( action.mode == 'user' ) {
+									sendUserModule( socket, action.user );
+								}
+								break;
+							case 'broken':
+								socket.emit( 'flash', { type: 'danger', message: 'Item is currently broken', barcode: item.barcode } );
+								if ( action.mode == 'item' ) {
+									sendItemModule( socket, action.item );
+								} else if ( action.mode == 'user' ) {
+									sendUserModule( socket, action.user );
+								}
+								break;
+							case 'new':
+								socket.emit( 'flash', { type: 'danger', message: 'Item has not yet been activated, audit the item before issuing it', barcode: item.barcode } );
+								if ( action.mode == 'item' ) {
+									sendItemModule( socket, action.item );
+								} else if ( action.mode == 'user' ) {
+									sendUserModule( socket, action.user );
+								}
+								break;
+							case 'reserved':
+							case 'available':
+								Users.findOne( { barcode: action.user }, function( err, user ) {
+									if ( user != null ) {
+										if ( item.status == 'reserved' ) {
+											if ( user.id != item.transactions[ item.transactions.length - 1 ].user ) {
+												socket.emit( 'flash', { type: 'danger', message: 'Item is currently reserved by another user', barcode: item.barcode } );
 												if ( action.mode == 'item' ) {
 													sendItemModule( socket, action.item );
 												} else if ( action.mode == 'user' ) {
 													sendUserModule( socket, action.user );
 												}
-											} else {
-												Items.update( { _id: item._id }, {
-													$push: {
-														transactions: {
-															date: new Date(),
-															user: user._id,
-															status: 'loaned'
+												return;
+											}
+										}
+										if ( item.group != null && item.group.limiter != null ) {
+											Items.find( { group: item.group._id }, function( err, groupItems ) {
+												var count = 0;
+												for ( i in groupItems ) {
+													var groupItem = groupItems[i];
+													if ( groupItem.status == 'on-loan' ) {
+														var owner_transaction = 0;
+														for ( i = groupItem.transactions.length - 1; i >= 0; i-- ) {
+															if ( groupItem.transactions[ i ].status == 'loaned' ) {
+																last_transaction = groupItem.transactions[ i ];
+																break;
+															}
 														}
+														if ( last_transaction.user.toString() == user._id.toString() ) count++;
 													}
-												}, function ( err ) {
+												}
+												if ( count >= item.group.limiter ) {
+													socket.emit( 'flash', { type: 'danger', message: 'You already have ' + count + ' of this type of item out.', barcode: item.barcode } );
 													if ( action.mode == 'item' ) {
 														sendItemModule( socket, action.item );
 													} else if ( action.mode == 'user' ) {
 														sendUserModule( socket, action.user );
 													}
-												} );
-											}
-										} );
-									} else {
-										Items.update( { _id: item._id }, {
-											$push: {
-												transactions: {
-													date: new Date(),
-													user: user._id,
-													status: 'loaned'
+												} else {
+													Items.update( { _id: item._id }, {
+														$push: {
+															transactions: {
+																date: new Date(),
+																user: user._id,
+																status: 'loaned'
+															}
+														}
+													}, function ( err ) {
+														if ( action.mode == 'item' ) {
+															sendItemModule( socket, action.item );
+														} else if ( action.mode == 'user' ) {
+															sendUserModule( socket, action.user );
+														}
+													} );
 												}
-											}
-										}, function ( err ) {
-											if ( action.mode == 'item' ) {
-												sendItemModule( socket, action.item );
-											} else if ( action.mode == 'user' ) {
-												sendUserModule( socket, action.user );
-											}
-										} );
+											} );
+										} else {
+											Items.update( { _id: item._id }, {
+												$push: {
+													transactions: {
+														date: new Date(),
+														user: user._id,
+														status: 'loaned'
+													}
+												}
+											}, function ( err ) {
+												if ( action.mode == 'item' ) {
+													sendItemModule( socket, action.item );
+												} else if ( action.mode == 'user' ) {
+													sendUserModule( socket, action.user );
+												}
+											} );
+										}
+									} else {
+										socket.emit( 'flash', { type: 'danger', message: 'Invalid user', barcode: item.barcode } );
+										if ( action.mode == 'item' ) {
+											sendItemModule( socket, action.item );
+										} else if ( action.mode == 'user' ) {
+											sendUserModule( socket, action.user );
+										}
 									}
-								} else {
-									socket.emit( 'flash', { type: 'danger', message: 'Invalid user', barcode: item.barcode } );
-									if ( action.mode == 'item' ) {
-										sendItemModule( socket, action.item );
-									} else if ( action.mode == 'user' ) {
-										sendUserModule( socket, action.user );
-									}
+								} );
+								break;
+							default:
+								socket.emit( 'flash', { type: 'danger', message: 'Unknown error', barcode: item.barcode } );
+								if ( action.mode == 'item' ) {
+									sendItemModule( socket, action.item );
+								} else if ( action.mode == 'user' ) {
+									sendUserModule( socket, action.user );
 								}
-							} );
 							break;
-						default:
-							socket.emit( 'flash', { type: 'danger', message: 'Unknown error', barcode: item.barcode } );
-							if ( action.mode == 'item' ) {
-								sendItemModule( socket, action.item );
-							} else if ( action.mode == 'user' ) {
-								sendUserModule( socket, action.user );
-							}
-						break;
+						}
+					} else {
+						socket.emit( 'flash', { type: 'danger', message: 'Item not found', barcode: action.item } );
+						if ( action.mode == 'item' ) {
+							sendItemModule( socket, action.item );
+						} else if ( action.mode == 'user' ) {
+							sendUserModule( socket, action.user );
+						}
 					}
 				} );
 			}

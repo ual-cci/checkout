@@ -59,9 +59,13 @@ jQuery( document ).ready( function() {
 		e.preventDefault();
 		console.log( mode );
 		switch ( mode ) {
-			case 'user':
 			case 'item':
-				socket.emit( mode, jQuery( '#find input' ).val().toUpperCase() );
+				var item = jQuery( '#find input' ).val().toUpperCase();
+				item = ItemBarcodeRegEx.exec( item );
+				item = item[1] + ' ' + item[2];
+				jQuery( '#find input' ).val( item );
+			case 'user':
+				socket.emit( mode, jQuery( '#find input' ).val() );
 				break;
 			case 'item-selected':
 				var action = jQuery( '#find .btn:visible.btn-primary' ).data( 'action' );
@@ -72,10 +76,13 @@ jQuery( document ).ready( function() {
 				} );
 				break;
 			case 'user-selected':
-				console.log( 'user issue' )
+				var item = jQuery( '#find input' ).val().toUpperCase();
+				item = ItemBarcodeRegEx.exec( item );
+				item = item[1] + ' ' + item[2];
+				jQuery( '#find input' ).val( item );
 				socket.emit( 'issue', {
 					user: data.user,
-					item: jQuery( '#find input' ).val().toUpperCase(),
+					item: jQuery( '#find input' ).val(),
 					mode: 'user'
 				} );
 				break;
