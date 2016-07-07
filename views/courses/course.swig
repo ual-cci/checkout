@@ -12,5 +12,5 @@
 	</p>
 
 	<h3>Users</h3>
-	{% include '../users/partials/user-list-minimal.swig' %}
+	{% include '../users/partials/user-list.swig' %}
 {% endblock %}
