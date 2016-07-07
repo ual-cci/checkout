@@ -230,7 +230,6 @@ module.exports = function( server ) {
 		socket.on( 'issue', function( action ) {
 			if ( this.request.session.user ) {
 				var loggedInUser = this.request.session.user;
-				console.log( action );
 				Items.findOne( { barcode: action.item } ).populate( 'group' ).exec( function( err, item ) {
 					if ( item != undefined ) {
 						switch ( item.status ) {
