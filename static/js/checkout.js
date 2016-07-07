@@ -122,9 +122,8 @@ socket.on( 'mode', function( m ) {
 
 socket.on( 'module', function( html ) {
 	var module = jQuery( html );
-
 	// Remove duplicates
-	jQuery( '#modules [data-id=' +  jQuery( module ).data( 'id' ) + ']' ).remove();
+	jQuery( '#modules [data-id="' +  jQuery( module ).data( 'id' ) + '"]' ).remove();
 
 	// Clear primary class
 	jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
