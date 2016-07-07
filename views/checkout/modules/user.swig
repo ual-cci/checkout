@@ -1,4 +1,4 @@
-<div class="panel panel-primary" data-id="{{ user._id | raw }}">
+<div class="panel panel-primary" data-id="{{ user.barcode }}">
 	<div class="panel-heading">
 		<h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> <a href="/users/{{ user._id | raw }}">{{ user.name }}</a></h3>
 	</div>

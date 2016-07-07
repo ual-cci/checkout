@@ -1,5 +1,5 @@
-{% if loggedInUser.isAdmin %}
+{% if group %}
 	<a href="/groups/{{ group._id | raw }}">{{ group.name }}</a>
 {% else %}
-	{{ group.name }}
+	&mdash;
 {% endif %}

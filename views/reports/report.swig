@@ -1,7 +1,21 @@
 {% extends '../admin.swig' %}
 
 {% block heading %}
-	{% include '../items/partials/status.swig' %}
+	{% if status == 'available' %}
+		Available
+	{% elif status == 'on-loan' %}
+		On Loan
+	{% elif status == 'new' %}
+		New
+	{% elif status == 'reserved' %}
+		Reserved
+	{% elif status == 'lost' %}
+		Lost
+	{% elif status == 'broken' %}
+		Broken
+	{% else %}
+		{{ status }}
+	{% endif %}
 {% endblock %}
 
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}

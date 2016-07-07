@@ -90,6 +90,17 @@ jQuery( document ).ready( function() {
 		jQuery( '#find input' ).val( '' );
 		modeUpdate( 'find' );
 	} );
+
+	jQuery( document ).on( 'submit', '#modules form', function ( e ) {
+		e.preventDefault()
+		var user = {
+			name: jQuery( this ).find( '[name=name]' ).val(),
+			email: jQuery( this ).find( '[name=email]' ).val(),
+			course: jQuery( this ).find( '[name=course]' ).val(),
+			barcode: jQuery( this ).parents( '.panel' ).data( 'id' )
+		}
+		socket.emit( 'new-user', user );
+	} );
 } );
 
 socket.on( 'mode', function( m ) {
@@ -111,6 +122,7 @@ socket.on( 'mode', function( m ) {
 
 socket.on( 'module', function( html ) {
 	var module = jQuery( html );
+
 	// Remove duplicates
 	jQuery( '#modules [data-id=' +  jQuery( module ).data( 'id' ) + ']' ).remove();
 

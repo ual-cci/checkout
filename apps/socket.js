@@ -368,6 +368,45 @@ module.exports = function( server ) {
 				} );
 			}
 		} );
+		socket.on( 'new-user', function( action ) {
+			if ( this.request.session.user ) {
+				if ( ! action.barcode ) {
+					socket.emit( 'flash', { type: 'danger', message: 'No user barcode', barcode: 'Error' } );
+					return;
+				}
+				if ( ! action.name ) {
+					socket.emit( 'flash', { type: 'danger', message: 'No name specified', barcode: action.barcode } );
+					sendNewUserModule( socket, action.barcode, action );
+					return;
+				}
+				if ( ! action.email ) {
+					socket.emit( 'flash', { type: 'danger', message: 'No email specified', barcode: action.barcode } );
+					sendNewUserModule( socket, action.barcode, action );
+					return;
+				}
+				if ( ! action.course ) {
+					socket.emit( 'flash', { type: 'danger', message: 'No course specified', barcode: action.barcode } );
+					sendNewUserModule( socket, action.barcode, action );
+					return;
+				}
+
+				action._id = require( 'mongoose' ).Types.ObjectId();
+				action.type = 'student';
+
+				new Users( action ).save( function ( err ) {
+					if ( err ) {
+						if ( err.code == 11000 ) {
+							socket.emit( 'flash', { type: 'danger', message: 'The user already exists', barcode: action.barcode } );
+						} else {
+							sendNewUserModule( socket, action.barcode, action );
+							socket.emit( 'flash', { type: 'danger', message: 'Unknown error creating user', barcode: action.barcode } );
+						}
+					} else {
+						sendUserModule( socket, action.barcode );
+					}
+				} );
+			}
+		} )
 	} );
 	return io;
 };
@@ -402,7 +441,7 @@ function sendUserModule( socket, barcode ) {
 				socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/user.swig', { user: user, onloan: onloan } ) );
 			} );
 		} else {
-			socket.emit( 'create', '/users/create?barcode=' + barcode );
+			sendNewUserModule( socket, barcode );
 		};
 	} );
 }
@@ -442,5 +481,18 @@ function sendItemModule( socket, barcode ) {
 			}
 		} );
 		socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/item.swig', { item: item } ) );
+	} );
+}
+
+function sendNewUserModule( socket, barcode, user ) {
+	socket.emit( 'mode', {
+		mode: 'new-user',
+		buttons: [],
+		data: {}
+	} );
+	Courses.find( function( err, courses ) {
+		if ( user == undefined )
+			user = { barcode: barcode };
+		socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/new-user.swig', { user: user, courses: courses } ) );
 	} );
 }

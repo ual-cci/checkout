@@ -20,7 +20,7 @@
 						<td>{{ item.barcode }}</td>
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 						{% set department = item.department %}
-						<td><a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a></td>
+						<td>{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
 						<td>{% include '../../departments/partials/department.swig' %}</td>
 					</tr>
 				{% endfor %}
