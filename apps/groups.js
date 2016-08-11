@@ -47,7 +47,6 @@ app.post( '/create', function( req, res ) {
 
 // View
 app.get( '/:id', function( req, res ) {
-	console.log( 'view' );
 	Groups.findOne( { _id: req.params.id }, function( err, group ) {
 		if ( group == undefined ) {
 			req.add_flash( 'danger', 'Group not found' );
