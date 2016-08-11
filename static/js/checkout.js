@@ -101,6 +101,15 @@ jQuery( document ).ready( function() {
 		}
 		socket.emit( 'new-user', user );
 	} );
+
+	jQuery( '.container' ).on( 'click', '.override', function( e ) {
+		socket.emit( 'issue', {
+			user: data.user,
+			item: data.item,
+			mode: mode.split('-')[0],
+			override: true
+		} );
+	} );
 } );
 
 socket.on( 'mode', function( m ) {
@@ -136,8 +145,13 @@ socket.on( 'module', function( html ) {
 } )
 
 socket.on( 'flash', function( msg ) {
-	var flash = jQuery( '<div class="alert alert-' + msg.type + '"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</div>' );
-	jQuery( flash ).insertBefore( '#modules' );
+	var btn = '';
+	if ( msg.btn ) {
+		jQuery('.alert .btn' ).hide();
+		btn = '<button class="' + msg.btn.class + ' btn btn-' + msg.type + ' pull-right">' + msg.btn.text + '</button>';
+	}
+	var flash = jQuery( '<div style="overflow:hidden;" class="alert alert-' + msg.type + '"><p class="pull-left"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</p>' + btn + '</div>' );
+	jQuery( flash ).insertAfter( '.panel.panel-default' );
 	setTimeout( function() {
 		jQuery( flash ).fadeOut( function() {
 			jQuery( this ).remove();

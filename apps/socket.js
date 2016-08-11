@@ -303,12 +303,20 @@ module.exports = function( server ) {
 														if ( last_transaction.user.toString() == user._id.toString() ) count++;
 													}
 												}
-												if ( count >= item.group.limiter ) {
-													socket.emit( 'flash', { type: 'danger', message: 'You already have ' + count + ' of this type of item out.', barcode: item.barcode } );
+												if ( count >= item.group.limiter && action.override != true ) {
+													socket.emit( 'flash', {
+														type: 'danger',
+														message: 'You already have ' + count + ' of this type of item out.',
+														barcode: item.barcode,
+														btn: {
+															text: 'Override',
+															class: 'override'
+														}
+													} );
 													if ( action.mode == 'item' ) {
-														sendItemModule( socket, action.item );
+														sendItemModule( socket, action.item, action.user );
 													} else if ( action.mode == 'user' ) {
-														sendUserModule( socket, action.user );
+														sendUserModule( socket, action.user, action.item );
 													}
 												} else {
 													Items.update( { _id: item._id }, {
@@ -418,7 +426,7 @@ module.exports = function( server ) {
 	return io;
 };
 
-function sendUserModule( socket, barcode ) {
+function sendUserModule( socket, barcode, item_barcode ) {
 	Users.findOne( { barcode: barcode } ).populate( 'course' ).exec( function( err, user ) {
 		if ( user ) {
 			Items.find().exec( function( err, items ) {
@@ -443,6 +451,7 @@ function sendUserModule( socket, barcode ) {
 					buttons: [ 'issue' ],
 					data: {
 						user: user.barcode,
+						item: item_barcode
 					}
 				} );
 				socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/user.swig', { user: user, onloan: onloan } ) );
@@ -453,7 +462,7 @@ function sendUserModule( socket, barcode ) {
 	} );
 }
 
-function sendItemModule( socket, barcode ) {
+function sendItemModule( socket, barcode, user_barcode ) {
 	Items.findOne( { barcode: barcode } ).populate( 'department' ).populate( 'transactions.user' ).populate( 'group' ).exec( function( err, item ) {
 		if ( item == null ) return;
 		var buttons = [];
@@ -485,6 +494,7 @@ function sendItemModule( socket, barcode ) {
 			buttons: buttons,
 			data: {
 				item: item.barcode,
+				user: user_barcode
 			}
 		} );
 		socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/item.swig', { item: item } ) );
