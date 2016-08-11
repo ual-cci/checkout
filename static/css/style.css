@@ -14,12 +14,25 @@ body.dev:before {
 	content: '';
 	position: fixed;
 	top: 0;
-	left: 0; 
+	left: 0;
 	right: 0;
 	height: 3px;
 	background: url( /imgs/dev.png );
 }
 
 body.dev .navbar {
+	top: 3px;
+}
+
+.panel.panel-primary h3 {
+	position: relative;
+}
+
+.panel-primary .panel-heading h3:after {
+	content: 'Active';
+	position: absolute;
+	right: 0;
+	font-weight: normal;
+	font-size: small;
 	top: 3px;
 }
