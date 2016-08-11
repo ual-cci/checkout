@@ -71,6 +71,9 @@ module.exports = function( server ) {
 				}
 			}
 		} );
+		socket.on( 'update-stats', function() {
+			updateStats();
+		} );
 		socket.on( 'broken', function( action ) {
 			if ( this.request.session.user ) {
 				Users.findOne( { barcode: action.user }, function( err, user ) {
@@ -444,8 +447,8 @@ function sendUserModule( socket, barcode, item_barcode ) {
 						}
 					}
 				}
+				updateStats();
 				var buttons = [];
-
 				socket.emit( 'mode', {
 					mode: 'user-selected',
 					buttons: [ 'issue' ],
@@ -488,7 +491,7 @@ function sendItemModule( socket, barcode, user_barcode ) {
 				buttons = [ 'issue', 'reserve', 'broken', 'lost' ];
 				break;
 		}
-
+		updateStats();
 		socket.emit( 'mode', {
 			mode: 'item-selected',
 			buttons: buttons,
@@ -511,5 +514,52 @@ function sendNewUserModule( socket, barcode, user ) {
 		if ( user == undefined )
 			user = { barcode: barcode };
 		socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/new-user.swig', { user: user, courses: courses } ) );
+	} );
+}
+
+function updateStats() {
+	Items.find( {}, function( err, items ) {
+		var issued = 0,
+		returned = 0,
+		available = 0,
+		onloan = 0,
+		lostbroken = 0,
+		scanned = 0,
+		unscanned = 0;
+
+		for ( var i = 0; i < items.length; i++ ) {
+			var item = items[i];
+			if ( item.status == 'available' ) available++;
+			if ( item.status == 'on-loan' ) onloan++;
+			if ( item.status == 'lost' ) lostbroken++;
+			if ( item.status == 'broken' ) lostbroken++;
+			if ( item.audited == true ) scanned++;
+			if ( item.audited == false ) unscanned++;
+
+			var loaned_today = false;
+			var returned_today = false;
+			var today = new Date();
+			today.setHours( 0, 0, 0, 0 );
+			for ( var t = 0; t < item.transactions.length; t++ ) {
+				var transaction = item.transactions[t];
+				if ( transaction != undefined ) {
+					if ( transaction.date > today ) {
+						if ( transaction.status == 'loaned' ) loaned_today = true;
+						if ( transaction.status == 'returned' ) returned_today = true;
+					}
+				}
+			}
+			if ( loaned_today == true ) issued++;
+			if ( returned_today == true ) returned++;
+		}
+
+		io.emit( 'stats', {
+			issued: issued,
+			returned: returned,
+			available: available,
+			onloan: onloan,
+			lostbroken: lostbroken,
+			audit: scanned + '/' + unscanned
+		} )
 	} );
 }

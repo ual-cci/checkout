@@ -7,6 +7,8 @@ var data = {};
 jQuery( document ).ready( function() {
 	jQuery( '#find input' ).focus();
 
+	socket.emit( 'update-stats' );
+
 	jQuery( 'input' ).bind( 'blur', function( e ) {
 		if ( e.relatedTarget == undefined || e.relatedTarget.tagName != 'INPUT' )
 			jQuery( '#find input' ).focus();
@@ -158,6 +160,15 @@ socket.on( 'flash', function( msg ) {
 		} );
 	}, 5000 );
 } )
+
+socket.on( 'stats', function( msg ) {
+	jQuery( '.issued' ).text( msg.issued );
+	jQuery( '.returned' ).text( msg.returned );
+	jQuery( '.available' ).text( msg.available );
+	jQuery( '.onloan' ).text( msg.onloan );
+	jQuery( '.lostbroken' ).text( msg.lostbroken );
+	jQuery( '.audit' ).text( msg.audit );
+} );
 
 function modeUpdate( m ) {
 	mode = m;

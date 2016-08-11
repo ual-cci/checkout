@@ -8,6 +8,35 @@
 {% block title %}{% parent %}{% endblock %}
 
 {% block content %}
+	<div class="well clearfix">
+		<div class="col-md-2">
+			<h1 class="issued">&mdash;</h1>
+			<h5>ISSUED</h5>
+			<h6>TODAY</h6>
+		</div>
+		<div class="col-md-2">
+			<h1 class="returned">&mdash;</h1>
+			<h5>RETURNED</h5>
+			<h6>TODAY</h6>
+		</div>
+		<div class="col-md-2">
+			<h1 class="available">&mdash;</h1>
+			<h5>AVAILABLE</h5>
+		</div>
+		<div class="col-md-2">
+			<h1 class="onloan">&mdash;</h1>
+			<h5>ON LOAN</h5>
+		</div>
+		<div class="col-md-2">
+			<h1 class="lostbroken">&mdash;</h1>
+			<h5>LOST/BROKEN</h5>
+		</div>
+		<div class="col-md-2">
+			<h1 class="audit">&mdash;/&mdash;</h1>
+			<h5>AUDIT</h5>
+			<h6>SCANNED/UNSCANNED</h6>
+		</div>
+	</div>
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<form class="navbar-form navbar-left" id="find" role="search">
