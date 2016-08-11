@@ -26,7 +26,14 @@ module.exports = function( server ) {
 						} else if ( ! item ) {
 							socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: 'Error' } );
 							return;
+						} else if ( item.status == 'lost' ) {
+							socket.emit( 'flash', { type: 'danger', message: 'Item currently marked as lost', barcode: 'Error' } );
+							return;
+						} else if ( item.status == 'on-loan' ) {
+							socket.emit( 'flash', { type: 'danger', message: 'Item currently marked as on loan', barcode: 'Error' } );
+							return;
 						}
+
 						Items.update( { _id: item._id }, {
 							$push: {
 								transactions: {

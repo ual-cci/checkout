@@ -22,24 +22,29 @@ app.use( function( req, res, next ) {
 app.get( '/scanned', function( req, res ) {
 	res.locals.currentModule = 'audit';
 	var status = req.params.status;
-	Departments.find( function( err, departments ) {
-		var filter = {};
-		if ( req.query.department ) filter.department = req.query.department;
-		Items.find( filter ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-			var result = [];
+	Groups.find( function( err, groups ) {
+		Departments.find( function( err, departments ) {
+			var filter = {};
+			if ( req.query.department ) filter.department = req.query.department;
+			if ( req.query.group ) filter.group = req.query.group;
+			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+				var result = [];
 
-			for ( i in items ) {
-				var item = items[i];
-				if ( item.audited == true ) {
-					result.push( item );
+				for ( i in items ) {
+					var item = items[i];
+					if ( item.audited == true ) {
+						result.push( item );
+					}
 				}
-			}
 
-			res.render( prefix + '/report', {
-				status: 'Scanned',
-				items: result,
-				departments: departments,
-				selectedDepartment: req.query.department
+				res.render( prefix + '/report', {
+					status: 'Scanned',
+					items: result,
+					departments: departments,
+					selectedDepartment: req.query.department,
+					groups: groups,
+					selectedGroup: req.query.group
+				} );
 			} );
 		} );
 	} );
@@ -49,35 +54,41 @@ app.get( '/scanned', function( req, res ) {
 app.get( '/missing', function( req, res ) {
 	res.locals.currentModule = 'audit';
 	var status = req.params.status;
-	Departments.find( function( err, departments ) {
-		var filter = {};
-		if ( req.query.department ) filter.department = req.query.department;
-		Items.find( filter ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-			var result = [], other = [];
+	Groups.find( function( err, groups ) {
+		Departments.find( function( err, departments ) {
+			var filter = {};
+			if ( req.query.department ) filter.department = req.query.department;
+			if ( req.query.group ) filter.group = req.query.group;
+			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+				var result = [], other = [];
 
-			for ( i in items ) {
-				var item = items[i];
-				if ( item.audited != true ) {
-					switch ( item.status ) {
-						case 'available':
-						case 'broken':
-						case 'new':
-						case 'reserved':
-						default:
-							result.push( item );
-							break;
-						case 'on-loan':
-							other.push( item );
+				for ( i in items ) {
+					var item = items[i];
+					if ( item.audited != true ) {
+						switch ( item.status ) {
+							case 'available':
+							case 'broken':
+							case 'new':
+							case 'reserved':
+							default:
+								result.push( item );
+								break;
+							case 'on-loan':
+							case 'lost':
+								other.push( item );
+						}
 					}
 				}
-			}
 
-			res.render( prefix + '/audit', {
-				status: 'Missing',
-				items: result,
-				other: other,
-				departments: departments,
-				selectedDepartment: req.query.department
+				res.render( prefix + '/audit', {
+					status: 'Missing',
+					items: result,
+					other: other,
+					departments: departments,
+					selectedDepartment: req.query.department,
+					groups: groups,
+					selectedGroup: req.query.group
+				} );
 			} );
 		} );
 	} );
@@ -86,37 +97,42 @@ app.get( '/missing', function( req, res ) {
 // Status report
 app.get( '/status/:status', function( req, res ) {
 	var status = req.params.status;
-	Departments.find( function( err, departments ) {
-		var filter = {};
-		if ( req.query.department ) filter.department = req.query.department;
-		Items.find( filter ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-			var result = [];
+	Groups.find( function( err, groups ) {
+		Departments.find( function( err, departments ) {
+			var filter = {};
+			if ( req.query.department ) filter.department = req.query.department;
+			if ( req.query.group ) filter.group = req.query.group;
+			Items.find( filter ).populate( 'department' ).populate( 'group' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+				var result = [];
 
-			for ( i in items ) {
-				var item = items[i];
+				for ( i in items ) {
+					var item = items[i];
 
-				if ( item.status == status ) {
-					result.push( item );
+					if ( item.status == status ) {
+						result.push( item );
 
-					if ( item.status == 'on-loan' ) {
-						var owner_transaction = 0;
+						if ( item.status == 'on-loan' ) {
+							var owner_transaction = 0;
 
-						for ( i = item.transactions.length - 1; i >= 0; i-- ) {
-							if ( item.transactions[ i ].status == 'loaned' ) {
-								last_transaction = item.transactions[ i ];
-								break;
+							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+								if ( item.transactions[ i ].status == 'loaned' ) {
+									last_transaction = item.transactions[ i ];
+									break;
+								}
 							}
+							item.owner = last_transaction.user;
 						}
-						item.owner = last_transaction.user;
 					}
 				}
-			}
 
-			res.render( prefix + '/report', {
-				status: status,
-				items: result,
-				departments: departments,
-				selectedDepartment: req.query.department
+				res.render( prefix + '/report', {
+					status: status,
+					items: result,
+					departments: departments,
+					selectedDepartment: req.query.department,
+					groups: groups,
+					selectedGroup: req.query.group
+				} );
 			} );
 		} );
 	} );
@@ -134,7 +150,7 @@ app.get( '/course', function( req, res ) {
 // Status report
 app.get( '/course/:course', function( req, res ) {
 	Courses.findById( req.params.course, function( err, course ) {
-		Items.find().populate( 'department' ).populate( 'transactions.user' ).exec( function( err, items ) {
+		Items.find().populate( 'department' ).populate( 'group' ).populate( 'transactions.user' ).exec( function( err, items ) {
 			var result = [];
 
 			for ( i in items ) {

@@ -21,11 +21,36 @@ app.use( function( req, res, next ) {
 
 // Index
 app.get( '/', function ( req, res ) {
-	Departments.find( function( err, departments ) {
-		var filter = {};
-		if ( req.query.department ) filter.department = req.query.department;
-		Items.find( filter ).populate( 'group' ).populate( 'department' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-			res.render( prefix + '/items', { items: items, departments: departments, selectedDepartment: req.query.department } );
+	Groups.find( function( err, groups ) {
+		Departments.find( function( err, departments ) {
+			var filter = {};
+			if ( req.query.department ) filter.department = req.query.department;
+			if ( req.query.group ) filter.group = req.query.group;
+			Items.find( filter ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+				for ( i in items ) {
+					var item = items[i];
+
+					if ( item.status == 'on-loan' ) {
+						var owner_transaction = 0;
+
+						for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+							if ( item.transactions[ i ].status == 'loaned' ) {
+								last_transaction = item.transactions[ i ];
+								break;
+							}
+						}
+						item.owner = last_transaction.user;
+					}
+				}
+
+				res.render( prefix + '/items', {
+					items: items,
+					departments: departments,
+					selectedDepartment: req.query.department,
+					groups: groups,
+					selectedGroup: req.query.group
+				} );
+			} );
 		} );
 	} );
 } );
@@ -35,36 +60,6 @@ app.get( '/audit', function ( req, res ) {
 	res.locals.currentModule = 'audit';
 	res.render( prefix + '/audit' );
 } );
-
-// Audit item
-app.post( '/audit', function( req, res ) {
-	var val = /([A-Z]{2,4})  ?([0-9]{2})/.exec( req.body.barcode.toUpperCase() );
-	if ( val ) {
-		barcode = val[1] + ' ' + val[2];
-		Items.update( { barcode: barcode.toUpperCase() }, {
-			$push: {
-				transactions: {
-					date: new Date(),
-					user: req.session.user.id,
-					status: 'audited'
-				}
-			}
-		} ).then ( function ( status ) {
-			if ( status.n == 1 ) {
-				req.add_flash( 'success', 'Item audited' );
-			} else {
-				req.add_flash( 'danger', 'Item not found' );
-			}
-			res.redirect( req.body.modal ? req.body.modal : '/' + prefix + '/' + req.params.id );
-		}, function ( err ) {
-			req.add_flash( 'danger', 'Unknown item' );
-			res.redirect( '/items/audit' );
-		} );
-	} else {
-		req.add_flash( 'danger', 'Item barcode format invalid' );
-		res.redirect( '/items/audit' );
-	}
-} )
 
 // Generate items
 app.get( '/generate', function ( req, res ) {
@@ -208,7 +203,7 @@ app.post( '/create', function( req, res ) {
 
 // List an item
 app.get( '/:id', function( req, res ) {
-	Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'department' ).exec( function( err, item ) {
+	Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
 		if ( item == undefined ) {
 			req.add_flash( 'danger', 'Item not found' );
 			res.redirect( '/' + prefix );

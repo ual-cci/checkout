@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="/js/audit.js"></script>
 {% endblock %}
 
-{% block heading %}Audit{% endblock %}
+{% block heading %}Audit Scan{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}
 
 {% block content %}

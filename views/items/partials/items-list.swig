@@ -6,6 +6,7 @@
 					<th>Status</th>
 					<th>Barcode</th>
 					<th>Name</th>
+					<th>Owner</th>
 					<th>Group</th>
 					<th>Department</th>
 				</tr>
@@ -19,6 +20,7 @@
 						</td>
 						<td>{{ item.barcode }}</td>
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
+						<td>{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
 						{% set group = item.group %}
 						<td>{% include '../../groups/partials/group.swig' %}</td>
 						{% set department = item.department %}

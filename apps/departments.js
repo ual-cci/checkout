@@ -51,7 +51,7 @@ app.get( '/:id', function( req, res ) {
 			req.add_flash( 'danger', 'Department not found' );
 			res.redirect( '/' + prefix );
 		} else {
-			Items.find( { department: req.params.id }, function( err, items ) {
+			Items.find( { department: req.params.id } ).populate( 'group' ).exec( function( err, items ) {
 				res.render( prefix + '/department', { department: department, items: items } );
 			} );
 		}
