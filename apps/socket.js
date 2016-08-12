@@ -533,8 +533,22 @@ function updateStats() {
 			if ( item.status == 'on-loan' ) onloan++;
 			if ( item.status == 'lost' ) lostbroken++;
 			if ( item.status == 'broken' ) lostbroken++;
-			if ( item.audited == true ) scanned++;
-			if ( item.audited == false ) unscanned++;
+			if ( item.audited == true ) {
+				scanned++;
+			} else {
+				switch ( item.status ) {
+					case 'available':
+					case 'broken':
+					case 'new':
+					case 'reserved':
+					default:
+						unscanned++;
+						break;
+					case 'on-loan':
+					case 'lost':
+						scanned++;
+				}
+			}
 
 			var loaned_today = false;
 			var returned_today = false;
