@@ -44,6 +44,7 @@ module.exports = function( server ) {
 							}
 						} ).then ( function ( status ) {
 							if ( status.n == 1 ) {
+								updateStats();
 								socket.emit( 'flash', { type: 'success', message: 'Audited', barcode: item.barcode } );
 							} else {
 								socket.emit( 'flash', { type: 'danger', message: 'Not found', barcode: item.barcode } );
