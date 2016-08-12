@@ -100,15 +100,29 @@ app.get( '/:id', function( req, res ) {
 				for ( item in items ) {
 					item = items[item];
 					if ( item.transactions != undefined ) {
-						for ( t = item.transactions.length - 1; t >= 0; t-- ) {
-							if ( item.transactions[t].user == user._id.toString() &&
-								 item.transactions[t].status == 'loaned' ) {
-								if ( t == item.transactions.length - 1 ) {
-									onloan.push( item );
-								} else {
-									pastloan.push( item );
+
+						// Onloan
+						var last_transaction = item.transactions[ item.transactions.length - 1 ];
+						if ( last_transaction.status == 'audited' ) {
+							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+								if ( item.transactions[ i ].status != 'audited' ) {
+									last_transaction = item.transactions[ i ];
+									break;
 								}
 							}
+						}
+						if ( last_transaction.user == user._id.toString() &&
+							 last_transaction.status == 'loaned' ) {
+								onloan.push( item );
+						}
+						
+						// Historic
+						for ( t = 0; t < item.transactions.length; t++ ) {
+							if (item.transactions[t].user == user._id.toString() &&
+								item.transactions[t] != last_transaction &&
+								item.transactions[t].status == 'loaned' ) {
+								 pastloan.push( item );
+							 }
 						}
 					}
 				}
