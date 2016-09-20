@@ -28,7 +28,11 @@ var userSchema = Schema( {
 		enum: [ 'student', 'staff', 'admin' ],
 		default: 'staff',
 		required: true
-	}
+	},
+	read_tc: {
+		type: Boolean,
+		default: false
+	},
 } );
 
 var Users = mongoose.model( 'Users', userSchema );

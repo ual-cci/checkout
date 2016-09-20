@@ -105,11 +105,20 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( '.container' ).on( 'click', '.override', function( e ) {
+		jQuery( this ).parent().hide();
 		socket.emit( 'issue', {
 			user: data.user,
 			item: data.item,
 			mode: mode.split('-')[0],
 			override: true
+		} );
+	} );
+
+	jQuery( '.container' ).on( 'click', '.read_tc', function( e ) {
+		jQuery( this ).parent().hide();
+		socket.emit( 'read_tc', {
+			user: data.user,
+			mode: mode.split('-')[0]
 		} );
 	} );
 } );
@@ -158,7 +167,7 @@ socket.on( 'flash', function( msg ) {
 		jQuery( flash ).fadeOut( function() {
 			jQuery( this ).remove();
 		} );
-	}, 5000 );
+	}, msg.timer ? msg.timer : 5000 );
 } )
 
 socket.on( 'stats', function( msg ) {

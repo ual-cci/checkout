@@ -278,19 +278,41 @@ module.exports = function( server ) {
 								break;
 							case 'reserved':
 							case 'available':
+								// Find user
 								Users.findOne( { barcode: action.user }, function( err, user ) {
+									// Check user was found
 									if ( user != null ) {
-										if ( item.status == 'reserved' ) {
-											if ( user.id != item.transactions[ item.transactions.length - 1 ].user ) {
-												socket.emit( 'flash', { type: 'danger', message: 'Item is currently reserved by another user', barcode: item.barcode } );
-												if ( action.mode == 'item' ) {
-													sendItemModule( socket, action.item );
-												} else if ( action.mode == 'user' ) {
-													sendUserModule( socket, action.user );
-												}
-												return;
+										// Item: Reserved by another user
+										if ( item.status == 'reserved' &&
+											 user.id != item.transactions[ item.transactions.length - 1 ].user ) {
+											socket.emit( 'flash', { type: 'danger', message: 'Item is currently reserved by another user', barcode: item.barcode } );
+											if ( action.mode == 'item' ) {
+												sendItemModule( socket, action.item );
+											} else if ( action.mode == 'user' ) {
+												sendUserModule( socket, action.user );
 											}
+											return;
 										}
+										// User: Terms and conditions
+										if ( user.read_tc != true ) {
+											socket.emit( 'flash', {
+												type: 'warning',
+												message: 'Has the user read the loan agreement?',
+												barcode: user.name,
+												timer: 15000,
+												btn: {
+													text: 'Yes',
+													class: 'read_tc'
+												}
+											} );
+											if ( action.mode == 'item' ) {
+												sendItemModule( socket, action.item, action.user );
+											} else if ( action.mode == 'user' ) {
+												sendUserModule( socket, action.user, action.item );
+											}
+											return;
+										}
+										// Item: Part of a group
 										if ( item.group != null && item.group.limiter != null ) {
 											Items.find( { group: item.group._id }, function( err, groupItems ) {
 												var count = 0;
@@ -312,6 +334,7 @@ module.exports = function( server ) {
 														type: 'danger',
 														message: 'You already have ' + count + ' of this type of item out.',
 														barcode: item.barcode,
+														timer: 15000,
 														btn: {
 															text: 'Override',
 															class: 'override'
@@ -423,6 +446,20 @@ module.exports = function( server ) {
 					} else {
 						sendUserModule( socket, action.barcode );
 					}
+				} );
+			}
+		} )
+		socket.on( 'read_tc', function( action ) {
+			if ( this.request.session.user ) {
+				if ( ! action.user ) {
+					socket.emit( 'flash', { type: 'danger', message: 'No user barcode', barcode: 'Error' } );
+					return;
+				}
+				Users.findOne( { barcode: action.user }, function( err, user ) {
+					user.read_tc = true;
+					user.save( function( err ) {
+						socket.emit( 'flash', { type: 'success', message: 'User has read loan agreement.', barcode: user.name } );
+					} );
 				} );
 			}
 		} )
