@@ -4,6 +4,8 @@ var	express = require( 'express' ),
 	Items = require( __dirname + '/../models/items' ),
 	Users = require( __dirname + '/../models/users' );
 
+var swig = require( 'swig' );
+
 var prefix = 'users';
 
 // Handle redirect
@@ -100,22 +102,23 @@ app.get( '/:id', function( req, res ) {
 				for ( item in items ) {
 					item = items[item];
 					if ( item.transactions != undefined ) {
-
 						// Onloan
 						var last_transaction = item.transactions[ item.transactions.length - 1 ];
-						if ( last_transaction.status == 'audited' ) {
-							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
-								if ( item.transactions[ i ].status != 'audited' ) {
-									last_transaction = item.transactions[ i ];
-									break;
+						if ( last_transaction != undefined ) {
+							if ( last_transaction.status == 'audited' ) {
+								for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+									if ( item.transactions[ i ].status != 'audited' ) {
+										last_transaction = item.transactions[ i ];
+										break;
+									}
 								}
 							}
+							if ( last_transaction.user == user._id.toString() &&
+								 last_transaction.status == 'loaned' ) {
+									onloan.push( item );
+							}
 						}
-						if ( last_transaction.user == user._id.toString() &&
-							 last_transaction.status == 'loaned' ) {
-								onloan.push( item );
-						}
-						
+
 						// Historic
 						for ( t = 0; t < item.transactions.length; t++ ) {
 							if (item.transactions[t].user == user._id.toString() &&
@@ -126,8 +129,8 @@ app.get( '/:id', function( req, res ) {
 						}
 					}
 				}
-
-				res.render( prefix + '/user', { user: user, onloan: onloan, pastloan: pastloan } );
+				var email = swig.renderFile( __dirname + '/../views/users/email.swig', { name: user.name, items: onloan } );
+				res.render( prefix + '/user', { user: user, onloan: onloan, pastloan: pastloan, email: email } );
 			} );
 		}
 	} )

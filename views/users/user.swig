@@ -8,6 +8,7 @@
 
 	<p>
 		<a href="/users/{{ user._id | raw }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+		<a class="btn btn-default" href="mailto:{{ user.email }}?subject=IMPORTANT:%20Items%20To%20Return&body={{ email | url_encode }}"><span class="glyphicon glyphicon-envelope"></span> Generate email</a>
 	</p>
 
 	{% include 'partials/onloan.swig' %}

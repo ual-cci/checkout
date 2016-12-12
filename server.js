@@ -36,7 +36,7 @@ var sessionMiddleware = session( {
 } );
 app.use( sessionMiddleware );
 io.use( function( socket, next ) {
-    sessionMiddleware( socket.request, socket.request.res, next );
+	sessionMiddleware( socket.request, socket.request.res, next );
 } );
 app.use( flash() );
 app.use( add_flash() );
