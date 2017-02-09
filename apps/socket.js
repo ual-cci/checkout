@@ -6,16 +6,15 @@ var Items = require( __dirname + '/../models/items' ),
 
 module.exports = function( server ) {
 	var io = sio.listen( server );
-
 	io.on( 'connection', function( socket ) {
 		socket.on( 'audit', function ( action ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				var itemFilter = {};
 				var val = /([A-Z]{2,4})  ?([0-9]{2})/.exec( action.itemBarcode.toUpperCase() );
 				if ( val ) {
 					if ( action.itemBarcode ) itemFilter.barcode = val[1] + ' ' + val[2];;
 					if ( action.itemId ) itemFilter._id = action.itemId;
-					var loggedInUser = this.request.session.user;
+					var loggedInUser = socket.request.user;
 					Items.findOne( itemFilter, function( err, item ) {
 						if ( ! item && itemFilter.barcode ) {
 							socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter.barcode } );
@@ -59,14 +58,14 @@ module.exports = function( server ) {
 			}
 		} )
 		socket.on( 'user', function( barcode ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				if ( barcode.substring( 0, 4 ) == '1234' && barcode.length == 12 ) {
 					sendUserModule( socket, barcode );
 				}
 			}
 		} );
 		socket.on( 'item', function( barcode ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				if ( /([A-Z]{2,4}) ([0-9]{2})/.exec( barcode ) != null ) {
 					sendItemModule( socket, barcode );
 				}
@@ -76,7 +75,7 @@ module.exports = function( server ) {
 			updateStats();
 		} );
 		socket.on( 'broken', function( action ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				Users.findOne( { barcode: action.user }, function( err, user ) {
 					if ( user == undefined ) return;
 
@@ -118,7 +117,7 @@ module.exports = function( server ) {
 			}
 		} );
 		socket.on( 'lost', function( action ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				Users.findOne( { barcode: action.user }, function( err, user ) {
 					if ( user == undefined ) return;
 
@@ -158,9 +157,9 @@ module.exports = function( server ) {
 			}
 		} );
 		socket.on( 'return', function( action ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				var itemFilter = {};
-				var loggedInUser = this.request.session.user;
+				var loggedInUser = socket.request.user;
 				Items.findOne( { barcode: action.item }, function( err, item ) {
 					if ( item.status == 'available' ) {
 						socket.emit( 'flash', { type: 'warning', message: 'Item already returned', barcode: item.barcode } );
@@ -186,8 +185,8 @@ module.exports = function( server ) {
 			}
 		} );
 		socket.on( 'reserve', function( action ) {
-			if ( this.request.session.user ) {
-				var loggedInUser = this.request.session.user;
+			if ( socket.request.user ) {
+				var loggedInUser = socket.request.user;
 				Items.findOne( { barcode: action.item }, function( err, item ) {
 					if ( item == undefined ) {
 						socket.emit( 'flash', { type: 'danger', message: 'Item not found', barcode: action.item } );
@@ -239,8 +238,8 @@ module.exports = function( server ) {
 			}
 		} );
 		socket.on( 'issue', function( action ) {
-			if ( this.request.session.user ) {
-				var loggedInUser = this.request.session.user;
+			if ( socket.request.user ) {
+				var loggedInUser = socket.request.user;
 				Items.findOne( { barcode: action.item } ).populate( 'group' ).exec( function( err, item ) {
 					if ( item != undefined ) {
 						switch ( item.status ) {
@@ -411,7 +410,7 @@ module.exports = function( server ) {
 			}
 		} );
 		socket.on( 'new-user', function( action ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				if ( ! action.barcode ) {
 					socket.emit( 'flash', { type: 'danger', message: 'No user barcode', barcode: 'Error' } );
 					return;
@@ -450,7 +449,7 @@ module.exports = function( server ) {
 			}
 		} )
 		socket.on( 'read_tc', function( action ) {
-			if ( this.request.session.user ) {
+			if ( socket.request.user ) {
 				if ( ! action.user ) {
 					socket.emit( 'flash', { type: 'danger', message: 'No user barcode', barcode: 'Error' } );
 					return;

@@ -66,7 +66,7 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ loggedInUser.name }} <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							</li><li><a href="/users/{{ loggedInUser.id | raw }}">Edit Profile</a></li>
+							</li><li><a href="/users/{{ loggedInUser._id | raw }}">Edit Profile</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="/logout">Logout</a></li>
 						</ul>

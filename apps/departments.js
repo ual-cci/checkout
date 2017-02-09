@@ -8,7 +8,7 @@ var prefix = 'departments';
 // Handle redirect
 app.use( function( req, res, next ) {
 	res.locals.currentModule = 'items';
-	if ( ! req.session.user ) {
+	if ( ! req.isAuthenticated() ) {
 		req.session.requested = req.originalUrl;
 		req.add_flash( 'danger', 'Please login' );
 		res.redirect( '/login' );

@@ -198,3 +198,7 @@ function modeUpdate( m ) {
 		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-search' );
 	}
 }
+
+socket.on( 'loggedout', function() {
+	window.location = '/login';
+} );
