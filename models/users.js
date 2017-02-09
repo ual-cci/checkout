@@ -25,8 +25,8 @@ var userSchema = Schema( {
 	},
 	type: {
 		type: String,
-		enum: [ 'student', 'staff', 'admin' ],
-		default: 'staff',
+		enum: [ 'student', 'staff' ],
+		default: 'student',
 		required: true
 	},
 	read_tc: {
