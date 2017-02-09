@@ -128,7 +128,7 @@ app.get( '/logout', function ( req, res ) {
 	passportSocketIo.filterSocketsByUser( io, function( user ) {
 		if ( user._id == undefined || req.user._id == undefined )
 			return false;
-		
+
 		return user._id.toString() == req.user._id.toString();
 	} ).forEach( function( socket ) {
 		socket.request.user = null;
@@ -148,7 +148,7 @@ passport.use( new LocalStrategy( {
 	passwordField: 'id' // hack
 }, function( barcode, pw, done ) {
 		Users.findOne( { barcode: barcode }, function( err, user ) {
-			if ( user && ( user.type == 'staff' || user.type == 'admin' ) ) {
+			if ( user && ( user.type == 'staff' ) ) {
 				return done( null, user );
 			} else {
 				return done( null, false );
