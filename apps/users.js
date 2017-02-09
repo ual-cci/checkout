@@ -96,6 +96,11 @@ app.get( '/:id', function( req, res ) {
 			req.add_flash( 'danger', 'User not found' );
 			res.redirect( '/' + prefix );
 		} else {
+			Courses.populate( user, {
+				path: 'course.contact',
+				model: Users
+			} );
+
 			Items.find( function( err, items ) {
 				var onloan = [];
 				var pastloan = [];

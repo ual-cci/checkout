@@ -2,6 +2,10 @@
 
 <p><strong>Course:</strong> {% set course = user.course %}{% include '../../courses/partials/course.swig' %}</p>
 
+{% if user.course.contact.name %}
+	<p><strong>Staff Contact:</strong> <a href="/users/{{ user.course.contact._id | raw }}">{{ user.course.contact.name }}</a></p>
+{% endif %}
+
 <p><strong>Email:</strong> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
 
 <p><strong>Barcode:</strong> {{ user.barcode }}</p>

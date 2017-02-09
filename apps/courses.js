@@ -19,14 +19,16 @@ app.use( function( req, res, next ) {
 
 // Index
 app.get( '/', function ( req, res ) {
-	Courses.find( function( err, courses ) {
+	Courses.find().populate( 'contact' ).exec( function( err, courses ) {
 		res.render( prefix + '/courses', { courses: courses } );
 	} )
 } )
 
 // Create
 app.get( '/create', function ( req, res ) {
-	res.render( prefix + '/create', { course: {} } );
+	Users.find( function( err, users ) {
+		res.render( prefix + '/create', { course: {}, users: users } );
+	} );
 } )
 
 app.post( '/create', function( req, res ) {
@@ -38,6 +40,7 @@ app.post( '/create', function( req, res ) {
 	new Courses( {
 		_id: require( 'mongoose' ).Types.ObjectId(),
 		name: req.body.name,
+		contact: req.body.contact
 	} ).save( function ( err ) {
 		req.add_flash( 'success', 'Course created' );
 		res.redirect( '/' + prefix );
@@ -46,7 +49,7 @@ app.post( '/create', function( req, res ) {
 
 // View
 app.get( '/:id', function( req, res ) {
-	Courses.findOne( { _id: req.params.id }, function( err, course ) {
+	Courses.findOne( { _id: req.params.id } ).populate( 'contact' ).exec( function( err, course ) {
 		if ( course == undefined ) {
 			req.add_flash( 'danger', 'Course not found' );
 			res.redirect( '/' + prefix );
@@ -60,13 +63,15 @@ app.get( '/:id', function( req, res ) {
 
 // Edit
 app.get( '/:id/edit', function( req, res ) {
-	Courses.findOne( { _id: req.params.id }, function( err, course ) {
-		if ( course == undefined ) {
-			req.add_flash( 'danger', 'Course not found' );
-			res.redirect( '/' + prefix );
-		} else {
-			res.render( prefix + '/edit', { course: course } );
-		}
+	Users.find( function( err, users ) {
+		Courses.findOne( { _id: req.params.id }, function( err, course ) {
+			if ( course == undefined ) {
+				req.add_flash( 'danger', 'Course not found' );
+				res.redirect( '/' + prefix );
+			} else {
+				res.render( prefix + '/edit', { course: course, users: users } );
+			}
+		} )
 	} )
 } )
 
@@ -75,10 +80,10 @@ app.post( '/:id/edit', function( req, res ) {
 		req.add_flash( 'danger', 'The course requires a name' );
 		res.redirect( '/' + prefix + '/create' );
 	}
-
 	Courses.update( { _id: req.params.id }, {
 		$set: {
 			name: req.body.name,
+			contact: req.body.contact ? req.body.contact : null
 		}
 	} ).then( function ( status ) {
 		if ( status.n == 1 ) {

@@ -4,6 +4,9 @@
 {% block title %}{% block heading %}{% endblock %} – Courses – {% parent %}{% endblock %}
 
 {% block content %}
+	{% if course.contact %}
+		<p><strong>Contact:</strong> {{ course.contact.name }}</p>
+	{% endif %}
 	<p>
 		<div class="btn-group" role="group">
 			<a href="/courses/{{ course._id | raw }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-pencil
