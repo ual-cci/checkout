@@ -1,7 +1,10 @@
 var	express = require( 'express' ),
 	app = express(),
 	Courses = require( __dirname + '/../models/courses' ),
+	Items = require( __dirname + '/../models/items' ),
 	Users = require( __dirname + '/../models/users' );
+
+var swig = require( 'swig' );
 
 var prefix = 'courses';
 
@@ -55,7 +58,42 @@ app.get( '/:id', function( req, res ) {
 			res.redirect( '/' + prefix );
 		} else {
 			Users.find( { course: req.params.id }, function( err, users ) {
-				res.render( prefix + '/course', { course: course, users: users } );
+				Items.find().populate( 'course' ).populate( 'transactions.user' ).exec( function( err, items ) {
+					var email;
+					var result = {};
+
+					for ( i in items ) {
+						var item = items[i];
+						if ( item.status == 'on-loan' ) {
+							var owner_transaction = 0;
+							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+								if ( item.transactions[ i ].status == 'loaned' ) {
+									last_transaction = item.transactions[ i ];
+									break;
+								}
+							}
+							if ( last_transaction.user.course == course._id.toString() ) {
+								if ( result[ last_transaction.user._id.toString() ] == undefined )
+									result[ last_transaction.user._id.toString() ] = {
+										user: null,
+										items: []
+									};
+
+								var row = result[ last_transaction.user._id.toString() ];
+								row.user = last_transaction.user;
+								row.items.push( item );
+							}
+						}
+					}
+
+					console.log( result );
+
+					if ( course.contact != undefined ) {
+						var students = {};
+						email = swig.renderFile( __dirname + '/../views/courses/email.swig', { name: course.contact.name, students: result } );
+					}
+					res.render( prefix + '/course', { course: course, users: users, email: email } );
+				} );
 			} );
 		}
 	} )

@@ -8,10 +8,11 @@
 		<p><strong>Contact:</strong> {{ course.contact.name }}</p>
 	{% endif %}
 	<p>
-		<div class="btn-group" role="group">
-			<a href="/courses/{{ course._id | raw }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-pencil
+		<a href="/courses/{{ course._id | raw }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-pencil
 "></span> Edit</a>
-		</div>
+		{% if course.contact %}
+			<a class="btn btn-default" href="mailto:{{ course.contact.email }}?subject={{ "[ATTN] Items outstanding for " + course.name | url_encode }}&body={{ email | url_encode }}"><span class="glyphicon glyphicon-envelope"></span> Generate email</a>
+		{% endif %}
 	</p>
 
 	<h3>Users</h3>
