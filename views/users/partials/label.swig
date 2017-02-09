@@ -1,3 +1,3 @@
 {% if user.type == 'staff' %}
-	<span class="label label-primary">Staff</span>
+	<span class="label label-danger">Admin</span>
 {% endif %}

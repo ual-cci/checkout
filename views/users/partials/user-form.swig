@@ -23,8 +23,8 @@
 	<p>
 		<label for="type">Type:</label>
 		<select id="type" name="type">
-			<option value="student" {% if user.type == 'student' %}selected{% endif %}>Student</option>
-			<option value="staff" {% if user.type == 'staff' %}selected{% endif %}>Staff</option>
+			<option value="student" {% if user.type == 'student' %}selected{% endif %}>User</option>
+			<option value="staff" {% if user.type == 'staff' %}selected{% endif %}>Admin</option>
 		</select>
 	</p>
 	<p>
