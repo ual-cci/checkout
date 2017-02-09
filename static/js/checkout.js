@@ -3,6 +3,7 @@ var PartialItemBarcodeRegEx = /([A-Z]{2,4}) /;
 
 var mode = 'find';
 var data = {};
+var cancelTimeout;
 
 jQuery( document ).ready( function() {
 	jQuery( '#find input' ).focus();
@@ -16,10 +17,9 @@ jQuery( document ).ready( function() {
 
 	jQuery( '#find input' ).bind( 'keyup', function( e ) {
 		if ( e.keyCode == 27 ) {
-			modeUpdate( 'find' );
-			jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-			jQuery('#find .btn').hide();
-			jQuery( '#find input' ).val( '' );
+			cancel();
+		} else {
+			resetCancelTimeout();
 		}
 	} );
 
@@ -51,6 +51,7 @@ jQuery( document ).ready( function() {
 
 	jQuery( '#find .btn' ).bind( 'click', function( e ) {
 		e.preventDefault();
+		resetCancelTimeout();
 		var action = jQuery( this ).data( 'action' );
 		jQuery( '#find .btn' ).removeClass( 'btn-primary' );
 		jQuery( '#find .btn' ).addClass( 'btn-default' );
@@ -124,6 +125,7 @@ jQuery( document ).ready( function() {
 } );
 
 socket.on( 'mode', function( m ) {
+	resetCancelTimeout();
 	modeUpdate( m.mode );
 	data = m.data;
 	if ( m.mode == 'find' ) {
@@ -202,3 +204,15 @@ function modeUpdate( m ) {
 socket.on( 'loggedout', function() {
 	window.location = '/login';
 } );
+
+function cancel() {
+	modeUpdate( 'find' );
+	jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
+	jQuery('#find .btn').hide();
+	jQuery( '#find input' ).val( '' );
+}
+
+function resetCancelTimeout() {
+	clearTimeout( cancelTimeout );
+	setTimeout( cancel, 60000 );
+}
