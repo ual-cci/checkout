@@ -53,5 +53,6 @@
 			</form>
 		</div>
 	</div>
+	<div id="status" style="overflow:hidden;" class="alert alert-warning">&nbsp;</div>
 	<div id="modules"></div>
 {% endblock %}

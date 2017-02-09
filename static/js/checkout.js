@@ -3,6 +3,7 @@ var PartialItemBarcodeRegEx = /([A-Z]{2,4}) /;
 var mode = 'find';
 var data = {};
 var cancelTimeout;
+var statusTimeout;
 
 jQuery( document ).ready( function() {
 	jQuery( '#find input' ).focus();
@@ -17,6 +18,7 @@ jQuery( document ).ready( function() {
 	jQuery( '#find input' ).bind( 'keyup', function( e ) {
 		if ( e.keyCode == 27 ) {
 			cancel();
+			clearFlash();
 		} else {
 			resetCancelTimeout();
 		}
@@ -119,7 +121,7 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( '.container' ).on( 'click', '.override', function( e ) {
-		jQuery( this ).parent().hide();
+		clearFlash();
 		socket.emit( 'issue', {
 			user: data.user,
 			item: data.item,
@@ -129,7 +131,7 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( '.container' ).on( 'click', '.read_tc', function( e ) {
-		jQuery( this ).parent().hide();
+		clearFlash();
 		socket.emit( 'issue', {
 			user: data.user,
 			item: data.item,
@@ -179,18 +181,14 @@ socket.on( 'module', function( html ) {
 } )
 
 socket.on( 'flash', function( msg ) {
+	clearFlash();
 	var btn = '';
 	if ( msg.btn ) {
 		jQuery('.alert .btn' ).hide();
-		btn = '<button class="' + msg.btn.class + ' btn btn-' + msg.type + ' pull-right">' + msg.btn.text + '</button>';
+		btn = '<p class="pull-right" style="margin-top: 0; cursor:pointer;"><span class="' + msg.btn.class + ' glyphicon glyphicon-ok"></span></p>';
 	}
-	var flash = jQuery( '<div style="overflow:hidden;" class="alert alert-' + msg.type + '"><p class="pull-left"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</p>' + btn + '</div>' );
-	jQuery( flash ).insertAfter( '.panel.panel-default' );
-	setTimeout( function() {
-		jQuery( flash ).fadeOut( function() {
-			jQuery( this ).remove();
-		} );
-	}, msg.timer ? msg.timer : 5000 );
+	jQuery( '#status' ).html( '<p class="pull-left"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</p>' + btn ).removeClass( 'alert-danger' ).removeClass( 'alert-info' ).removeClass( 'alert-success' ).removeClass( 'alert-warning' ).addClass( 'alert-' + msg.type );
+	statusTimeout = setTimeout( clearFlash, msg.timer ? msg.timer : 5000 );
 } )
 
 socket.on( 'stats', function( msg ) {
@@ -246,5 +244,10 @@ function cancel() {
 
 function resetCancelTimeout() {
 	clearTimeout( cancelTimeout );
-	setTimeout( cancel, 60000 );
+	cancelTimeout = setTimeout( cancel, 60000 );
+}
+
+function clearFlash() {
+	clearTimeout( statusTimeout );
+	jQuery( '#status' ).html( '&nbsp;' ).removeClass( 'alert-danger' ).removeClass( 'alert-info' ).removeClass( 'alert-success' ).addClass( 'alert-warning' );
 }
