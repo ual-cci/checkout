@@ -158,29 +158,34 @@ module.exports = function( server ) {
 		} );
 		socket.on( 'return', function( action ) {
 			if ( socket.request.user ) {
+				var multireturn = action.mode == 'multi-return' ? true : false;
 				var itemFilter = {};
 				var loggedInUser = socket.request.user;
 				Items.findOne( { barcode: action.item }, function( err, item ) {
-					if ( item.status == 'available' ) {
-						socket.emit( 'flash', { type: 'warning', message: 'Item already returned', barcode: item.barcode } );
-						sendItemModule( socket, action.item );
-						return;
-					} else if ( item.status == 'new' ) {
-						socket.emit( 'flash', { type: 'danger', message: 'Item has not yet been activated, audit the item before returning it', barcode: item.barcode } );
-						sendItemModule( socket, action.item );
-						return;
-					}
-					Items.update( { _id: item._id }, {
-						$push: {
-							transactions: {
-								date: new Date(),
-								user: loggedInUser.id,
-								status: 'returned'
-							}
+					if ( item != null ) {
+						if ( item.status == 'available' ) {
+							socket.emit( 'flash', { type: 'warning', message: 'Item already returned', barcode: item.barcode } );
+							sendItemModule( socket, action.item, null, multireturn );
+							return;
+						} else if ( item.status == 'new' ) {
+							socket.emit( 'flash', { type: 'danger', message: 'Item has not yet been activated, audit the item before returning it', barcode: item.barcode } );
+							sendItemModule( socket, action.item, null, multireturn );
+							return;
 						}
-					}, function ( err ) {
-						sendItemModule( socket, action.item );
-					} );
+						Items.update( { _id: item._id }, {
+							$push: {
+								transactions: {
+									date: new Date(),
+									user: loggedInUser.id,
+									status: 'returned'
+								}
+							}
+						}, function ( err ) {
+							if ( multireturn )
+								socket.emit( 'flash', { type: 'success', message: 'Item returned', barcode: item.barcode } );
+							sendItemModule( socket, action.item, null, multireturn );
+						} );
+					}
 				} );
 			}
 		} );
@@ -293,7 +298,7 @@ module.exports = function( server ) {
 											return;
 										}
 										// User: Terms and conditions
-										if ( user.read_tc != true ) {
+										if ( user.read_tc != true && action.override != true ) {
 											socket.emit( 'flash', {
 												type: 'warning',
 												message: 'Has the user read the loan agreement?',
@@ -502,7 +507,7 @@ function sendUserModule( socket, barcode, item_barcode ) {
 	} );
 }
 
-function sendItemModule( socket, barcode, user_barcode ) {
+function sendItemModule( socket, barcode, user_barcode, multireturn ) {
 	Items.findOne( { barcode: barcode } ).populate( 'department' ).populate( 'transactions.user' ).populate( 'group' ).exec( function( err, item ) {
 		if ( item == null ) return;
 		var buttons = [];
@@ -530,8 +535,8 @@ function sendItemModule( socket, barcode, user_barcode ) {
 		}
 		updateStats();
 		socket.emit( 'mode', {
-			mode: 'item-selected',
-			buttons: buttons,
+			mode: multireturn ? 'multi-return' : 'item-selected',
+			buttons: multireturn ? [ 'multi-return' ] : buttons,
 			data: {
 				item: item.barcode,
 				user: user_barcode

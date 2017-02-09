@@ -46,9 +46,10 @@
 				</div>
 				<button type="button" data-action="issue" class="btn btn-default issue" style="display:none;" accesskey='i'>Issue <span class="badge">I</span></button>
 				<button type="button" data-action="reserve" class="btn btn-default reserve" style="display:none;" accesskey='v'>Reserve <span class="badge">V</span></button>
-				<button type="button" data-action="return" class="btn btn-default return" style="display:none;" accesskey='r'>Return <span class="badge">R</span></button>
+				<button type="button" data-action="return" class="btn btn-default return" style="display:none" accesskey='r'>Return <span class="badge">R</span></button>
 				<button type="button" data-action="broken" class="btn btn-default broken" style="display:none;" accesskey='b'>Broken <span class="badge">B</span></button>
 				<button type="button" data-action="lost" class="btn btn-default lost" style="display:none;" accesskey='l'>Lost <span class="badge">L</span></button>
+				<button type="button" data-action="multi-return" class="btn btn-default multi-return" accesskey='1'>Returns Mode <span class="badge">1</span></button>
 			</form>
 		</div>
 	</div>

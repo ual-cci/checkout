@@ -1,6 +1,5 @@
 var ItemBarcodeRegEx = /([A-Z]{2,4})  ?([0-9]{2})/;
 var PartialItemBarcodeRegEx = /([A-Z]{2,4}) /;
-
 var mode = 'find';
 var data = {};
 var cancelTimeout;
@@ -24,9 +23,12 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( '#find input' ).bind( 'input', function( e ) {
-		var find = jQuery( '#find input' ).val().toUpperCase();
+		jQuery( '#find input' ).val( jQuery( '#find input' ).val().toUpperCase() );
+		var find = jQuery( '#find input' ).val();
 
-		if ( mode.indexOf( 'item' ) != -1 ) {
+		if ( mode.indexOf( 'multi-return' ) != -1 ) {
+			// do nothing
+		} else if ( mode.indexOf( 'item' ) != -1 ) {
 			if ( PartialItemBarcodeRegEx.exec( find ) != null ) {
 				modeUpdate( 'item' );
 				jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
@@ -53,6 +55,7 @@ jQuery( document ).ready( function() {
 		e.preventDefault();
 		resetCancelTimeout();
 		var action = jQuery( this ).data( 'action' );
+		if ( action == 'multi-return' ) modeUpdate( action );
 		jQuery( '#find .btn' ).removeClass( 'btn-primary' );
 		jQuery( '#find .btn' ).addClass( 'btn-default' );
 		jQuery( '#find .btn[data-action=' + action + ']' ).addClass( 'btn-primary' );
@@ -60,10 +63,9 @@ jQuery( document ).ready( function() {
 
 	jQuery( '#find' ).bind( 'submit', function( e ) {
 		e.preventDefault();
-		console.log( mode );
 		switch ( mode ) {
 			case 'item':
-				var item = jQuery( '#find input' ).val().toUpperCase();
+				var item = jQuery( '#find input' ).val();
 				item = ItemBarcodeRegEx.exec( item );
 				item = item[1] + ' ' + item[2];
 				jQuery( '#find input' ).val( item );
@@ -73,13 +75,13 @@ jQuery( document ).ready( function() {
 			case 'item-selected':
 				var action = jQuery( '#find .btn:visible.btn-primary' ).data( 'action' );
 				socket.emit( action, {
-					user: jQuery( '#find input' ).val().toUpperCase(),
+					user: jQuery( '#find input' ).val(),
 					item: data.item,
 					mode: 'item'
 				} );
 				break;
 			case 'user-selected':
-				var item = jQuery( '#find input' ).val().toUpperCase();
+				var item = jQuery( '#find input' ).val();
 				item = ItemBarcodeRegEx.exec( item );
 				item = item[1] + ' ' + item[2];
 				jQuery( '#find input' ).val( item );
@@ -89,9 +91,20 @@ jQuery( document ).ready( function() {
 					mode: 'user'
 				} );
 				break;
+			case 'multi-return':
+				var item = jQuery( '#find input' ).val();
+				item = ItemBarcodeRegEx.exec( item );
+				item = item[1] + ' ' + item[2];
+				socket.emit( 'return', {
+					item: jQuery( '#find input' ).val(),
+					mode: 'multi-return'
+				} );
+				break;
 		}
 		jQuery( '#find input' ).val( '' );
-		modeUpdate( 'find' );
+
+		if ( mode != 'multi-return' )
+			modeUpdate( 'find' );
 	} );
 
 	jQuery( document ).on( 'submit', '#modules form', function ( e ) {
@@ -117,9 +130,14 @@ jQuery( document ).ready( function() {
 
 	jQuery( '.container' ).on( 'click', '.read_tc', function( e ) {
 		jQuery( this ).parent().hide();
-		socket.emit( 'read_tc', {
+		socket.emit( 'issue', {
 			user: data.user,
-			mode: mode.split('-')[0]
+			item: data.item,
+			mode: mode.split('-')[0],
+			override: true
+		} );
+		socket.emit( 'read_tc', {
+			user: data.user
 		} );
 	} );
 } );
@@ -153,6 +171,9 @@ socket.on( 'module', function( html ) {
 	// Add new module
 	jQuery( '#modules' ).prepend( module );
 
+	if ( mode == 'multi-return' )
+		jQuery( module ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
+
 	// Trim surplus
 	jQuery( jQuery( '#modules .panel' ).splice( 5 ) ).remove();
 } )
@@ -183,21 +204,31 @@ socket.on( 'stats', function( msg ) {
 
 function modeUpdate( m ) {
 	mode = m;
+	console.log( "Mode: " + mode )
 
 	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-search' );
 	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-barcode' );
 	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-user' );
+	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-fire' );
 
 	if ( mode == 'user' ) {
 		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-user' );
+		jQuery( '#find' ).parent().css( 'background-color', '' );
 	} else if ( mode == 'user-selected' ) {
 		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-barcode' );
+		jQuery( '#find' ).parent().css( 'background-color', '#d9edf7' );
 	} else if ( mode == 'item' ) {
 		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-barcode' );
+		jQuery( '#find' ).parent().css( 'background-color', '' );
 	} else if ( mode == 'item-selected' ) {
 		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-user' );
+		jQuery( '#find' ).parent().css( 'background-color', '#d9edf7' );
+	} else if ( mode == 'multi-return' ) {
+		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-fire' );
+		jQuery( '#find' ).parent().css( 'background-color', '#f2dede' );
 	} else {
 		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-search' );
+		jQuery( '#find' ).parent().css( 'background-color', '' );
 	}
 }
 
@@ -209,6 +240,7 @@ function cancel() {
 	modeUpdate( 'find' );
 	jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
 	jQuery('#find .btn').hide();
+	jQuery('#find .btn.multi-return').show().removeClass( 'btn-primary' ).addClass( 'btn-default' );
 	jQuery( '#find input' ).val( '' );
 }
 
