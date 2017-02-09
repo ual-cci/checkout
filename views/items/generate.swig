@@ -14,7 +14,7 @@
 		<p>
 			<label>Group:</label>
 			<select id="group" name="group">
-				<option value="" disabled selected>Select a group</option>
+				<option value="" selected>Select a group</option>
 				{% for group in groups %}
 					<option value="{{ group._id | raw }}"{% if ( group.id == item.group | raw ) %} selected{% endif %}>{{ group.name }}</option>
 				{% endfor %}
