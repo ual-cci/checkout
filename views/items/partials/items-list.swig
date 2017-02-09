@@ -18,7 +18,7 @@
 							{% set status = item.status %}
 							{% include 'status.swig' %}
 						</td>
-						<td>{{ item.barcode }}</td>
+						<td><span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 						<td>{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
 						{% set group = item.group %}

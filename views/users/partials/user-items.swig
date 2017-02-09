@@ -13,7 +13,7 @@
 				{% for item in items %}
 					<tr>
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
-						<td>{{ item.barcode }}</td>
+						<td><span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
 						<td>{{ item.transactions | last.date | date('j/n/Y')  }}</td>
 						<td>{{ item.transactions | last.date | date('H:i:s') }}</td>
 					</tr>

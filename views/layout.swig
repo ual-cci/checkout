@@ -9,6 +9,7 @@
 			<script src="/socket.io/socket.io.js"></script>
 			<script src="/js/jquery.js"></script>
 			<script src="/js/bootstrap.js"></script>
+			<script src="/js/clipboard.min.js"></script>
 			<script src="/js/script.js"></script>
 		{% endblock %}
 	</head>

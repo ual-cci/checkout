@@ -8,6 +8,6 @@
 
 <p><strong>Email:</strong> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
 
-<p><strong>Barcode:</strong> {{ user.barcode }}</p>
+<p><strong>Barcode:</strong> <span data-clipboard-text="{{ user.barcode }}" class="clipboard">{{ user.barcode }}</span></p>
 
 <p><strong>Read Loan Agreement:</strong> {% if user.read_tc %}Yes{% else %}No{% endif %}</p>

@@ -15,7 +15,7 @@
 						<td><a href="/users/{{ user._id | raw }}">{{ user.name }}</a> {% include 'label.swig' %}</td>
 						<td>{% set course = user.course %}{% include '../../courses/partials/course.swig' %}</td>
 						<td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-						<td>{{ user.barcode }}</td>
+						<td><span data-clipboard-text="{{ user.barcode }}" class="clipboard">{{ user.barcode }}</span></td>
 					</tr>
 				{% endfor %}
 			</tbody>
