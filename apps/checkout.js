@@ -19,5 +19,9 @@ app.get( '/', function( req, res ) {
 	res.render( prefix + '/checkout' );
 } );
 
+app.get( '/compact', function( req, res ) {
+	res.render( prefix + '/compact-checkout' );
+} );
+
 module.exports = app;
 module.exports.path = '/' + prefix;
