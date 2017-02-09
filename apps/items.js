@@ -154,7 +154,7 @@ app.get( '/create', function ( req, res ) {
 	Departments.find( function( err, departments ) {
 		Groups.find( function( err, groups ) {
 			if ( departments.length > 0 ) {
-				res.render( prefix + '/create', { departments: departments, groups: groups } );
+				res.render( prefix + '/create', { item: {}, departments: departments, groups: groups } );
 			} else {
 				req.add_flash( 'warning', 'Create at least one department before creating items' )
 				res.redirect( '/' + prefix );

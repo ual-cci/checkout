@@ -26,7 +26,7 @@ app.get( '/', function ( req, res ) {
 
 // Create
 app.get( '/create', function ( req, res ) {
-	res.render( prefix + '/create', { department: { name: '' } } );
+	res.render( prefix + '/create', { department: {} } );
 } )
 
 app.post( '/create', function( req, res ) {

@@ -35,7 +35,7 @@ app.get( '/', function ( req, res ) {
 app.get( '/create', function ( req, res ) {
 	Courses.find( function( err, courses ) {
 		if ( courses.length > 0 ) {
-			res.render( prefix + '/create', { courses: courses, user: { name: '', course: '', value: '', notes: '', barcode: req.query.barcode } } );
+			res.render( prefix + '/create', { courses: courses, user: {} } );
 		} else {
 			req.add_flash( 'warning', 'Create at least one course before creating users' )
 			res.redirect( '/' + prefix );
