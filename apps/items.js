@@ -67,7 +67,7 @@ app.get( '/generate', function ( req, res ) {
 		Groups.find( function( err, groups ) {
 			if ( departments.length > 0 ) {
 				req.add_flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
-				res.render( prefix + '/generate', { departments: departments, groups: groups } );
+				res.render( prefix + '/generate', { departments: departments, groups: groups, item: {} } );
 			} else {
 				req.add_flash( 'warning', 'Create at least one department before creating items' )
 				res.redirect( '/' + prefix );
