@@ -54,10 +54,6 @@ app.use( sessionMiddleware );
 app.use( passport.initialize() );
 app.use( passport.session() );
 
-// io.use( function( socket, next ) {
-// 	sessionMiddleware( socket.request, socket.request.res, next );
-// } );
-
 io.use( passportSocketIo.authorize( {
 	key: 'connect.sid',
 	secret: config.secret,

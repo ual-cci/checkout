@@ -128,7 +128,7 @@ app.post( '/generate', function( req, res ) {
 		if ( req.body.autoAudit ) {
 			item.transactions = [ {
 				date: new Date(),
-				user: req.session.user.id,
+				user: req.user._id,
 				status: 'audited'
 			} ];
 		}
