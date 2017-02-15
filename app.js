@@ -13,7 +13,7 @@ var	express = require( 'express' ),
 	swig = require( 'swig' );
 
 var app = express(),
-	http = require( 'http' ).Server( app )
+	http = require( 'http' ).Server( app ),
 	io = require( __dirname + '/apps/socket' )( http );
 
 var passport = require( 'passport' ),
