@@ -37,11 +37,11 @@ Users are organised into courses, courses help identify which course a user is f
   - Lost
   - Reserved
   - All items loaned to a users of a specific course (email can be generated to key contact).
- - Label printing and mass item generation
+ - Label printing to user's local printer
+ - Mass item generation
  - Daily live stats.
 
 ## Future plans
 - Remove dependency on user/item barcode formatting
-- Per user printer preference
 - Ad-hoc items (items without a barcode and unserialised items)
 - Password protection on login / pin number?
