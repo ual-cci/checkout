@@ -14,7 +14,7 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 } );
 
 app.get( '/compact', auth.isLoggedIn, function( req, res ) {
-	res.render( prefix + '/compact-checkout' );
+	res.render( 'compact-checkout' );
 } );
 
 module.exports = function( config ) { return app; };
