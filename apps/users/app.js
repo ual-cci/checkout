@@ -85,7 +85,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 } )
 
 // View user
-app.get( '/:id', function( req, res ) {
+app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Users.findById( req.params.id ).populate( 'course' ).exec( function( err, user ) {
 		if ( user == undefined ) {
 			req.flash( 'danger', 'User not found' );
@@ -137,7 +137,7 @@ app.get( '/:id', function( req, res ) {
 } )
 
 // Edit user
-app.get( '/:id/edit', function( req, res ) {
+app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Users.findOne( { _id: req.params.id }, function( err, user ) {
 		if ( user == undefined ) {
 			req.flash( 'danger', 'User not found' );
@@ -150,7 +150,7 @@ app.get( '/:id/edit', function( req, res ) {
 	} )
 } )
 
-app.post( '/:id/edit', function( req, res ) {
+app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Users.update( { _id: req.params.id }, {
 		$set: {
 			name: req.body.name,

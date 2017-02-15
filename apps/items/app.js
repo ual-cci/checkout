@@ -78,7 +78,7 @@ app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
 	} );
 } )
 
-app.post( '/generate', function( req, res ) {
+app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 	var start = parseInt( req.body.start );
 	var end = parseInt( req.body.end );
 
@@ -173,7 +173,7 @@ app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	} );
 } )
 
-app.post( '/create', function( req, res ) {
+app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	var item = {
 		_id: require('mongoose').Types.ObjectId(),
 		name: req.body.name,
@@ -216,7 +216,7 @@ app.post( '/create', function( req, res ) {
 } )
 
 // List an item
-app.get( '/:id', function( req, res ) {
+app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
 		if ( item == undefined ) {
 			req.flash( 'danger', 'Item not found' );
@@ -228,7 +228,7 @@ app.get( '/:id', function( req, res ) {
 } )
 
 // Reprint an item
-app.get( '/:id/label', function( req, res ) {
+app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 	if ( config.label_printer == undefined ) {
 		req.flash( 'info', 'No label printer available' );
 		res.redirect( app.mountpath );
@@ -247,7 +247,7 @@ app.get( '/:id/label', function( req, res ) {
 } )
 
 // Edit item form
-app.get( '/:id/edit', function( req, res ) {
+app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Items.findById( req.params.id ).exec( function( err, item ) {
 		if ( item == undefined ) {
 			req.flash( 'danger', 'Item not found' );
@@ -263,7 +263,7 @@ app.get( '/:id/edit', function( req, res ) {
 } )
 
 // Edit item handler
-app.post( '/:id/edit', function( req, res ) {
+app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Items.update( { _id: req.params.id }, {
 		$set: {
 			name: req.body.name,

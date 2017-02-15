@@ -1,9 +1,15 @@
+var __home = __dirname + "/../..";
+var __src = __home + '/src';
+var __js = __src + '/js';
+
 var	express = require( 'express' ),
 	app = express();
 
+var auth = require( __js + '/authentication' );
+
 app.set( 'views', __dirname + '/views' );
 
-app.get( '/', function ( req, res ) {
+app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	console.log( app.parent );
 
 	passportSocketIo.filterSocketsByUser( io, function( user ) {
