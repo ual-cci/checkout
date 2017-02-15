@@ -9,7 +9,8 @@ var swig = require( 'swig' );
 var db = require( __js + '/database' ),
 	ObjectId = db.ObjectId,
 	Items = db.Items,
-	Users = db.Users;
+	Users = db.Users,
+	Courses = db.Courses;
 
 module.exports = function( server ) {
 	var io = sio.listen( server );
