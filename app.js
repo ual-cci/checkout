@@ -32,7 +32,7 @@ require( __js + '/sessions' )( app, io );
 
 // Include support for notifications
 app.use( flash() );
-// app.use( require( __js + '/quickflash' ) );
+app.use( require( __js + '/quickflash' ) );
 
 // Enable form body decoding
 app.use( body.json() );
