@@ -57,12 +57,6 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	} );
 } );
 
-// Audit
-app.get( '/audit', auth.isLoggedIn, function ( req, res ) {
-	res.locals.currentModule = 'audit';
-	res.render( 'audit' );
-} );
-
 // Generate items
 app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
 	Departments.find( function( err, departments ) {
