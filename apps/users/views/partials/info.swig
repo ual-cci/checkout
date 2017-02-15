@@ -1,6 +1,6 @@
 <h4>{% include 'label.swig' %}</h4>
 
-<p><strong>Course:</strong> {% set course = user.course %}{% include '../../courses/partials/course.swig' %}</p>
+<p><strong>Course:</strong> {% set course = user.course %}{% include '../../../courses/views/partials/course.swig' %}</p>
 
 {% if user.course.contact.name %}
 	<p><strong>Staff Contact:</strong> <a href="/users/{{ user.course.contact._id | raw }}">{{ user.course.contact.name }}</a></p>
