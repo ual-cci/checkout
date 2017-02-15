@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block head %}
 	{% parent %}

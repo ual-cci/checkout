@@ -4,6 +4,8 @@ var	express = require( 'express' ),
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', function ( req, res ) {
+	console.log( app.parent );
+
 	passportSocketIo.filterSocketsByUser( io, function( user ) {
 		if ( user._id == undefined || req.user._id == undefined )
 			return false;
@@ -17,4 +19,6 @@ app.get( '/', function ( req, res ) {
 	res.redirect( '/' );
 } );
 
-module.exports = function( config ) { return app; };
+module.exports = function( config, sio ) {
+	return app;
+};

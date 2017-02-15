@@ -1,5 +1,6 @@
 var	express = require( 'express' ),
-	app = express();
+	app = express(),
+	passport = require( 'passport' );
 
 app.set( 'views', __dirname + '/views' );
 

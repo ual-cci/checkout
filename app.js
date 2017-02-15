@@ -1,37 +1,38 @@
-var __config = __dirname + '/config/config.json';
-var __static = __dirname + '/static';
-var __src = __dirname + '/src';
-var __apps = __dirname + '/apps';
+var __home = __dirname;
+var __config = __home + '/config/config.json';
+var __static = __home + '/static';
+var __src = __home + '/src';
+var __apps = __home + '/apps';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
 var config = require( __config ),
 	fs = require( 'fs' ),
-	database = require( __js + '/database' ).connect( config.mongo ),
+	database = require( __js + '/database' ).connect(),
 	express = require( 'express' ),
 	app = express(),
-	http = require( 'http' ).Server( app ),
+	http = require( 'http' ).Server( app )
+	io = require( __js + '/socket' )( http ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig' ),
-	body = require( 'body-parser' ),
-	io = require( __dirname + '/apps/socket' )( http );
+	body = require( 'body-parser' );
 
 var apps = [];
 
 console.log( "Starting..." );
 
-// Handle authentication
-require( __js + '/authentication' ).auth( app );
+// Handle authentication + sockets
+require( __js + '/authentication' ).auth( app, io );
 
 // Setup static route
 app.use( express.static( __static ) );
 
 // Handle sessions
-require( __js + '/sessions' )( app );
+require( __js + '/sessions' )( app, io );
 
 // Include support for notifications
 app.use( flash() );
-app.use( require( __js + '/quickflash' ) );
+// app.use( require( __js + '/quickflash' ) );
 
 // Enable form body decoding
 app.use( body.json() );
@@ -42,7 +43,6 @@ app.use( body.urlencoded( { extended: true } ) );
 // Loop through main app director contents
 var files = fs.readdirSync( __apps );
 for ( var f in files ) {
-
 	// Only read directories
 	var file = __apps + '/' + files[f];
 	if ( fs.statSync( file ).isDirectory() ) {
@@ -111,7 +111,7 @@ for ( var a in apps ) {
 		for ( var s in _app.subapps ) {
 			var _sapp = _app.subapps[s];
 			console.log( "	       /" + _app.path + "/" + _sapp.path  );
-			var new_sub_app = require( _sapp.app )( _sapp );
+			var new_sub_app = require( _sapp.app )( _sapp, io );
 			new_app.use( '/' + _sapp.path, new_sub_app );
 		}
 	}
