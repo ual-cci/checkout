@@ -1,34 +1,28 @@
-var prefix = 'items';
+var __home = __dirname + "/../..";
+var __config = __home + '/config/config.json';
+var __src = __home + '/src';
+var __js = __src + '/js';
 
-var config = require( '../config/config.json' );
+var config = require( __config );
 
 var	express = require( 'express' ),
 	app = express();
 
-var Items = require( __dirname + '/../models/items' ),
-	Groups = require( __dirname + '/../models/groups' ),
-	Departments = require( __dirname + '/../models/departments' ),
-	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId;
+var db = require( __js + '/database' ),
+	Items = db.Items,
+	Groups = db.Groups,
+	Departments = db.Departments;
 
 var PDFDocument = require( 'pdfkit' );
 var bwipjs = require( 'bwip-js' );
 var ipp = require( 'ipp' );
 var buffer = [];
 
-// Handle redirect
-app.use( function( req, res, next ) {
-	res.locals.currentModule = 'items';
-	if ( ! req.isAuthenticated() ) {
-		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'Please login' );
-		res.redirect( '/login' );
-	} else {
-		next();
-	}
-} );
+var auth = require( __js + '/authentication' );
 
-// Index
-app.get( '/', function ( req, res ) {
+app.set( 'views', __dirname + '/views' );
+
+app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Groups.find( function( err, groups ) {
 		Departments.find( function( err, departments ) {
 			var filter = {};
@@ -51,7 +45,7 @@ app.get( '/', function ( req, res ) {
 					}
 				}
 
-				res.render( prefix + '/items', {
+				res.render( 'items', {
 					items: items,
 					departments: departments,
 					selectedDepartment: req.query.department,
@@ -64,21 +58,21 @@ app.get( '/', function ( req, res ) {
 } );
 
 // Audit
-app.get( '/audit', function ( req, res ) {
+app.get( '/audit', auth.isLoggedIn, function ( req, res ) {
 	res.locals.currentModule = 'audit';
-	res.render( prefix + '/audit' );
+	res.render( 'audit' );
 } );
 
 // Generate items
-app.get( '/generate', function ( req, res ) {
+app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
 	Departments.find( function( err, departments ) {
 		Groups.find( function( err, groups ) {
 			if ( departments.length > 0 ) {
-				req.add_flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
-				res.render( prefix + '/generate', { departments: departments, groups: groups, item: {} } );
+				req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
+				res.render( 'generate', { departments: departments, groups: groups, item: {} } );
 			} else {
-				req.add_flash( 'warning', 'Create at least one department before creating items' )
-				res.redirect( '/' + prefix );
+				req.flash( 'warning', 'Create at least one department before creating items' )
+				res.redirect( app.mountpath );
 			}
 		} );
 	} );
@@ -89,32 +83,32 @@ app.post( '/generate', function( req, res ) {
 	var end = parseInt( req.body.end );
 
 	if ( req.body.name == '' ) {
-		req.add_flash( 'danger', 'The items require a name' );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', 'The items require a name' );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( req.body.prefix == '' ) {
-		req.add_flash( 'danger', 'The items require a barcode prefix' );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', 'The items require a barcode prefix' );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( req.body.prefix.trim().match( /^[A-Z]{3,4}$/i ) == null ) {
-		req.add_flash( 'danger', 'The barcode prefix must contain 3 or 4 letters only.' );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', 'The barcode prefix must contain 3 or 4 letters only.' );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( start == '' || start < 1 ) {
-		req.add_flash( 'danger', 'The item numbering must start at or above 1' );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', 'The item numbering must start at or above 1' );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( end == '' || end < 2 ) {
-		req.add_flash( 'danger', 'The item numbering must start at or above 2' );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', 'The item numbering must start at or above 2' );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( end - start > 25 && ! req.body.largeBatch ) {
-		req.add_flash( 'danger', "You can't generate more than 25 items at a time without confirming you want to do this" );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', "You can't generate more than 25 items at a time without confirming you want to do this" );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( req.body.department == '' ) {
-		req.add_flash( 'danger', 'The items must be assigned to a department' );
-		res.redirect( '/' + prefix + '/generate' );
+		req.flash( 'danger', 'The items must be assigned to a department' );
+		res.redirect( app.mountpath + '/generate' );
 		return;
 	}
 
@@ -151,29 +145,29 @@ app.post( '/generate', function( req, res ) {
 
 	Items.collection.insert( items, function( err, status ) {
 		if ( ! err ) {
-			req.add_flash( 'success', status.result.n + ' items created' );
-			res.redirect( '/' + prefix );
+			req.flash( 'success', status.result.n + ' items created' );
+			res.redirect( app.mountpath );
 
 			if ( req.body.print )
 				processPrint( barcodes );
 		} else {
 			if ( err.code == 11000 ) {
-				req.add_flash( 'danger', 'One or more barcodes generated by this range were not unique' );
-				res.redirect( '/' + prefix + '/generate' );
+				req.flash( 'danger', 'One or more barcodes generated by this range were not unique' );
+				res.redirect( app.mountpath + '/generate' );
 			}
 		}
 	} );
 } )
 
 // Create item
-app.get( '/create', function ( req, res ) {
+app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	Departments.find( function( err, departments ) {
 		Groups.find( function( err, groups ) {
 			if ( departments.length > 0 ) {
-				res.render( prefix + '/create', { item: {}, departments: departments, groups: groups } );
+				res.render( 'create', { item: {}, departments: departments, groups: groups } );
 			} else {
-				req.add_flash( 'warning', 'Create at least one department before creating items' )
-				res.redirect( '/' + prefix );
+				req.flash( 'warning', 'Create at least one department before creating items' )
+				res.redirect( app.mountpath );
 			}
 		} );
 	} );
@@ -192,30 +186,30 @@ app.post( '/create', function( req, res ) {
 		item.group = req.body.group;
 
 	if ( item.name == '' ) {
-		req.add_flash( 'danger', 'The item requires a name' );
-		res.redirect( '/' + prefix + '/create' );
+		req.flash( 'danger', 'The item requires a name' );
+		res.redirect( app.mountpath + '/create' );
 		return;
 	} else if ( item.barcode == '' ) {
-		req.add_flash( 'danger', 'The item requires a unique barcode' );
-		res.redirect( '/' + prefix + '/create' );
+		req.flash( 'danger', 'The item requires a unique barcode' );
+		res.redirect( app.mountpath + '/create' );
 		return;
 	} else if ( item.department == '' ) {
-		req.add_flash( 'danger', 'The item must be assigned to a department' );
-		res.redirect( '/' + prefix + '/create' );
+		req.flash( 'danger', 'The item must be assigned to a department' );
+		res.redirect( app.mountpath + '/create' );
 		return;
 	}
 
 	new Items( item ).save( function ( err ) {
 		if ( ! err ) {
-			req.add_flash( 'success', 'Item created' );
-			res.redirect( '/' + prefix );
+			req.flash( 'success', 'Item created' );
+			res.redirect( app.mountpath );
 
 			if ( req.body.print )
 				processPrint( [ req.body.barcode.toUpperCase() ] );
 		} else {
 			if ( err.code == 11000 ) {
-				req.add_flash( 'danger', 'Barcode is not unique' );
-				res.redirect( '/' + prefix + '/create' );
+				req.flash( 'danger', 'Barcode is not unique' );
+				res.redirect( app.mountpath + '/create' );
 			}
 		}
 	} );
@@ -225,10 +219,10 @@ app.post( '/create', function( req, res ) {
 app.get( '/:id', function( req, res ) {
 	Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
 		if ( item == undefined ) {
-			req.add_flash( 'danger', 'Item not found' );
-			res.redirect( '/' + prefix );
+			req.flash( 'danger', 'Item not found' );
+			res.redirect( app.mountpath );
 		} else {
-			res.render( prefix + '/item', { item: item } );
+			res.render( 'item', { item: item } );
 		}
 	} );
 } )
@@ -236,17 +230,17 @@ app.get( '/:id', function( req, res ) {
 // Reprint an item
 app.get( '/:id/label', function( req, res ) {
 	if ( config.label_printer == undefined ) {
-		req.add_flash( 'info', 'No label printer available' );
-		res.redirect( '/' + prefix );
+		req.flash( 'info', 'No label printer available' );
+		res.redirect( app.mountpath );
 	} else {
 		Items.findById( req.params.id,  function( err, item ) {
 			if ( item == undefined ) {
-				req.add_flash( 'danger', 'Item not found' );
-				res.redirect( '/' + prefix );
+				req.flash( 'danger', 'Item not found' );
+				res.redirect( app.mountpath );
 			} else {
 				processPrint( [ item.barcode ] );
-				req.add_flash( 'success', 'Label printed' );
-				res.redirect( '/' + prefix + '/' + item._id.toString() );
+				req.flash( 'success', 'Label printed' );
+				res.redirect( app.mountpath + '/' + item._id.toString() );
 			}
 		} );
 	}
@@ -256,12 +250,12 @@ app.get( '/:id/label', function( req, res ) {
 app.get( '/:id/edit', function( req, res ) {
 	Items.findById( req.params.id ).exec( function( err, item ) {
 		if ( item == undefined ) {
-			req.add_flash( 'danger', 'Item not found' );
-			res.redirect( '/' + prefix );
+			req.flash( 'danger', 'Item not found' );
+			res.redirect( app.mountpath );
 		} else {
 			Groups.find( function( err, groups ) {
 				Departments.find( function( err, departments ) {
-					res.render( prefix + '/edit', { item: item, groups: groups, departments: departments } );
+					res.render( 'edit', { item: item, groups: groups, departments: departments } );
 				} );
 			} );
 		}
@@ -281,16 +275,16 @@ app.post( '/:id/edit', function( req, res ) {
 		}
 	} ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {
-			req.add_flash( 'success', 'Item updated' );
+			req.flash( 'success', 'Item updated' );
 		} else if ( status.nModified == 0 && status.n == 1 ) {
-			req.add_flash( 'warning', 'Item was not changed' );
+			req.flash( 'warning', 'Item was not changed' );
 		} else {
-			req.add_flash( 'danger', 'There was an error updating the item' );
+			req.flash( 'danger', 'There was an error updating the item' );
 		}
-		res.redirect( '/' + prefix + '/' + req.params.id );
+		res.redirect( app.mountpath + '/' + req.params.id );
 	}, function ( status ) {
-		req.add_flash( 'danger', 'There was an error updating the item' );
-		res.redirect( '/' + prefix + '/' + req.params.id );
+		req.flash( 'danger', 'There was an error updating the item' );
+		res.redirect( app.mountpath + '/' + req.params.id );
 	} );
 } )
 
@@ -378,5 +372,4 @@ function pt( mm ) {
 	return mm * 2.834645669291;
 }
 
-module.exports = app;
-module.exports.path = '/' + prefix;
+module.exports = function( config ) { return app; };

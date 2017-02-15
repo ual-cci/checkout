@@ -16,7 +16,7 @@
 						{% set status = transaction.status %}
 						{% include 'status.swig' %}
 					</td>
-					<td><a href="/users/{{ user._id | raw }}">{{ user.name }}</a> {% include '../../users/partials/label.swig' %}</td>
+					<td><a href="/users/{{ user._id | raw }}">{{ user.name }}</a> {% include '../../../users/views/partials/label.swig' %}</td>
 					<td>{{ transaction.date|date('j/n/Y') }}</td>
 					<td>{{ transaction.date|date('H:i:s') }}</td>
 				</tr>

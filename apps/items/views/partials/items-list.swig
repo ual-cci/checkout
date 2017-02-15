@@ -22,9 +22,9 @@
 						<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 						<td>{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
 						{% set group = item.group %}
-						<td>{% include '../../groups/partials/group.swig' %}</td>
+						<td>{% include '../../../groups/views/partials/group.swig' %}</td>
 						{% set department = item.department %}
-						<td>{% include '../../departments/partials/department.swig' %}</td>
+						<td>{% include '../../../departments/views/partials/department.swig' %}</td>
 					</tr>
 				{% endfor %}
 			</tbody>

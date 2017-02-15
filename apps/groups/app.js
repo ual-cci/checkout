@@ -7,10 +7,7 @@ var	express = require( 'express' ),
 
 var db = require( __js + '/database' ),
 	Items = db.Items,
-	Groups = db.Groups,
-	Departments = db.Departments,
-	Users = db.Users,
-	Courses = db.Courses;
+	Groups = db.Groups;
 
 var auth = require( __js + '/authentication' );
 
@@ -23,11 +20,11 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 } );
 
 // Create
-app.get( '/create', function ( req, res ) {
+app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	res.render( 'create', { group: {} } );
 } )
 
-app.post( '/create', function( req, res ) {
+app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.name == '' ) {
 		req.flash( 'danger', 'The group requires a name' );
 		res.redirect( app.mountpath + '/create' );
@@ -44,7 +41,7 @@ app.post( '/create', function( req, res ) {
 } )
 
 // View
-app.get( '/:id', function( req, res ) {
+app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Groups.findOne( { _id: req.params.id }, function( err, group ) {
 		if ( group == undefined ) {
 			req.flash( 'danger', 'Group not found' );
@@ -58,7 +55,7 @@ app.get( '/:id', function( req, res ) {
 } )
 
 // Edit
-app.get( '/:id/edit', function( req, res ) {
+app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Groups.findOne( { _id: req.params.id }, function( err, group ) {
 		if ( group == undefined ) {
 			req.flash( 'danger', 'Group not found' );
@@ -69,7 +66,7 @@ app.get( '/:id/edit', function( req, res ) {
 	} )
 } )
 
-app.post( '/:id/edit', function( req, res ) {
+app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	if ( req.body.name == '' ) {
 		req.flash( 'danger', 'The group requires a name' );
 		res.redirect( app.mountpath + '/edit' );
