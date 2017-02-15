@@ -1,11 +1,8 @@
 var config, apps = [];
 
 function templateLocals( req, res, next ) {
-	if ( config.dev )
-		res.locals.dev = true;
-
+	if ( config.dev ) res.locals.dev = true;
 	res.locals.loggedInUser = req.user;
-
 	next();
 };
 

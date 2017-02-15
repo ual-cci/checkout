@@ -12,8 +12,6 @@ var Permissions = database.Permissions,
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy;
 
-var messages = require( __src + '/messages.json' );
-
 var Authentication = {
 	auth: function( app ) {
 		// Add support for local authentication
@@ -65,7 +63,7 @@ var Authentication = {
 			default:
 			case false:
 				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
-				req.flash( 'error', messages['login-required'] );
+				req.flash( 'error', "Please login" );
 				res.redirect( '/login' );
 				return;
 		}
