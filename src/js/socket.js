@@ -1,6 +1,7 @@
 var __home = __dirname + '/../..';
 var __src = __home + '/src';
 var __js = __src + '/js';
+var __views = __src + '/views';
 
 var sio = require( 'socket.io' );
 var swig = require( 'swig' );
@@ -507,7 +508,7 @@ function sendUserModule( socket, barcode, item_barcode ) {
 						item: item_barcode
 					}
 				} );
-				socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/user.swig', { user: user, onloan: onloan } ) );
+				socket.emit( 'module', swig.renderFile( __views + '/modules/user.swig', { user: user, onloan: onloan } ) );
 			} );
 		} else {
 			sendNewUserModule( socket, barcode );
@@ -550,7 +551,7 @@ function sendItemModule( socket, barcode, user_barcode, multireturn ) {
 				user: user_barcode
 			}
 		} );
-		socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/item.swig', { item: item } ) );
+		socket.emit( 'module', swig.renderFile( __views + '/modules/item.swig', { item: item } ) );
 	} );
 }
 
@@ -563,7 +564,7 @@ function sendNewUserModule( socket, barcode, user ) {
 	Courses.find( function( err, courses ) {
 		if ( user == undefined )
 			user = { barcode: barcode };
-		socket.emit( 'module', swig.renderFile( __dirname + '/../views/checkout/modules/new-user.swig', { user: user, courses: courses } ) );
+		socket.emit( 'module', swig.renderFile( __views + '/modules/new-user.swig', { user: user, courses: courses } ) );
 	} );
 }
 

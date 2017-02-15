@@ -4,7 +4,7 @@
 	</div>
 	<div class="panel-body">
 		{% set status = item.status %}
-		<h4>{% include '../../items/partials/status.swig' %}</h4>
+		<h4>{% include '../../../apps/items/views/partials/status.swig' %}</h4>
 		<p><strong>Barcode:</strong> {{ item.barcode }}</p>
 		{% if item.group %}
 			<p><strong>Group:</strong> <a target="_blank" href="/groups/{{ item.group._id | raw }}">{{ item.group.name }}</a>{% if item.group.limiter %}<small><em> (Limit per user:</strong> {{ item.group.limiter }})</em></small>{% endif %}</p>

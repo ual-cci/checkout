@@ -3,9 +3,9 @@
 		<h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> <a href="/users/{{ user._id | raw }}">{{ user.name }}</a></h3>
 	</div>
 	<div class="panel-body">
-		<h4>{% include '../../users/partials/label.swig' %}</h4>
+		<h4>{% include '../../../apps/users/views/partials/label.swig' %}</h4>
 
-		<p><strong>Course:</strong> {% set course = user.course %}{% include '../../courses/partials/course.swig' %}</p>
+		<p><strong>Course:</strong> {% set course = user.course %}{% include '../../../apps/courses/views/partials/course.swig' %}</p>
 		<p><strong>Email:</strong> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
 		<p><strong>Barcode:</strong> {{ user.barcode }}</p>
 
