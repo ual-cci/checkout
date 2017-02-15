@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}On Loan By Course{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}

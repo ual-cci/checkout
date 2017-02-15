@@ -1,25 +1,22 @@
-var prefix = 'reports';
+var __home = __dirname + "/../..";
+var __src = __home + '/src';
+var __js = __src + '/js';
 
 var	express = require( 'express' ),
-	app = express(),
-	Items = require( __dirname + '/../models/items' ),
-	Departments = require( __dirname + '/../models/departments' ),
-	ObjectId = require( 'mongoose' ).Schema.Types.ObjectId;
+	app = express();
 
-// Handle redirect
-app.use( function( req, res, next ) {
-	res.locals.currentModule = 'reports';
-	if ( ! req.isAuthenticated() ) {
-		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'Please login' );
-		res.redirect( '/login' );
-	} else {
-		next();
-	}
-} );
+var db = require( __js + '/database' ),
+	Items = db.Items,
+	Departments = db.Departments,
+	Courses = db.Courses,
+	Groups = db.Groups;
+
+var auth = require( __js + '/authentication' );
+
+app.set( 'views', __dirname + '/views' );
 
 // Audited report
-app.get( '/scanned', function( req, res ) {
+app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 	res.locals.currentModule = 'audit';
 	var status = req.params.status;
 	Groups.find( function( err, groups ) {
@@ -37,7 +34,7 @@ app.get( '/scanned', function( req, res ) {
 					}
 				}
 
-				res.render( prefix + '/report', {
+				res.render( 'report', {
 					status: 'Scanned',
 					items: result,
 					departments: departments,
@@ -51,7 +48,7 @@ app.get( '/scanned', function( req, res ) {
 } );
 
 // Missing report
-app.get( '/missing', function( req, res ) {
+app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 	res.locals.currentModule = 'audit';
 	var status = req.params.status;
 	Groups.find( function( err, groups ) {
@@ -80,7 +77,7 @@ app.get( '/missing', function( req, res ) {
 					}
 				}
 
-				res.render( prefix + '/audit', {
+				res.render( 'audit', {
 					status: 'Missing',
 					items: result,
 					other: other,
@@ -95,7 +92,7 @@ app.get( '/missing', function( req, res ) {
 } );
 
 // Status report
-app.get( '/status/:status', function( req, res ) {
+app.get( '/status/:status', auth.isLoggedIn, function( req, res ) {
 	var status = req.params.status;
 	Groups.find( function( err, groups ) {
 		Departments.find( function( err, departments ) {
@@ -125,7 +122,7 @@ app.get( '/status/:status', function( req, res ) {
 					}
 				}
 
-				res.render( prefix + '/report', {
+				res.render( 'report', {
 					status: status,
 					items: result,
 					departments: departments,
@@ -139,16 +136,16 @@ app.get( '/status/:status', function( req, res ) {
 } );
 
 // Status report
-app.get( '/course', function( req, res ) {
+app.get( '/course', auth.isLoggedIn, function( req, res ) {
 	Courses.find( function( err, courses ) {
-		res.render( prefix + '/courses', {
+		res.render( 'courses', {
 			courses: courses
 		} );
 	} );
 } );
 
 // Status report
-app.get( '/course/:course', function( req, res ) {
+app.get( '/course/:course', auth.isLoggedIn, function( req, res ) {
 	Courses.findById( req.params.course, function( err, course ) {
 		Items.find().populate( 'department' ).populate( 'group' ).populate( 'transactions.user' ).exec( function( err, items ) {
 			var result = [];
@@ -174,7 +171,7 @@ app.get( '/course/:course', function( req, res ) {
 				}
 			}
 
-			res.render( prefix + '/course', {
+			res.render( 'course', {
 				course: course.name,
 				items: result
 			} );
@@ -182,5 +179,4 @@ app.get( '/course/:course', function( req, res ) {
 	} );
 } );
 
-module.exports = app;
-module.exports.path = '/' + prefix;
+module.exports = function( config ) { return app; };

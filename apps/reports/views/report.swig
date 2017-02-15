@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}
 	{% if status == 'available' %}
@@ -21,7 +21,7 @@
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}
 
 {% block content %}
-	{% include '../items/partials/filter.swig' %}
+	{% include '../../items/views/partials/filter.swig' %}
 	<hr />
 	{% include 'partials/items-list.swig' %}
 {% endblock %}
