@@ -19,7 +19,7 @@ var Authentication = {
 			usernameField: 'id',
 			passwordField: 'id' // hack
 		}, function( barcode, pw, done ) {
-				Users.findOne( { barcode: barcode }, function( err, user ) {
+				Users.findOne( { barcode: barcode } ).populate( 'printer' ).exec( function( err, user ) {
 					if ( user && ( user.type == 'staff' ) ) {
 						return done( null, user );
 					} else {
@@ -34,7 +34,7 @@ var Authentication = {
 		} );
 
 		passport.deserializeUser( function( data, done ) {
-			Users.findById( data._id, function( err, user ) {
+			Users.findById( data._id ).populate( 'printer' ).exec( function( err, user ) {
 				if ( user != null ) {
 					return done( null, user );
 				} else {

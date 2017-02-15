@@ -10,7 +10,8 @@ var swig = require( 'swig' );
 var db = require( __js + '/database' ),
 	Items = db.Items,
 	Users = db.Users,
-	Courses = db.Courses;
+	Courses = db.Courses,
+	Printers = db.Printers;
 
 var auth = require( __js + '/authentication' );
 
@@ -45,7 +46,8 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		type: req.body.type,
 		barcode: req.body.barcode,
 		email: req.body.email,
-		course: req.body.course
+		course: req.body.course,
+		printer: req.body.printer ? req.body.printer : null
 	}
 
 	if ( user.name == '' ) {
@@ -138,16 +140,18 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 // Edit user
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Users.findOne( { _id: req.params.id }, function( err, user ) {
-		if ( user == undefined ) {
-			req.flash( 'danger', 'User not found' );
-			res.redirect( app.mountpath );
-		} else {
-			Courses.find( function( err, courses ) {
-				res.render( 'edit', { courses:courses, user: user } );
-			} );
-		}
-	} )
+	Printers.find( function( err, printers ) {
+		Users.findOne( { _id: req.params.id }, function( err, user ) {
+			if ( user == undefined ) {
+				req.flash( 'danger', 'User not found' );
+				res.redirect( app.mountpath );
+			} else {
+				Courses.find( function( err, courses ) {
+					res.render( 'edit', { courses:courses, user: user, printers: printers } );
+				} );
+			}
+		} )
+	} );
 } )
 
 app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
@@ -157,6 +161,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 			barcode: req.body.barcode,
 			email: req.body.email,
 			course: req.body.course,
+			printer: req.body.printer ? req.body.printer : null,
 			type: req.body.type
 		}
 	} ).then( function ( status ) {

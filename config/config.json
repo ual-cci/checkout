@@ -2,7 +2,6 @@
 	"name": "Checkout",
 	"port": "8080",
 	"mongo": "mongodb://localhost:27017/checkout",
-	"label_printer": "http://localhost:631/printers/DYMO_LabelWriter_450_DUO_Label",
 	"secret": "123",
 	"dev": true
 }

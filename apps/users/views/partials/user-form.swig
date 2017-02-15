@@ -17,6 +17,15 @@
 		</select>
 	</p>
 	<p>
+		<label for="printer">Printer:</label>
+		<select id="printer" name="printer">
+			<option value="">None</option>
+			{% for printer in printers %}
+				<option value="{{ printer._id | raw }}"{% if ( printer.id == user.printer | raw ) %} selected{% endif %}>{{ printer.name }}</option>
+			{% endfor %}
+		</select>
+	</p>
+	<p>
 		<label for="barcode">Barcode:</label>
 		<input id="barcode" name="barcode" type="text" value="{{ user.barcode }}" required maxlength="12" autocomplete="off" required />
 	</p>

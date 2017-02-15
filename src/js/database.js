@@ -144,6 +144,10 @@ var userSchema = mongoose.Schema( {
 		type: Boolean,
 		default: false
 	},
+	printer: {
+		type: ObjectId,
+		ref: 'Printers'
+	}
 } );
 
 var departmentSchema = mongoose.Schema( {
@@ -163,6 +167,18 @@ var courseSchema = mongoose.Schema( {
 	contact: {
 		type: ObjectId,
 		ref: 'Users'
+	}
+} );
+
+var printerSchema = mongoose.Schema( {
+	_id: ObjectId,
+	name: {
+		type: String,
+		required: true
+	},
+	url: {
+		type: String,
+		required: true
 	}
 } );
 
@@ -188,3 +204,7 @@ exports.departmentSchema = departmentSchema;
 var Courses = mongoose.model( 'Courses', courseSchema );
 exports.Courses = Courses;
 exports.courseSchema = courseSchema;
+
+var Printers = mongoose.model( 'Printers', printerSchema );
+exports.Printers = Printers;
+exports.printerSchema = printerSchema;
