@@ -17,11 +17,11 @@
 		<div class="col-md-2">
 			<h1 class="returned">&mdash;</h1>
 			<h5>RETURNED</h5>
-			<h6>TODAY</h6>
 		</div>
 		<div class="col-md-2">
 			<h1 class="available">&mdash;</h1>
 			<h5>AVAILABLE</h5>
+			<h6>NOW</h6>
 		</div>
 		<div class="col-md-2">
 			<h1 class="onloan">&mdash;</h1>
