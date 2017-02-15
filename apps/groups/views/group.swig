@@ -31,12 +31,12 @@
 						<tr>
 							<td>
 								{% set status = item.status %}
-								{% include '../items/partials/status.swig' %}
+								{% include '../../items/views/partials/status.swig' %}
 							</td>
 							<td><span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
 							<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 							{% set department = item.department %}
-							<td>{% include '../departments/partials/department.swig' %}</td>
+							<td>{% include '../../departments/views/partials/department.swig' %}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
