@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}Create course{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – Course – {% parent %}{% endblock %}
