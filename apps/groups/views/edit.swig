@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}Edit '{{ group.name }}'{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – Groups – {% parent %}{% endblock %}

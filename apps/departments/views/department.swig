@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}{{ department.name }}{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – Departments – {% parent %}{% endblock %}
@@ -28,12 +28,12 @@
 						<tr>
 							<td>
 								{% set status = item.status %}
-								{% include '../items/partials/status.swig' %}
+								{% include '../../items/views/partials/status.swig' %}
 							</td>
 							<td><span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
 							<td><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 							{% set group = item.group %}
-							<td>{% include '../groups/partials/group.swig' %}</td>
+							<td>{% include '../../groups/views/partials/group.swig' %}</td>
 						</tr>
 					{% endfor %}
 				</tbody>

@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}Items{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}
@@ -7,6 +7,6 @@
 	{% include 'partials/filter.swig' %}
 
 	<hr />
-	
+
 	{% include 'partials/items-list.swig' %}
 {% endblock %}

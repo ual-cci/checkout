@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}Create user{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – Users – {% parent %}{% endblock %}

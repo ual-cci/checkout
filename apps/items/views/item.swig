@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}{{ item.name }}{% endblock %}
 {% block title %}{{ item.name }} – Items – {% parent %}{% endblock %}

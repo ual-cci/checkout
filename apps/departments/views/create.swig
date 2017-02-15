@@ -1,4 +1,4 @@
-{% extends '../admin.swig' %}
+{% extends '../../../src/views/admin.swig' %}
 
 {% block heading %}Create department{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – Department – {% parent %}{% endblock %}
