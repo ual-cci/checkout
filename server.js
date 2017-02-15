@@ -1,4 +1,4 @@
-var config = require( './config.json' );
+var config = require( './config/config.json' );
 
 var mongoose = require( 'mongoose' ),
 	Users = require( __dirname + '/models/users' );

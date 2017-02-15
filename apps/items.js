@@ -1,6 +1,6 @@
 var prefix = 'items';
 
-var config = require( '../config.json' );
+var config = require( '../config/config.json' );
 
 var	express = require( 'express' ),
 	app = express();
