@@ -13,7 +13,7 @@ app.use( function( req, res, next ) {
 	res.locals.currentModule = 'users';
 	if ( ! req.isAuthenticated() ) {
 		req.session.requested = req.originalUrl;
-		req.add_flash( 'danger', 'Please login' );
+		req.flash( 'danger', 'Please login' );
 		res.redirect( '/login' );
 	} else {
 		next();
@@ -37,7 +37,7 @@ app.get( '/create', function ( req, res ) {
 		if ( courses.length > 0 ) {
 			res.render( prefix + '/create', { courses: courses, user: {} } );
 		} else {
-			req.add_flash( 'warning', 'Create at least one course before creating users' )
+			req.flash( 'warning', 'Create at least one course before creating users' )
 			res.redirect( '/' + prefix );
 		}
 	} );
@@ -54,23 +54,23 @@ app.post( '/create', function( req, res ) {
 	}
 
 	if ( user.name == '' ) {
-		req.add_flash( 'danger', 'The user must have a name' );
+		req.flash( 'danger', 'The user must have a name' );
 		res.redirect( '/' + prefix + '/create' );
 		return;
 	} else if ( user.barcode == '' ) {
-		req.add_flash( 'danger', 'The user must have a unique barcode' );
+		req.flash( 'danger', 'The user must have a unique barcode' );
 		res.redirect( '/' + prefix + '/create' );
 		return;
 	} else if ( user.course == '' ) {
-		req.add_flash( 'danger', 'The user must be assigned to a course' );
+		req.flash( 'danger', 'The user must be assigned to a course' );
 		res.redirect( '/' + prefix + '/create' );
 		return;
 	} else if ( user.email == '' ) {
-		req.add_flash( 'danger', 'The user must have an email address' );
+		req.flash( 'danger', 'The user must have an email address' );
 		res.redirect( '/' + prefix + '/create' );
 		return;
 	} else if ( user.type == '' ) {
-		req.add_flash( 'danger', 'The user must have a type' );
+		req.flash( 'danger', 'The user must have a type' );
 		res.redirect( '/' + prefix + '/create' );
 		return;
 	}
@@ -78,12 +78,12 @@ app.post( '/create', function( req, res ) {
 	new Users( user ).save( function ( err ) {
 		if ( err ) {
 			if ( err.code == 11000 ) {
-				req.add_flash( 'danger', 'The user barcode must be unique' );
+				req.flash( 'danger', 'The user barcode must be unique' );
 			} else {
-				req.add_flash( 'danger', 'Unknown error creating user' );
+				req.flash( 'danger', 'Unknown error creating user' );
 			}
 		} else {
-			req.add_flash( 'success', 'User created' );
+			req.flash( 'success', 'User created' );
 		}
 		res.redirect( '/' + prefix );
 	} );
@@ -93,7 +93,7 @@ app.post( '/create', function( req, res ) {
 app.get( '/:id', function( req, res ) {
 	Users.findById( req.params.id ).populate( 'course' ).exec( function( err, user ) {
 		if ( user == undefined ) {
-			req.add_flash( 'danger', 'User not found' );
+			req.flash( 'danger', 'User not found' );
 			res.redirect( '/' + prefix );
 		} else {
 			Courses.populate( user, {
@@ -145,7 +145,7 @@ app.get( '/:id', function( req, res ) {
 app.get( '/:id/edit', function( req, res ) {
 	Users.findOne( { _id: req.params.id }, function( err, user ) {
 		if ( user == undefined ) {
-			req.add_flash( 'danger', 'User not found' );
+			req.flash( 'danger', 'User not found' );
 			res.redirect( '/' + prefix );
 		} else {
 			Courses.find( function( err, courses ) {
@@ -166,15 +166,15 @@ app.post( '/:id/edit', function( req, res ) {
 		}
 	} ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {
-			req.add_flash( 'success', 'User updated' );
+			req.flash( 'success', 'User updated' );
 		} else if ( status.nModified == 0 && status.n == 1 ) {
-			req.add_flash( 'warning', 'User was not changed' );
+			req.flash( 'warning', 'User was not changed' );
 		} else {
-			req.add_flash( 'danger', 'There was an error updating the user' );
+			req.flash( 'danger', 'There was an error updating the user' );
 		}
 		res.redirect( '/' + prefix + '/' + req.params.id );
 	}, function ( status ) {
-		req.add_flash( 'danger', 'There was an error updating the user' );
+		req.flash( 'danger', 'There was an error updating the user' );
 		res.redirect( '/' + prefix + '/' + req.params.id );
 	} );
 } )
