@@ -5,5 +5,9 @@
 
 {% block content %}
 	{% set action = 'Create' %}
-	{% include 'partials/group-form.swig' %}
+	<div class="row">
+		<div class="col-md-5">
+			{% include 'partials/group-form.swig' %}
+		</div>
+	</div>
 {% endblock %}
