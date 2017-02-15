@@ -11,8 +11,8 @@ var config = require( __config ),
 	database = require( __js + '/database' ).connect(),
 	express = require( 'express' ),
 	app = express(),
-	http = require( 'http' ).Server( app )
-	io = require( __js + '/socket' )( http ),
+	server = require( 'http' ).Server( app )
+	io = require( __js + '/socket' )( server ),
 	flash = require( 'express-flash' ),
 	swig = require( 'swig' ),
 	body = require( 'body-parser' );
@@ -125,6 +125,6 @@ app.get( '*', function( req, res ) {
 console.log( "	Route: *" );
 
 // Start server
-var listener = app.listen( config.port ,config.host, function () {
+var listener = server.listen( config.port ,config.host, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 } );
