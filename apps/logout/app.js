@@ -10,8 +10,6 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	console.log( app.parent );
-
 	passportSocketIo.filterSocketsByUser( io, function( user ) {
 		if ( user._id == undefined || req.user._id == undefined )
 			return false;
