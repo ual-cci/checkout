@@ -6,9 +6,8 @@ var cancelTimeout;
 var statusTimeout;
 
 jQuery( document ).ready( function() {
-	jQuery( '#find input' ).focus();
-
 	socket.emit( 'update-stats' );
+	jQuery( '#find input' ).focus();
 
 	jQuery( 'input' ).bind( 'blur', function( e ) {
 		if ( e.relatedTarget == undefined || e.relatedTarget.tagName != 'INPUT' )
@@ -25,32 +24,14 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( '#find input' ).bind( 'input', function( e ) {
-		jQuery( '#find input' ).val( jQuery( '#find input' ).val().toUpperCase() );
+		jQuery( '#find input' ).val(  jQuery( '#find input' ).val().toUpperCase() );
 		var find = jQuery( '#find input' ).val();
-
-		if ( mode.indexOf( 'multi-return' ) != -1 ) {
-			// do nothing
-		} else if ( mode.indexOf( 'item' ) != -1 ) {
-			if ( PartialItemBarcodeRegEx.exec( find ) != null ) {
-				modeUpdate( 'item' );
-				jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-				jQuery( '#find .btn' ).hide();
-			}
-		} else if ( mode.indexOf( 'user' ) != -1 ) {
-			if ( find.substring( 0, 4 ) == '1234' ) {
-				modeUpdate( 'user' );
-				jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-				jQuery( '#find .btn' ).hide();
-			}
-		} else if ( mode.indexOf( 'selected' ) == -1 ) {
-			if ( find.substring( 0, 4 ) == '1234' ) {
-				modeUpdate( 'user' );
-			} else if ( ItemBarcodeRegEx.exec( find ) != null ) {
-				modeUpdate( 'item' );
+		if ( mode.indexOf( 'selected' ) == -1 )
+			if ( find.length >= 7 ) {
+				socket.emit( 'identify', find );
 			} else {
 				modeUpdate( 'find' );
 			}
-		}
 	} );
 
 	jQuery( '#find .btn' ).bind( 'click', function( e ) {
@@ -148,9 +129,15 @@ socket.on( 'mode', function( m ) {
 	resetCancelTimeout();
 	modeUpdate( m.mode );
 	data = m.data;
-	if ( m.mode == 'find' ) {
-		clear();
+
+	switch ( mode ) {
+		case 'item':
+		case 'user':
+			jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
+			jQuery( '#find .btn' ).hide();
+			break;
 	}
+
 	if ( m.buttons ) {
 		jQuery( '#find .btn' ).hide();
 		jQuery( '#find .btn' ).removeClass( 'btn-primary' ).addClass( 'btn-default' );

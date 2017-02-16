@@ -4,8 +4,12 @@ var successSound = new buzz.sound( "/sounds/success.wav" );
 jQuery( document ).ready( function() {
 	jQuery( '#barcode' ).focus();
 
+	jQuery( '#barcode' ).bind( 'input', function( e ) {
+		jQuery( '#barcode' ).val(  jQuery( '#barcode' ).val().toUpperCase() );
+	} );
+
 	jQuery( 'form' ).submit( function( e ) {
-		socket.emit( 'audit', { itemBarcode: jQuery( '#barcode' ).val().toUpperCase() } );
+		socket.emit( 'audit', { item: jQuery( '#barcode' ).val() } );
 		jQuery( '#barcode' ).val( '' ).focus();
 		e.preventDefault();
 	} );

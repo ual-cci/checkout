@@ -4,7 +4,7 @@ Checkout is a bespoke software system for managing items within the LCC Prototyp
 ## Data Structure
 
 ### Items
-An item has a barcode in specified format AAA 00 / AAAA 00, items have notes and a value field, and a full transaction history.
+An item has a barcode, notes and a value field, and a full transaction history.
 
 #### Item Taxonomy: Groups
 Items can be grouped to better sort through types of similar item, and also enforce an overridable limit on how many may be issued per user.
@@ -13,7 +13,7 @@ Items can be grouped to better sort through types of similar item, and also enfo
 Items are organised into departments to identify their location, fiscal ownership when working across departments.
 
 ### Users
-A user has a barcode in the specified format 123400000000, users have a name, email and permission field, staff have permission above regular users to log in to the system.
+A user has a barcode, name, email and permission field, staff have permission above regular users to log in to the system.
 
 #### User Taxonomy: Courses
 Users are organised into courses, courses help identify which course a user is from, and who the key contact (course leader) is.
@@ -42,6 +42,5 @@ Users are organised into courses, courses help identify which course a user is f
  - Daily live stats.
 
 ## Future plans
-- Remove dependency on user/item barcode formatting
 - Ad-hoc items (items without a barcode and unserialised items)
 - Password protection on login / pin number?

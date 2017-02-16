@@ -2,14 +2,6 @@ body {
 	padding-top: 50px;
 }
 
-#cmd input {
-  text-transform: uppercase;
-}
-
-#barcode {
-  text-transform: uppercase;
-}
-
 body.dev:before {
 	content: '';
 	position: fixed;

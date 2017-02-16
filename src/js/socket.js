@@ -19,23 +19,30 @@ module.exports = function( server ) {
 };
 
 function connected( socket ) {
+	socket.on( 'identify', function( find ) {
+		if ( socket.request.user ) {
+			Users.findOne( { barcode: find }, function( err, user ) {
+				if ( user != undefined ) {
+					socket.emit( 'mode', { mode: 'user', buttons: [] } );
+					return;
+				}
+				Items.findOne( { barcode: find }, function ( err, item ) {
+					if ( item != undefined ) {
+						socket.emit( 'mode', { mode: 'item', buttons: [] } );
+						return;
+					}
+					socket.emit( 'mode', { mode: 'find', buttons: [] } );
+				} );
+			} );
+		}
+	} );
 	socket.on( 'audit', function ( action ) {
 		if ( socket.request.user ) {
-			var itemFilter = {};
-			var val = /([A-Z]{2,4})  ?([0-9]{2})/.exec( action.itemBarcode.toUpperCase() );
-			if ( val ) {
-				if ( action.itemBarcode ) itemFilter.barcode = val[1] + ' ' + val[2];;
-				if ( action.itemId ) itemFilter._id = action.itemId;
+			if ( action.item ) {
 				var loggedInUser = socket.request.user;
-				Items.findOne( itemFilter, function( err, item ) {
-					if ( ! item && itemFilter.barcode ) {
-						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter.barcode } );
-						return;
-					} else if ( ! item && itemFilter._id ) {
-						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: itemFilter._id } );
-						return;
-					} else if ( ! item ) {
-						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: 'Error' } );
+				Items.findOne( { barcode: action.item }, function( err, item ) {
+					if ( item == undefined ) {
+						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: action.item } );
 						return;
 					} else if ( item.status == 'lost' ) {
 						socket.emit( 'flash', { type: 'danger', message: 'Item currently marked as lost', barcode: 'Error' } );

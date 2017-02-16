@@ -84,8 +84,8 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', 'The items require a barcode prefix' );
 		res.redirect( app.mountpath + '/generate' );
 		return;
-	} else if ( req.body.prefix.trim().match( /^[A-Z]{3,4}$/i ) == null ) {
-		req.flash( 'danger', 'The barcode prefix must contain 3 or 4 letters only.' );
+	} else if ( req.body.prefix.length < 3 == null ) {
+		req.flash( 'danger', 'The barcode prefix must be longer than 2 characters.' );
 		res.redirect( app.mountpath + '/generate' );
 		return;
 	} else if ( start == '' || start < 1 ) {
@@ -132,7 +132,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 				status: 'audited'
 			} ];
 		}
-		item.barcode += ' ' + index;
+		item.barcode += index.toString();
 		barcodes.push( item.barcode );
 		items.push( item );
 	}
@@ -277,7 +277,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	} else {
 		item.group = null;
 	}
-	
+
 	Items.update( { _id: req.params.id }, { $set: item } ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {
 			req.flash( 'success', 'Item updated' );
@@ -303,12 +303,7 @@ function processPrint( codes, printer ) {
 
 	var barcodes = [];
 	for ( c in codes ) {
-		codes[c] = codes[c].toUpperCase();
-
-		var regex = /([A-Z]{2,4}) ([0-9]{2})/.exec( codes[c] );
-
-		if ( regex )
-			barcodes.push( addLabel( doc, codes[c] ) )
+		barcodes.push( addLabel( doc, codes[c] ) )
 	}
 
 	Promise.all( barcodes ).then( function() {
@@ -326,14 +321,16 @@ function addLabel( doc, barcode ) {
 	return new Promise( function( resolve, reject ) {
 		generateBarcodeImage( barcode ).then( function( png ) {
 			var page = doc.addPage();
-			page.fontSize( 8 );
-			page.text( barcode, pt(1), pt(35), {
-				width: pt(10),
+			page.fontSize( 7 );
+			page.rotate( 90 );
+			page.text( barcode, pt(4), pt(-4), {
+				width: pt(42),
 				align: 'center'
 			} );
-			page.image( png,  pt(1), pt(2), {
-				width: pt(10),
-				height: pt(30)
+			page.rotate(-90);
+			page.image( png,  pt(5), pt(4), {
+				width: pt(5),
+				height: pt(42)
 			} );
 			resolve( page );
 		} )
@@ -345,8 +342,8 @@ function generateBarcodeImage( barcode ) {
 		bwipjs.toBuffer( {
 			bcid: 'code39',
 			text: barcode,
-			height: 10,
-			width: 30,
+			height: 5,
+			width: 48,
 			rotate: 'R',
 			monochrome: true
 		}, function( err, png ) {
