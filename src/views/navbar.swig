@@ -4,12 +4,14 @@
 			<ul class="nav navbar-nav">
 				{% if loggedInUser %}
 					<li{% if currentModule == 'checkout' %} class="active"{% endif %}><a href="/">Checkout</a></li>
+					<li{% if currentModule == 'items' %} class="active"{% endif %}><a href="/items">Items</a></li>
+					<li{% if currentModule == 'users' %} class="active"{% endif %}><a href="/users">Users</a></li>
 
 					<li class="dropdown{% if currentModule == 'items' %} active{% endif %}">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Items <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-header"><span class="glyphicon glyphicon-eye-open"></span> View</li>
-							<li><a href="/items">Items</a></li>
+							<li><a href="/courses">Courses</a></li>
 							<li><a href="/groups">Groups</a></li>
 							<li><a href="/departments">Departments</a></li>
 							<li role="separator" class="divider"></li>
@@ -18,17 +20,6 @@
 							<li><a href="/items/generate">Generate Items</a></li>
 							<li><a href="/groups/create">Group</a></li>
 							<li><a href="/departments/create">Department</a></li>
-						</ul>
-					</li>
-
-					<li class="dropdown{% if currentModule == 'users' %} active{% endif %}">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li class="dropdown-header"><span class="glyphicon glyphicon-eye-open"></span> View</li>
-							<li><a href="/users">Users</a></li>
-							<li><a href="/courses">Courses</a></li>
-							<li role="separator" class="divider"></li>
-							<li class="dropdown-header"><span class="glyphicon glyphicon-plus"></span> New</li>
 							<li><a href="/users/create">User</a></li>
 							<li><a href="/courses/create">Course</a></li>
 						</ul>
