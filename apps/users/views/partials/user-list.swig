@@ -4,7 +4,9 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Course</th>
+					{% if !no_course %}
+						<th>Course</th>
+					{% endif %}
 					<th>Email</th>
 					<th>Barcode</th>
 				</tr>
@@ -13,7 +15,9 @@
 				{% for user in users %}
 					<tr>
 						<td><a href="/users/{{ user._id | raw }}">{{ user.name }}</a> {% include 'label.swig' %}</td>
-						<td>{% set course = user.course %}{% include '../../../courses/views/partials/course.swig' %}</td>
+						{% if !no_course %}
+							<td>{% set course = user.course %}{% include '../../../courses/views/partials/course.swig' %}</td>
+						{% endif %}
 						<td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
 						<td><span data-clipboard-text="{{ user.barcode }}" class="clipboard">{{ user.barcode }}</span></td>
 					</tr>

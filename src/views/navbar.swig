@@ -37,8 +37,6 @@
 					<li class="dropdown{% if currentModule == 'reports' %} active{% endif %}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="/reports/course">On Loan By Course</a></li>
-							<li role="separator" class="divider"></li>
 							<li class="dropdown-header"><span class="glyphicon glyphicon-filter"></span> Status</li>
 							<li><a href="/reports/status/available">Available</a></li>
 							<li><a href="/reports/status/on-loan">On Loan</a></li>
@@ -47,9 +45,6 @@
 							<li><a href="/reports/status/lost">Lost</a></li>
 							<li><a href="/reports/status/broken">Broken</a></li>
 							<li role="separator" class="divider"></li>
-							<li class="dropdown-header"><span class="glyphicon glyphicon-barcode"></span> Audit</li>
-							<li><a href="/reports/scanned">Scanned</a></li>
-							<li><a href="/reports/missing">Missing</a></li>
 						</ul>
 					</li>
 				{% endif %}
@@ -59,7 +54,10 @@
 					<li class="dropdown{% if currentModule == 'admin' %} active{% endif %}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="/audit"><span class="glyphicon glyphicon-barcode"></span> Audit Scan</a></li>
+							<li class="dropdown-header"><span class="glyphicon glyphicon-barcode"></span> Audit</li>
+							<li><a href="/audit">Scan</a></li>
+							<li><a href="/audit/scanned">Scanned</a></li>
+							<li><a href="/audit/missing">Missing</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="/printers"><span class="glyphicon glyphicon-print"></span> Configure Printers</a></li>
 						</ul>

@@ -52,9 +52,10 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			res.redirect( app.mountpath );
 		} else {
 			Users.find( { course: req.params.id }, function( err, users ) {
-				Items.find().populate( 'course' ).populate( 'transactions.user' ).exec( function( err, items ) {
+				Items.find().populate( 'department' ).populate( 'group' ).populate( 'course' ).populate( 'transactions.user' ).exec( function( err, items ) {
 					var email;
-					var result = {};
+					var user_result = {};
+					var item_results = [];
 
 					for ( i in items ) {
 						var item = items[i];
@@ -66,14 +67,18 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 									break;
 								}
 							}
+
 							if ( last_transaction.user.course == course._id.toString() ) {
-								if ( result[ last_transaction.user._id.toString() ] == undefined )
-									result[ last_transaction.user._id.toString() ] = {
+								item_results.push( item );
+								item.owner = last_transaction.user;
+
+								if ( user_result[ last_transaction.user._id.toString() ] == undefined )
+									user_result[ last_transaction.user._id.toString() ] = {
 										user: null,
 										items: []
 									};
 
-								var row = result[ last_transaction.user._id.toString() ];
+								var row = user_result[ last_transaction.user._id.toString() ];
 								row.user = last_transaction.user;
 								row.items.push( item );
 							}
@@ -82,9 +87,16 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 					if ( course.contact != undefined ) {
 						var students = {};
-						email = swig.renderFile( __dirname + '/views/email.swig', { name: course.contact.name, students: result } );
+						email = swig.renderFile( __dirname + '/views/email.swig', { name: course.contact.name, students: user_result } );
 					}
-					res.render( 'course', { course: course, users: users, email: email } );
+
+					item_results.sort( function( a, b ) {
+						if ( a.owner.name < b.owner.name ) return -1;
+						if ( a.owner.name > b.owner.name ) return 1;
+						return 0;
+					} );
+
+					res.render( 'course', { course: course, users: users, email: email, items: item_results } );
 				} );
 			} );
 		}

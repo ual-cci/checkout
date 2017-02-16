@@ -1,6 +1,12 @@
 {% if items.length > 0 %}
 	<div class="table-responsive">
 		<table class="table table-striped">
+			<col style="width:5%" />
+			<col style="width:5%" />
+			<col style="width:20%" />
+			<col style="width:10%" />
+			<col style="width:10%" />
+			<col style="width:10%" />
 			<thead>
 				<tr>
 					<th>Status</th>
