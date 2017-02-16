@@ -11,7 +11,8 @@ var	express = require( 'express' ),
 var db = require( __js + '/database' ),
 	Items = db.Items,
 	Groups = db.Groups,
-	Departments = db.Departments;
+	Departments = db.Departments,
+	Printers = db.Printers;
 
 var PDFDocument = require( 'pdfkit' );
 var bwipjs = require( 'bwip-js' );
@@ -217,31 +218,40 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 
 // List an item
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
-		if ( item == undefined ) {
-			req.flash( 'danger', 'Item not found' );
-			res.redirect( app.mountpath );
-		} else {
-			res.render( 'item', { item: item } );
-		}
+	Printers.find( function( err, printers ) {
+		Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
+			if ( item == undefined ) {
+				req.flash( 'danger', 'Item not found' );
+				res.redirect( app.mountpath );
+			} else {
+				res.render( 'item', { item: item, printers: printers } );
+			}
+		} );
 	} );
 } )
 
 // Reprint an item
 app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
-	if ( req.user.printer ) {
-		Items.findById( req.params.id,  function( err, item ) {
-			if ( item == undefined ) {
-				req.flash( 'danger', 'Item not found' );
-				res.redirect( app.mountpath );
+	if ( req.query.printer != null ) {
+		Printers.findById( req.query.printer, function( err, printer ) {
+			if ( printer != undefined ) {
+				Items.findById( req.params.id,  function( err, item ) {
+					if ( item == undefined ) {
+						req.flash( 'danger', 'Item not found' );
+						res.redirect( app.mountpath );
+					} else {
+						processPrint( [ item.barcode ], printer.url );
+						req.flash( 'info', 'Label printed to ' + printer.name );
+						res.redirect( app.mountpath + '/' + item._id.toString() );
+					}
+				} );
 			} else {
-				processPrint( [ item.barcode ], req.user.printer.url );
-				req.flash( 'info', 'Label printed to ' + req.user.printer.name );
-				res.redirect( app.mountpath + '/' + item._id.toString() );
+				req.flash( 'warning', 'Invalid printer' );
+				res.redirect( app.mountpath );
 			}
-		} );
+		} )
 	} else {
-		req.flash( 'warning', 'No printer configured' );
+		req.flash( 'warning', 'Invalid printer' );
 		res.redirect( app.mountpath );
 	}
 } )
