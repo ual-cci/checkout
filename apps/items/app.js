@@ -264,16 +264,21 @@ app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 
 // Edit item handler
 app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Items.update( { _id: req.params.id }, {
-		$set: {
-			name: req.body.name,
-			barcode: req.body.barcode,
-			group: req.body.group,
-			department: req.body.department,
-			value: req.body.value,
-			notes: req.body.notes
-		}
-	} ).then( function ( status ) {
+	var item = {
+		name: req.body.name,
+		barcode: req.body.barcode,
+		department: req.body.department,
+		value: req.body.value,
+		notes: req.body.notes
+	};
+
+	if ( req.body.group != '' ) {
+		item.group = req.body.group;
+	} else {
+		item.group = null;
+	}
+	
+	Items.update( { _id: req.params.id }, { $set: item } ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {
 			req.flash( 'success', 'Item updated' );
 		} else if ( status.nModified == 0 && status.n == 1 ) {
