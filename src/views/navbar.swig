@@ -3,7 +3,7 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				{% if loggedInUser %}
-					<li{% if currentModule == 'checkout' %} class="active"{% endif %}><a href="/">Checkout</a></li>
+					<li{% if currentModule == 'checkout' %} class="active"{% endif %}><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
 					<li{% if currentModule == 'items' %} class="active"{% endif %}><a href="/items">Items</a></li>
 					<li{% if currentModule == 'users' %} class="active"{% endif %}><a href="/users">Users</a></li>
 
