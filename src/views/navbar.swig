@@ -44,7 +44,6 @@
 							<li><a href="/reports/status/reserved">Reserved</a></li>
 							<li><a href="/reports/status/lost">Lost</a></li>
 							<li><a href="/reports/status/broken">Broken</a></li>
-							<li role="separator" class="divider"></li>
 						</ul>
 					</li>
 				{% endif %}
