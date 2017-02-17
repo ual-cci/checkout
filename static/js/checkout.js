@@ -26,7 +26,7 @@ jQuery( document ).ready( function() {
 	jQuery( '#find input' ).bind( 'input', function( e ) {
 		jQuery( '#find input' ).val(  jQuery( '#find input' ).val().toUpperCase() );
 		var find = jQuery( '#find input' ).val();
-		if ( mode.indexOf( 'selected' ) == -1 )
+		if ( mode.indexOf( 'selected' ) == -1 && mode != 'multi-return' )
 			if ( find.length >= 7 ) {
 				socket.emit( 'identify', find );
 			} else {
