@@ -33,3 +33,13 @@ body.dev .navbar {
 	cursor: ne-resize;
 	background: rgb(251, 255, 170);
 }
+
+table {
+	white-space: nowrap;
+	table-layout: fixed;
+}
+
+td.flex {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

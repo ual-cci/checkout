@@ -27,6 +27,7 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Groups.find( function( err, groups ) {
 		Departments.find( function( err, departments ) {
 			var filter = {};
+			var total = 0;
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
 			Items.find( filter ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
@@ -44,6 +45,9 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 						}
 						item.owner = last_transaction.user;
 					}
+
+					if ( item.value != null )
+						total = total + item.value;
 				}
 
 				res.render( 'items', {
@@ -51,7 +55,8 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 					departments: departments,
 					selectedDepartment: req.query.department,
 					groups: groups,
-					selectedGroup: req.query.group
+					selectedGroup: req.query.group,
+					total: total
 				} );
 			} );
 		} );
