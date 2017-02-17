@@ -1,6 +1,6 @@
 {% if items.length > 0 %}
 	<div class="table-responsive">
-		<table class="table table-striped">
+		<table class="table table-striped flex">
 			<col style="width:5%" />
 			<col style="width:7%" />
 			<col style="width:20%" />

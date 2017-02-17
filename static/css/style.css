@@ -34,7 +34,7 @@ body.dev .navbar {
 	background: rgb(251, 255, 170);
 }
 
-table {
+table.flex {
 	white-space: nowrap;
 	table-layout: fixed;
 }
