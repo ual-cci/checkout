@@ -66,7 +66,7 @@
 						<ul class="dropdown-menu">
 							</li><li><a href="/users/{{ loggedInUser._id | raw }}/edit"><span class="glyphicon glyphicon-pencil"></span> Edit Profile</a></li>
 							<li role="separator" class="divider"></li>
-							</li><li><a href="/checkout/compact"><span class="glyphicon glyphicon-resize-small"></span> Compact Checkout</a></li>
+							</li><li><a href="/checkout/expand">Expand Checkout</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 						</ul>
