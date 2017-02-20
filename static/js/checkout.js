@@ -1,5 +1,3 @@
-var ItemBarcodeRegEx = /([A-Z]{2,4})  ?([0-9]{2})/;
-var PartialItemBarcodeRegEx = /([A-Z]{2,4}) /;
 var mode = 'find';
 var data = {};
 var cancelTimeout;
@@ -26,11 +24,9 @@ jQuery( document ).ready( function() {
 	jQuery( '#find input' ).bind( 'input', function( e ) {
 		jQuery( '#find input' ).val(  jQuery( '#find input' ).val().toUpperCase() );
 		var find = jQuery( '#find input' ).val();
-		if ( mode.indexOf( 'selected' ) == -1 && mode != 'multi-return' )
-			if ( find.length >= 7 ) {
+		if ( mode != 'multi-return' )
+			if ( find.length > 4 ) {
 				socket.emit( 'identify', find );
-			} else {
-				modeUpdate( 'find' );
 			}
 	} );
 
@@ -48,10 +44,6 @@ jQuery( document ).ready( function() {
 		e.preventDefault();
 		switch ( mode ) {
 			case 'item':
-				var item = jQuery( '#find input' ).val();
-				item = ItemBarcodeRegEx.exec( item );
-				item = item[1] + ' ' + item[2];
-				jQuery( '#find input' ).val( item );
 			case 'user':
 				socket.emit( mode, jQuery( '#find input' ).val() );
 				break;
@@ -64,10 +56,6 @@ jQuery( document ).ready( function() {
 				} );
 				break;
 			case 'user-selected':
-				var item = jQuery( '#find input' ).val();
-				item = ItemBarcodeRegEx.exec( item );
-				item = item[1] + ' ' + item[2];
-				jQuery( '#find input' ).val( item );
 				socket.emit( 'issue', {
 					user: data.user,
 					item: jQuery( '#find input' ).val(),
@@ -75,9 +63,6 @@ jQuery( document ).ready( function() {
 				} );
 				break;
 			case 'multi-return':
-				var item = jQuery( '#find input' ).val();
-				item = ItemBarcodeRegEx.exec( item );
-				item = item[1] + ' ' + item[2];
 				socket.emit( 'return', {
 					item: jQuery( '#find input' ).val(),
 					mode: 'multi-return'
@@ -126,13 +111,22 @@ jQuery( document ).ready( function() {
 } );
 
 socket.on( 'mode', function( m ) {
-	resetCancelTimeout();
-	modeUpdate( m.mode );
-	data = m.data;
-
-	switch ( mode ) {
+	switch ( m.mode ) {
+		case 'item-selected':
+		case 'user-selected':
+			resetCancelTimeout();
+			modeUpdate( m.mode );
+			data = m.data;
+			break;
+		case 'find':
+			return;
 		case 'item':
 		case 'user':
+			if ( mode == 'item-selected' || mode == 'user-selected' ) return;
+			resetCancelTimeout();
+			modeUpdate( m.mode );
+			data = m.data;
+
 			jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
 			jQuery( '#find .btn' ).hide();
 			break;

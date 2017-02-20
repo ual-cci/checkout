@@ -30,8 +30,9 @@ function connected( socket ) {
 					if ( item != undefined ) {
 						socket.emit( 'mode', { mode: 'item', buttons: [] } );
 						return;
+					} else {
+						socket.emit( 'mode', { mode: 'find', buttons: [] } );
 					}
-					socket.emit( 'mode', { mode: 'find', buttons: [] } );
 				} );
 			} );
 		}
@@ -78,16 +79,12 @@ function connected( socket ) {
 	} )
 	socket.on( 'user', function( barcode ) {
 		if ( socket.request.user ) {
-			if ( barcode.substring( 0, 4 ) == '1234' && barcode.length == 12 ) {
-				sendUserModule( socket, barcode );
-			}
+			sendUserModule( socket, barcode );
 		}
 	} );
 	socket.on( 'item', function( barcode ) {
 		if ( socket.request.user ) {
-			if ( /([A-Z]{2,4}) ([0-9]{2})/.exec( barcode ) != null ) {
-				sendItemModule( socket, barcode );
-			}
+			sendItemModule( socket, barcode );
 		}
 	} );
 	socket.on( 'update-stats', function() {
@@ -490,43 +487,47 @@ function connected( socket ) {
 
 function sendUserModule( socket, barcode, item_barcode ) {
 	Users.findOne( { barcode: barcode } ).populate( 'course' ).exec( function( err, user ) {
-		if ( user ) {
-			Items.find().exec( function( err, items ) {
-				var onloan = [];
-				for ( item in items ) {
-					item = items[item];
-					if ( item.transactions != undefined ) {
-						for ( t = item.transactions.length - 1; t >= 0; t-- ) {
-							if ( item.transactions[t].user == user._id.toString() &&
-								 item.transactions[t].status == 'loaned' ) {
-								if ( t == item.transactions.length - 1 ) {
-									onloan.push( item );
-								}
+		if ( user == null ) {
+			socket.emit( 'flash', { type: 'danger', message: 'Unknown user', barcode: barcode } );
+			return;
+		}
+
+		Items.find().exec( function( err, items ) {
+			var onloan = [];
+			for ( item in items ) {
+				item = items[item];
+				if ( item.transactions != undefined ) {
+					for ( t = item.transactions.length - 1; t >= 0; t-- ) {
+						if ( item.transactions[t].user == user._id.toString() &&
+							 item.transactions[t].status == 'loaned' ) {
+							if ( t == item.transactions.length - 1 ) {
+								onloan.push( item );
 							}
 						}
 					}
 				}
-				updateStats();
-				var buttons = [];
-				socket.emit( 'mode', {
-					mode: 'user-selected',
-					buttons: [ 'issue' ],
-					data: {
-						user: user.barcode,
-						item: item_barcode
-					}
-				} );
-				socket.emit( 'module', swig.renderFile( __views + '/modules/user.swig', { user: user, onloan: onloan } ) );
+			}
+			updateStats();
+			var buttons = [];
+			socket.emit( 'mode', {
+				mode: 'user-selected',
+				buttons: [ 'issue' ],
+				data: {
+					user: user.barcode,
+					item: item_barcode
+				}
 			} );
-		} else {
-			sendNewUserModule( socket, barcode );
-		};
+			socket.emit( 'module', swig.renderFile( __views + '/modules/user.swig', { user: user, onloan: onloan } ) );
+		} );
 	} );
 }
 
 function sendItemModule( socket, barcode, user_barcode, multireturn ) {
 	Items.findOne( { barcode: barcode } ).populate( 'department' ).populate( 'transactions.user' ).populate( 'group' ).exec( function( err, item ) {
-		if ( item == null ) return;
+		if ( item == null ) {
+			socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: barcode } );
+			return;
+		}
 		var buttons = [];
 
 		switch ( item.status ) {
