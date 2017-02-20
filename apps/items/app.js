@@ -345,7 +345,7 @@ function addLabel( doc, barcode ) {
 			page.rotate(-90);
 			page.image( png,  pt(5), pt(4), {
 				width: pt(5),
-				height: pt(42)
+				height: pt(40)
 			} );
 			resolve( page );
 		} )
@@ -358,7 +358,7 @@ function generateBarcodeImage( barcode ) {
 			bcid: 'code39',
 			text: barcode,
 			height: 5,
-			width: 48,
+			width: 40,
 			rotate: 'R',
 			monochrome: true
 		}, function( err, png ) {
