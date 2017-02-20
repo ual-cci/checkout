@@ -343,7 +343,7 @@ function addLabel( doc, barcode ) {
 				align: 'center'
 			} );
 			page.rotate(-90);
-			page.image( png,  pt(5), pt(4), {
+			page.image( png,  pt(5), pt(2), {
 				width: pt(5),
 				height: pt(40)
 			} );
