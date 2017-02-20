@@ -26,5 +26,5 @@
 		</table>
 	</div>
 {% else %}
-	<p>There are no users to display.</p>
+	<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no users to display.</p>
 {% endif %}

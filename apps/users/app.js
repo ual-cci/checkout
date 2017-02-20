@@ -22,7 +22,18 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 		var filter = {};
 		if ( req.query.course ) filter.course = req.query.course;
 		Users.find( filter ).populate( 'course' ).exec( function( err, users ) {
-			res.render( 'users', { users: users, courses: courses, selectedCourse: req.query.course } );
+			var active_users = [];
+			var disabled_users = [];
+
+			for ( var u = 0; u < users.length; u++ ) {
+				if ( users[u].disable ) {
+					disabled_users.push( users[u] );
+				} else {
+					active_users.push( users[u] );
+				}
+			}
+
+			res.render( 'users', { active: active_users, disabled: disabled_users, courses: courses, selectedCourse: req.query.course } );
 		} )
 	} );
 } )

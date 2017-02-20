@@ -50,7 +50,7 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			req.flash( 'danger', 'Course not found' );
 			res.redirect( app.mountpath );
 		} else {
-			Users.find( { course: req.params.id }, function( err, users ) {
+			Users.find( { course: req.params.id, disable: { $ne: true } }, function( err, users ) {
 				Items.find().populate( 'department' ).populate( 'group' ).populate( 'course' ).populate( 'transactions.user' ).exec( function( err, items ) {
 					var email;
 					var user_result = {};
@@ -67,7 +67,7 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 								}
 							}
 
-							if ( last_transaction.user.course == course._id.toString() ) {
+							if ( last_transaction.user.course == course._id.toString() && last_transaction.user.disable != true ) {
 								item_results.push( item );
 								item.owner = last_transaction.user;
 
@@ -120,7 +120,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', 'The course requires a name' );
 		res.redirect( app.mountpath + '/create' );
 	}
-	
+
 	Courses.update( { _id: req.params.id }, {
 		$set: {
 			name: req.body.name,

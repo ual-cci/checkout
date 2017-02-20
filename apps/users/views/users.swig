@@ -8,6 +8,23 @@
 
 	<hr />
 
-	
-	{% include 'partials/user-list.swig' %}
+	<ul class="nav nav-tabs">
+		<li role="presentation" class="active" role="tablist">
+			<a href="#active" aria-controls="active" role="tab" data-toggle="tab">Active</a>
+		</li>
+		<li role="presentation" role="tablist">
+			<a href="#disabled" aria-controls="disabled" role="tab" data-toggle="tab">Disabled</a>
+		</li>
+	</ul>
+
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="active">
+			{% set users = active %}
+			{% include 'partials/user-list.swig' %}
+		</div>
+		<div role="tabpanel" class="tab-pane" id="disabled">
+			{% set users = disabled %}
+			{% include 'partials/user-list.swig' %}
+		</div>
+	</div>
 {% endblock %}
