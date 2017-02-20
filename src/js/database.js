@@ -147,7 +147,11 @@ var userSchema = mongoose.Schema( {
 	printer: {
 		type: ObjectId,
 		ref: 'Printers'
-	}
+	},
+	disable: {
+		type: Boolean,
+		default: false
+	},
 } );
 
 var departmentSchema = mongoose.Schema( {

@@ -54,6 +54,16 @@
 		</div>
 	</div>
 
+	{% if action == 'Update' %}
+		<div class="form-group">
+			<div class="col-md-4 col-md-offset-2">
+				<div class="checkbox">
+					<label for="disable"><input id="disable" name="disable" type="checkbox" {% if user.disable %}checked{% endif %} /> Disable User</label>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="form-group">
 		<div class="col-md-4 col-md-offset-2">
 			<button type="submit" class="btn btn-default">{{ action }}</button>

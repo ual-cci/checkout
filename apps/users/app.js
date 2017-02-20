@@ -162,7 +162,8 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 			email: req.body.email,
 			course: req.body.course,
 			printer: req.body.printer ? req.body.printer : null,
-			type: req.body.type
+			type: req.body.type,
+			disable: req.body.disable
 		}
 	} ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {

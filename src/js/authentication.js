@@ -20,7 +20,7 @@ var Authentication = {
 			passwordField: 'id' // hack
 		}, function( barcode, pw, done ) {
 				Users.findOne( { barcode: barcode } ).populate( 'printer' ).exec( function( err, user ) {
-					if ( user && ( user.type == 'staff' ) ) {
+					if ( user && user.type == 'staff' && ! user.disable ) {
 						return done( null, user );
 					} else {
 						return done( null, false );

@@ -92,84 +92,76 @@ function connected( socket ) {
 	} );
 	socket.on( 'broken', function( action ) {
 		if ( socket.request.user ) {
-			Users.findOne( { barcode: action.user }, function( err, user ) {
-				if ( user == undefined ) return;
+			Items.findOne( { barcode: action.item }, function( err, item ) {
+				if ( item == undefined ) return;
 
-				Items.findOne( { barcode: action.item }, function( err, item ) {
-					if ( item == undefined ) return;
-
-					if ( item.status == 'broken' ) {
-						socket.emit( 'flash', { type: 'warning', message: 'Item already marked as broken', barcode: item.barcode } );
-						sendItemModule( socket, action.item );
-						return;
-					} else if ( item.status == 'new' ) {
-						socket.emit( 'flash', { type: 'warning', message: 'Item has not yet been activated, audit the item before marking it as broken', barcode: item.barcode } );
-						sendItemModule( socket, action.item );
-						return;
+				if ( item.status == 'broken' ) {
+					socket.emit( 'flash', { type: 'warning', message: 'Item already marked as broken', barcode: item.barcode } );
+					sendItemModule( socket, action.item );
+					return;
+				} else if ( item.status == 'new' ) {
+					socket.emit( 'flash', { type: 'warning', message: 'Item has not yet been activated, audit the item before marking it as broken', barcode: item.barcode } );
+					sendItemModule( socket, action.item );
+					return;
+				}
+				Items.update( { _id: item._id }, {
+					$push: {
+						transactions: {
+							date: new Date(),
+							user: socket.request.user._id,
+							status: 'broken'
+						}
 					}
-					Items.update( { _id: item._id }, {
-						$push: {
-							transactions: {
-								date: new Date(),
-								user: user._id,
-								status: 'broken'
-							}
-						}
-					} ).then( function ( status ) {
-						if ( status.n == 1 ) {
-							sendItemModule( socket, action.item );
-						} else {
-							socket.emit( 'flash', { type: 'danger', message: 'There was an error updating the item', barcode: item.barcode } );
-							sendItemModule( socket, action.item );
-
-						}
-					}, function ( status ) {
+				} ).then( function ( status ) {
+					if ( status.n == 1 ) {
+						sendItemModule( socket, action.item );
+					} else {
 						socket.emit( 'flash', { type: 'danger', message: 'There was an error updating the item', barcode: item.barcode } );
 						sendItemModule( socket, action.item );
 
-					} );
+					}
+				}, function ( status ) {
+					socket.emit( 'flash', { type: 'danger', message: 'There was an error updating the item', barcode: item.barcode } );
+					sendItemModule( socket, action.item );
+
 				} );
-			})
+			} );
 		}
 	} );
 	socket.on( 'lost', function( action ) {
 		if ( socket.request.user ) {
-			Users.findOne( { barcode: action.user }, function( err, user ) {
-				if ( user == undefined ) return;
+			Items.findOne( { barcode: action.item }, function( err, item ) {
+				if ( item == undefined ) return;
 
-				Items.findOne( { barcode: action.item }, function( err, item ) {
-					if ( item == undefined ) return;
-
-					if ( item.status == 'lost' ) {
-						socket.emit( 'flash', { type: 'warning', message: 'Item already marked as lost', barcode: item.barcode } );
-						sendItemModule( socket, action.item );
-						return;
-					} else if ( item.status == 'new' ) {
-						socket.emit( 'flash', { type: 'warning', message: 'Item has not yet been activated, audit the item before marking it as lost', barcode: item.barcode } );
-						sendItemModule( socket, action.item );
-						return;
+				if ( item.status == 'lost' ) {
+					socket.emit( 'flash', { type: 'warning', message: 'Item already marked as lost', barcode: item.barcode } );
+					sendItemModule( socket, action.item );
+					return;
+				} else if ( item.status == 'new' ) {
+					socket.emit( 'flash', { type: 'warning', message: 'Item has not yet been activated, audit the item before marking it as lost', barcode: item.barcode } );
+					sendItemModule( socket, action.item );
+					return;
+				}
+				Items.update( { _id: item._id }, {
+					$push: {
+						transactions: {
+							date: new Date(),
+							user: socket.request.user._id,
+							status: 'lost'
+						}
 					}
-					Items.update( { _id: item._id }, {
-						$push: {
-							transactions: {
-								date: new Date(),
-								user: user._id,
-								status: 'lost'
-							}
-						}
-					} ).then( function ( status ) {
-						if ( status.n == 1 ) {
-							sendItemModule( socket, action.item );
-						} else {
-							socket.emit( 'flash', { type: 'danger', message: 'There was an error updating the item', barcode: item.barcode } );
-							sendItemModule( socket, action.item );
-						}
-					}, function ( status ) {
+				} ).then( function ( status ) {
+					if ( status.n == 1 ) {
+						sendItemModule( socket, action.item );
+					} else {
 						socket.emit( 'flash', { type: 'danger', message: 'There was an error updating the item', barcode: item.barcode } );
 						sendItemModule( socket, action.item );
-					} );
+					}
+				}, function ( status ) {
+					socket.emit( 'flash', { type: 'danger', message: 'There was an error updating the item', barcode: item.barcode } );
+					sendItemModule( socket, action.item );
 				} );
-			})
+			} );
 		}
 	} );
 	socket.on( 'return', function( action ) {
@@ -231,6 +223,11 @@ function connected( socket ) {
 
 				Users.findOne( { barcode: action.user }, function( err, user ) {
 					if ( user != null ) {
+						// User: Disabled
+						if ( user.disable ) {
+							socket.emit( 'flash', { type: 'danger', message: 'User has been disabled.', barcode: item.barcode } );
+							return;
+						}
 						Items.update( { barcode: action.item }, {
 							$push: {
 								transactions: {
@@ -302,6 +299,11 @@ function connected( socket ) {
 							Users.findOne( { barcode: action.user }, function( err, user ) {
 								// Check user was found
 								if ( user != null ) {
+									// User: Disabled
+									if ( user.disable ) {
+										socket.emit( 'flash', { type: 'danger', message: 'User has been disabled.', barcode: item.barcode } );
+										return;
+									}
 									// Item: Reserved by another user
 									if ( item.status == 'reserved' &&
 										 user.id != item.transactions[ item.transactions.length - 1 ].user ) {
