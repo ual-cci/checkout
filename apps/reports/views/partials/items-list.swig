@@ -31,5 +31,5 @@
 		</table>
 	</div>
 {% else %}
-	<p>There are no items to display.</p>
+	<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no items to display.</p>
 {% endif %}

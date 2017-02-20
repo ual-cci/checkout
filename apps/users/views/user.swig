@@ -12,7 +12,25 @@
 		{% endif %}
 	</p>
 
-	{% include 'partials/onloan.swig' %}
+	<hr />
 
-	{% include 'partials/history.swig' %}
+	<h3>Items</h3>
+
+	<ul class="nav nav-tabs">
+		<li role="presentation" class="active" role="tablist">
+			<a href="#onloan" aria-controls="users" role="tab" data-toggle="tab">On Loan</a>
+		</li>
+		<li role="presentation" role="tablist">
+			<a href="#history" aria-controls="items" role="tab" data-toggle="tab">History</a>
+		</li>
+	</ul>
+
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="onloan">
+			{% include 'partials/onloan.swig' %}
+		</div>
+		<div role="tabpanel" class="tab-pane" id="history">
+			{% include 'partials/history.swig' %}
+		</div>
+	</div>
 {% endblock %}

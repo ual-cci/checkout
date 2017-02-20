@@ -16,5 +16,5 @@
 		</table>
 	</div>
 {% else %}
-	<p>There are no groups to display.</p>
+	<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no groups to display.</p>
 {% endif %}

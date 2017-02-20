@@ -11,6 +11,8 @@
 		</div>
 	</p>
 
+	<hr />
+
 	<h3>Items</h3>
 	{% if items.length > 0 %}
 		<div class="table-responsive">
@@ -40,7 +42,7 @@
 			</table>
 		</div>
 	{% else %}
-		<p>There are no items to display.</p>
+		<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no items to display.</p>
 	{% endif %}
 
 {% endblock %}

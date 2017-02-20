@@ -5,7 +5,10 @@
 
 {% block content %}
 {% if course.contact %}
-	<p><strong>Contact:</strong> <a href="/users/{{ course.contact._id | raw }}">{{ course.contact.name }}</a></p>
+	<dl class="dl-horizontal">
+		<dt>Contact</dt>
+		<dd><a href="/users/{{ course.contact._id | raw }}">{{ course.contact.name }}</a></dd>
+	</dl>
 {% endif %}
 	<p>
 		<a href="/courses/{{ course._id | raw }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-pencil

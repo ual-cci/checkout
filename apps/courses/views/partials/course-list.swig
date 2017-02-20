@@ -18,5 +18,5 @@
 		</table>
 	</div>
 {% else %}
-	<p>There are no courses to display.</p>
+	<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no courses to display.</p>
 {% endif %}

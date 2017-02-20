@@ -27,6 +27,6 @@
 			</table>
 		</div>
 	{% else %}
-		<p>There are no printers to display.</p>
+		<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no printers to display.</p>
 	{% endif %}
 {% endblock %}

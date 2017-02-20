@@ -5,7 +5,10 @@
 
 {% block content %}
 	{% if group.limiter %}
-		<p>Limited to: {{ group.limiter }}</p>
+		<dl class="dl-horizontal">
+			<dt>Item limit</dt>
+			<dd>{{ group.limiter }}</dd>
+		</dl>
 	{% endif %}
 	<p>
 		<div class="btn-group" role="group">
@@ -13,6 +16,8 @@
 "></span> Edit</a>
 		</div>
 	</p>
+
+	<hr />
 
 	<h3>Items</h3>
 	{% if items.length > 0 %}
@@ -43,7 +48,7 @@
 			</table>
 		</div>
 	{% else %}
-		<p>There are no items to display.</p>
+		<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no items to display.</p>
 	{% endif %}
 
 {% endblock %}

@@ -24,5 +24,5 @@
 		</tbody>
 	</table>
 {% else %}
-	<p>There are no transactions to display.</p>
+	<p class="bg-warning" style="padding: 1em; margin-top: 1em;">There are no transactions to display.</p>
 {% endif %}

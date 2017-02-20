@@ -1,3 +1,3 @@
-<h3>Transaction record</h3>
+<h3>Transaction Record</h3>
 
 {% include 'transaction-list.swig' %}

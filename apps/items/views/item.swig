@@ -8,6 +8,8 @@
 
 	<a href="/items/{{ item._id | raw }}/edit" title="Edit" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
 
+	<hr />
+
 	{% if loggedInUser.printer %}
 		<div class="btn-group">
 			<a href="/items/{{ item._id | raw }}/label?printer={{ loggedInUser.printer._id | raw }}" class="btn btn-default"><span class="glyphicon glyphicon-print"></span> Print Label to {{ loggedInUser.printer.name }}</a>

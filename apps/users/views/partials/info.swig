@@ -1,13 +1,21 @@
 <h4>{% include 'label.swig' %}</h4>
 
-<p><strong>Course:</strong> {% set course = user.course %}{% include '../../../courses/views/partials/course.swig' %}</p>
+<dl class="dl-horizontal">
+	<dt>Course</dt>
+	<dd>{% set course = user.course %}{% include '../../../courses/views/partials/course.swig' %}</dd>
 
-{% if user.course.contact.name %}
-	<p><strong>Staff Contact:</strong> <a href="/users/{{ user.course.contact._id | raw }}">{{ user.course.contact.name }}</a></p>
-{% endif %}
+	{% if user.course.contact.name %}
+		<dt>Staff Contact</dt>
+		<dd><a href="/users/{{ user.course.contact._id | raw }}">{{ user.course.contact.name }}</a></dd>
+	{% endif %}
 
-<p><strong>Email:</strong> <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
 
-<p><strong>Barcode:</strong> <span data-clipboard-text="{{ user.barcode }}" class="clipboard">{{ user.barcode }}</span></p>
+	<dt>Email</dt>
+	<dd><a href="mailto:{{ user.email }}">{{ user.email }}</a></dd>
 
-<p><strong>Read Loan Agreement:</strong> {% if user.read_tc %}Yes{% else %}No{% endif %}</p>
+	<dt>Barcode</dt>
+	<dd><span data-clipboard-text="{{ user.barcode }}" class="clipboard">{{ user.barcode }}</span></dd>
+
+	<dt>Read Loan Agreement</dt>
+	<dd>{% if user.read_tc %}Yes{% else %}No{% endif %}</dd>
+</dl>
