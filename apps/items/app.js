@@ -339,7 +339,7 @@ function addLabel( doc, barcode ) {
 			page.fontSize( 7 );
 			page.rotate( 90 );
 			page.text( barcode, pt(4), pt(-4), {
-				width: pt(42),
+				width: pt(40),
 				align: 'center'
 			} );
 			page.rotate(-90);
