@@ -19,7 +19,6 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	} )
 } );
 
-// Create
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	res.render( 'create', { group: {} } );
 } )
@@ -31,7 +30,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	}
 
 	new Groups( {
-		_id: require( 'mongoose' ).Types.ObjectId(),
+		_id: db.ObjectId(),
 		name: req.body.name,
 		limiter: req.body.limiter,
 	} ).save( function ( err ) {
@@ -40,7 +39,6 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	} );
 } )
 
-// View
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Groups.findOne( { _id: req.params.id }, function( err, group ) {
 		if ( group == undefined ) {
@@ -54,7 +52,6 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	} )
 } )
 
-// Edit
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Groups.findOne( { _id: req.params.id }, function( err, group ) {
 		if ( group == undefined ) {
@@ -83,12 +80,10 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		} else if ( status.nModified == 0 && status.n == 1 ) {
 			req.flash( 'warning', 'Group was not changed' );
 		} else {
-			console.log( status );
 			req.flash( 'danger', 'There was an error updating the group' );
 		}
 		res.redirect( app.mountpath + '/' + req.params.id );
 	}, function ( status ) {
-		console.log( status );
 		req.flash( 'danger', 'There was an error updating the group' );
 		res.redirect( app.mountpath + '/' + req.params.id );
 	}  );

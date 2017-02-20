@@ -44,7 +44,6 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	} );
 } )
 
-// View
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Courses.findOne( { _id: req.params.id } ).populate( 'contact' ).exec( function( err, course ) {
 		if ( course == undefined ) {
@@ -103,7 +102,6 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	} )
 } )
 
-// Edit
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Users.find( function( err, users ) {
 		Courses.findOne( { _id: req.params.id }, function( err, course ) {
@@ -122,6 +120,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', 'The course requires a name' );
 		res.redirect( app.mountpath + '/create' );
 	}
+	
 	Courses.update( { _id: req.params.id }, {
 		$set: {
 			name: req.body.name,

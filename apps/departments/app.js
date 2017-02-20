@@ -19,7 +19,6 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	} )
 } );
 
-// Create
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	res.render( 'create', { department: {} } );
 } )
@@ -39,7 +38,6 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	} );
 } )
 
-// View
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Departments.findOne( { _id: req.params.id }, function( err, department ) {
 		if ( department == undefined ) {
@@ -53,7 +51,6 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	} )
 } )
 
-// Edit
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	Departments.findOne( { _id: req.params.id }, function( err, department ) {
 		if ( department == undefined ) {
