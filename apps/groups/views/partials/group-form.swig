@@ -1,13 +1,21 @@
-<form method="post">
-	<p>
-		<label for="name">Name:</label>
-		<input id="name" name="name" type="text" value="{{ group.name }}" class="form-control" required autocomplete="off" />
-	</p>
-	<p>
-		<label for="limiter">Limiter:</label>
-		<input id="limiter" name="limiter" type="number" value="{{ group.limiter }}" class="form-control" />
-	</p>
-	<p>
-		<input type="submit" class="btn btn-default" value="{{ action }}" />
-	</p>
+<form method="post" class="form-horizontal">
+	<div class="form-group">
+		<label for="name" class="col-md-2 control-label">Name</label>
+		<div class="col-md-4">
+			<input id="name" name="name" type="text" value="{{ group.name }}" class="form-control" required />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="limiter" class="col-md-2 control-label">Limiter</label>
+		<div class="col-md-4">
+			<input id="limiter" name="limiter" type="number" value="{{ group.limiter }}" class="form-control" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-4 col-md-offset-2">
+			<button type="submit" class="btn btn-default">{{ action }}</button>
+		</div>
+	</div>
 </form>

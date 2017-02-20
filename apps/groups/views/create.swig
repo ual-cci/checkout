@@ -1,13 +1,9 @@
 {% extends '../../../src/views/admin.swig' %}
 
-{% block heading %}Create group{% endblock %}
+{% block heading %}Create Group{% endblock %}
 {% block title %}{% block heading %}{% endblock %} – Group – {% parent %}{% endblock %}
 
 {% block content %}
 	{% set action = 'Create' %}
-	<div class="row">
-		<div class="col-md-5">
-			{% include 'partials/group-form.swig' %}
-		</div>
-	</div>
+	{% include 'partials/group-form.swig' %}
 {% endblock %}

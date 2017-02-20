@@ -167,7 +167,7 @@ app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	Departments.find( function( err, departments ) {
 		Groups.find( function( err, groups ) {
 			if ( departments.length > 0 ) {
-				res.render( 'create', { item: {}, departments: departments, groups: groups } );
+				res.render( 'create', { item: null, departments: departments, groups: groups } );
 			} else {
 				req.flash( 'warning', 'Create at least one department before creating items' )
 				res.redirect( app.mountpath );

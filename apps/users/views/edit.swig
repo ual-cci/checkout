@@ -5,9 +5,5 @@
 
 {% block content %}
 	{% set action = 'Update' %}
-	<div class="row">
-		<div class="col-md-5">
-			{% include 'partials/user-form.swig' %}
-		</div>
-	</div>
+	{% include 'partials/user-form.swig' %}
 {% endblock %}
