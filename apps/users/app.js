@@ -24,7 +24,11 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 		Users.find( filter ).populate( 'course' ).exec( function( err, users ) {
 			var active_users = [];
 			var disabled_users = [];
-
+			users.sort( function( a, b ) {
+				if ( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
+				if ( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
+				return 0;
+			} )
 			for ( var u = 0; u < users.length; u++ ) {
 				if ( users[u].disable ) {
 					disabled_users.push( users[u] );

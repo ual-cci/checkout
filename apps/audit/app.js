@@ -33,7 +33,11 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 			if ( req.query.group ) filter.group = req.query.group;
 			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
 				var result = [];
-
+				items.sort( function( a, b ) {
+					if ( a.barcode < b.barcode ) return -1;
+					if ( a.barcode > b.barcode ) return 1;
+					return 0;
+				} )
 				for ( i in items ) {
 					var item = items[i];
 					if ( item.audited == true ) {
@@ -65,7 +69,11 @@ app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 			if ( req.query.group ) filter.group = req.query.group;
 			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
 				var result = [], other = [];
-
+				items.sort( function( a, b ) {
+					if ( a.barcode < b.barcode ) return -1;
+					if ( a.barcode > b.barcode ) return 1;
+					return 0;
+				} )
 				for ( i in items ) {
 					var item = items[i];
 					if ( item.audited != true ) {

@@ -15,6 +15,11 @@ app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Departments.find( function( err, departments ) {
+		departments.sort( function( a, b ) {
+			if ( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
+			if ( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
+			return 0;
+		} )
 		res.render( 'departments', { departments: departments } );
 	} )
 } );
@@ -45,6 +50,11 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			res.redirect( app.mountpath );
 		} else {
 			Items.find( { department: req.params.id } ).populate( 'group' ).exec( function( err, items ) {
+				items.sort( function( a, b ) {
+					if ( a.barcode < b.barcode ) return -1;
+					if ( a.barcode > b.barcode ) return 1;
+					return 0;
+				} )
 				res.render( 'department', { department: department, items: items } );
 			} );
 		}

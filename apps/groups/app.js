@@ -15,6 +15,11 @@ app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Groups.find( function( err, groups ) {
+		groups.sort( function( a, b ) {
+			if ( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
+			if ( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
+			return 0;
+		} )
 		res.render( 'groups', { groups: groups } );
 	} )
 } );
@@ -46,6 +51,11 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			res.redirect( app.mountpath );
 		} else {
 			Items.find( { group: req.params.id } ).populate( 'department' ).exec( function( err, items ) {
+				items.sort( function( a, b ) {
+					if ( a.barcode < b.barcode ) return -1;
+					if ( a.barcode > b.barcode ) return 1;
+					return 0;
+				} )
 				res.render( 'group', { group: group, items: items } );
 			} );
 		}

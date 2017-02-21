@@ -31,6 +31,11 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
 			Items.find( filter ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+				items.sort( function( a, b ) {
+					if ( a.barcode < b.barcode ) return -1;
+					if ( a.barcode > b.barcode ) return 1;
+					return 0;
+				} )
 				for ( i in items ) {
 					var item = items[i];
 
@@ -225,6 +230,11 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Printers.find( function( err, printers ) {
 		Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
+			item.transactions.sort( function( a, b ) {
+				if ( a.date < b.date ) return 1;
+				if ( a.date > b.date ) return -1;
+				return 0;
+			} )
 			if ( item == undefined ) {
 				req.flash( 'danger', 'Item not found' );
 				res.redirect( app.mountpath );

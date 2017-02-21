@@ -18,6 +18,11 @@ app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Courses.find().populate( 'contact' ).exec( function( err, courses ) {
+		courses.sort( function( a, b ) {
+			if ( a.name < b.name ) return -1;
+			if ( a.name > b.name ) return 1;
+			return 0;
+		} )
 		res.render( 'courses', { courses: courses } );
 	} )
 } );
@@ -51,11 +56,20 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			res.redirect( app.mountpath );
 		} else {
 			Users.find( { course: req.params.id, disable: { $ne: true } }, function( err, users ) {
+				users.sort( function( a, b ) {
+					if ( a.name < b.name ) return -1;
+					if ( a.name > b.name ) return 1;
+					return 0;
+				} )
 				Items.find().populate( 'department' ).populate( 'group' ).populate( 'course' ).populate( 'transactions.user' ).exec( function( err, items ) {
 					var email;
 					var user_result = {};
 					var item_results = [];
-
+					items.sort( function( a, b ) {
+						if ( a.barcode < b.barcode ) return -1;
+						if ( a.barcode > b.barcode ) return 1;
+						return 0;
+					} )
 					for ( i in items ) {
 						var item = items[i];
 						if ( item.status == 'on-loan' ) {
