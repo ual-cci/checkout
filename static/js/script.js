@@ -8,4 +8,12 @@ jQuery( document ).ready( function() {
 	clipboard.on( 'error', function( e ) {
 		console.log( e );
 	} );
+
+	jQuery( 'input[type=checkbox].checkall' ).bind( 'click', function( ) {
+		if( jQuery( this ).prop( 'checked' ) ) {
+			jQuery( 'input[type=checkbox]' ).prop( 'checked', true );
+		} else {
+			jQuery( 'input[type=checkbox]' ).prop( 'checked', false );
+		}
+	} )
 } );

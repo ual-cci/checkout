@@ -68,6 +68,46 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	} );
 } );
 
+app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
+	if ( req.body.fields ) {
+		Items.find( { _id: { $in: req.body.edit } }, function( err, items ) {
+			for ( var i = 0; i < items.length; i++ ) {
+				item = items[i];
+				if ( req.body.fields.indexOf( 'group' ) != -1 && req.body.group != '' )
+					item.group = req.body.group;
+
+				if ( req.body.fields.indexOf( 'department' ) != -1 && req.body.department != '' )
+					item.department = req.body.department;
+
+				if ( req.body.fields.indexOf( 'notes' ) != -1 && req.body.notes != '' )
+					item.notes = req.body.notes;
+
+				if ( req.body.fields.indexOf( 'value' ) != -1 && req.body.value != '' )
+					item.value = req.body.value;
+
+				item.save( function( err ) {
+					if ( err ) console.log( err );
+				} );
+			}
+			req.flash( 'success', 'Items updated' );
+			res.redirect( app.mountpath );
+		} );
+	} else {
+		Groups.find( function( err, groups ) {
+			Departments.find( function( err, departments ) {
+				Items.find( { _id: { $in: req.body.edit } } ).populate( 'group' ).populate( 'department' ).exec( function( err, items ) {
+					items.sort( function( a, b ) {
+						if ( a.barcode < b.barcode ) return -1;
+						if ( a.barcode > b.barcode ) return 1;
+						return 0;
+					} )
+					res.render( 'edit-multiple', { items: items, groups: groups, departments: departments } );
+				} );
+			} );
+		} );
+	}
+} );
+
 // Generate items
 app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
 	Departments.find( function( err, departments ) {
@@ -230,11 +270,6 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Printers.find( function( err, printers ) {
 		Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
-			item.transactions.sort( function( a, b ) {
-				if ( a.date < b.date ) return 1;
-				if ( a.date > b.date ) return -1;
-				return 0;
-			} )
 			if ( item == undefined ) {
 				req.flash( 'danger', 'Item not found' );
 				res.redirect( app.mountpath );

@@ -1,15 +1,13 @@
 {% if items.length > 0 %}
 	<div class="table-responsive">
-		<table class="table table-striped flex">
-			<col style="width:5%" />
-			<col style="width:7%" />
-			<col style="width:20%" />
-			<col style="width:7%" />
-			<col style="width:10%" />
-			<col style="width:15%" />
-			<col style="width:5%" />
+		<table class="table table-striped">
 			<thead>
 				<tr>
+					{% if edit %}
+						<th>
+							<input class="checkall" type="checkbox" title="Check All" {% if edit_items %}checked{% endif %} />
+						</th>
+					{% endif %}
 					<th>Status</th>
 					<th>Barcode</th>
 					<th>Name</th>
@@ -24,17 +22,22 @@
 			<tbody>
 				{% for item in items %}
 					<tr>
+						{% if edit %}
+							<td>
+								<input type="checkbox" name="edit" value="{{ item._id | raw }}" {% if edit_items %}checked{% endif %} />
+							</td>
+						{% endif %}
 						<td>
 							{% set status = item.status %}
 							{% include 'status.swig' %}
 						</td>
 						<td title="{{ item.barcode }}"><span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
-						<td class="flex" title="{{ item.name }}"><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
-						<td class="flex" title="{{ item.owner.name }}">{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
+						<td title="{{ item.name }}"><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
+						<td title="{{ item.owner.name }}">{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
 						{% set group = item.group %}
-						<td class="flex" title="{{ item.group.name }}">{% include '../../../groups/views/partials/group.swig' %}</td>
+						<td title="{{ item.group.name }}">{% include '../../../groups/views/partials/group.swig' %}</td>
 						{% set department = item.department %}
-						<td class="flex" title="{{ item.department.name }}">{% include '../../../departments/views/partials/department.swig' %}</td>
+						<td title="{{ item.department.name }}">{% include '../../../departments/views/partials/department.swig' %}</td>
 						{% if total %}
 							<td>&pound;{{ item.value }}</td>
 						{% endif %}
@@ -44,6 +47,7 @@
 			{% if total %}
 				<tfoot>
 					<tr>
+						<th></th>
 						<th colspan="6">Total</th>
 						<th>£{{ total }}</th>
 					</tr>

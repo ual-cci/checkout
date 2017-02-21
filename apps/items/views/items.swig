@@ -8,5 +8,9 @@
 
 	<hr />
 
-	{% include 'partials/items-list.swig' %}
+	<form action="/items/edit" method="post">
+		{% set edit = true %}
+		{% include 'partials/items-list.swig' %}
+		<button class="btn btn-default" type="submit">Edit Selected</button>
+	</form>
 {% endblock %}

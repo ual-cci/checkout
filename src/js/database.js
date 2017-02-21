@@ -54,7 +54,7 @@ var itemSchema = mongoose.Schema( {
 		},
 		status: {
 			type: String,
-			enum: [ 'returned', 'loaned', 'reserved', 'broken', 'audited' ],
+			enum: [ 'returned', 'loaned', 'reserved', 'broken', 'audited', 'lost' ],
 			required: true
 		}
 	} ]

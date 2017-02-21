@@ -17,14 +17,19 @@
 		</li>
 	</ul>
 
-	<div class="tab-content">
-		<div role="tabpanel" class="tab-pane active" id="active">
-			{% set users = active %}
-			{% include 'partials/user-list.swig' %}
+	<form action="/users/edit" method="post">
+		{% set edit = true %}
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="active">
+				{% set users = active %}
+				{% include 'partials/user-list.swig' %}
+			</div>
+			<div role="tabpanel" class="tab-pane" id="disabled">
+				{% set users = disabled %}
+				{% include 'partials/user-list.swig' %}
+			</div>
 		</div>
-		<div role="tabpanel" class="tab-pane" id="disabled">
-			{% set users = disabled %}
-			{% include 'partials/user-list.swig' %}
-		</div>
-	</div>
+
+		<button class="btn btn-default" type="submit">Edit Selected</button>
+	</form>
 {% endblock %}

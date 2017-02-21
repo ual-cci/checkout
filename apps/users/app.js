@@ -42,6 +42,39 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	} );
 } )
 
+app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
+	if ( req.body.fields ) {
+		Users.find( { _id: { $in: req.body.edit } }, function( err, users ) {
+			for ( var u = 0; u < users.length; u++ ) {
+				user = users[u];
+
+				if ( req.body.fields.indexOf( 'course' ) != -1 && req.body.course != '' )
+					user.course = req.body.course;
+
+				if ( req.body.fields.indexOf( 'status' ) != -1 && req.body.status != '' )
+					user.disable = ( req.body.status == 'disabled' ? true : false );
+
+				user.save( function( err ) {
+					if ( err ) console.log( err );
+				} );
+			}
+			req.flash( 'success', 'Users updated' );
+			res.redirect( app.mountpath );
+		} );
+	} else {
+		Courses.find( function( err, courses ) {
+			Users.find( { _id: { $in: req.body.edit } } ).populate( 'courses' ).exec( function( err, users ) {
+				users.sort( function( a, b ) {
+					if ( a.barcode < b.barcode ) return -1;
+					if ( a.barcode > b.barcode ) return 1;
+					return 0;
+				} )
+				res.render( 'edit-multiple', { users: users, courses: courses } );
+			} );
+		} );
+	}
+} );
+
 // Create user
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	Courses.find( function( err, courses ) {
