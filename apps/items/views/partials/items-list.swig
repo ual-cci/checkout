@@ -31,7 +31,7 @@
 							{% set status = item.status %}
 							{% include 'status.swig' %}
 						</td>
-						<td title="{{ item.barcode }}"><span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
+						<td title="{{ item.barcode }}">{% if loggedInUser.printer %}<a href="/items/{{ item._id | raw }}/label?printer={{ loggedInUser.printer._id | raw }}"><span class="glyphicon glyphicon-print"></span></a> {% endif %}<span data-clipboard-text="{{ item.barcode }}" class="clipboard">{{ item.barcode }}</span></td>
 						<td title="{{ item.name }}"><a href="/items/{{ item._id | raw }}">{{ item.name }}</a></td>
 						<td title="{{ item.owner.name }}">{% if item.owner %}<a href="/users/{{ item.owner._id | raw }}">{{ item.owner.name }}</a>{% else %}&mdash;{% endif %}</td>
 						{% set group = item.group %}

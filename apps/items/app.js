@@ -292,7 +292,11 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 					} else {
 						processPrint( [ item.barcode ], printer.url );
 						req.flash( 'info', 'Label printed to ' + printer.name );
-						res.redirect( app.mountpath + '/' + item._id.toString() );
+						if ( req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
+							res.redirect( app.mountpath );
+						} else {
+							res.redirect( app.mountpath + '/' + item._id.toString() );
+						}
 					}
 				} );
 			} else {
