@@ -152,6 +152,9 @@ var userSchema = mongoose.Schema( {
 		type: Boolean,
 		default: false
 	},
+	audit_point: {
+		type: Date
+	}
 } );
 
 var departmentSchema = mongoose.Schema( {

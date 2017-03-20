@@ -211,7 +211,8 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 			course: req.body.course,
 			printer: req.body.printer ? req.body.printer : null,
 			type: req.body.type,
-			disable: req.body.disable
+			disable: req.body.disable,
+			audit_point: new Date( req.body.audit_point )
 		}
 	} ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {

@@ -28,26 +28,29 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 	var status = req.params.status;
 	Groups.find( function( err, groups ) {
 		Departments.find( function( err, departments ) {
-			var filter = {};
-			if ( req.query.department ) filter.department = req.query.department;
-			if ( req.query.group ) filter.group = req.query.group;
-			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-				var result = [];
-				items.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
-				for ( i in items ) {
-					var item = items[i];
-					if ( item.audited == true ) {
-						result.push( item );
+			var date = new Date().setHours( 0, 0, 0, 0 );
+			if ( req.user.audit_point ) date = req.user.audit_point;
+			var filter = {
+				transactions: {
+					$elemMatch: {
+						date: {
+							$gte: date
+						},
+						status: 'audited'
 					}
 				}
-
+			};
+			if ( req.query.department ) filter.department = req.query.department;
+			if ( req.query.group ) filter.group = req.query.group;
+			Items.find( filter )
+			 .populate( 'department' )
+			 .populate( 'group' )
+			 .sort( 'name' )
+			 .sort( 'barcode' )
+			 .exec( function( err, items ) {
 				res.render( '../../reports/views/report', {
 					status: 'Scanned',
-					items: result,
+					items: items,
 					departments: departments,
 					selectedDepartment: req.query.department,
 					groups: groups,
@@ -64,31 +67,37 @@ app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 	var status = req.params.status;
 	Groups.find( function( err, groups ) {
 		Departments.find( function( err, departments ) {
-			var filter = {};
+			var date = new Date().setHours( 0, 0, 0, 0 );
+			if ( req.user.audit_point ) date = req.user.audit_point;
+			var filter = {
+				transactions: {
+					$not: {
+						$elemMatch: {
+							date: {
+								$gte: date
+							},
+							status: 'audited'
+						}
+					}
+				}
+			};
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
 			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
 				var result = [], other = [];
-				items.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
 				for ( i in items ) {
 					var item = items[i];
-					if ( item.audited != true ) {
-						switch ( item.status ) {
-							case 'available':
-							case 'broken':
-							case 'new':
-							case 'reserved':
-							default:
-								result.push( item );
-								break;
-							case 'on-loan':
-							case 'lost':
-								other.push( item );
-						}
+					switch ( item.status ) {
+						case 'available':
+						case 'broken':
+						case 'new':
+						case 'reserved':
+						default:
+							result.push( item );
+							break;
+						case 'on-loan':
+						case 'lost':
+							other.push( item );
 					}
 				}
 

@@ -56,6 +56,12 @@
 
 	{% if action == 'Update' %}
 		<div class="form-group">
+			<label for="audit_point" class="col-md-2 control-label">Audit Point</label>
+			<div class="col-md-4">
+				<input name="audit_point" id="audit_point" type="datetime-local" class="form-control" value="{{ user.audit_point | date('Y-m-d\TH:i:s') }}">
+			</div>
+		</div>
+		<div class="form-group">
 			<div class="col-md-4 col-md-offset-2">
 				<div class="checkbox">
 					<label for="disable"><input id="disable" name="disable" type="checkbox" {% if user.disable %}checked{% endif %} /> Disable User</label>
