@@ -30,40 +30,51 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 			var total = 0;
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
-			Items.find( filter ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-				items.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
-				for ( i in items ) {
-					var item = items[i];
-
-					if ( item.status == 'on-loan' ) {
-						var owner_transaction = 0;
-
-						for ( i = item.transactions.length - 1; i >= 0; i-- ) {
-							if ( item.transactions[ i ].status == 'loaned' ) {
-								last_transaction = item.transactions[ i ];
-								break;
-							}
-						}
-						item.owner = last_transaction.user;
-					}
-
-					if ( item.value != null )
-						total = total + item.value;
-				}
-
+			if ( req.query.department == undefined && req.query.group == undefined ) {
 				res.render( 'items', {
-					items: items,
+					items: [],
 					departments: departments,
 					selectedDepartment: req.query.department,
 					groups: groups,
 					selectedGroup: req.query.group,
-					total: total
+					total: 0
 				} );
-			} );
+			} else {
+				Items.find( filter ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+					items.sort( function( a, b ) {
+						if ( a.barcode < b.barcode ) return -1;
+						if ( a.barcode > b.barcode ) return 1;
+						return 0;
+					} )
+					for ( i in items ) {
+						var item = items[i];
+
+						if ( item.status == 'on-loan' ) {
+							var owner_transaction = 0;
+
+							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+								if ( item.transactions[ i ].status == 'loaned' ) {
+									last_transaction = item.transactions[ i ];
+									break;
+								}
+							}
+							item.owner = last_transaction.user;
+						}
+
+						if ( item.value != null )
+							total = total + item.value;
+					}
+
+					res.render( 'items', {
+						items: items,
+						departments: departments,
+						selectedDepartment: req.query.department,
+						groups: groups,
+						selectedGroup: req.query.group,
+						total: total
+					} );
+				} );
+			}
 		} );
 	} );
 } );
