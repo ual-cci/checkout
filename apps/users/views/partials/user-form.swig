@@ -1,15 +1,39 @@
 <form method="post" class="form-horizontal">
 	<div class="form-group">
-		<label for="name" class="col-md-2 control-label">Name</label>
+		<label for="barcode" class="col-md-2 control-label">Barcode</label>
 		<div class="col-md-4">
-			<input id="name" name="name" type="text" value="{{ user.name }}" class="form-control" required />
+			<input id="barcode" name="barcode" type="text" value="{{ user.barcode }}" autocomplete="off" class="form-control" required />
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label for="barcode" class="col-md-2 control-label">Barcode</label>
+		<label for="type" class="col-md-2 control-label">Type</label>
 		<div class="col-md-4">
-			<input id="barcode" name="barcode" type="text" value="{{ user.barcode }}" autocomplete="off" class="form-control" required />
+			<select id="type" name="type" class="form-control">
+				<option value="student" {% if user.type == 'student' %}selected{% endif %}>User</option>
+				<option value="staff" {% if user.type == 'staff' %}selected{% endif %}>Admin</option>
+			</select>
+		</div>
+	</div>
+
+	{% if action == 'Update' %}
+		<div class="form-group">
+			<div class="col-md-4 col-md-offset-2">
+				<div class="checkbox">
+					<label for="disable"><input id="disable" name="disable" type="checkbox" {% if user.disable %}checked{% endif %} /> Disable User</label>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+	<div class="page-header">
+		<h3>Details</h3>
+	</div>
+
+	<div class="form-group">
+		<label for="name" class="col-md-2 control-label">Name</label>
+		<div class="col-md-4">
+			<input id="name" name="name" type="text" value="{{ user.name }}" class="form-control" required />
 		</div>
 	</div>
 
@@ -32,6 +56,10 @@
 		</div>
 	</div>
 
+	<div class="page-header">
+		<h3>Preferences</h3>
+	</div>
+
 	<div class="form-group">
 		<label for="printer" class="col-md-2 control-label">Printer</label>
 		<div class="col-md-4">
@@ -44,16 +72,6 @@
 		</div>
 	</div>
 
-	<div class="form-group">
-		<label for="type" class="col-md-2 control-label">Type</label>
-		<div class="col-md-4">
-			<select id="type" name="type" class="form-control">
-				<option value="student" {% if user.type == 'student' %}selected{% endif %}>User</option>
-				<option value="staff" {% if user.type == 'staff' %}selected{% endif %}>Admin</option>
-			</select>
-		</div>
-	</div>
-
 	{% if action == 'Update' %}
 		<div class="form-group">
 			<label for="audit_point" class="col-md-2 control-label">Audit Point</label>
@@ -61,18 +79,13 @@
 				<input name="audit_point" id="audit_point" type="datetime-local" class="form-control" value="{{ user.audit_point | date('Y-m-d\TH:i:s') }}">
 			</div>
 		</div>
-		<div class="form-group">
-			<div class="col-md-4 col-md-offset-2">
-				<div class="checkbox">
-					<label for="disable"><input id="disable" name="disable" type="checkbox" {% if user.disable %}checked{% endif %} /> Disable User</label>
-				</div>
-			</div>
-		</div>
 	{% endif %}
+
+	<hr />
 
 	<div class="form-group">
 		<div class="col-md-4 col-md-offset-2">
-			<button type="submit" class="btn btn-default">{{ action }}</button>
+			<button type="submit" class="btn btn-primary">{{ action }}</button>
 		</div>
 	</div>
 </form>
