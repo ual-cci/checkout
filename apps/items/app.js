@@ -175,9 +175,9 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		var item = {
 			_id: require('mongoose').Types.ObjectId(),
 			name: req.body.name.trim(),
-			barcode: req.body.prefix.trim().toUpperCase(),
+			barcode: req.body.prefix.toUpperCase(),
 			value: req.body.value,
-			department: req.body.department,
+			department: ObjectId( req.body.department ),
 			notes: req.body.notes
 		}
 
