@@ -12,7 +12,8 @@ var db = require( __js + '/database' ),
 	Items = db.Items,
 	Groups = db.Groups,
 	Departments = db.Departments,
-	Printers = db.Printers;
+	Printers = db.Printers,
+	ObjectId = db.ObjectId;
 
 var PDFDocument = require( 'pdfkit' );
 var bwipjs = require( 'bwip-js' );
@@ -173,7 +174,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 	for ( var i = start; i <= end; i++ ) {
 		var item = {
-			_id: require('mongoose').Types.ObjectId(),
+			_id: ObjectId(),
 			name: req.body.name.trim(),
 			barcode: req.body.prefix.toUpperCase(),
 			value: req.body.value,
@@ -303,7 +304,7 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 					} else {
 						processPrint( [ item.barcode ], printer.url );
 						req.flash( 'info', 'Label printed to ' + printer.name );
-						if ( req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
+						if ( req.get( 'referer' ) && req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
 							res.redirect( app.mountpath );
 						} else {
 							res.redirect( app.mountpath + '/' + item._id.toString() );
