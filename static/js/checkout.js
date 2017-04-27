@@ -68,6 +68,9 @@ jQuery( document ).ready( function() {
 					mode: 'multi-return'
 				} );
 				break;
+			case 'find':
+				flash( { type: 'info', message: 'Barcode could not be identified.', barcode: jQuery( '#find input' ).val() } );
+				break;
 		}
 		jQuery( '#find input' ).val( '' );
 
@@ -161,7 +164,9 @@ socket.on( 'module', function( html ) {
 	jQuery( jQuery( '#modules .panel' ).splice( 5 ) ).remove();
 } )
 
-socket.on( 'flash', function( msg ) {
+socket.on( 'flash', flash );
+
+function flash( msg ) {
 	clearFlash();
 	var btn = '';
 	if ( msg.btn ) {
@@ -170,7 +175,7 @@ socket.on( 'flash', function( msg ) {
 	}
 	jQuery( '#status' ).html( '<p class="pull-left"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</p>' + btn ).removeClass( 'alert-danger' ).removeClass( 'alert-info' ).removeClass( 'alert-success' ).removeClass( 'alert-warning' ).addClass( 'alert-' + msg.type );
 	statusTimeout = setTimeout( clearFlash, msg.timer ? msg.timer : 5000 );
-} )
+}
 
 socket.on( 'stats', function( msg ) {
 	jQuery( '.issued' ).text( msg.issued );

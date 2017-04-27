@@ -25,11 +25,11 @@
 							<li><a href="/departments">Departments</a></li>
 							<li role="separator" class="divider"></li>
 							<li class="dropdown-header"><span class="glyphicon glyphicon-plus"></span> New</li>
+							<li><a href="/users/create">User</a></li>
 							<li><a href="/items/create">Item</a></li>
 							<li><a href="/items/generate">Generate Items</a></li>
 							<li><a href="/groups/create">Group</a></li>
 							<li><a href="/departments/create">Department</a></li>
-							<li><a href="/users/create">User</a></li>
 							<li><a href="/courses/create">Course</a></li>
 						</ul>
 					</li>

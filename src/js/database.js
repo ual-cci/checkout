@@ -189,7 +189,7 @@ var printerSchema = mongoose.Schema( {
 	}
 } );
 
-exports.ObjectId = ObjectId;
+exports.ObjectId = mongoose.Types.ObjectId;
 exports.mongoose = mongoose;
 
 var Items = mongoose.model( 'Items', itemSchema );

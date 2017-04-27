@@ -203,18 +203,22 @@ app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 } )
 
 app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
+	var user = {
+		name: req.body.name,
+		barcode: req.body.barcode,
+		email: req.body.email,
+		course: req.body.course,
+		printer: req.body.printer ? req.body.printer : null,
+		type: req.body.type,
+		disable: req.body.disable
+	};
+	if ( req.body.audit_point ) {
+		user.audit_point = new Date( req.body.audit_point );
+	} else {
+		user.audit_point = null;
+	}
 	Users.update( { _id: req.params.id }, {
-		$set: {
-			name: req.body.name,
-			barcode: req.body.barcode,
-			email: req.body.email,
-			course: req.body.course,
-			printer: req.body.printer ? req.body.printer : null,
-			type: req.body.type,
-			disable: req.body.disable,
-			audit_point: new Date( req.body.audit_point )
-		}
-	} ).then( function ( status ) {
+		$set: user } ).then( function ( status ) {
 		if ( status.nModified == 1 && status.n == 1 ) {
 			req.flash( 'success', 'User updated' );
 		} else if ( status.nModified == 0 && status.n == 1 ) {

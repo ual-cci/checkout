@@ -40,7 +40,7 @@
 	<div class="form-group">
 		<label for="email" class="col-md-2 control-label">Email</label>
 		<div class="col-md-4">
-			<input id="email" name="email" type="text" value="{{ user.email }}" class="form-control" autocomplete="off" />
+			<input id="email" name="email" type="text" required value="{{ user.email }}" class="form-control" autocomplete="off" />
 		</div>
 	</div>
 
