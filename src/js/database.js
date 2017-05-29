@@ -8,6 +8,7 @@ var mongoose = require( 'mongoose' ),
 	ObjectId = mongoose.Schema.ObjectId;
 
 exports.connect = function() {
+	mongoose.Promise = global.Promise;
 	mongoose.connect( config.mongo );
 	var db = mongoose.connection;
 	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
