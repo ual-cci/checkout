@@ -174,16 +174,16 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 	for ( var i = start; i <= end; i++ ) {
 		var item = {
-			_id: ObjectId(),
+			_id: db.mongoose.Schema.ObjectId(),
 			name: req.body.name.trim(),
-			barcode: req.body.prefix.toUpperCase(),
+			barcode: req.body.prefix,
 			value: req.body.value,
 			department: ObjectId( req.body.department ),
 			notes: req.body.notes
 		}
 
 		if ( req.body.group )
-			item.group = req.body.group;
+			item.group = ObjectId( req.body.group );
 
 		var index = i.toString();
 		if ( i < 10 ) index = '0' + index;
@@ -235,15 +235,15 @@ app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 
 app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	var item = {
-		_id: require('mongoose').Types.ObjectId(),
+		_id: db.mongoose.Schema.ObjectId(),
 		name: req.body.name,
 		barcode: req.body.barcode.toUpperCase(),
 		value: req.body.value,
-		department: req.body.department,
+		department: ObjectId( req.body.department ),
 		notes: req.body.notes
 	}
 	if ( req.body.group )
-		item.group = req.body.group;
+		item.group = ObjectId( req.body.group );
 
 	if ( item.name == '' ) {
 		req.flash( 'danger', 'The item requires a name' );
