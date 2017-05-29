@@ -57,32 +57,6 @@ for ( var f in files ) {
 			if ( output.priority == undefined ) output.priority = 100;
 			output.app = file + '/app.js';
 
-			// Check for sub apps directory
-			output.subapps = [];
-			var subapp_path = file + '/apps';
-			if ( fs.existsSync( subapp_path ) ) {
-				// Fetch the contents of the subapp directory
-				var subapps = fs.readdirSync( subapp_path );
-				for ( var a in subapps ) {
-					// Only read directories
-					var subapp = subapp_path + '/' + subapps[a];
-					if ( fs.statSync( subapp ).isDirectory() ) {
-						// Check for a config.json file
-						var sub_config_file = subapp + '/config.json';
-						if ( fs.existsSync( sub_config_file ) ) {
-							// Parse the config into apps array
-							var subapp_output = JSON.parse( fs.readFileSync ( sub_config_file ) );
-							subapp_output.uid = subapps[a];
-							if ( subapp_output.priority == undefined ) subapp_output.priority = 100;
-							subapp_output.app = subapp + '/app.js';
-							output.subapps.push( subapp_output );
-						}
-					}
-				}
-			}
-			output.subapps.sort( function( a, b ) {
-				return a.priority < b.priority;
-			} );
 			apps.push( output );
 		}
 	}
@@ -107,14 +81,6 @@ for ( var a in apps ) {
 	console.log( "	Route: /" + _app.path );
 	var new_app = require( _app.app )( _app );
 	app.use( '/' + _app.path, new_app );
-	if ( _app.subapps.length > 0 ) {
-		for ( var s in _app.subapps ) {
-			var _sapp = _app.subapps[s];
-			console.log( "	       /" + _app.path + "/" + _sapp.path  );
-			var new_sub_app = require( _sapp.app )( _sapp, io );
-			new_app.use( '/' + _sapp.path, new_sub_app );
-		}
-	}
 }
 
 // Error 404
