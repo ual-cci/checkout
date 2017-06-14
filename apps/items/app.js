@@ -402,13 +402,13 @@ function addLabel( doc, barcode ) {
 			page.fontSize( 7 );
 			page.rotate( 90 );
 			page.text( barcode, pt(4), pt(-4), {
-				width: pt(40),
-				align: 'center'
+				width: pt(30),
+				align: 'left'
 			} );
 			page.rotate(-90);
 			page.image( png,  pt(5), pt(2), {
 				width: pt(5),
-				height: pt(40)
+				height: pt(30)
 			} );
 			resolve( page );
 		} )
@@ -421,7 +421,7 @@ function generateBarcodeImage( barcode ) {
 			bcid: 'code39',
 			text: barcode,
 			height: 5,
-			width: 40,
+			width: 30,
 			rotate: 'R',
 			monochrome: true
 		}, function( err, png ) {
