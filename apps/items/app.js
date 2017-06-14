@@ -174,9 +174,9 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 	for ( var i = start; i <= end; i++ ) {
 		var item = {
-			_id: db.mongoose.Schema.ObjectId(),
+			_id: db.ObjectId(),
 			name: req.body.name.trim(),
-			barcode: req.body.prefix,
+			barcode: req.body.prefix.toUpperCase(),
 			value: req.body.value,
 			department: ObjectId( req.body.department ),
 			notes: req.body.notes
@@ -235,13 +235,14 @@ app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 
 app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	var item = {
-		_id: db.mongoose.Schema.ObjectId(),
+		_id: db.ObjectId(),
 		name: req.body.name,
 		barcode: req.body.barcode.toUpperCase(),
 		value: req.body.value,
 		department: ObjectId( req.body.department ),
 		notes: req.body.notes
 	}
+	console.log( item );
 	if ( req.body.group )
 		item.group = ObjectId( req.body.group );
 
@@ -274,6 +275,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 				req.flash( 'danger', 'Barcode is not unique' );
 				res.redirect( app.mountpath + '/create' );
 			}
+			console.log( err );
 		}
 	} );
 } )
