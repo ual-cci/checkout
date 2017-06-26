@@ -18,8 +18,12 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	res.locals.currentModule = 'audit';
-	res.render( 'audit' );
+	Departments.find( function( err, departments ) {
+		res.locals.currentModule = 'audit';
+		res.render( 'audit', {
+			departments: departments
+		} );
+	} );
 } );
 
 // Audited report

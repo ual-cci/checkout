@@ -10,15 +10,26 @@
 {% block title %}{% block heading %}{% endblock %} – {% parent %}{% endblock %}
 
 {% block content %}
-	<form method="post">
-		<p>
-			<div class="input-group" style="max-width: 15em;">
-				<input type="text" id="barcode" name="barcode" required autocomplete="off" class="form-control">
-				<span class="input-group-btn">
-					<button class="btn btn-default"><span class="glyphicon glyphicon-barcode"></span></button>
-				</span>
+	<div class="row">
+		<form method="post">
+			<div class="col-md-3">
+				<div class="input-group">
+					<input type="text" id="barcode" name="barcode" required autocomplete="off" class="form-control">
+					<span class="input-group-btn">
+						<button class="btn btn-default"><span class="glyphicon glyphicon-barcode"></span></button>
+					</span>
+				</div>
 			</div>
-		</p>
-		<input type="hidden" name="modal" value="/items/audit">
-	</form>
+			<div class="col-md-3">
+				<div class="input-group">
+					<select id="department" class="form-control">
+						<option value="">Don't change department</option>
+						{% for department in departments %}
+							<option value="{{ department._id | raw }}">{{ department.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
 {% endblock %}

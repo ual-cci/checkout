@@ -9,7 +9,7 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( 'form' ).submit( function( e ) {
-		socket.emit( 'audit', { item: jQuery( '#barcode' ).val() } );
+		socket.emit( 'audit', { item: jQuery( '#barcode' ).val(), department: jQuery('#department').val() } );
 		jQuery( '#barcode' ).val( '' ).focus();
 		e.preventDefault();
 	} );

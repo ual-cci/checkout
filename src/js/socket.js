@@ -10,7 +10,8 @@ var db = require( __js + '/database' ),
 	ObjectId = db.ObjectId,
 	Items = db.Items,
 	Users = db.Users,
-	Courses = db.Courses;
+	Courses = db.Courses,
+	Departments = db.Departments;
 
 module.exports = function( server ) {
 	var io = sio.listen( server );
@@ -53,23 +54,33 @@ function connected( socket ) {
 						return;
 					}
 
-					Items.update( { _id: item._id }, {
-						$push: {
+					Departments.findOne( { _id: action.department }, function( err, department ) {
+						var update = {};
+						update['$push'] = {
 							transactions: {
 								date: new Date(),
 								user: loggedInUser.id,
 								status: 'audited'
 							}
+						};
+
+						if ( department ) {
+							update['$set'] = {
+								'department': department._id
+							}
 						}
-					} ).then ( function ( status ) {
-						if ( status.n == 1 ) {
-							updateStats();
-							socket.emit( 'flash', { type: 'success', message: 'Audited', barcode: item.barcode } );
-						} else {
-							socket.emit( 'flash', { type: 'danger', message: 'Not found', barcode: item.barcode } );
-						}
-					}, function ( err ) {
-						socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: item.barcode } );
+
+						Items.update( { _id: item._id }, update ).then ( function ( status ) {
+							if ( status.n == 1 ) {
+								updateStats();
+								socket.emit( 'flash', { type: 'success', message: 'Audited', barcode: item.barcode } );
+								if ( department && item.department.toString() != department._id.toString() ) socket.emit( 'flash', { type: 'info', message: 'Moved to ' + department.name, barcode: item.barcode } );
+							} else {
+								socket.emit( 'flash', { type: 'danger', message: 'Not found', barcode: item.barcode } );
+							}
+						}, function ( err ) {
+							socket.emit( 'flash', { type: 'danger', message: 'Unknown item', barcode: item.barcode } );
+						} );
 					} );
 				} )
 			} else {
