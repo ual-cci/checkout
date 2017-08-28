@@ -1,218 +1,42 @@
-var __home = __dirname + '/../..';
-var __config = __home + '/config/config.json';
-var __src = __home + '/src';
+var __root = __dirname + '/../..',
+	__src = __root + '/src',
+	__models = __src + '/models';
 
-var config = require( __config );
+var fs = require( 'fs' ),
+	mongoose = require( 'mongoose' ),
+	ObjectId = mongoose.Schema.ObjectId,
+	crypto = require( 'crypto' );
 
-var mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId;
-
-exports.connect = function() {
-	mongoose.Promise = global.Promise;
-	mongoose.connect( config.mongo );
-	var db = mongoose.connection;
-	db.on( 'connected', console.error.bind( console, 'Connected to Mongo database.' ) );
-	db.on( 'error', console.error.bind( console, 'Error connecting to Mongo database.' ) );
-
-	return exports;
-}
-
-var itemSchema = mongoose.Schema( {
-	_id: ObjectId,
-	name: {
-		type: String,
-		required: true
-	},
-	barcode:  {
-		type: String,
-		unique: true,
-		required: true
-	},
-	department: {
-		type: ObjectId,
-		ref: 'Departments'
-	},
-	group: {
-		type: ObjectId,
-		ref: 'Groups'
-	},
-	notes: {
-		type: String
-	},
-	value: {
-		type: Number
-	},
-	transactions: [ {
-		date: {
-			type: Date,
-			default: Date.now,
-			required: true
-		},
-		user: {
-			type: ObjectId,
-			ref: 'Users',
-			required: true
-		},
-		status: {
-			type: String,
-			enum: [ 'returned', 'loaned', 'reserved', 'broken', 'audited', 'lost' ],
-			required: true
-		}
-	} ]
-} );
-
-itemSchema.virtual( 'status' ).get( function() {
-	if ( this.transactions.length == 0 ) return 'new';
-	var last_transaction = this.transactions[ this.transactions.length - 1 ];
-
-	if ( last_transaction.status == 'audited' ) {
-		for ( i = this.transactions.length - 1; i >= 0; i-- ) {
-			if ( this.transactions[ i ].status != 'audited' ) {
-				last_transaction = this.transactions[ i ];
-				break;
-			}
-		}
-	}
-
-	switch ( last_transaction.status ) {
-		case 'returned':
-			return 'available';
-		case 'loaned':
-			return 'on-loan';
-		case 'reserved':
-			return 'reserved';
-		case 'broken':
-			return 'broken';
-		case 'audited':
-			return 'available';
-		default:
-			return last_transaction.status;
-	}
-	return 'available';
-} );
-
-itemSchema.virtual( 'audited' ).get( function() {
-	if ( this.transactions.length == 0 ) return false;
-	var today = new Date().setHours( 0, 0, 0, 0 );
-
-	for ( i = 0; i < this.transactions.length; i++ ) {
-		if ( this.transactions[ i ].status == 'audited' &&
-			this.transactions[ i ].date >= today ) {
-			return true;
-		}
-	}
-
-	return false;
-} );
-
-var groupsSchema = mongoose.Schema( {
-	_id: ObjectId,
-	name: {
-		type: String,
-		required: true
-	},
-	limiter: {
-		type: Number
-	}
-} );
-
-var userSchema = mongoose.Schema( {
-	_id: ObjectId,
-	name: {
-		type: String,
-		required: true
-	},
-	email: {
-		type: String,
-		required: true
-	},
-	course: {
-		type: ObjectId,
-		ref: 'Courses'
-	},
-	barcode: {
-		type: String,
-		unique: true,
-		required: true
-	},
-	type: {
-		type: String,
-		enum: [ 'student', 'staff' ],
-		default: 'student',
-		required: true
-	},
-	read_tc: {
-		type: Boolean,
-		default: false
-	},
-	printer: {
-		type: ObjectId,
-		ref: 'Printers'
-	},
-	disable: {
-		type: Boolean,
-		default: false
-	},
-	audit_point: {
-		type: Date
-	}
-} );
-
-var departmentSchema = mongoose.Schema( {
-	_id: ObjectId,
-	name: {
-		type: String,
-		required: true
-	}
-} );
-
-var courseSchema = mongoose.Schema( {
-	_id: ObjectId,
-	name: {
-		type: String,
-		required: true
-	},
-	contact: {
-		type: ObjectId,
-		ref: 'Users'
-	}
-} );
-
-var printerSchema = mongoose.Schema( {
-	_id: ObjectId,
-	name: {
-		type: String,
-		required: true
-	},
-	url: {
-		type: String,
-		required: true
-	}
-} );
-
-exports.ObjectId = mongoose.Types.ObjectId;
+exports.ObjectId = ObjectId;
 exports.mongoose = mongoose;
 
-var Items = mongoose.model( 'Items', itemSchema );
-exports.Items = Items;
-exports.itemSchema = itemSchema;
+exports.connect = function( url ) {
+	mongoose.Promise = global.Promise;
+	mongoose.connect( url, {
+		useMongoClient: true
+	} );
+	var db = mongoose.connection;
+	db.on( 'connected', function( error ) {
+		console.log( 'Connected to Mongo database.' );
+		console.log();
+	} );
+	db.on( 'error', function( error ) {
+		console.log( 'Error connecting to Mongo database:' );
+		console.log( error );
+		console.log();
+		process.exit();
+	} );
 
-var Groups = mongoose.model( 'Groups', groupsSchema );
-exports.Groups = Groups;
-exports.groupsSchema = groupsSchema;
+	return exports;
+};
 
-var Users = mongoose.model( 'Users', userSchema );
-exports.Users = Users;
-exports.userSchema = userSchema;
+console.log( 'Loading models:' );
 
-var Departments = mongoose.model( 'Departments', departmentSchema );
-exports.Departments = Departments;
-exports.departmentSchema = departmentSchema;
+var files = fs.readdirSync( __models );
+for ( var f = 0; f < files.length; f++ ) {
+	var model = require( __models + '/' + files[f] );
+	console.log( '	' + model.name );
+	exports[ model.name ] = model.model;
+}
 
-var Courses = mongoose.model( 'Courses', courseSchema );
-exports.Courses = Courses;
-exports.courseSchema = courseSchema;
-
-var Printers = mongoose.model( 'Printers', printerSchema );
-exports.Printers = Printers;
-exports.printerSchema = printerSchema;
+console.log();

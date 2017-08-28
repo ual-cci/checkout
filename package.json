@@ -10,6 +10,7 @@
     "express": "^4.13.4",
     "express-flash": "0.0.2",
     "express-session": "^1.13.0",
+    "helmet": "^3.8.1",
     "ipp": "^1.1.0",
     "mongoose": "^4.4.8",
     "passport": "^0.3.2",
