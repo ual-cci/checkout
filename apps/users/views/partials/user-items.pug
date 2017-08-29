@@ -1,0 +1,19 @@
+if items.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead
+				tr
+					th Name
+					th Barcode
+					th Date
+					th Time
+			tbody
+				for item in items
+					tr
+						td: a( href="/items/ " + item._id )=item.name
+						td: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
+						- last = item.transactions.length - 1
+						td #{ moment( item.transactions[last].date ).format( 'DD/MM/YYYY' ) }
+						td #{ moment( item.transactions[last].date ).format( 'HH:MM:SS' ) }
+else
+	p There are no items to display.

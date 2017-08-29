@@ -1,0 +1,15 @@
+.row
+	form( method="get" )
+		.col-md-2
+			select( name="group" )#group.form-control.input-sm
+				option( value="", selected ) All groups
+				for group in groups
+					option( value=group._id, selected=( group.id == selectedGroup ) ) #{ group.name }
+		.col-md-2
+			select( name="department" )#department.form-control.input-sm
+				option( value="", selected ) All departments
+				for department in departments
+					option( value=department._id, selected=( department.id == selectedDepartment ) ) #{ department.name }
+		.col-md-1
+			button.btn.btn-default.btn-sm
+				span.glyphicon.glyphicon-filter

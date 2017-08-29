@@ -1,0 +1,43 @@
+form( method="post" ).form-horizontal
+	.form-group
+		label( for="name" ).col-md-2.control-label Name
+		.col-md-4
+			input( name="name" type="text" value=( item ? item.name : '' ) required )#name.form-control
+	.form-group
+		label( for="barcode" ).col-md-2.control-label Barcode
+		.col-md-4
+			input( name="barcode" type="text" value=( item ? item.barcode : '' ) autocomplete="off" required )#barcode.form-control
+	.form-group
+		label( for="group" ).col-md-2.control-label Group
+		.col-md-4
+			select( name="group" )#group.form-control
+				option( value="" selected ) Select a group
+				for group in groups
+					option( value=group._id selected=( group.id == ( item ? item.group : '' ) ) )=group.name
+	.form-group
+		label( for="department" ).col-md-2.control-label Department
+		.col-md-4
+			select( name="department" required )#department.form-control
+				option( value="" disabled selected ) Select a department
+				for department in departments
+					option( value=department._id selected=( department.id == ( item ? item.department : '' ) ) )=department.name
+	.form-group
+		label( for="value" ).col-md-2.control-label Value
+		.col-md-4
+			.input-group
+				span.input-group-addon &pound;
+				input( name="value" type="number" value=( item ? item.value : '' ) )#value.form-control
+	if action == 'Create'
+		.form-group
+			.col-md-offset-2.col-md-4
+				.checkbox
+					label( for="print" )
+						input( name="print" type="checkbox" checked )#print
+						|  Print Barcode Labels
+	.form-group
+		label( for="notes" ).col-md-2.control-label Notes
+		.col-md-4
+			input( name="notes" type="text" value=( item ? item.notes : '' ) )#notes.form-control
+	.form-group
+		.col-md-4.col-md-offset-2
+			button( type="submit" ).btn.btn-default=action

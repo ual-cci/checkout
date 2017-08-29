@@ -1,0 +1,11 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Edit " + printer.name
+	- heading = title
+
+block contents
+	- action = 'Update'
+	.row
+		.col-md-5
+			include partials/printer-form.pug

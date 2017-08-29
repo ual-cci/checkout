@@ -23,7 +23,6 @@ var express = require( 'express' ),
 	io = require( __js + '/socket' )( server );
 
 var flash = require( 'express-flash' ),
-	swig = require( 'swig' ),
 	body = require( 'body-parser' );
 
 var app_loader = require( __js + '/app-loader' );
@@ -48,12 +47,10 @@ app.use( require( __js + '/quickflash' ) );
 app.use( body.json() );
 app.use( body.urlencoded( { extended: true } ) );
 
-// Use SWIG to render pages
-app.engine( 'swig', swig.renderFile );
+// Use PUG to render pages
 app.set( 'views', __views );
-app.set( 'view engine', 'swig' );
+app.set( 'view engine', 'pug' );
 app.set( 'view cache', false );
-swig.setDefaults( { cache: false } );
 
 // Load apps
 app_loader( app );

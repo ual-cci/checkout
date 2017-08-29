@@ -1,0 +1,22 @@
+if item.transactions.length > 0
+	table.table.table-striped
+		thead
+			tr
+				th Action
+				th User
+				th Date
+				th Time
+		tbody
+			for transaction in item.transactions
+				- user = transaction.user
+				tr
+					- status = transaction.status
+					td: include status.pug
+					td
+						a( href="/users/" + user._id ) #{ user.name }
+						|  
+						include ../../../users/views/partials/label.pug
+					td #{ moment( transaction.date ).format( 'D/M/YYYY' ) }
+					td #{ moment( transaction.date ).format( 'HH:mm:ss' ) }
+else
+	+messageBlock( 'warning', 'There are no transactions to display.' )

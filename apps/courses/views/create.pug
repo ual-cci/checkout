@@ -1,0 +1,9 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Create Course"
+	- heading = title
+
+block contents
+	- action = 'Create'
+	include partials/course-form.pug

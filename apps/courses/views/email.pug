@@ -1,0 +1,8 @@
+| Hello #{ name },
+| #{'\n'}
+| Your students currently have the following item(s) on loan which are due back, we'd appreciate any help you can offer in chasing the return of these items:#{'\n'}
+for student in students
+	| #{'\n'}
+	| #{ student.user.name }#{'\n'}
+	for item in student.items
+		| - #{ item.name } (#{ item.barcode })#{'\n'}

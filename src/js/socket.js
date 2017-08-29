@@ -4,7 +4,7 @@ var __js = __src + '/js';
 var __views = __src + '/views';
 
 var sio = require( 'socket.io' );
-var swig = require( 'swig' );
+var pug = require( 'pug' );
 
 var db = require( __js + '/database' ),
 	ObjectId = db.ObjectId,
@@ -72,7 +72,6 @@ function connected( socket ) {
 
 						Items.update( { _id: item._id }, update ).then ( function ( status ) {
 							if ( status.n == 1 ) {
-								updateStats();
 								socket.emit( 'flash', { type: 'success', message: 'Audited', barcode: item.barcode } );
 								if ( department && item.department.toString() != department._id.toString() ) socket.emit( 'flash', { type: 'info', message: 'Moved to ' + department.name, barcode: item.barcode } );
 							} else {
@@ -97,9 +96,6 @@ function connected( socket ) {
 		if ( socket.request.user ) {
 			sendItemModule( socket, barcode );
 		}
-	} );
-	socket.on( 'update-stats', function() {
-		updateStats();
 	} );
 	socket.on( 'broken', function( action ) {
 		if ( socket.request.user ) {
@@ -520,7 +516,6 @@ function sendUserModule( socket, barcode, item_barcode ) {
 					}
 				}
 			}
-			updateStats();
 			var buttons = [];
 			socket.emit( 'mode', {
 				mode: 'user-selected',
@@ -530,7 +525,7 @@ function sendUserModule( socket, barcode, item_barcode ) {
 					item: item_barcode
 				}
 			} );
-			socket.emit( 'module', swig.renderFile( __views + '/modules/user.swig', { user: user, onloan: onloan } ) );
+			socket.emit( 'module', pug.renderFile( __views + '/modules/user.pug', { user: user, onloan: onloan } ) );
 		} );
 	} );
 }
@@ -564,7 +559,6 @@ function sendItemModule( socket, barcode, user_barcode, multireturn ) {
 				buttons = [ 'issue', 'reserve', 'broken', 'lost' ];
 				break;
 		}
-		updateStats();
 		socket.emit( 'mode', {
 			mode: multireturn ? 'multi-return' : 'item-selected',
 			buttons: multireturn ? [ 'multi-return' ] : buttons,
@@ -573,7 +567,7 @@ function sendItemModule( socket, barcode, user_barcode, multireturn ) {
 				user: user_barcode
 			}
 		} );
-		socket.emit( 'module', swig.renderFile( __views + '/modules/item.swig', { item: item } ) );
+		socket.emit( 'module', pug.renderFile( __views + '/modules/item.pug', { item: item } ) );
 	} );
 }
 
@@ -586,67 +580,6 @@ function sendNewUserModule( socket, barcode, user ) {
 	Courses.find( function( err, courses ) {
 		if ( user == undefined )
 			user = { barcode: barcode };
-		socket.emit( 'module', swig.renderFile( __views + '/modules/new-user.swig', { user: user, courses: courses } ) );
-	} );
-}
-
-function updateStats() {
-	Items.find( {}, function( err, items ) {
-		var issued = 0,
-		returned = 0,
-		available = 0,
-		onloan = 0,
-		lostbroken = 0,
-		scanned = 0,
-		unscanned = 0;
-
-		for ( var i = 0; i < items.length; i++ ) {
-			var item = items[i];
-			if ( item.status == 'available' ) available++;
-			if ( item.status == 'on-loan' ) onloan++;
-			if ( item.status == 'lost' ) lostbroken++;
-			if ( item.status == 'broken' ) lostbroken++;
-			if ( item.audited == true ) {
-				scanned++;
-			} else {
-				switch ( item.status ) {
-					case 'available':
-					case 'broken':
-					case 'new':
-					case 'reserved':
-					default:
-						unscanned++;
-						break;
-					case 'on-loan':
-					case 'lost':
-						scanned++;
-				}
-			}
-
-			var loaned_today = false;
-			var returned_today = false;
-			var today = new Date();
-			today.setHours( 0, 0, 0, 0 );
-			for ( var t = 0; t < item.transactions.length; t++ ) {
-				var transaction = item.transactions[t];
-				if ( transaction != undefined ) {
-					if ( transaction.date > today ) {
-						if ( transaction.status == 'loaned' ) loaned_today = true;
-						if ( transaction.status == 'returned' ) returned_today = true;
-					}
-				}
-			}
-			if ( loaned_today == true ) issued++;
-			if ( returned_today == true ) returned++;
-		}
-
-		io.emit( 'stats', {
-			issued: issued,
-			returned: returned,
-			available: available,
-			onloan: onloan,
-			lostbroken: lostbroken,
-			audit: scanned + '/' + unscanned
-		} )
+		socket.emit( 'module', pug.renderFile( __views + '/modules/new-user.pug', { user: user, courses: courses } ) );
 	} );
 }

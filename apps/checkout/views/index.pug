@@ -1,0 +1,34 @@
+extends ../../../src/views/base.pug
+
+block append head
+	script( type="text/javascript", src="/js/checkout.js" )
+
+block contents
+	.panel.panel-default
+		.panel-body
+			form( role="search" ).navbar-form.navbar-left#find
+				.input-group
+					span.input-group-addon#basic-addon1
+						span.glyphicon.glyphicon-search
+					input( type="text" ).form-control
+				| 
+				button( type="button", data-action="issue" style="display:none;", accesskey='i' ).btn.btn-default.issue Issue
+					|  
+					span.badge I
+				button( type="button", data-action="reserve" style="display:none;", accesskey='v' ).btn.btn-default.reserve Reserve
+					|  
+					span.badge V
+				button( type="button", data-action="return" style="display:none", accesskey='r' ).btn.btn-default.return Return
+					|  
+					span.badge R
+				button( type="button", data-action="broken" style="display:none;", accesskey='b' ).btn.btn-default.broken Broken
+					|  
+					span.badge B
+				button( type="button", data-action="lost" style="display:none;", accesskey='l' ).btn.btn-default.lost Lost
+					|  
+					span.badge L
+				button( type="button", data-action="multi-return", accesskey='1' ).btn.btn-default.multi-return Returns Mode
+					|  
+					span.badge 1
+	#status( style="overflow:hidden;" ).alert.alert-warning &nbsp;
+	#modules

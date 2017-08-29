@@ -5,7 +5,7 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var swig = require( 'swig' );
+var pug = require( 'pug' );
 
 var db = require( __js + '/database' ),
 	Items = db.Items,
@@ -179,7 +179,7 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 						}
 					}
 				}
-				var email = swig.renderFile( __dirname + '/views/email.swig', { name: user.name, items: onloan } );
+				var email = pug.renderFile( __dirname + '/views/email.pug', { name: user.name, items: onloan } );
 				res.render( 'user', { user: user, onloan: onloan, pastloan: pastloan, email: email } );
 			} );
 		}

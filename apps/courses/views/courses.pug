@@ -1,0 +1,8 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Courses"
+	- heading = title
+
+block contents
+	include partials/course-list.pug

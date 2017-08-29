@@ -1,0 +1,10 @@
+.row
+	form( method="get" )
+		.col-md-2
+			select( name="course" )#course.form-control.input-sm
+				option( value="" selected ) All courses
+					for course in courses
+						option( value=course._id selected=( course.id == selectedCourse ) )=course.name
+		.col-md-1
+			button.btn.btn-default.btn-sm
+				span.glyphicon.glyphicon-filter

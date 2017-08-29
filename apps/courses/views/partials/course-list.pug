@@ -1,0 +1,14 @@
+if courses.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead
+				tr
+					th Name
+					th Contact
+			tbody
+				for course in courses
+					tr
+						td: include course.pug
+						td: include contact.pug
+else
+	+messageBlock( 'warning', 'There are no courses to display.' )

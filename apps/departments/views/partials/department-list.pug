@@ -1,0 +1,9 @@
+if departments.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead: tr: th Name
+			tbody
+				for department in departments
+					tr: td: include department.pug
+else
+	+messageBlock( 'warning', 'There are no departments to display.' )

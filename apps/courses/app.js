@@ -5,7 +5,7 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var swig = require( 'swig' );
+var pug = require( 'pug' );
 
 var db = require( __js + '/database' ),
 	Courses = db.Courses,
@@ -100,7 +100,7 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 					if ( course.contact != undefined ) {
 						var students = {};
-						email = swig.renderFile( __dirname + '/views/email.swig', { name: course.contact.name, students: user_result } );
+						email = pug.renderFile( __dirname + '/views/email.pug', { name: course.contact.name, students: user_result } );
 					}
 
 					item_results.sort( function( a, b ) {

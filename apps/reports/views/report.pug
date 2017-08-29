@@ -1,0 +1,24 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Items"
+	if status == 'available'
+		- title = "Available"
+	else if status == 'on-loan'
+		- title = "On Loan"
+	else if status == 'new'
+		- title = "New"
+	else if status == 'reserved'
+		- title = "Reserved"
+	else if status == 'lost'
+		- title = "Lost"
+	else if status == 'broken'
+		- title = "Broken"
+	else
+		- title = status
+	- heading = title
+
+block contents
+	include ../../items/views/partials/filter.pug
+	hr
+	include partials/items-list.pug

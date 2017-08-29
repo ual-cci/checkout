@@ -1,0 +1,9 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Edit " + item.name
+	- heading = title
+
+block contents
+	- action = 'Update'
+	include partials/item-form.pug

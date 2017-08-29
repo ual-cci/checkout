@@ -1,0 +1,9 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Create Printer"
+	- heading = title
+
+block contents
+	- action = 'Create'
+	include partials/printer-form.pug

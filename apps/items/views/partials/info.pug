@@ -1,0 +1,17 @@
+- status = item.status
+h4: include status.pug
+dl.dl-horizontal
+	dt Barcode
+	dd: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
+	dt Department
+	- department = item.department
+	dd: include ../../../departments/views/partials/department.pug
+	dt Group
+	- group = item.group
+	dd: include ../../../groups/views/partials/group.pug
+	if item.value
+		dt Value
+		dd £#{ item.value }
+	if item.notes
+		dt Notes
+		dd #{ item.notes }

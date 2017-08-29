@@ -1,0 +1,6 @@
+| Hello #{ name },
+| 
+| You currently have the following item(s) on loan which are due back:
+| #{'\n'}
+for item in items
+	|  - #{ item.name } (#{ item.barcode })#{'\n'}

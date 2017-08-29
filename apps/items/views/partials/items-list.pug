@@ -1,0 +1,53 @@
+if items.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead
+				tr
+					if edit
+						th
+							input( type="checkbox", title="Check All", checked=edit_items ).checkall
+					th Status
+					th Barcode
+					th Name
+					th Owner
+					th Group
+					th Department
+					if total
+						th Value
+			tbody
+				for item in items
+					tr
+						if edit
+							td: input( type="checkbox", name="edit", value=item._id checked=edit_items )
+						td
+							- status = item.status
+							include status.pug
+						td
+							if loggedInUser.printer
+								a( href="/items/" + item._id + "/label?printer=" + loggedInUser.printer._id )
+									span.glyphicon.glyphicon-print
+								|  
+							span( data-clipboard-text=item.barcode ).clipboard=item.barcode
+						td
+							a( href="/items/" + item._id ) #{ item.name }
+						td
+							if item.owner
+								a( href="/users/" + item.owner._id ) #{ item.owner.name }
+							else
+								| &mdash;
+						- group = item.group
+						td
+							include ../../../groups/views/partials/group.pug
+						- department = item.department
+						td
+							include ../../../departments/views/partials/department.pug
+						if total
+							td £#{ item.value }
+			if total
+				tfoot
+					tr
+						th
+						th( colspan="6" ) Total
+						th £#{ total }
+else
+	+messageBlock( 'warning', 'There are no items to display.' )

@@ -5,8 +5,6 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var swig = require( 'swig' );
-
 var db = require( __js + '/database' ),
 	Printers = db.Printers,
 	Users = db.Users;

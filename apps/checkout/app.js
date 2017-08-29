@@ -10,11 +10,7 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	res.render( 'compact-checkout' );
-} );
-
-app.get( '/expand', auth.isLoggedIn, function( req, res ) {
-	res.render( 'checkout' );
+	res.render( 'index' );
 } );
 
 module.exports = function( config ) { return app; };

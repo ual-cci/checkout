@@ -1,0 +1,27 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Printers"
+	- heading = title
+
+block contents
+	a( href="/printers/new" ).btn.btn-default
+		span.glyphicon.glyphicon-plus
+		|  New
+	if printers.length > 0
+		.table-responsive
+			table.table.table-striped
+				thead
+					tr
+						th Name
+						th URL
+						th Edit
+				tbody
+					for printer in printers
+						tr
+							td=printer.name
+							td=printer.url
+							td: a( href="/printers/" + printer.id + "/edit" )
+								span.glyphicon.glyphicon-pencil
+	else
+		+messageBlock( 'warning', 'There are no printers to display.' )

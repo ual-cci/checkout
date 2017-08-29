@@ -1,0 +1,14 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Login"
+	- heading = title
+
+block append css
+	link( rel="stylesheet", type="text/css", href="/css/login.css" )
+
+block contents
+	form( method="post", action="/login" ).form-signin
+		label( for="inputEmail" ).sr-only ID
+		input( type="password" name="id" placeholder="ID" required autofocus maxlength="12" )#id.form-control
+		button( type="submit" ).btn.btn-lg.btn-primary.btn-block Login

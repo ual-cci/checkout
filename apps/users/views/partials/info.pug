@@ -1,0 +1,29 @@
+dl.dl-horizontal
+	dt Barcode
+	dd: span( data-clipboard-text=user.barcode ).clipboard=user.barcode
+	dt Course
+	- course = user.course
+	dd: include ../../../courses/views/partials/course.pug
+	if user.course.contact
+		dt Staff Contact
+		dd: a( href="/users/" + user.course.contact._id )=user.course.contact.name
+	dt Email
+	dd: a( href="mailto:" + user.email )=user.email
+	dt Status
+	dd
+		if user.disable
+			| Disabled
+		else
+			| Active
+	dt Loan Agreement
+	dd
+		if user.read_tc
+			| Read
+		else
+			| Unread
+	<dt>Type</dt>
+	dd
+		if user.type == 'staff'
+			| Staff
+		else
+			| User

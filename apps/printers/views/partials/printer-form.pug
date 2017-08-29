@@ -1,0 +1,9 @@
+form( method="post" )
+	p
+		label( for="name" ) Name:
+		input( name="name" type="text" value=printer.name required autocomplete="off" )#name.form-control
+	p
+		label( for="url" ) URL:
+		input( name="url" type="text" value=printer.url required autocomplete="off" )#url.form-control
+	p
+		input( type="submit" value=action ).btn.btn-default

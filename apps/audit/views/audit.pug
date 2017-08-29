@@ -1,0 +1,25 @@
+extends ../../../src/views/base.pug
+
+block append js
+	script( type="text/javascript", src="/js/buzz.js" )
+	script( type="text/javascript", src="/js/audit.js" )
+
+block prepend title
+	- title = "Audit Scan"
+	- heading = title
+
+block contents
+	.row
+		form( method="post" )
+			.col-md-3
+				.input-group
+					input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
+					span.input-group-btn
+						button.btn.btn-default
+							span.glyphicon.glyphicon-barcode
+			.col-md-3
+				.input-group
+					select#department.form-control
+						option( value="" ) Don't change department
+						for department in departments
+							option( value=department._id ) #{ department.name }

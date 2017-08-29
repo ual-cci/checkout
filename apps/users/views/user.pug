@@ -1,0 +1,29 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = user.name
+	- heading = title
+
+block contents
+	include partials/info.pug
+	p
+		a( href="/users/" + user._id + "/edit" ).btn.btn-default
+			span.glyphicon.glyphicon-pencil
+			|  Edit
+		|  
+		if onloan.length > 0
+			a.btn.btn-default( href="mailto:" + encodeURI( user.email ) + "?cc=" + encodeURI( user.course.contact.email ) + "&subject=" + encodeURI( "IMPORTANT: Items due back" ) + "&body=" + encodeURI( email ) )
+				span.glyphicon.glyphicon-envelope
+				|  Generate email
+	hr
+	h3 Items
+	ul.nav.nav-tabs
+		li( role="presentation" ).active
+			a( href="#onloan" aria-controls="users" role="tab" data-toggle="tab" ) On Loan
+		li( role="presentation" )
+			a( href="#history" aria-controls="items" role="tab" data-toggle="tab" ) History
+	.tab-content
+		#onloan( role="tabpanel" ).tab-pane.active
+			include partials/onloan.pug
+		#history( role="tabpanel" ).tab-pane
+			include partials/history.pug

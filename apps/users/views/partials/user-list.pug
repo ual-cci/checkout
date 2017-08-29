@@ -1,0 +1,30 @@
+if users.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead
+				tr
+					if edit
+						th
+							input( type="checkbox", title="Check All", checked=edit_users ).checkall
+					th Name
+					if ! no_course
+						th Course
+					th Email
+					th Barcode
+			tbody
+				for user in users
+					tr
+						if edit
+							td: input( type="checkbox", name="edit", value=user._id, checked=edit_users )
+						td
+							a( href="/users/" + user._id )=user.name
+							|  
+							include label.pug
+						if ! no_course
+							td
+								- course = user.course
+								include ../../../courses/views/partials/course.pug
+						td: a( href="mailto:" + user.email )=user.email
+						td: span( data-clipboard-text=user.barcode ).clipboard=user.barcode
+else
+	+messageBlock( 'warning', 'There are no users to display.' )

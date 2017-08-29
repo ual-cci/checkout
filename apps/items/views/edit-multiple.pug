@@ -1,0 +1,50 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Edit Multiple Items"
+	- heading = title
+
+block contents
+	<form action="/items/edit" method="post" class="form-horizontal">
+		.form-group
+			label( for="group" ).col-md-2.control-label Group
+			.col-md-4
+				.input-group
+					select( name="group" )#group.form-control
+						option( value="" selected ) Select a group
+						for group in groups
+							option( value=group._id )=group.name
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="group" )
+		.form-group
+			label( for="department" ).col-md-2.control-label Department
+			.col-md-4
+				.input-group
+					select( name="department" )#department.form-control
+						option( value="" disabled selected ) Select a department
+						for department in departments
+							option( value=department._id )=department.name
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="department" )
+		.form-group
+			label( for="value" ).col-md-2.control-label Value
+			.col-md-4
+				.input-group
+					span.input-group-addon &pound;
+					input( name="value" type="number" )#value.form-control
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="value" )
+		.form-group
+			label( for="notes" ).col-md-2.control-label Notes
+			.col-md-4
+				.input-group
+					input( name="notes" type="text" )#notes.form-control
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="notes" )
+		.form-group
+			.col-md-4.col-md-offset-2
+				button( type="submit" ).btn.btn-default Update
+		h3 Items
+		- edit = true
+		- edit_items = true
+		include partials/items-list.pug

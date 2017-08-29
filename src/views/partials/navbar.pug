@@ -1,0 +1,85 @@
+.navbar.navbar-inverse.navbar-fixed-top
+	.container-fluid
+		.navbar-header
+			button( type="button", data-toggle="collapse", data-target="#menu", aria-expanded="false" ).navbar-toggle.collapsed
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a( href="/" ).navbar-brand
+				span.glyphicon.glyphicon-home
+		div.collapse.navbar-collapse#menu
+			ul.nav.navbar-nav
+				if loggedInUser
+					li( class=( currentModule == 'items' ? 'active' : '' ) )
+						a( href="/items" ) Items
+					
+					li( class=( currentModule == 'users' ? 'active' : '' ) )
+						a( href="/users" ) Users
+
+					li( class=( currentModule == 'users' ? 'active' : '' ) ).dropdown
+						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  More
+							|  
+							span.caret
+						ul.dropdown-menu
+							li.dropdown-header
+								span.glyphicon.glyphicon-eye-open
+								|  View
+							li: a( href="/courses" ) Courses
+							li: a( href="/groups" ) Groups
+							li: a( href="/departments" ) Departments
+							li( role="separator" ).divider
+							li.dropdown-header
+								span.glyphicon.glyphicon-plus
+								|  New
+							li: a( href="/users/create" ) User
+							li: a( href="/items/create" ) Item
+							li: a( href="/items/generate" ) Generate Items
+							li: a( href="/groups/create" ) Group
+							li: a( href="/departments/create" ) Department
+							li: a( href="/courses/create" ) Course
+						
+						li( class=( currentModule == 'reports' ? 'active' : '' ) ).dropdown
+							a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Reports
+								|  
+								span.caret
+							ul.dropdown-menu
+								li.dropdown-header
+									span.glyphicon.glyphicon-filter
+									|  Status
+								li: a( href="/reports/status/available" ) Available
+								li: a( href="/reports/status/on-loan" ) On Loan
+								li: a( href="/reports/status/new" ) New
+								li: a( href="/reports/status/reserved" ) Reserved
+								li: a( href="/reports/status/lost" ) Lost
+								li: a( href="/reports/status/broken" ) Broken
+							
+			ul.nav.navbar-nav.navbar-right
+				if loggedInUser
+					li( class=( currentModule == 'admin' ? 'active' : '' ) ).dropdown
+						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Admin
+							|  
+							span.caret
+						ul.dropdown-menu
+							li.dropdown-header
+								span.glyphicon.glyphicon-barcode
+								|  Audit
+							li: a( href="/audit" ) Scan
+							li: a( href="/audit/scanned" ) Scanned
+							li: a( href="/audit/missing" ) Missing
+							li( role="separator" ).divider
+							li: a( href="/printers" )
+								span.glyphicon.glyphicon-print
+								|  Configure Printers
+						li.dropdown
+							a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle #{ loggedInUser.name }
+								|  
+								span.caret
+							ul.dropdown-menu
+								li: a( href='/users/' + loggedInUser._id + '/edit' )
+									span.glyphicon.glyphicon-pencil
+									|  Edit Profile
+								li( role="separator" ).divider
+								li: a( href="/logout")
+									span.glyphicon.glyphicon-log-out
+									|  Logout

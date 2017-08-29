@@ -1,0 +1,35 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = department.name
+	- heading = title
+
+block contents
+	p
+		.btn-group( role="group" )
+			a( href="/departments/" + department._id + "/edit" ).btn.btn-default
+				span.glyphicon.glyphicon-pencil
+				|  Edit
+	hr
+	h3 Items
+	if items.length > 0
+		.table-responsive
+			table.table.table-striped
+				thead
+					tr
+						th Status
+						th Barcode
+						th Name
+						th Group
+				tbody
+					for item in items
+						tr
+							td
+								- status = item.status
+								include ../../items/views/partials/status.pug
+							td: +clipboard( item.barcode )
+							td: a( href="/items/" + item._id )=item.name
+							- group = item.group
+							td: include ../../groups/views/partials/group.pug
+	else
+		+messageBlock( 'warning', 'There are no items to display.' )
