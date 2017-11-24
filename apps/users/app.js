@@ -212,24 +212,32 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		type: req.body.type,
 		disable: req.body.disable
 	};
+
 	if ( req.body.audit_point ) {
 		user.audit_point = new Date( req.body.audit_point );
 	} else {
 		user.audit_point = null;
 	}
-	Users.update( { _id: req.params.id }, {
-		$set: user } ).then( function ( status ) {
-		if ( status.nModified == 1 && status.n == 1 ) {
-			req.flash( 'success', 'User updated' );
-		} else if ( status.nModified == 0 && status.n == 1 ) {
-			req.flash( 'warning', 'User was not changed' );
-		} else {
-			req.flash( 'danger', 'There was an error updating the user' );
+
+	auth.generatePassword( req.body.password, function( password ) {
+		if ( req.body.password ) {
+			user.password = password;
 		}
-		res.redirect( app.mountpath + '/' + req.params.id );
-	}, function ( status ) {
-		req.flash( 'danger', 'There was an error updating the user' );
-		res.redirect( app.mountpath + '/' + req.params.id );
+
+		Users.update( { _id: req.params.id }, {
+			$set: user } ).then( function ( status ) {
+			if ( status.nModified == 1 && status.n == 1 ) {
+				req.flash( 'success', 'User updated' );
+			} else if ( status.nModified == 0 && status.n == 1 ) {
+				req.flash( 'warning', 'User was not changed' );
+			} else {
+				req.flash( 'danger', 'There was an error updating the user' );
+			}
+			res.redirect( app.mountpath + '/' + req.params.id );
+		}, function ( status ) {
+			req.flash( 'danger', 'There was an error updating the user' );
+			res.redirect( app.mountpath + '/' + req.params.id );
+		} );
 	} );
 } )
 

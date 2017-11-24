@@ -13,6 +13,11 @@ module.exports = {
 			type: String,
 			required: true
 		},
+		password: {
+			salt: String,
+			hash: String,
+			iterations: Number
+		},
 		course: {
 			type: ObjectId,
 			ref: 'Courses'

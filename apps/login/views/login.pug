@@ -9,6 +9,8 @@ block append css
 
 block contents
 	form( method="post", action="/login" ).form-signin
-		label( for="inputEmail" ).sr-only ID
-		input( type="password" name="id" placeholder="ID" required autofocus maxlength="12" )#id.form-control
+		label( for="username" ).sr-only Username
+		input( type="username" name="username" placeholder="Username" required autofocus )#username.form-control
+		label( for="password" ).sr-only Username
+		input( type="password" name="password" placeholder="Password" required )#password.form-control
 		button( type="submit" ).btn.btn-lg.btn-primary.btn-block Login

@@ -4,21 +4,6 @@ form( method="post" ).form-horizontal
 		.col-md-4
 			input( name="barcode" type="text" value=user.barcode autocomplete="off" required )#barcode.form-control
 	.form-group
-		label( for="type" ).col-md-2.control-label Type
-		.col-md-4
-			select( name="type" )#type.form-control
-				option( value="student" selected=( user.type == 'student' ) ) User
-				option( value="staff" selected=( user.type == 'staff' ) ) Admin
-	if action == 'Up.pug'
-		.form-group
-			.col-md-4.col-md-offset-2
-				.checkbox
-					label( for="disable" )
-						input( name="disable" type="checkbox" checked=user.disable )#disable
-						| Disable User
-	.page-header
-		h3 Details
-	.form-group
 		label( for="name" ).col-md-2.control-label Name
 		.col-md-4
 			input( name="name" type="text" value=user.name required )#name.form-control
@@ -33,16 +18,37 @@ form( method="post" ).form-horizontal
 				option( value="" disabled selected ) Select a course
 				for course in courses
 					option( value=course._id selected=( course.id == user.course ) )=course.name
-	.page-header
-		h3 Preferences
-	.form-group
-		label( for="printer" ).col-md-2.control-label Printer
-		.col-md-4
-			select( name="printer" )#printer.form-control
-				option( value="" ) None
-				for printer in printers
-					option( value=printer._id selected=( printer.id == user.printer ) )=printer.name
 	if action == 'Update'
+		.form-group
+			.col-md-4.col-md-offset-2
+				.checkbox
+					label( for="disable" )
+						input( name="disable" type="checkbox" checked=user.disable )#disable
+						| Disable User
+	
+	.page-header
+		h3 Login Details
+	.form-group
+		label( for="type" ).col-md-2.control-label Type
+		.col-md-4
+			select( name="type" )#type.form-control
+				option( value="student" selected=( user.type == 'student' ) ) User
+				option( value="staff" selected=( user.type == 'staff' ) ) Admin
+	if action == 'Update'
+		.form-group
+			label( for="password" ).col-md-2.control-label Password
+			.col-md-4
+				input( name="password" type="password" )#password.form-control
+	if action == 'Update'
+		.page-header
+			h3 Preferences
+		.form-group
+			label( for="printer" ).col-md-2.control-label Printer
+			.col-md-4
+				select( name="printer" )#printer.form-control
+					option( value="" ) None
+					for printer in printers
+						option( value=printer._id selected=( printer.id == user.printer ) )=printer.name
 		.form-group
 			label( for="audit_point" ).col-md-2.control-label Audit Point
 			.col-md-4
