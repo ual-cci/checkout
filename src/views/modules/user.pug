@@ -1,0 +1,38 @@
+.panel.panel-primary( data-id=user.barcode )
+	.panel-heading
+		h3.panel-title
+			span.glyphicon.glyphicon-user
+			a( href="/users/" + user._id )  #{ user.name }
+	.panel-body
+		h4: include ../../../apps/users/views/partials/label.pug
+		p
+			strong Course:
+			- course = user.course
+			|  
+			include ../../../apps/courses/views/partials/course.pug
+		p
+			strong Email:
+			a( href="mailto:" + user.email )  #{ user.email }
+		p
+			strong Barcode:
+			|  #{ user.barcode }
+		
+		if onloan.length > 0
+			h3 On Loan
+
+	if onloan.length > 0
+		table.table.table-striped
+			thead
+				tr
+					th Name
+					th Barcode
+					th Date
+					th Time
+			tbody
+				for item in onloan
+					tr
+						- last = item.transactions.length - 1
+						td: a( href="/items/" + item._id )=item.name
+						td=item.barcode
+						td=moment( item.transactions[last].date ).format( 'DD/MM/YYYY' )
+						td=moment( item.transactions[last].date ).format( 'HH:MM:SS' )

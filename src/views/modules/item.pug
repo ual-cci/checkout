@@ -1,0 +1,28 @@
+.panel.panel-primary( data-id=item.barcode )
+	.panel-heading
+		h3.panel-title
+			span.glyphicon.glyphicon-tag
+			|  
+			a( href="/items/" + item._id )=item.name
+	.panel-body
+		- status = item.status
+		h4
+			include ../../../apps/items/views/partials/status.pug
+		p
+			strong Barcode:
+			|  #{ item.barcode }
+		if item.group
+			p
+				strong Group: 
+				a( target="_blank" href="/groups/" + item.group._id )=item.group.name
+				if item.group.limiter
+					small
+						em  (Limit per user: #{ item.group.limiter })
+			
+		if item.owner
+			p
+				strong Owner: 
+				a( target="_blank" href="/users/" + item.owner._id )=item.owner.name
+		p
+			strong Department: 
+			a( target="_blank" href="/departments/" + item.department._id )=item.department.name

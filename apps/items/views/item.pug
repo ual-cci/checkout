@@ -16,11 +16,11 @@ block contents
 				span.glyphicon.glyphicon-print
 				|  Print Label to #{ loggedInUser.printer.name }
 			if printers.length > 1
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				button.btn.btn-default.dropdown-toggle( type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" )
 					span.caret
 					span.sr-only Toggle Dropdown
-					<ul class="dropdown-menu">
-					<li class="dropdown-header">Other Printers</li>
+				ul.dropdown-menu
+					li.dropdown-header Other Printers
 					for printer in printers
 						if printer._id.toString() != loggedInUser.printer._id.toString()
 							li: a( href="/items/" + item._id + "label?printer=" + printer._id ) #{ printer.name }

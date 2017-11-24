@@ -5,6 +5,7 @@ var __views = __src + '/views';
 
 var sio = require( 'socket.io' );
 var pug = require( 'pug' );
+var moment = require( 'moment' );
 
 var db = require( __js + '/database' ),
 	ObjectId = db.ObjectId,
@@ -525,7 +526,7 @@ function sendUserModule( socket, barcode, item_barcode ) {
 					item: item_barcode
 				}
 			} );
-			socket.emit( 'module', pug.renderFile( __views + '/modules/user.pug', { user: user, onloan: onloan } ) );
+			socket.emit( 'module', pug.renderFile( __views + '/modules/user.pug', { user: user, onloan: onloan, moment: moment } ) );
 		} );
 	} );
 }
