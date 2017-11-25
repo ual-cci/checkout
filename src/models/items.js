@@ -41,7 +41,7 @@ module.exports = {
 			},
 			status: {
 				type: String,
-				enum: [ 'returned', 'loaned', 'reserved', 'broken', 'audited', 'lost' ],
+				enum: [ 'returned', 'loaned', 'broken', 'audited', 'lost' ],
 				required: true
 			}
 		} ]
@@ -49,7 +49,7 @@ module.exports = {
 };
 
 module.exports.schema.virtual( 'status' ).get( function() {
-	if ( this.transactions.length == 0 ) return 'new';
+	if ( this.transactions.length == 0 ) return 'available';
 	var last_transaction = this.transactions[ this.transactions.length - 1 ];
 
 	if ( last_transaction.status == 'audited' ) {

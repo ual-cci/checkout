@@ -29,7 +29,8 @@ block contents
 				p
 					label( for="notes" ) Notes
 					input( name="notes" type="text" )#notes.form-control
-				h3 Barcode
+				.page-header
+					h3 Barcode
 				p
 					label( for="prefix" ) Prefix
 					input( name="prefix" type="text" autocomplete="off" required )#prefix.form-control
@@ -39,15 +40,12 @@ block contents
 				p
 					label( for="end" ) End
 					input( name="end" type="number" min="2" max="99" autocomplete="off" required )#end.form-control
-				h3 Options
+				.page-header
+					h3 Options
 				p
 					input( name="suffix" type="checkbox" checked )#suffix
 					|  
 					label( for="suffix" ) Suffix name with index number
-				p
-					input( name="autoAudit" type="checkbox" checked )#autoAudit
-					|  
-					label( for="autoAudit" ) Automatically audit item ready for issue?
 				p
 					input( name="print" type="checkbox" checked )#print
 					|  

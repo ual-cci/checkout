@@ -188,13 +188,6 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		var index = i.toString();
 		if ( i < 10 ) index = '0' + index;
 		if ( req.body.suffix ) item.name += " #" + index;
-		if ( req.body.autoAudit ) {
-			item.transactions = [ {
-				date: new Date(),
-				user: req.user._id,
-				status: 'audited'
-			} ];
-		}
 		item.barcode += index.toString();
 		barcodes.push( item.barcode );
 		items.push( item );
