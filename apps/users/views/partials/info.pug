@@ -15,13 +15,7 @@ dl.dl-horizontal
 			| Disabled
 		else
 			| Active
-	dt Loan Agreement
-	dd
-		if user.read_tc
-			| Read
-		else
-			| Unread
-	<dt>Type</dt>
+	dt Type
 	dd
 		if user.type == 'staff'
 			| Staff

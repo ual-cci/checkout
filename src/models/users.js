@@ -33,10 +33,6 @@ module.exports = {
 			default: 'student',
 			required: true
 		},
-		read_tc: {
-			type: Boolean,
-			default: false
-		},
 		printer: {
 			type: ObjectId,
 			ref: 'Printers'

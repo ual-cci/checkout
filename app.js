@@ -19,8 +19,7 @@ var database = require( __js + '/database' ).connect( config.mongo );
 
 var express = require( 'express' ),
 	app = express(),
-	server = require( 'http' ).Server( app )
-	io = require( __js + '/socket' )( server );
+	server = require( 'http' ).Server( app );
 
 var flash = require( 'express-flash' ),
 	body = require( 'body-parser' );
@@ -30,14 +29,14 @@ var app_loader = require( __js + '/app-loader' );
 // Use helmet
 app.use( helmet() );
 
-// Handle authentication + sockets
-require( __js + '/authentication' ).auth( app, io );
+// Handle authentication
+require( __js + '/authentication' ).auth( app );
 
 // Setup static route
 app.use( express.static( __static ) );
 
 // Handle sessions
-require( __js + '/sessions' )( app, io );
+require( __js + '/sessions' )( app );
 
 // Include support for notifications
 app.use( flash() );

@@ -1,239 +1,268 @@
-var mode = 'find';
-var data = {};
-var cancelTimeout;
-var statusTimeout;
+var typeTimeout;
+var flashTimeout;
+var one_item;
+
+var current = {};
 
 jQuery( document ).ready( function() {
-	socket.emit( 'update-stats' );
+	defaultFlash();
+
 	jQuery( '#find input' ).focus();
 
-	jQuery( 'input' ).bind( 'blur', function( e ) {
-		if ( e.relatedTarget == undefined || e.relatedTarget.tagName != 'INPUT' )
-			jQuery( '#find input' ).focus();
-	} );
+	// jQuery( 'input' ).bind( 'blur', function( e ) {
+	// 	if ( e.relatedTarget == undefined || e.relatedTarget.tagName != 'INPUT' )
+	// 		jQuery( '#find input' ).focus();
+	// } );
 
-	jQuery( '#find input' ).bind( 'keyup', function( e ) {
-		if ( e.keyCode == 27 ) {
-			cancel();
-			clearFlash();
-		} else {
-			resetCancelTimeout();
-		}
-	} );
+	jQuery( '#find' ).bind( 'submit', handleIssueSubmit );
+
+	jQuery( document ).bind( 'keyup', handleKeyPress );
 
 	jQuery( '#find input' ).bind( 'input', function( e ) {
-		jQuery( '#find input' ).val(  jQuery( '#find input' ).val().toUpperCase() );
-		var find = jQuery( '#find input' ).val();
-		if ( mode != 'multi-return' )
-			if ( find.length > 4 ) {
-				socket.emit( 'identify', find );
+		if ( jQuery( '#find input' ).val() == '' ) empty();
+		clearTimeout( typeTimeout );
+		typeTimeout = setTimeout( searchTimer, 100 );
+	} );
+
+	jQuery( document ).delegate( '#modules .panel-title', 'click', function() {
+		var clicked = jQuery( this ).closest( '.panel' );
+		select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
+	} );
+
+	jQuery( document ).delegate( '#modules .buttons button', 'click', function() {
+		var clicked = jQuery( this ).closest( '.panel' );
+		var type = jQuery( clicked ).data( 'type' );
+		var barcode = jQuery( clicked ).data( 'barcode' );
+
+		switch ( jQuery( this ).html() ) {
+			case 'Return':
+				returnItem( barcode, function( data ) {
+					flash( data.status, data.message );
+					select( 'item', data.barcode );
+				} );
+				break;
+			case 'Broken':
+				broken( barcode, function( data ) {
+					flash( data.status, data.message );
+					select( 'item', data.barcode );
+				} );
+				break;
+			case 'Lost':
+				lost( barcode, function( data ) {
+					flash( data.status, data.message );
+					select( 'item', data.barcode );
+				} );
+				break;
+		}
+	} );
+
+	jQuery( document ).delegate( '#results .list-group-item', 'click', function() {
+		var type = jQuery( this ).data( 'type' );
+		var barcode = jQuery( this ).data( 'barcode' );
+		select( type, barcode );
+		defaultFlash();
+		empty( true );
+	} );
+} );
+
+function searchTimer() {
+	search( jQuery( '#find input' ).val(), function( data ) {
+		empty();
+
+		var last_item;
+
+		// Process items
+		if ( data.items.length > 0 ) {
+			for ( i in data.items ) {
+				last_item = data.items[i];
+				last_item.type = 'item';
+				addResult( data.items[i], 'item' );
 			}
-	} );
-
-	jQuery( '#find .btn' ).bind( 'click', function( e ) {
-		e.preventDefault();
-		resetCancelTimeout();
-		var action = jQuery( this ).data( 'action' );
-		if ( action == 'multi-return' ) modeUpdate( action );
-		jQuery( '#find .btn' ).removeClass( 'btn-primary' );
-		jQuery( '#find .btn' ).addClass( 'btn-default' );
-		jQuery( '#find .btn[data-action=' + action + ']' ).addClass( 'btn-primary' );
-	} );
-
-	jQuery( '#find' ).bind( 'submit', function( e ) {
-		e.preventDefault();
-		switch ( mode ) {
-			case 'item':
-			case 'user':
-				socket.emit( mode, jQuery( '#find input' ).val() );
-				break;
-			case 'item-selected':
-				var action = jQuery( '#find .btn:visible.btn-primary' ).data( 'action' );
-				socket.emit( action, {
-					user: jQuery( '#find input' ).val(),
-					item: data.item,
-					mode: 'item'
-				} );
-				break;
-			case 'user-selected':
-				socket.emit( 'issue', {
-					user: data.user,
-					item: jQuery( '#find input' ).val(),
-					mode: 'user'
-				} );
-				break;
-			case 'multi-return':
-				socket.emit( 'return', {
-					item: jQuery( '#find input' ).val(),
-					mode: 'multi-return'
-				} );
-				break;
-			case 'find':
-				flash( { type: 'info', message: 'Barcode could not be identified.', barcode: jQuery( '#find input' ).val() } );
-				break;
+			jQuery( '.items a' ).tab( 'show' );
 		}
-		jQuery( '#find input' ).val( '' );
 
-		if ( mode != 'multi-return' )
-			modeUpdate( 'find' );
-	} );
-
-	jQuery( document ).on( 'submit', '#modules form', function ( e ) {
-		e.preventDefault()
-		var user = {
-			name: jQuery( this ).find( '[name=name]' ).val(),
-			email: jQuery( this ).find( '[name=email]' ).val(),
-			course: jQuery( this ).find( '[name=course]' ).val(),
-			barcode: jQuery( this ).parents( '.panel' ).data( 'id' )
+		// Process users
+		if ( data.users.length > 0 ) {
+			for ( i in data.users ) {
+				last_item = data.users[i];
+				last_item.type = 'user';
+				addResult( data.users[i], 'user' );
+			}
+			if ( current.type != 'user' ) jQuery( '.users a' ).tab( 'show' );
 		}
-		socket.emit( 'new-user', user );
-	} );
 
-	jQuery( '.container' ).on( 'click', '.override', function( e ) {
-		clearFlash();
-		socket.emit( 'issue', {
-			user: data.user,
-			item: data.item,
-			mode: mode.split('-')[0],
-			override: true
-		} );
+		if ( data.users.length + data.items.length == 1 ) one_item = last_item;
 	} );
+}
 
-	jQuery( '.container' ).on( 'click', '.read_tc', function( e ) {
-		clearFlash();
-		socket.emit( 'issue', {
-			user: data.user,
-			item: data.item,
-			mode: mode.split('-')[0],
-			override: true
-		} );
-		socket.emit( 'read_tc', {
-			user: data.user
-		} );
-	} );
-} );
+function updateCurrent() {
+	select( current.type, current.barcode );
+}
 
-socket.on( 'mode', function( m ) {
-	switch ( m.mode ) {
-		case 'item-selected':
-		case 'user-selected':
-			resetCancelTimeout();
-			modeUpdate( m.mode );
-			data = m.data;
-			break;
-		case 'find':
-			return;
-		case 'item':
+function select( type, barcode ) {
+	switch ( type ) {
 		case 'user':
-			if ( mode == 'item-selected' || mode == 'user-selected' ) return;
-			resetCancelTimeout();
-			modeUpdate( m.mode );
-			data = m.data;
-
-			jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-			jQuery( '#find .btn' ).hide();
+			getUser( barcode, function( data ) {
+				if ( data.html ) {
+					addModule( data );
+				} else {
+					flash( data.status, data.message );
+				}
+			} );
+			break;
+		case 'item':
+			if ( current.type == 'user' ) {
+				issue( barcode, current.barcode, function( data ) {
+					if ( data.status ) flash( data.status, data.message );
+					updateCurrent();
+				} );
+			} else {
+				getItem( barcode, function( data ) {
+					if ( data.html ) {
+						addModule( data );
+					}
+				} );
+			}
 			break;
 	}
+}
 
-	if ( m.buttons ) {
-		jQuery( '#find .btn' ).hide();
-		jQuery( '#find .btn' ).removeClass( 'btn-primary' ).addClass( 'btn-default' );
-		for ( b in m.buttons ) {
-			var button = m.buttons[b];
-			jQuery( '#find .' + button ).show();
-			if ( b == 0 ) jQuery( '#find .' + button ).removeClass( 'btn-default' ).addClass( 'btn-primary' );
-		}
-	}
-} )
-
-socket.on( 'module', function( html ) {
-	var module = jQuery( html );
-	// Remove duplicates
-	jQuery( '#modules [data-id="' +  jQuery( module ).data( 'id' ) + '"]' ).remove();
-
-	// Clear primary class
-	jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-
-	// Add new module
-	jQuery( '#modules' ).prepend( module );
-
-	if ( mode == 'multi-return' )
-		jQuery( module ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-
-	// Trim surplus
-	jQuery( jQuery( '#modules .panel' ).splice( 5 ) ).remove();
-} )
-
-socket.on( 'flash', flash );
-
-function flash( msg ) {
+function defaultFlash() {
+	// flash( 'info', 'Scan an item or user.', true );
 	clearFlash();
-	var btn = '';
-	if ( msg.btn ) {
-		jQuery('.alert .btn' ).hide();
-		btn = '<p class="pull-right" style="margin-top: 0; cursor:pointer;"><span class="' + msg.btn.class + ' glyphicon glyphicon-ok"></span></p>';
-	}
-	jQuery( '#status' ).html( '<p class="pull-left"><strong>' + msg.barcode + '</strong>: ' + msg.message + '</p>' + btn ).removeClass( 'alert-danger' ).removeClass( 'alert-info' ).removeClass( 'alert-success' ).removeClass( 'alert-warning' ).addClass( 'alert-' + msg.type );
-	statusTimeout = setTimeout( clearFlash, msg.timer ? msg.timer : 5000 );
-}
-
-socket.on( 'stats', function( msg ) {
-	jQuery( '.issued' ).text( msg.issued );
-	jQuery( '.returned' ).text( msg.returned );
-	jQuery( '.available' ).text( msg.available );
-	jQuery( '.onloan' ).text( msg.onloan );
-	jQuery( '.lostbroken' ).text( msg.lostbroken );
-	jQuery( '.audit' ).text( msg.audit );
-} );
-
-function modeUpdate( m ) {
-	mode = m;
-	console.log( "Mode: " + mode )
-
-	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-search' );
-	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-barcode' );
-	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-user' );
-	jQuery( '#find .glyphicon' ).removeClass( 'glyphicon-fire' );
-
-	if ( mode == 'user' ) {
-		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-user' );
-		jQuery( '#find' ).parent().css( 'background-color', '' );
-	} else if ( mode == 'user-selected' ) {
-		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-barcode' );
-		jQuery( '#find' ).parent().css( 'background-color', '#d9edf7' );
-	} else if ( mode == 'item' ) {
-		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-barcode' );
-		jQuery( '#find' ).parent().css( 'background-color', '' );
-	} else if ( mode == 'item-selected' ) {
-		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-user' );
-		jQuery( '#find' ).parent().css( 'background-color', '#d9edf7' );
-	} else if ( mode == 'multi-return' ) {
-		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-fire' );
-		jQuery( '#find' ).parent().css( 'background-color', '#f2dede' );
-	} else {
-		jQuery( '#find .glyphicon' ).addClass( 'glyphicon-search' );
-		jQuery( '#find' ).parent().css( 'background-color', '' );
-	}
-}
-
-socket.on( 'loggedout', function() {
-	window.location = '/login';
-} );
-
-function cancel() {
-	modeUpdate( 'find' );
-	jQuery( '#modules .panel-primary' ).removeClass( 'panel-primary' ).addClass( 'panel-info' );
-	jQuery('#find .btn').hide();
-	jQuery('#find .btn.multi-return').show().removeClass( 'btn-primary' ).addClass( 'btn-default' );
-	jQuery( '#find input' ).val( '' );
-}
-
-function resetCancelTimeout() {
-	clearTimeout( cancelTimeout );
-	cancelTimeout = setTimeout( cancel, 60000 );
 }
 
 function clearFlash() {
-	clearTimeout( statusTimeout );
-	jQuery( '#status' ).html( '&nbsp;' ).removeClass( 'alert-danger' ).removeClass( 'alert-info' ).removeClass( 'alert-success' ).addClass( 'alert-warning' );
+	clearTimeout( flashTimeout );
+	jQuery( '#flash' ).empty();
+}
+
+function flash( status, message, noTimeout ) {
+	clearFlash();
+	if ( ! noTimeout ) setTimeout( function() { defaultFlash(); }, 5000 );
+	var alert = jQuery( '<div class="alert">' + message + '</div>' ).addClass( 'alert-' + status );
+	jQuery( '#flash' ).append( alert );
+}
+
+function addModule( data ) {
+	clearActive();
+	current = data;
+	jQuery( '#modules [data-barcode="' + data.barcode + '"]' ).remove();
+	if ( data.type == 'user' ) {
+		jQuery( '.find' ).addClass( 'panel-primary' ).removeClass( 'panel-default' );
+		jQuery( '#mode .items a' ).tab( 'show' );
+	}
+	jQuery( '#modules' ).prepend( data.html );
+}
+function addResult( result, type ) {
+	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
+	switch ( result.status ) {
+		case 'available':
+			html += ' <span class="label label-success">&nbsp;</span>';
+			break;
+		case 'on-loan':
+			html += ' <span class="label label-danger">&nbsp;</span>';
+			break;
+		case 'lost':
+		case 'broken':
+			html += ' <span class="label label-warning">&nbsp;</span>';
+			break;
+		case undefined:
+			break;
+		default:
+			html += ' <span class="label label-default">&nbsp;</span>';
+			break;
+	}
+	html += ' <strong>' + result.name + '</strong>';
+	html += '<br />';
+	html += result.barcode;
+	html += '</small></li>';
+	jQuery( '#results #' + type + 's .list-group' ).append( html )
+}
+
+function issue( item, user, cb ) {
+	jQuery.post( '/api/issue/' + item + '/' + user, function( data, status ) {
+		cb( data );
+	} );
+}
+function returnItem( item, cb ) {
+	jQuery.post( '/api/return/' + item, function( data, status ) {
+		cb( data );
+	} );
+}
+function broken( item, cb ) {
+	jQuery.post( '/api/broken/' + item, function( data, status ) {
+		cb( data );
+	} );
+}
+function lost( item, cb ) {
+	jQuery.post( '/api/lost/' + item, function( data, status ) {
+		cb( data );
+	} );
+}
+function search( barcode, cb ) { apiGET( 'search', barcode, cb ); }
+function getItem( barcode, cb ) { apiGET( 'item', barcode, cb ); }
+function getUser( barcode, cb ) { apiGET( 'user', barcode, cb ); }
+function identify( barcode, cb ) { apiGET( 'identify', barcode, cb ); }
+function apiGET( method, barcode, cb ) {
+	jQuery.get( '/api/' + method + '/' + barcode, function( data, status ) {
+		cb( data );
+	} );
+}
+
+function empty( clear ) {
+	one_item = null;
+	jQuery( '#results #users ul' ).empty();
+	jQuery( '#results #items ul' ).empty();
+	if ( clear ) jQuery( '#find input' ).val('');
+}
+function clearActive() {
+	empty( true );
+	current = {};
+	jQuery( '.find' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
+	jQuery( '#mode .users a' ).tab( 'show' );
+	jQuery( '#modules .panel-primary' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
+}
+
+function handleKeyPress( e ) {
+	switch( e.keyCode ) {
+		case 27: // Escape
+			clearActive();
+			defaultFlash();
+			break;
+		case 124: // F13
+			jQuery( '.issue a' ).tab( 'show' );
+			break;
+		case 125: // F14
+			jQuery( '.return a' ).tab( 'show' );
+			break;
+		default:
+			// console.log( String.fromCharCode( e.keyCode ) );
+			// console.log( e.keyCode );
+			// console.log( e.key );
+			// console.log( e );
+			break;
+	}
+}
+
+function handleIssueSubmit( e ) {
+	e.preventDefault();
+	clearTimeout( typeTimeout );
+
+	if ( one_item ) {
+		select( one_item.type, one_item.barcode );
+		one_item = null;
+		return;
+	}
+	var term = jQuery( '#find input' ).val();
+
+	identify( term, function( data ) {
+		if ( data.kind == 'unknown' ) {
+			flash( 'warning', 'Unknown barcode.' )
+		} else {
+			select( data.kind, data.barcode );
+			defaultFlash();
+			empty( true );
+		}
+	} );
 }

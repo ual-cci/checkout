@@ -43,3 +43,38 @@ td.flex {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+#results .list-group :first-child {
+	border-top: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+.list-group-hover .list-group-item:hover {
+	background-color: #f5f5f5;
+	cursor: pointer;
+}
+
+.find.panel-primary {
+	background-color: rgb(217, 237, 247);
+}
+
+.break {
+	margin-top: 1em;
+}
+
+body {
+	margin-top: 40px;
+}
+
+.page-header {
+	margin-top: 0;
+}
+
+.page-header h2 {
+	margin-top: 0;
+}
+
+#modules .panel-heading {
+	cursor: pointer;
+}

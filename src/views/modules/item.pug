@@ -1,28 +1,41 @@
-.panel.panel-primary( data-id=item.barcode )
+.panel.panel-primary( data-barcode=item.barcode, data-type='item' )
 	.panel-heading
 		h3.panel-title
 			span.glyphicon.glyphicon-tag
 			|  
 			a( href="/items/" + item._id )=item.name
 	.panel-body
-		- status = item.status
-		h4
-			include ../../../apps/items/views/partials/status.pug
-		p
-			strong Barcode:
-			|  #{ item.barcode }
-		if item.group
-			p
-				strong Group: 
-				a( target="_blank" href="/groups/" + item.group._id )=item.group.name
-				if item.group.limiter
-					small
-						em  (Limit per user: #{ item.group.limiter })
-			
-		if item.owner
-			p
-				strong Owner: 
-				a( target="_blank" href="/users/" + item.owner._id )=item.owner.name
-		p
-			strong Department: 
-			a( target="_blank" href="/departments/" + item.department._id )=item.department.name
+		.row
+			.col-md-10
+				- status = item.status
+				h4
+					include ../../../apps/items/views/partials/status.pug
+				p
+					strong Barcode:
+					|  
+					a( href="/items/" + item._id + "/label" )
+						span.glyphicon.glyphicon-print
+					|  
+					span.clipboard( data-clipboard-text=item.barcode )=item.barcode
+				if item.group
+					p
+						strong Group: 
+						a( target="_blank" href="/groups/" + item.group._id )=item.group.name
+						if item.group.limiter
+							small
+								em  (Limit per user: #{ item.group.limiter })
+					
+				if item.owner
+					p
+						strong Owner: 
+						a( target="_blank" href="/users/" + item.owner._id )=item.owner.name
+				p
+					strong Department: 
+					a( target="_blank" href="/departments/" + item.department._id )=item.department.name
+			.col-md-2.buttons
+				if item.status == 'available'
+					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost
+					button.btn.btn-default.pull-right Broken
+				else
+					button.btn.btn-default.pull-right Return
+					

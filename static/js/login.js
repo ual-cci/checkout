@@ -1,6 +1,3 @@
-// Connect socket.io
-var io = io();
-
 jQuery( document ).ready( function() {
 	$( '#id' ).focus();
 

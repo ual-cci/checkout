@@ -16,7 +16,6 @@ html
 				link( rel="stylesheet", href="/css/style.css" )
 				link( rel="stylesheet", href="/css/dashboard.css" )
 			block js
-				script( src="/socket.io/socket.io.js" )
 				script( src="/js/jquery.js" )
 				script( src="/js/bootstrap.js" )
 				script( src="/js/clipboard.min.js" )
@@ -26,7 +25,8 @@ html
 			include partials/navbar.pug
 		.container
 			.row
-				.page-header
-					h2 #{ heading }
+				block header
+					.page-header
+						h2 #{ heading }
 				include partials/flash.pug
 				block contents

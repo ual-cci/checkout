@@ -13,10 +13,13 @@ if item.transactions.length > 0
 					- status = transaction.status
 					td: include status.pug
 					td
-						a( href="/users/" + user._id ) #{ user.name }
-						|  
-						include ../../../users/views/partials/label.pug
-					td #{ moment( transaction.date ).format( 'D/M/YYYY' ) }
+						if user
+							a( href="/users/" + user._id ) #{ user.name }
+							|  
+							include ../../../users/views/partials/label.pug
+						else
+							| &mdash;
+					td #{ moment( transaction.date ).format( 'DD/M/YYYY' ) }
 					td #{ moment( transaction.date ).format( 'HH:mm:ss' ) }
 else
 	+messageBlock( 'warning', 'There are no transactions to display.' )

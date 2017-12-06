@@ -1,4 +1,4 @@
-.panel.panel-primary( data-id=user.barcode )
+.panel.panel-primary( data-barcode=user.barcode, data-type='user' )
 	.panel-heading
 		h3.panel-title
 			span.glyphicon.glyphicon-user
@@ -15,7 +15,8 @@
 			a( href="mailto:" + user.email )  #{ user.email }
 		p
 			strong Barcode:
-			|  #{ user.barcode }
+			|  
+			span.clipboard( data-clipboard-text=user.barcode )=user.barcode
 		
 		if onloan.length > 0
 			h3 On Loan

@@ -3,32 +3,45 @@ extends ../../../src/views/base.pug
 block append head
 	script( type="text/javascript", src="/js/checkout.js" )
 
+block header
+
 block contents
-	.panel.panel-default
-		.panel-body
-			form( role="search" ).navbar-form.navbar-left#find
-				.input-group
-					span.input-group-addon#basic-addon1
-						span.glyphicon.glyphicon-search
-					input( type="text" ).form-control
-				| 
-				button( type="button", data-action="issue" style="display:none;", accesskey='i' ).btn.btn-default.issue Issue
-					|  
-					span.badge I
-				button( type="button", data-action="reserve" style="display:none;", accesskey='v' ).btn.btn-default.reserve Reserve
-					|  
-					span.badge V
-				button( type="button", data-action="return" style="display:none", accesskey='r' ).btn.btn-default.return Return
-					|  
-					span.badge R
-				button( type="button", data-action="broken" style="display:none;", accesskey='b' ).btn.btn-default.broken Broken
-					|  
-					span.badge B
-				button( type="button", data-action="lost" style="display:none;", accesskey='l' ).btn.btn-default.lost Lost
-					|  
-					span.badge L
-				button( type="button", data-action="multi-return", accesskey='1' ).btn.btn-default.multi-return Returns Mode
-					|  
-					span.badge 1
-	#status( style="overflow:hidden;" ).alert.alert-warning &nbsp;
-	#modules
+	ul.nav.nav-tabs
+		li.issue.active: a( href="#issue" accesskey="i" data-toggle="tab" ) Issue
+			|  
+			span.badge F13
+		li.return: a( href="#return" accesskey="r" data-toggle="tab" ) Multi-return
+			|  
+			span.badge F14
+	.tab-content.break
+		#issue.tab-pane.active
+			.row
+				.col-md-3
+					.find.panel.panel-default
+						.panel-body
+							form( role="search" ).navbar-form.navbar-left#find
+								.input-group
+									span.input-group-addon#basic-addon1
+										span.glyphicon.glyphicon-search
+									input( type="text" ).form-control
+					#results
+						ul.nav.nav-tabs#mode
+							li.users.active: a( href="#users" data-toggle="tab" ): span.glyphicon.glyphicon-user
+							li.items: a( href="#items" data-toggle="tab" ): span.glyphicon.glyphicon-modal-window
+						.tab-content
+							#users.tab-pane.active
+								ul.list-group.list-group-hover
+							#items.tab-pane
+								ul.list-group.list-group-hover
+				.col-md-9
+					#flash
+					#modules
+		#return.tab-pane
+			p.bg-info( style="padding: 1em; margin-top: 1em;" ) Not yet implemented.
+			//- .find.panel.panel-default
+				.panel-body
+					form.navbar-form.navbar-left#return
+						.input-group
+							span.input-group-addon#basic-addon1
+								span.glyphicon.glyphicon-barcode
+							input( type="text" ).form-control

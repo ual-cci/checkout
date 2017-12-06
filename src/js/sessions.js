@@ -4,8 +4,7 @@ var __config = __home + '/config/config.json';
 var session = require( 'express-session' ),
 	config = require( __config ),
 	cookie = require('cookie-parser'),
-	passport = require( 'passport' )
-	passportSocketIo = require('passport.socketio');
+	passport = require( 'passport' );
 
 var MongoDBStore = require( 'connect-mongodb-session' )( session );
 
@@ -26,14 +25,6 @@ module.exports =  function( app, io ) {
 		store: store,
 		resave: false,
 		rolling: true
-	} ) );
-
-	io.use( passportSocketIo.authorize( {
-		key: 'connect.sid',
-		secret: config.secret,
-		store: store,
-		passport: passport,
-		cookieParser: cookie
 	} ) );
 
 	app.use( passport.initialize() );
