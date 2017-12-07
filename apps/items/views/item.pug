@@ -23,7 +23,7 @@ block contents
 					li.dropdown-header Other Printers
 					for printer in printers
 						if printer._id.toString() != loggedInUser.printer._id.toString()
-							li: a( href="/items/" + item._id + "label?printer=" + printer._id ) #{ printer.name }
+							li: a( href="/items/" + item._id + "/label?printer=" + printer._id ) #{ printer.name }
 	hr
 	block transactions
 		include partials/transactions.pug
