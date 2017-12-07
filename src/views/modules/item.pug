@@ -11,8 +11,9 @@
 			.col-md-10
 				dl.dl-horizontal
 					dt Barcode
-					dd: a( href="/items/" + item._id + "/label" )
-						span.glyphicon.glyphicon-print
+					dd
+						a( href="/items/" + item._id + "/label" )
+							span.glyphicon.glyphicon-print
 						|  
 						span.clipboard( data-clipboard-text=item.barcode )=item.barcode
 					if item.group

@@ -6,14 +6,13 @@
 			a( href="/users/" + user._id ) #{ user.name }
 	.panel-body
 		dl.dl-horizontal
+			dt Barcode
+			dd: span.clipboard( data-clipboard-text=user.barcode )=user.barcode
+			dt Email
+			dd: a( href="mailto:" + user.email )  #{ user.email }
 			dt Course
 			- course = user.course
 			dd: include ../../../apps/courses/views/partials/course.pug
-			dt Email
-			dd: a( href="mailto:" + user.email )  #{ user.email }
-			dt Barcode
-			dd: span.clipboard( data-clipboard-text=user.barcode )=user.barcode
-		
 		if onloan.length > 0
 			h3 On Loan
 
