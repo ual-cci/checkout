@@ -23,6 +23,11 @@ var Authentication = {
 					if ( user ) {
 						if ( user.type == 'staff' && ! user.disable ) {
 
+							// LOGIN BYPASS - USE ONLY FOR SETUP!
+							// return done( null, { _id: user._id } );
+
+							if ( ! user.password.salt ) return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
+
 							// Hash the entered password with the users salt
 							Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
 
