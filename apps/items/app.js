@@ -15,10 +15,7 @@ var db = require( __js + '/database' ),
 	Printers = db.Printers,
 	ObjectId = db.ObjectId;
 
-var PDFDocument = require( 'pdfkit' );
-var bwipjs = require( 'bwip-js' );
-var ipp = require( 'ipp' );
-var buffer = [];
+var Print = require( __js + '/print' );
 
 var auth = require( __js + '/authentication' );
 
@@ -197,7 +194,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		if ( ! err ) {
 			req.flash( 'success', status.result.n + ' items created' );
 			if ( req.user.printer ) {
-				processPrint( barcodes, req.user.printer.url );
+				Print.labels( barcodes, req.user.printer.url );
 				req.flash( 'info', 'Labels printed to ' + req.user.printer.name );
 			} else {
 				req.flash( 'warning', 'No printer configured' );
@@ -257,7 +254,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		if ( ! err ) {
 			req.flash( 'success', 'Item created' );
 			if ( req.user.printer ) {
-				processPrint( [ req.body.barcode.toUpperCase() ], req.user.printer.url );
+				Print.label( req.body.barcode.toUpperCase(), req.user.printer.url );
 				req.flash( 'info', 'Label printed to ' + req.user.printer.name );
 			} else {
 				req.flash( 'warning', 'No printer configured' );
@@ -289,32 +286,38 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 // Reprint an item
 app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
-	if ( req.query.printer != null ) {
-		Printers.findById( req.query.printer, function( err, printer ) {
-			if ( printer != undefined ) {
-				Items.findById( req.params.id,  function( err, item ) {
-					if ( item == undefined ) {
-						req.flash( 'danger', 'Item not found' );
-						res.redirect( app.mountpath );
-					} else {
-						processPrint( [ item.barcode ], printer.url );
+	Items.findById( req.params.id,  function( err, item ) {
+		if ( item ) {
+			if ( req.query.printer != null ) {
+				Printers.findById( req.query.printer, function( err, printer ) {
+					if ( printer != undefined ) {
+						Print.label( item.barcode, printer.url );
 						req.flash( 'info', 'Label printed to ' + printer.name );
 						if ( req.get( 'referer' ) && req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
 							res.redirect( app.mountpath );
 						} else {
 							res.redirect( app.mountpath + '/' + item._id.toString() );
 						}
+					} else {
+						req.flash( 'warning', 'Invalid printer' );
+						res.redirect( app.mountpath );
 					}
-				} );
+				} )
 			} else {
-				req.flash( 'warning', 'Invalid printer' );
-				res.redirect( app.mountpath );
+				if ( req.user.printer ) {
+					Print.label( item.barcode, req.user.printer.url );
+					req.flash( 'info', 'Label printed to ' + req.user.printer.name );
+					res.redirect( '/' );
+				} else {
+					req.flash( 'danger', 'Item not found' );
+					res.redirect( app.mountpath );
+				}
 			}
-		} )
-	} else {
-		req.flash( 'warning', 'Invalid printer' );
-		res.redirect( app.mountpath );
-	}
+		} else {
+			req.flash( 'danger', 'Item not found' );
+			res.redirect( app.mountpath );
+		}
+	} );
 } )
 
 // Edit item form
@@ -363,86 +366,5 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/' + req.params.id );
 	} );
 } )
-
-function processPrint( codes, printer ) {
-	var doc = new PDFDocument( {
-		size: [ pt(12), pt(50) ],
-		layout: 'portrait',
-		margin: 0,
-		autoFirstPage: false
-	} );
-
-	var barcodes = [];
-	for ( c in codes ) {
-		barcodes.push( addLabel( doc, codes[c] ) )
-	}
-
-	Promise.all( barcodes ).then( function() {
-		doc.end();
-	} );
-
-	doc.on( 'data', buffer.push.bind( buffer ) );
-
-	doc.on( 'end', function() {
-		print( buffer, printer );
-	} );
-}
-
-function addLabel( doc, barcode ) {
-	return new Promise( function( resolve, reject ) {
-		generateBarcodeImage( barcode ).then( function( png ) {
-			var page = doc.addPage();
-			page.fontSize( 7 );
-			page.rotate( 90 );
-			page.text( barcode, pt(4), pt(-4), {
-				width: pt(30),
-				align: 'left'
-			} );
-			page.rotate(-90);
-			page.image( png,  pt(5), pt(2), {
-				width: pt(5),
-				height: pt(30)
-			} );
-			resolve( page );
-		} )
-	} );
-}
-
-function generateBarcodeImage( barcode ) {
-	return new Promise( function ( resolve, reject ) {
-		bwipjs.toBuffer( {
-			bcid: 'code39',
-			text: barcode,
-			height: 5,
-			width: 30,
-			rotate: 'R',
-			monochrome: true
-		}, function( err, png ) {
-			if ( err ) return reject( err );
-			return resolve( png );
-		} );
-	} );
-}
-
-function print( buffer, printer ) {
-	var file = {
-		"operation-attributes-tag": {
-			"requesting-user-name": config.name,
-			"job-name": "Barcode Labels",
-			"requesting-user-name": "Checkout",
-			"document-format": "application/pdf"
-		},
-		data: Buffer.concat( buffer )
-	};
-
-	var printer = ipp.Printer( printer );
-	printer.execute( "Print-Job", file, function ( err, res ) {
-		delete buffer;
-	});
-}
-
-function pt( mm ) {
-	return mm * 2.834645669291;
-}
 
 module.exports = function( config ) { return app; };
