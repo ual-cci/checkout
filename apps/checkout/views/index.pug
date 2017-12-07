@@ -6,11 +6,11 @@ block append head
 block header
 
 block contents
-	ul.nav.nav-tabs
+	ul.nav.nav-tabs#mode
 		li.issue.active: a( href="#issue" accesskey="i" data-toggle="tab" ) Issue
 			|  
 			span.badge F13
-		li.return: a( href="#return" accesskey="r" data-toggle="tab" ) Multi-return
+		li.return: a( href="#return" accesskey="r" data-toggle="tab" ) Return
 			|  
 			span.badge F14
 	.tab-content.break
@@ -25,7 +25,7 @@ block contents
 										span.glyphicon.glyphicon-search
 									input( type="text" ).form-control
 					#results
-						ul.nav.nav-tabs#mode
+						ul.nav.nav-tabs#results
 							li.users.active: a( href="#users" data-toggle="tab" ): span.glyphicon.glyphicon-user
 							li.items: a( href="#items" data-toggle="tab" ): span.glyphicon.glyphicon-modal-window
 						.tab-content

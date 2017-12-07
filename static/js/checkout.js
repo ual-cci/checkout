@@ -7,7 +7,7 @@ var current = {};
 jQuery( document ).ready( function() {
 	defaultFlash();
 
-	jQuery( '#find input' ).focus();
+	focus();
 
 	jQuery( '#find' ).bind( 'submit', handleIssueSubmit );
 	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
@@ -23,6 +23,10 @@ jQuery( document ).ready( function() {
 	jQuery( document ).delegate( '#modules .panel-title', 'click', function() {
 		var clicked = jQuery( this ).closest( '.panel' );
 		select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
+	} );
+
+	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) {
+		focus();
 	} );
 
 	jQuery( document ).delegate( '#modules .buttons button', 'click', function() {
@@ -146,7 +150,7 @@ function addModule( data ) {
 	jQuery( '#modules [data-barcode="' + data.barcode + '"]' ).remove();
 	if ( data.type == 'user' ) {
 		jQuery( '.find' ).addClass( 'panel-primary' ).removeClass( 'panel-default' );
-		jQuery( '#mode .items a' ).tab( 'show' );
+		jQuery( '#results .items a' ).tab( 'show' );
 	}
 	jQuery( '#modules' ).prepend( data.html );
 }
@@ -216,7 +220,7 @@ function clearActive() {
 	empty( true );
 	current = {};
 	jQuery( '.find' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
-	jQuery( '#mode .users a' ).tab( 'show' );
+	jQuery( '#results .users a' ).tab( 'show' );
 	jQuery( '#modules .panel-primary' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
 }
 
@@ -225,6 +229,7 @@ function handleKeyPress( e ) {
 		case 27: // Escape
 			clearActive();
 			defaultFlash();
+			focus();
 			break;
 		case 124: // F13
 			jQuery( '.issue a' ).tab( 'show' );
@@ -233,7 +238,7 @@ function handleKeyPress( e ) {
 			jQuery( '.return a' ).tab( 'show' );
 			break;
 		case 126: // F15
-			jQuery( '#find input' ).focus();
+			focus();
 			break;
 		default:
 			// console.log( String.fromCharCode( e.keyCode ) );
@@ -280,7 +285,7 @@ function handleReturnSubmit( e ) {
 	e.preventDefault();
 
 	var term = jQuery( '#return input' ).val();
-	jQuery( '#find input' ).val('');
+	jQuery( '#return input' ).val('');
 
 	returnItem( term, function( data ) {
 		if ( data ) {
@@ -289,4 +294,15 @@ function handleReturnSubmit( e ) {
 			status( 'danger', 'Unknown item' );
 		}
 	} )
+}
+
+function focus() {
+	switch( jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) ) {
+		case 'return':
+			jQuery( '#return input' ).focus();
+			break;
+		case 'issue':
+			jQuery( '#find input' ).focus();
+			break;
+	}
 }
