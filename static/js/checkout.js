@@ -9,12 +9,8 @@ jQuery( document ).ready( function() {
 
 	jQuery( '#find input' ).focus();
 
-	// jQuery( 'input' ).bind( 'blur', function( e ) {
-	// 	if ( e.relatedTarget == undefined || e.relatedTarget.tagName != 'INPUT' )
-	// 		jQuery( '#find input' ).focus();
-	// } );
-
 	jQuery( '#find' ).bind( 'submit', handleIssueSubmit );
+	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
 
 	jQuery( document ).bind( 'keyup', handleKeyPress );
 
@@ -236,6 +232,9 @@ function handleKeyPress( e ) {
 		case 125: // F14
 			jQuery( '.return a' ).tab( 'show' );
 			break;
+		case 126: // F15
+			jQuery( '#find input' ).focus();
+			break;
 		default:
 			// console.log( String.fromCharCode( e.keyCode ) );
 			// console.log( e.keyCode );
@@ -265,4 +264,29 @@ function handleIssueSubmit( e ) {
 			empty( true );
 		}
 	} );
+}
+
+function status( status, message, barcode ) {
+	var html = '<div class="alert">';
+	if ( barcode ) html += '<strong>' + barcode + '</strong>: ';
+	html += message;
+	html += '</div>';
+	var alert = jQuery( html ).addClass( 'alert-' + status );
+	jQuery( '#status' ).append( alert );
+	setTimeout( function() { jQuery( alert ).fadeOut() }, 5000 );
+}
+
+function handleReturnSubmit( e ) {
+	e.preventDefault();
+
+	var term = jQuery( '#return input' ).val();
+	jQuery( '#find input' ).val('');
+
+	returnItem( term, function( data ) {
+		if ( data ) {
+			status( data.status, data.message, data.barcode );
+		} else {
+			status( 'danger', 'Unknown item' );
+		}
+	} )
 }

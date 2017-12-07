@@ -21,7 +21,6 @@ body.dev .navbar {
 }
 
 .panel-primary .panel-heading h3:after {
-	content: 'Active';
 	position: absolute;
 	right: 0;
 	font-weight: normal;

@@ -245,95 +245,112 @@ app.post( '/return/:item', auth.isLoggedIn, function( req, res ) {
 					barcode: item.barcode
 				} );
 			} );
+		} else {
+			return res.json( {
+				status: 'danger',
+				message: 'Unknown item'
+			} );
 		}
 	} );
 } );
 
 app.post( '/broken/:item', auth.isLoggedIn, function( req, res ) {
 	Items.findOne( { barcode: req.params.item }, function( err, item ) {
-		if ( item == undefined ) return;
-
-		if ( item.status == 'broken' ) {
-			return res.json( {
-				status: 'warning',
-				message: 'Item already marked as broken',
-				barcode: item.barcode
-			} );
-			return;
-		}
-		Items.update( { _id: item._id }, {
-			$push: {
-				transactions: {
-					date: new Date(),
-					user: req.user.id,
-					status: 'broken'
-				}
-			}
-		} ).then( function ( status ) {
-			if ( status.n == 1 ) {
+		if ( item ) {
+			if ( item.status == 'broken' ) {
 				return res.json( {
-					status: 'success',
-					message: 'Item marked as broken',
+					status: 'warning',
+					message: 'Item already marked as broken',
 					barcode: item.barcode
 				} );
-			} else {
+				return;
+			}
+			Items.update( { _id: item._id }, {
+				$push: {
+					transactions: {
+						date: new Date(),
+						user: req.user.id,
+						status: 'broken'
+					}
+				}
+			} ).then( function ( status ) {
+				if ( status.n == 1 ) {
+					return res.json( {
+						status: 'success',
+						message: 'Item marked as broken',
+						barcode: item.barcode
+					} );
+				} else {
+					return res.json( {
+						status: 'danger',
+						message: 'There was an error updating the item',
+						barcode: item.barcode
+					} );
+				}
+			}, function ( status ) {
 				return res.json( {
 					status: 'danger',
 					message: 'There was an error updating the item',
 					barcode: item.barcode
 				} );
-			}
-		}, function ( status ) {
+			} );
+		} else {
 			return res.json( {
 				status: 'danger',
-				message: 'There was an error updating the item',
+				message: 'Unknown item',
 				barcode: item.barcode
 			} );
-		} );
+		}
 	} );
 } );
 
 app.post( '/lost/:item', auth.isLoggedIn, function( req, res ) {
 	Items.findOne( { barcode: req.params.item }, function( err, item ) {
-		if ( item == undefined ) return;
-
-		if ( item.status == 'lost' ) {
-			return res.json( {
-				status: 'warning',
-				message: 'Item already marked as lost',
-				barcode: item.barcode
-			} );
-			return;
-		}
-		Items.update( { _id: item._id }, {
-			$push: {
-				transactions: {
-					date: new Date(),
-					user: req.user.id,
-					status: 'lost'
-				}
-			}
-		} ).then( function ( status ) {
-			if ( status.n == 1 ) {
+		if ( item ) {
+			if ( item.status == 'lost' ) {
 				return res.json( {
-					status: 'success',
-					message: 'Item marked as lost',
+					status: 'warning',
+					message: 'Item already marked as lost',
 					barcode: item.barcode
 				} );
-			} else {
+				return;
+			}
+			Items.update( { _id: item._id }, {
+				$push: {
+					transactions: {
+						date: new Date(),
+						user: req.user.id,
+						status: 'lost'
+					}
+				}
+			} ).then( function ( status ) {
+				if ( status.n == 1 ) {
+					return res.json( {
+						status: 'success',
+						message: 'Item marked as lost',
+						barcode: item.barcode
+					} );
+				} else {
+					return res.json( {
+						status: 'danger',
+						message: 'There was an error updating the item',
+						barcode: item.barcode
+					} );
+				}
+			}, function ( status ) {
 				return res.json( {
 					status: 'danger',
 					message: 'There was an error updating the item',
 					barcode: item.barcode
 				} );
-			}
-		}, function ( status ) {
+			} );
+		} else {
 			return res.json( {
 				status: 'danger',
-				message: 'There was an error updating the item',
+				message: 'Unknown item',
 				barcode: item.barcode
 			} );
-		} );
+		}
 	} );
 } );
 
