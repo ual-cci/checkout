@@ -3,5 +3,6 @@
 	"port": "8080",
 	"mongo": "mongodb://localhost:27017/checkout",
 	"secret": "123",
-	"dev": true
+	"dev": true,
+	"iterations": 50000
 }
