@@ -83,10 +83,10 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 			for ( var i = 0; i < items.length; i++ ) {
 				item = items[i];
 				if ( req.body.fields.indexOf( 'group' ) != -1 && req.body.group != '' )
-					item.group = req.body.group;
+					item.group = ObjectId( req.body.group );
 
 				if ( req.body.fields.indexOf( 'department' ) != -1 && req.body.department != '' )
-					item.department = req.body.department;
+					item.department = ObjectId( req.body.department );
 
 				if ( req.body.fields.indexOf( 'notes' ) != -1 && req.body.notes != '' )
 					item.notes = req.body.notes;
@@ -171,7 +171,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 	for ( var i = start; i <= end; i++ ) {
 		var item = {
-			_id: db.ObjectId(),
+			_id: require( 'mongoose' ).Types.ObjectId(),
 			name: req.body.name.trim(),
 			barcode: req.body.prefix.toUpperCase(),
 			value: req.body.value,
@@ -193,11 +193,13 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 	Items.collection.insert( items, function( err, status ) {
 		if ( ! err ) {
 			req.flash( 'success', status.result.n + ' items created' );
-			if ( req.user.printer ) {
-				Print.labels( barcodes, req.user.printer.url );
-				req.flash( 'info', 'Labels printed to ' + req.user.printer.name );
-			} else {
-				req.flash( 'warning', 'No printer configured' );
+			if ( req.body.print ) {
+				if ( req.user.printer ) {
+					Print.labels( barcodes, req.user.printer.url );
+					req.flash( 'info', 'Labels printed to ' + req.user.printer.name );
+				} else {
+					req.flash( 'warning', 'No printer configured' );
+				}
 			}
 			res.redirect( app.mountpath );
 		} else {
@@ -225,14 +227,14 @@ app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 
 app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	var item = {
-		_id: db.ObjectId(),
+		_id: require( 'mongoose' ).Types.ObjectId(),
 		name: req.body.name,
 		barcode: req.body.barcode.toUpperCase(),
 		value: req.body.value,
 		department: ObjectId( req.body.department ),
 		notes: req.body.notes
 	}
-	console.log( item );
+
 	if ( req.body.group )
 		item.group = ObjectId( req.body.group );
 
@@ -253,11 +255,13 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	new Items( item ).save( function ( err ) {
 		if ( ! err ) {
 			req.flash( 'success', 'Item created' );
-			if ( req.user.printer ) {
-				Print.label( req.body.barcode.toUpperCase(), req.user.printer.url );
-				req.flash( 'info', 'Label printed to ' + req.user.printer.name );
-			} else {
-				req.flash( 'warning', 'No printer configured' );
+			if ( req.body.print ) {
+				if ( req.user.printer ) {
+					Print.label( req.body.barcode.toUpperCase(), req.user.printer.url );
+					req.flash( 'info', 'Label printed to ' + req.user.printer.name );
+				} else {
+					req.flash( 'warning', 'No printer configured' );
+				}
 			}
 			res.redirect( app.mountpath );
 		} else {

@@ -12,8 +12,7 @@
 				dl.dl-horizontal
 					dt Barcode
 					dd
-						a( href="/items/" + item._id + "/label" )
-							span.glyphicon.glyphicon-print
+						span.glyphicon.glyphicon-print
 						|  
 						span.clipboard( data-clipboard-text=item.barcode )=item.barcode
 					if item.group
@@ -26,8 +25,9 @@
 					if item.owner
 						dt Owner:
 						dd: a( target="_blank" href="/users/" + item.owner._id )=item.owner.name
-					dt Department
-					dd: a( target="_blank" href="/departments/" + item.department._id )=item.department.name
+					if item.department
+						dt Department
+						dd: a( target="_blank" href="/departments/" + item.department._id )=item.department.name
 			.col-md-2.buttons
 				if item.status == 'available'
 					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost

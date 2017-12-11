@@ -7,7 +7,7 @@ var fs = require( 'fs' ),
 	ObjectId = mongoose.Schema.ObjectId,
 	crypto = require( 'crypto' );
 
-exports.ObjectId = ObjectId;
+exports.ObjectId = mongoose.Types.ObjectId;
 exports.mongoose = mongoose;
 
 exports.connect = function( url ) {

@@ -11,7 +11,8 @@ var db = require( __js + '/database' ),
 	Items = db.Items,
 	Users = db.Users,
 	Courses = db.Courses,
-	Printers = db.Printers;
+	Printers = db.Printers,
+	ObjectId = db.ObjectId;
 
 var auth = require( __js + '/authentication' );
 
@@ -49,7 +50,7 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 				user = users[u];
 
 				if ( req.body.fields.indexOf( 'course' ) != -1 && req.body.course != '' )
-					user.course = req.body.course;
+					user.course = ObjectId( req.body.course );
 
 				if ( req.body.fields.indexOf( 'status' ) != -1 && req.body.status != '' )
 					user.disable = ( req.body.status == 'disabled' ? true : false );
@@ -94,8 +95,8 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		type: req.body.type,
 		barcode: req.body.barcode,
 		email: req.body.email,
-		course: req.body.course,
-		printer: req.body.printer ? req.body.printer : null
+		course: ObjectId( req.body.course ),
+		printer: req.body.printer ? ObjectId( req.body.printer ) : null
 	}
 
 	if ( user.name == '' ) {
@@ -207,8 +208,8 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		name: req.body.name,
 		barcode: req.body.barcode,
 		email: req.body.email,
-		course: req.body.course,
-		printer: req.body.printer ? req.body.printer : null,
+		course: ObjectId( req.body.course ),
+		printer: req.body.printer ? ObjectId( req.body.printer ) : null,
 		type: req.body.type,
 		disable: req.body.disable
 	};

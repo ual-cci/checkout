@@ -6,63 +6,18 @@ var current = {};
 
 jQuery( document ).ready( function() {
 	defaultFlash();
-
 	focus();
 
+	jQuery( '#find input' ).bind( 'input', handleSearchInput );
+	jQuery( document ).bind( 'keyup', handleKeyPress );
 	jQuery( '#find' ).bind( 'submit', handleIssueSubmit );
 	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
+	jQuery( document ).delegate( '#modules .panel-title', 'click', handlePanelClick );
+	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
+	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
+	jQuery( document ).delegate( '#results .list-group-item', 'click', handleResultClick );
+	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) { focus(); } );
 
-	jQuery( document ).bind( 'keyup', handleKeyPress );
-
-	jQuery( '#find input' ).bind( 'input', function( e ) {
-		if ( jQuery( '#find input' ).val() == '' ) empty();
-		clearTimeout( typeTimeout );
-		typeTimeout = setTimeout( searchTimer, 100 );
-	} );
-
-	jQuery( document ).delegate( '#modules .panel-title', 'click', function() {
-		var clicked = jQuery( this ).closest( '.panel' );
-		select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
-	} );
-
-	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) {
-		focus();
-	} );
-
-	jQuery( document ).delegate( '#modules .buttons button', 'click', function() {
-		var clicked = jQuery( this ).closest( '.panel' );
-		var type = jQuery( clicked ).data( 'type' );
-		var barcode = jQuery( clicked ).data( 'barcode' );
-
-		switch ( jQuery( this ).html() ) {
-			case 'Return':
-				returnItem( barcode, function( data ) {
-					flash( data.status, data.message );
-					select( 'item', data.barcode );
-				} );
-				break;
-			case 'Broken':
-				broken( barcode, function( data ) {
-					flash( data.status, data.message );
-					select( 'item', data.barcode );
-				} );
-				break;
-			case 'Lost':
-				lost( barcode, function( data ) {
-					flash( data.status, data.message );
-					select( 'item', data.barcode );
-				} );
-				break;
-		}
-	} );
-
-	jQuery( document ).delegate( '#results .list-group-item', 'click', function() {
-		var type = jQuery( this ).data( 'type' );
-		var barcode = jQuery( this ).data( 'barcode' );
-		select( type, barcode );
-		defaultFlash();
-		empty( true );
-	} );
 } );
 
 function searchTimer() {
@@ -200,6 +155,11 @@ function lost( item, cb ) {
 		cb( data );
 	} );
 }
+function label( item, cb ) {
+	jQuery.post( '/api/label/' + item, function( data, status ) {
+		cb( data );
+	} );
+}
 function search( barcode, cb ) { apiGET( 'search', barcode, cb ); }
 function getItem( barcode, cb ) { apiGET( 'item', barcode, cb ); }
 function getUser( barcode, cb ) { apiGET( 'user', barcode, cb ); }
@@ -241,10 +201,6 @@ function handleKeyPress( e ) {
 			focus();
 			break;
 		default:
-			// console.log( String.fromCharCode( e.keyCode ) );
-			// console.log( e.keyCode );
-			// console.log( e.key );
-			// console.log( e );
 			break;
 	}
 }
@@ -305,4 +261,60 @@ function focus() {
 			jQuery( '#find input' ).focus();
 			break;
 	}
+}
+
+function handleItemButtons() {
+	var clicked = jQuery( this ).closest( '.panel' );
+	var type = jQuery( clicked ).data( 'type' );
+	var barcode = jQuery( clicked ).data( 'barcode' );
+
+	switch ( jQuery( this ).html() ) {
+		case 'Return':
+			returnItem( barcode, function( data ) {
+				flash( data.status, data.message );
+				select( 'item', data.barcode );
+			} );
+			break;
+		case 'Broken':
+			broken( barcode, function( data ) {
+				flash( data.status, data.message );
+				select( 'item', data.barcode );
+			} );
+			break;
+		case 'Lost':
+			lost( barcode, function( data ) {
+				flash( data.status, data.message );
+				select( 'item', data.barcode );
+			} );
+			break;
+	}
+}
+
+function handlePrintButton() {
+	var clicked = jQuery( this ).closest( '.panel' );
+	var type = jQuery( clicked ).data( 'type' );
+	var barcode = jQuery( clicked ).data( 'barcode' );
+
+	label( barcode, function ( data ) {
+		flash( data.status, data.message );
+	} );
+}
+
+function handleResultClick() {
+	var type = jQuery( this ).data( 'type' );
+	var barcode = jQuery( this ).data( 'barcode' );
+	select( type, barcode );
+	defaultFlash();
+	empty( true );
+}
+
+function handlePanelClick() {
+	var clicked = jQuery( this ).closest( '.panel' );
+	select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
+}
+
+function handleSearchInput( e ) {
+	if ( jQuery( '#find input' ).val() == '' ) empty();
+	clearTimeout( typeTimeout );
+	typeTimeout = setTimeout( searchTimer, 100 );
 }

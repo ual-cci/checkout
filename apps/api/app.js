@@ -12,6 +12,8 @@ var	express = require( 'express' ),
 var pug = require( 'pug' ),
 	moment = require( 'moment' );
 
+var Print = require( __js + '/print' );
+
 var db = require( __js + '/database' ),
 	Items = db.Items,
 	Users = db.Users,
@@ -131,7 +133,7 @@ app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
 				html: html
 			};
 
-			if ( item.transactions ) {
+			if ( item.transactions && item.transactions.length ) {
 				var last = item.transactions[item.transactions.length - 1];
 				output.owner = {
 					name: last.user.name,
@@ -470,6 +472,33 @@ app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
 				status: 'danger',
 				message: 'Unknown item',
 				barcode: req.params.item
+			} );
+		}
+	} );
+} );
+
+app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
+	Items.findOne( { barcode: req.params.item }, function( err, item ) {
+		if ( item ) {
+			if ( req.user.printer ) {
+				Print.label( item.barcode, req.user.printer.url );
+				return res.json( {
+					status: 'success',
+					message: 'Label printed to ' + req.user.printer.name,
+					barcode: item.barcode
+				} );
+			} else {
+				return res.json( {
+					status: 'warning',
+					message: 'You have not assigned a printer in your profile',
+					barcode: item.barcode
+				} );
+			}
+		} else {
+			return res.json( {
+				status: 'danger',
+				message: 'Unknown item',
+				barcode: item.barcode
 			} );
 		}
 	} );
