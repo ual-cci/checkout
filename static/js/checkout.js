@@ -132,7 +132,8 @@ function addResult( result, type ) {
 	html += '<br />';
 	html += result.barcode;
 	html += '</small></li>';
-	jQuery( '#results #' + type + 's .list-group' ).append( html )
+	if ( result.disable ) html = jQuery( html ).addClass( 'disabled' );
+	jQuery( '#results #' + type + 's .list-group' ).append( html );
 }
 
 function issue( item, user, cb ) {
@@ -303,6 +304,7 @@ function handlePrintButton() {
 function handleResultClick() {
 	var type = jQuery( this ).data( 'type' );
 	var barcode = jQuery( this ).data( 'barcode' );
+	if ( jQuery( this ).hasClass( 'disabled' ) ) return flash( 'warning', 'Cannot select a disabled user account' );
 	select( type, barcode );
 	defaultFlash();
 	empty( true );

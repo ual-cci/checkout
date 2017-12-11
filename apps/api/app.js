@@ -27,7 +27,7 @@ app.get( '/search/:term', auth.isLoggedIn, function( req, res ) {
 	Users.find( { $or: [
 		{ name: { $regex: '.*' + req.params.term + '.*', $options: 'i' } },
 		{ barcode: { $regex: '.*' + req.params.term + '.*', $options: 'i' } }
-	], disable: false } ).select( ['name', 'barcode'] ).exec( function( err, users ) {
+	] } ).sort( { disable: 1, name: 1 } ).select( [ 'name', 'barcode', 'disable' ] ).exec( function( err, users ) {
 		Items.find( { $or: [
 			{ name: { $regex: '.*' + req.params.term + '.*', $options: 'i' } },
 			{ barcode: { $regex: '.*' + req.params.term + '.*', $options: 'i' } }
@@ -77,7 +77,7 @@ app.get( '/identify/:term', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/user/:barcode', auth.isLoggedIn, function( req, res ) {
-	Users.findOne( { barcode: req.params.barcode, disable: false } ).populate( 'course' ).exec( function ( err, user ) {
+	Users.findOne( { barcode: req.params.barcode, disable: false } ).populate( 'course' ).populate( 'year' ).exec( function ( err, user ) {
 		if ( user ) {
 			Items.find().exec( function( err, items ) {
 				var onloan = [];

@@ -4,6 +4,12 @@ dl.dl-horizontal
 	dt Course
 	- course = user.course
 	dd: include ../../../courses/views/partials/course.pug
+	dt Year
+		if user.year
+			dd #{ user.year.name }
+		else
+			dd –
+			
 	if user.course.contact
 		dt Staff Contact
 		dd: a( href="/users/" + user.course.contact._id )=user.course.contact.name

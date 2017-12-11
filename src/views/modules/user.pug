@@ -13,6 +13,11 @@
 			dt Course
 			- course = user.course
 			dd: include ../../../apps/courses/views/partials/course.pug
+			dt Year
+			if user.year
+				dd=user.year.name
+			else
+				dd –
 		if onloan.length > 0
 			h3 On Loan
 

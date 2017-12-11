@@ -18,7 +18,7 @@
 						a( href="/users" ) Users
 
 					li( class=( currentModule == 'users' ? 'active' : '' ) ).dropdown
-						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  More
+						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  Manage
 							|  
 							span.caret
 						ul.dropdown-menu
@@ -26,18 +26,18 @@
 								span.glyphicon.glyphicon-eye-open
 								|  View
 							li: a( href="/courses" ) Courses
+							li: a( href="/years" ) Years
 							li: a( href="/groups" ) Groups
 							li: a( href="/departments" ) Departments
 							li( role="separator" ).divider
 							li.dropdown-header
 								span.glyphicon.glyphicon-plus
 								|  New
-							li: a( href="/users/create" ) User
-							li: a( href="/items/create" ) Item
-							li: a( href="/items/generate" ) Generate Items
+							li: a( href="/courses/create" ) Course
+							li: a( href="/years/create" ) Year
 							li: a( href="/groups/create" ) Group
 							li: a( href="/departments/create" ) Department
-							li: a( href="/courses/create" ) Course
+							
 						
 						li( class=( currentModule == 'reports' ? 'active' : '' ) ).dropdown
 							a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Reports
@@ -52,33 +52,34 @@
 								li: a( href="/reports/status/reserved" ) Reserved
 								li: a( href="/reports/status/lost" ) Lost
 								li: a( href="/reports/status/broken" ) Broken
-							
-			ul.nav.navbar-nav.navbar-right
-				if loggedInUser
-					li( class=( currentModule == 'admin' ? 'active' : '' ) ).dropdown
-						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Admin
-							|  
-							span.caret
-						ul.dropdown-menu
-							li.dropdown-header
-								span.glyphicon.glyphicon-barcode
-								|  Audit
-							li: a( href="/audit" ) Scan
-							li: a( href="/audit/scanned" ) Scanned
-							li: a( href="/audit/missing" ) Missing
-							li( role="separator" ).divider
-							li: a( href="/printers" )
-								span.glyphicon.glyphicon-print
-								|  Configure Printers
-						li.dropdown
-							a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle #{ loggedInUser.name }
+						
+						li( class=( currentModule == 'admin' ? 'active' : '' ) ).dropdown
+							a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Admin
 								|  
 								span.caret
 							ul.dropdown-menu
-								li: a( href='/users/' + loggedInUser._id + '/edit' )
-									span.glyphicon.glyphicon-pencil
-									|  Edit Profile
+								li.dropdown-header
+									span.glyphicon.glyphicon-barcode
+									|  Audit
+								li: a( href="/audit" ) Scan
+								li: a( href="/audit/scanned" ) Scanned
+								li: a( href="/audit/missing" ) Missing
 								li( role="separator" ).divider
-								li: a( href="/logout")
-									span.glyphicon.glyphicon-log-out
-									|  Logout
+								li: a( href="/printers" )
+									span.glyphicon.glyphicon-print
+									|  Configure Printers
+							
+			ul.nav.navbar-nav.navbar-right
+				if loggedInUser
+					li.dropdown
+						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle #{ loggedInUser.name }
+							|  
+							span.caret
+						ul.dropdown-menu
+							li: a( href='/users/' + loggedInUser._id + '/edit' )
+								span.glyphicon.glyphicon-pencil
+								|  Edit Profile
+							li( role="separator" ).divider
+							li: a( href="/logout")
+								span.glyphicon.glyphicon-log-out
+								|  Logout

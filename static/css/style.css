@@ -54,6 +54,11 @@ td.flex {
 	cursor: pointer;
 }
 
+.list-group-item.disabled {
+	background-color: #eee;
+	cursor: not-allowed !important;
+}
+
 .find.panel-primary {
 	background-color: rgb(217, 237, 247);
 }

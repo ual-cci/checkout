@@ -9,6 +9,7 @@ if users.length > 0
 					th Name
 					if ! no_course
 						th Course
+					th Year
 					th Email
 					th Barcode
 			tbody
@@ -24,6 +25,11 @@ if users.length > 0
 							td
 								- course = user.course
 								include ../../../courses/views/partials/course.pug
+						td
+							if user.year
+								| #{ user.year.name }
+							else
+								| &mdash;
 						td: a( href="mailto:" + user.email )=user.email
 						td: span( data-clipboard-text=user.barcode ).clipboard=user.barcode
 else

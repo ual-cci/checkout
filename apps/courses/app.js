@@ -55,7 +55,7 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			req.flash( 'danger', 'Course not found' );
 			res.redirect( app.mountpath );
 		} else {
-			Users.find( { course: req.params.id, disable: { $ne: true } }, function( err, users ) {
+			Users.find( { course: req.params.id, disable: { $ne: true } } ).populate( 'year' ).exec( function( err, users ) {
 				users.sort( function( a, b ) {
 					if ( a.name < b.name ) return -1;
 					if ( a.name > b.name ) return 1;

@@ -1,0 +1,8 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Years"
+	- heading = title
+
+block contents
+	include partials/year-list.pug

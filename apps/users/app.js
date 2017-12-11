@@ -11,6 +11,7 @@ var db = require( __js + '/database' ),
 	Items = db.Items,
 	Users = db.Users,
 	Courses = db.Courses,
+	Years = db.Years,
 	Printers = db.Printers,
 	ObjectId = db.ObjectId;
 
@@ -19,27 +20,32 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Courses.find( function( err, courses ) {
-		var filter = {};
-		if ( req.query.course ) filter.course = req.query.course;
-		Users.find( filter ).populate( 'course' ).exec( function( err, users ) {
-			var active_users = [];
-			var disabled_users = [];
-			users.sort( function( a, b ) {
-				if ( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
-				if ( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
-				return 0;
-			} )
-			for ( var u = 0; u < users.length; u++ ) {
-				if ( users[u].disable ) {
-					disabled_users.push( users[u] );
-				} else {
-					active_users.push( users[u] );
+	Courses.find().sort( 'name' ).exec( function( err, courses ) {
+		Years.find().sort( 'name' ).exec( function( err, years ) {
+			var filter = {};
+			if ( req.query.course ) filter.course = req.query.course;
+			if ( req.query.year ) filter.year = req.query.year;
+			Users.find( filter ).populate( 'course' ).populate( 'year' ).sort( 'name' ).exec( function( err, users ) {
+				var active_users = [];
+				var disabled_users = [];
+				for ( var u = 0; u < users.length; u++ ) {
+					if ( users[u].disable ) {
+						disabled_users.push( users[u] );
+					} else {
+						active_users.push( users[u] );
+					}
 				}
-			}
 
-			res.render( 'users', { active: active_users, disabled: disabled_users, courses: courses, selectedCourse: req.query.course } );
-		} )
+				res.render( 'users', {
+					active: active_users,
+					disabled: disabled_users,
+					courses: courses,
+					selectedCourse: req.query.course,
+					years: years,
+					selectedYear: req.query.year
+				} );
+			} );
+		} );
 	} );
 } )
 
@@ -52,6 +58,9 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 				if ( req.body.fields.indexOf( 'course' ) != -1 && req.body.course != '' )
 					user.course = ObjectId( req.body.course );
 
+				if ( req.body.fields.indexOf( 'year' ) != -1 && req.body.year != '' )
+					user.year = ObjectId( req.body.year );
+
 				if ( req.body.fields.indexOf( 'status' ) != -1 && req.body.status != '' )
 					user.disable = ( req.body.status == 'disabled' ? true : false );
 
@@ -63,14 +72,11 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 			res.redirect( app.mountpath );
 		} );
 	} else {
-		Courses.find( function( err, courses ) {
-			Users.find( { _id: { $in: req.body.edit } } ).populate( 'courses' ).exec( function( err, users ) {
-				users.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
-				res.render( 'edit-multiple', { users: users, courses: courses } );
+		Years.find().sort( 'name' ).exec( function( err, years ) {
+			Courses.find().sort( 'name' ).exec( function( err, courses ) {
+				Users.find( { _id: { $in: req.body.edit } } ).populate( 'courses' ).sort( 'barcode' ).exec( function( err, users ) {
+					res.render( 'edit-multiple', { users: users, courses: courses, years: years } );
+				} );
 			} );
 		} );
 	}
@@ -137,7 +143,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 
 // View user
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Users.findById( req.params.id ).populate( 'course' ).exec( function( err, user ) {
+	Users.findById( req.params.id ).populate( 'course' ).populate( 'year' ).exec( function( err, user ) {
 		if ( user == undefined ) {
 			req.flash( 'danger', 'User not found' );
 			res.redirect( app.mountpath );
@@ -195,8 +201,10 @@ app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 				req.flash( 'danger', 'User not found' );
 				res.redirect( app.mountpath );
 			} else {
-				Courses.find( function( err, courses ) {
-					res.render( 'edit', { courses:courses, user: user, printers: printers } );
+				Years.find().sort( 'name' ).exec( function( err, years ) {
+					Courses.find().sort( 'name' ).exec( function( err, courses ) {
+						res.render( 'edit', { courses: courses, years: years, user: user, printers: printers } );
+					} );
 				} );
 			}
 		} )
@@ -209,6 +217,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		barcode: req.body.barcode,
 		email: req.body.email,
 		course: ObjectId( req.body.course ),
+		year: ObjectId( req.body.year ),
 		printer: req.body.printer ? ObjectId( req.body.printer ) : null,
 		type: req.body.type,
 		disable: req.body.disable

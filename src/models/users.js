@@ -22,6 +22,10 @@ module.exports = {
 			type: ObjectId,
 			ref: 'Courses'
 		},
+		year: {
+			type: ObjectId,
+			ref: 'Years'
+		},
 		barcode: {
 			type: String,
 			unique: true,

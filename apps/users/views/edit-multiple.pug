@@ -27,6 +27,16 @@ block contents
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="course" )
 		.form-group
+			label( for="year" ).col-md-2.control-label Year
+			.col-md-4
+				.input-group
+					select( name="year" )#course.form-control
+						option( value="" disabled selected ) Select a year
+						for year in years
+							option( value=year._id )=year.name
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="year" )
+		.form-group
 			.col-md-4.col-md-offset-2
 				button( type="submit" ).btn.btn-default Update
 		h3 Items

@@ -1,0 +1,9 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Create Year"
+	- heading = title
+
+block contents
+	- action = 'Create'
+	include partials/year-form.pug
