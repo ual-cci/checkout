@@ -17,15 +17,6 @@ var auth = require( __js + '/authentication' );
 
 app.set( 'views', __dirname + '/views' );
 
-app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Departments.find( function( err, departments ) {
-		res.locals.currentModule = 'audit';
-		res.render( 'audit', {
-			departments: departments
-		} );
-	} );
-} );
-
 // Audited report
 app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 	res.locals.currentModule = 'audit';

@@ -1,31 +1,38 @@
 extends ../../../src/views/base.pug
 
 block append head
+	script( type="text/javascript", src="/js/buzz.js" )
 	script( type="text/javascript", src="/js/checkout.js" )
 
 block header
 
 block contents
 	ul.nav.nav-tabs#mode
-		li.issue.active: a( href="#issue" accesskey="i" data-toggle="tab" ) Issue
+		li.issue.active: a( href="#issue" data-toggle="tab" ) Issue
 			|  
 			span.badge F13
-		li.return: a( href="#return" accesskey="r" data-toggle="tab" ) Return
+		li.return: a( href="#return" data-toggle="tab" ) Return
 			|  
 			span.badge F14
+		li.print: a( href="#label" data-toggle="tab" ) Label
+			|  
+			span.badge F15
+		li.audit: a( href="#audit" data-toggle="tab" ) Audit
+			|  
+			span.badge F16
 	.tab-content.break
 		#issue.tab-pane.active
 			.row
 				.col-md-3
 					.find.panel.panel-default
 						.panel-body
-							form( role="search" ).navbar-form.navbar-left#find
+							form( role="search" )#find
 								.input-group
-									span.input-group-addon#basic-addon1
+									span.input-group-addon
 										span.glyphicon.glyphicon-search
 									input( type="text" ).form-control
 					#results
-						ul.nav.nav-tabs#results
+						ul.nav.nav-tabs
 							li.users.active: a( href="#users" data-toggle="tab" ): span.glyphicon.glyphicon-user
 							li.items: a( href="#items" data-toggle="tab" ): span.glyphicon.glyphicon-modal-window
 						.tab-content
@@ -34,14 +41,46 @@ block contents
 							#items.tab-pane
 								ul.list-group.list-group-hover
 				.col-md-9
-					#flash
+					.flash
 					#modules
 		#return.tab-pane
-			.find.panel.panel-default
+			.row
+				.col-md-3
+					.panel.panel-default
+						.panel-body
+							form
+								.input-group
+									span.input-group-addon
+										span.glyphicon.glyphicon-log-in
+									input( type="text" ).form-control
+				.col-md-9
+					.flash
+		#audit.tab-pane
+			.panel.panel-default
 				.panel-body
-					form.navbar-form.navbar-left#return
-						.input-group
-							span.input-group-addon#basic-addon1
-								span.glyphicon.glyphicon-barcode
-							input( type="text" ).form-control
-			#status
+					form
+						.row
+							.col-md-3
+								.input-group
+									span.input-group-addon
+										span.glyphicon.glyphicon-barcode
+									input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
+							.col-md-3
+								.input-group
+									select#department.form-control
+										option( value="" ) Don't change department
+										for department in departments
+											option( value=department._id ) #{ department.name }
+			.flash
+		#label.tab-pane
+			.row
+				.col-md-3
+					.panel.panel-default
+						.panel-body
+							form
+								.input-group
+									span.input-group-addon
+										span.glyphicon.glyphicon-print
+									input( type="text" ).form-control
+				.col-md-9
+					.flash

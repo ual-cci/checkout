@@ -7,10 +7,17 @@ var	express = require( 'express' ),
 
 var auth = require( __js + '/authentication' );
 
+var db = require( __js + '/database' ),
+	Departments = db.Departments;
+
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	res.render( 'index' );
+	Departments.find( function( err, departments ) {
+		res.render( 'index', {
+			departments: departments
+		} );
+	} );
 } );
 
 module.exports = function( config ) { return app; };

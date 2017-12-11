@@ -1,3 +1,6 @@
+var errorSound = new buzz.sound( "/sounds/error.wav" );
+var successSound = new buzz.sound( "/sounds/success.wav" );
+
 var typeTimeout;
 var flashTimeout;
 var one_item;
@@ -5,19 +8,18 @@ var one_item;
 var current = {};
 
 jQuery( document ).ready( function() {
-	defaultFlash();
 	focus();
-
 	jQuery( '#find input' ).bind( 'input', handleSearchInput );
 	jQuery( document ).bind( 'keyup', handleKeyPress );
 	jQuery( '#find' ).bind( 'submit', handleIssueSubmit );
 	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
+	jQuery( '#audit' ).bind( 'submit', handleAuditSubmit );
+	jQuery( '#label' ).bind( 'submit', handleLabelSubmit );
 	jQuery( document ).delegate( '#modules .panel-title', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
 	jQuery( document ).delegate( '#results .list-group-item', 'click', handleResultClick );
 	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) { focus(); } );
-
 } );
 
 function searchTimer() {
@@ -61,14 +63,14 @@ function select( type, barcode ) {
 				if ( data.html ) {
 					addModule( data );
 				} else {
-					flash( data.status, data.message );
+					flash( data );
 				}
 			} );
 			break;
 		case 'item':
 			if ( current.type == 'user' ) {
 				issue( barcode, current.barcode, function( data ) {
-					if ( data.status ) flash( data.status, data.message );
+					if ( data.status ) flash( data );
 					updateCurrent();
 				} );
 			} else {
@@ -82,32 +84,42 @@ function select( type, barcode ) {
 	}
 }
 
-function defaultFlash() {
-	// flash( 'info', 'Scan an item or user.', true );
-	clearFlash();
-}
+function flash( data, noTimeout ) {
+	var activeTab = '#' + jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) + ' .flash';
 
-function clearFlash() {
-	clearTimeout( flashTimeout );
-	jQuery( '#flash' ).empty();
-}
+	jQuery( activeTab ).children().slice( 10 ).remove();
 
-function flash( status, message, noTimeout ) {
-	clearFlash();
-	if ( ! noTimeout ) setTimeout( function() { defaultFlash(); }, 5000 );
-	var alert = jQuery( '<div class="alert">' + message + '</div>' ).addClass( 'alert-' + status );
-	jQuery( '#flash' ).append( alert );
+	var html = '<div class="alert">';
+		if ( data.barcode ) html += '<strong>' + data.barcode + '</strong>: ';
+		html += data.message;
+	html += '</div>';
+	var alert = jQuery( html ).addClass( 'alert-' + data.status );
+
+	jQuery( activeTab ).prepend( alert );
+	setTimeout( function() { jQuery( alert ).remove() }, 5000 );
 }
 
 function addModule( data ) {
 	clearActive();
-	current = data;
+
+	// Trim the list
+	jQuery( '#modules' ).children().slice( 10 ).remove();
+
+	// Remove exi
 	jQuery( '#modules [data-barcode="' + data.barcode + '"]' ).remove();
+
 	if ( data.type == 'user' ) {
+		current = data;
 		jQuery( '.find' ).addClass( 'panel-primary' ).removeClass( 'panel-default' );
 		jQuery( '#results .items a' ).tab( 'show' );
+	} else {
+		current = null;
 	}
-	jQuery( '#modules' ).prepend( data.html );
+
+	var module = jQuery( data.html );
+	jQuery( '#modules' ).prepend( module );
+	setTimeout( function() { jQuery( module ).remove(); }, 60000 );
+
 }
 function addResult( result, type ) {
 	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
@@ -161,6 +173,11 @@ function label( item, cb ) {
 		cb( data );
 	} );
 }
+function audit( item, department, cb ) {
+	jQuery.post( '/api/audit/' + item, { department: department }, function( data, status ) {
+		cb( data );
+	} );
+}
 function search( barcode, cb ) { apiGET( 'search', barcode, cb ); }
 function getItem( barcode, cb ) { apiGET( 'item', barcode, cb ); }
 function getUser( barcode, cb ) { apiGET( 'user', barcode, cb ); }
@@ -189,7 +206,6 @@ function handleKeyPress( e ) {
 	switch( e.keyCode ) {
 		case 27: // Escape
 			clearActive();
-			defaultFlash();
 			focus();
 			break;
 		case 124: // F13
@@ -199,7 +215,9 @@ function handleKeyPress( e ) {
 			jQuery( '.return a' ).tab( 'show' );
 			break;
 		case 126: // F15
-			focus();
+			break;
+		case 126: // F16
+			jQuery( '.audit a' ).tab( 'show' );
 			break;
 		default:
 			break;
@@ -219,23 +237,12 @@ function handleIssueSubmit( e ) {
 
 	identify( term, function( data ) {
 		if ( data.kind == 'unknown' ) {
-			flash( 'warning', 'Unknown barcode.' )
+			flash( { status: 'warning', message: 'Unknown barcode', barcode: term } );
 		} else {
 			select( data.kind, data.barcode );
-			defaultFlash();
 			empty( true );
 		}
 	} );
-}
-
-function status( status, message, barcode ) {
-	var html = '<div class="alert">';
-	if ( barcode ) html += '<strong>' + barcode + '</strong>: ';
-	html += message;
-	html += '</div>';
-	var alert = jQuery( html ).addClass( 'alert-' + status );
-	jQuery( '#status' ).append( alert );
-	setTimeout( function() { jQuery( alert ).fadeOut() }, 5000 );
 }
 
 function handleReturnSubmit( e ) {
@@ -246,9 +253,9 @@ function handleReturnSubmit( e ) {
 
 	returnItem( term, function( data ) {
 		if ( data ) {
-			status( data.status, data.message, data.barcode );
+			flash( data );
 		} else {
-			status( 'danger', 'Unknown item' );
+			flash( { status: 'danger', message: 'Unknown item', barcode: term } );
 		}
 	} )
 }
@@ -261,6 +268,12 @@ function focus() {
 		case 'issue':
 			jQuery( '#find input' ).focus();
 			break;
+		case 'audit':
+			jQuery( '#audit input' ).focus();
+			break;
+		case 'label':
+			jQuery( '#label input' ).focus();
+			break;
 	}
 }
 
@@ -272,19 +285,19 @@ function handleItemButtons() {
 	switch ( jQuery( this ).html() ) {
 		case 'Return':
 			returnItem( barcode, function( data ) {
-				flash( data.status, data.message );
+				flash( data );
 				select( 'item', data.barcode );
 			} );
 			break;
 		case 'Broken':
 			broken( barcode, function( data ) {
-				flash( data.status, data.message );
+				flash( data );
 				select( 'item', data.barcode );
 			} );
 			break;
 		case 'Lost':
 			lost( barcode, function( data ) {
-				flash( data.status, data.message );
+				flash( data );
 				select( 'item', data.barcode );
 			} );
 			break;
@@ -297,16 +310,15 @@ function handlePrintButton() {
 	var barcode = jQuery( clicked ).data( 'barcode' );
 
 	label( barcode, function ( data ) {
-		flash( data.status, data.message );
+		flash( data );
 	} );
 }
 
 function handleResultClick() {
 	var type = jQuery( this ).data( 'type' );
 	var barcode = jQuery( this ).data( 'barcode' );
-	if ( jQuery( this ).hasClass( 'disabled' ) ) return flash( 'warning', 'Cannot select a disabled user account' );
+	if ( jQuery( this ).hasClass( 'disabled' ) ) return flash( { status: 'warning', message: 'Cannot select a disabled user account' } );
 	select( type, barcode );
-	defaultFlash();
 	empty( true );
 }
 
@@ -319,4 +331,28 @@ function handleSearchInput( e ) {
 	if ( jQuery( '#find input' ).val() == '' ) empty();
 	clearTimeout( typeTimeout );
 	typeTimeout = setTimeout( searchTimer, 100 );
+}
+
+function handleAuditSubmit( e ) {
+	e.preventDefault();
+
+	var term = jQuery( '#audit input' ).val();
+	jQuery( '#audit input' ).val('');
+
+	audit( term, jQuery( '#department' ).val(), function( data ) {
+		if ( data.status == 'success' ) successSound.play();
+		if ( data.status == 'danger' ) errorSound.play();
+		flash( data );
+	} );
+}
+
+function handleLabelSubmit( e ) {
+	e.preventDefault();
+
+	var term = jQuery( '#label input' ).val();
+	jQuery( '#label input' ).val('');
+
+	label( term, function( data ) {
+		flash( data );
+	} );
 }

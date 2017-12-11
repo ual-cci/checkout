@@ -77,7 +77,7 @@ app.get( '/identify/:term', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/user/:barcode', auth.isLoggedIn, function( req, res ) {
-	Users.findOne( { barcode: req.params.barcode, disable: false } ).populate( 'course' ).populate( 'year' ).exec( function ( err, user ) {
+	Users.findOne( { barcode: req.params.barcode, disable: { $ne: true } } ).populate( 'course' ).populate( 'year' ).exec( function ( err, user ) {
 		if ( user ) {
 			Items.find().exec( function( err, items ) {
 				var onloan = [];
