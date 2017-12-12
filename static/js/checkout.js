@@ -215,8 +215,9 @@ function handleKeyPress( e ) {
 			jQuery( '.return a' ).tab( 'show' );
 			break;
 		case 126: // F15
+			jQuery( '.print a' ).tab( 'show' );
 			break;
-		case 126: // F16
+		case 127: // F16
 			jQuery( '.audit a' ).tab( 'show' );
 			break;
 		default:
