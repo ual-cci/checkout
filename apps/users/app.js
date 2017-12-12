@@ -84,13 +84,19 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 
 // Create user
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
-	Courses.find( function( err, courses ) {
-		if ( courses.length > 0 ) {
-			res.render( 'create', { courses: courses, user: {} } );
-		} else {
-			req.flash( 'warning', 'Create at least one course before creating users' )
-			res.redirect( app.mountpath );
-		}
+	Years.find( function( err, years ) {
+		Courses.find( function( err, courses ) {
+			if ( courses.length > 0 ) {
+				res.render( 'create', {
+					courses: courses,
+					years: years,
+					user: {},
+				} );
+			} else {
+				req.flash( 'warning', 'Create at least one course before creating users' )
+				res.redirect( app.mountpath );
+			}
+		} );
 	} );
 } )
 
