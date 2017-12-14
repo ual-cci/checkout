@@ -480,6 +480,7 @@ app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
 app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
 	Items.findOne( { barcode: req.params.item }, function( err, item ) {
 		if ( item ) {
+			console.log( item );
 			if ( req.user.printer ) {
 				Print.label( item.barcode, req.user.printer.url );
 				return res.json( {
@@ -498,7 +499,7 @@ app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
 			return res.json( {
 				status: 'danger',
 				message: 'Unknown item',
-				barcode: item.barcode
+				barcode: req.params.item
 			} );
 		}
 	} );
