@@ -115,7 +115,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	var user = {
 		_id: require( 'mongoose' ).Types.ObjectId(),
 		name: req.body.name,
-		type: req.body.type,
+		type: 'student',
 		barcode: req.body.barcode,
 		email: req.body.email,
 		course: ObjectId( req.body.course ),
@@ -144,17 +144,18 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		return;
 	}
 
-	new Users( user ).save( function ( err ) {
+	new Users( user ).save( function ( err, result ) {
 		if ( err ) {
 			if ( err.code == 11000 ) {
 				req.flash( 'danger', 'The user barcode must be unique' );
 			} else {
 				req.flash( 'danger', 'Unknown error creating user' );
 			}
+			res.redirect( app.mountpath );
 		} else {
 			req.flash( 'success', 'User created' );
+			res.redirect( app.mountpath + '/' + result._id );
 		}
-		res.redirect( app.mountpath );
 	} );
 } )
 

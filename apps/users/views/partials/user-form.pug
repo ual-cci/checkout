@@ -33,20 +33,19 @@ form( method="post" ).form-horizontal
 						input( name="disable" type="checkbox" checked=user.disable )#disable
 						| Disable User
 	
-	.page-header
-		h3 Login Details
-	.form-group
-		label( for="type" ).col-md-2.control-label Type
-		.col-md-4
-			select( name="type" )#type.form-control
-				option( value="student" selected=( user.type == 'student' ) ) User
-				option( value="staff" selected=( user.type == 'staff' ) ) Admin
 	if action == 'Update'
+		.page-header
+			h3 Login Details
+		.form-group
+			label( for="type" ).col-md-2.control-label Type
+			.col-md-4
+				select( name="type" )#type.form-control
+					option( value="student" selected=( user.type == 'student' ) ) User
+					option( value="staff" selected=( user.type == 'staff' ) ) Admin
 		.form-group
 			label( for="password" ).col-md-2.control-label Password
 			.col-md-4
 				input( name="password" type="password" )#password.form-control
-	if action == 'Update'
 		.page-header
 			h3 Preferences
 		.form-group
