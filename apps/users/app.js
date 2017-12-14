@@ -25,7 +25,11 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 			var filter = {};
 			if ( req.query.course ) filter.course = req.query.course;
 			if ( req.query.year ) filter.year = req.query.year;
-			Users.find( filter ).populate( 'course' ).populate( 'year' ).sort( 'name' ).exec( function( err, users ) {
+			Users.find( filter )
+				.populate( 'course' )
+				.populate( 'year' )
+				.sort( 'name' )
+				.exec( function( err, users ) {
 				var active_users = [];
 				var disabled_users = [];
 				for ( var u = 0; u < users.length; u++ ) {
@@ -74,8 +78,15 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 	} else {
 		Years.find().sort( 'name' ).exec( function( err, years ) {
 			Courses.find().sort( 'name' ).exec( function( err, courses ) {
-				Users.find( { _id: { $in: req.body.edit } } ).populate( 'courses' ).sort( 'barcode' ).exec( function( err, users ) {
-					res.render( 'edit-multiple', { users: users, courses: courses, years: years } );
+				Users.find( { _id: { $in: req.body.edit } } )
+					.populate( 'courses' )
+					.sort( 'barcode' )
+					.exec( function( err, users ) {
+					res.render( 'edit-multiple', {
+						users: users,
+						courses: courses,
+						years: years
+					} );
 				} );
 			} );
 		} );
@@ -84,8 +95,8 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 
 // Create user
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
-	Years.find( function( err, years ) {
-		Courses.find( function( err, courses ) {
+	Years.find().sort( 'name' ).exec( function( err, years ) {
+		Courses.find().sort( 'name' ).exec( function( err, courses ) {
 			if ( courses.length > 0 ) {
 				res.render( 'create', {
 					courses: courses,
@@ -149,7 +160,10 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 
 // View user
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Users.findById( req.params.id ).populate( 'course' ).populate( 'year' ).exec( function( err, user ) {
+	Users.findById( req.params.id )
+		.populate( 'course' )
+		.populate( 'year' )
+		.exec( function( err, user ) {
 		if ( user == undefined ) {
 			req.flash( 'danger', 'User not found' );
 			res.redirect( app.mountpath );
@@ -193,7 +207,12 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 					}
 				}
 				var email = pug.renderFile( __dirname + '/views/email.pug', { name: user.name, items: onloan } );
-				res.render( 'user', { user: user, onloan: onloan, pastloan: pastloan, email: email } );
+				res.render( 'user', {
+					user: user,
+					onloan: onloan,
+					pastloan: pastloan,
+					email: email
+				} );
 			} );
 		}
 	} )
@@ -201,7 +220,7 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 // Edit user
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Printers.find( function( err, printers ) {
+	Printers.find().sort( 'name' ).exec( function( err, printers ) {
 		Users.findOne( { _id: req.params.id }, function( err, user ) {
 			if ( user == undefined ) {
 				req.flash( 'danger', 'User not found' );
@@ -209,7 +228,12 @@ app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 			} else {
 				Years.find().sort( 'name' ).exec( function( err, years ) {
 					Courses.find().sort( 'name' ).exec( function( err, courses ) {
-						res.render( 'edit', { courses: courses, years: years, user: user, printers: printers } );
+						res.render( 'edit', {
+							courses: courses,
+							years: years,
+							user: user,
+							printers: printers
+						} );
 					} );
 				} );
 			}
