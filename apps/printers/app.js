@@ -14,15 +14,13 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Printers.find( function( err, printers ) {
+	Printers.find().sort( 'name' ).exec(  function( err, printers ) {
 		res.render( 'printers', { printers: printers } );
 	} )
 } );
 
 app.get( '/new', auth.isLoggedIn, function ( req, res ) {
-	Printers.find( function( err, users ) {
-		res.render( 'new', { printer: {} } );
-	} );
+	res.render( 'new', { printer: {} } );
 } );
 
 app.post( '/new', auth.isLoggedIn, function( req, res ) {

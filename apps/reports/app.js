@@ -17,18 +17,18 @@ app.set( 'views', __dirname + '/views' );
 // Status report
 app.get( '/status/:status', auth.isLoggedIn, function( req, res ) {
 	var status = req.params.status;
-	Groups.find( function( err, groups ) {
-		Departments.find( function( err, departments ) {
+	Groups.find().sort( 'name' ).exec(  function( err, groups ) {
+		Departments.find().sort( 'name' ).exec(  function( err, departments ) {
 			var filter = {};
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
-			Items.find( filter ).populate( 'department' ).populate( 'group' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+			Items.find( filter )
+				.populate( 'department' )
+				.populate( 'group' )
+				.populate( 'transactions.user' )
+				.sort( { 'name': 1, 'barcode': 1 } )
+				.exec( function( err, items ) {
 				var result = [];
-				items.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
 				for ( i in items ) {
 					var item = items[i];
 

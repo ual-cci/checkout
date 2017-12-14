@@ -14,12 +14,7 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Groups.find( function( err, groups ) {
-		groups.sort( function( a, b ) {
-			if ( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
-			if ( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
-			return 0;
-		} )
+	Groups.find().sort( 'name' ).exec(  function( err, groups ) {
 		res.render( 'groups', { groups: groups } );
 	} )
 } );
@@ -50,13 +45,14 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			req.flash( 'danger', 'Group not found' );
 			res.redirect( app.mountpath );
 		} else {
-			Items.find( { group: req.params.id } ).populate( 'department' ).exec( function( err, items ) {
-				items.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
-				res.render( 'group', { group: group, items: items } );
+			Items.find( { group: req.params.id } )
+				.populate( 'department' )
+				.sort( { 'name': 1, 'barcode': 1 } )
+				.exec( function( err, items ) {
+				res.render( 'group', {
+					group: group,
+					items: items
+				} );
 			} );
 		}
 	} )

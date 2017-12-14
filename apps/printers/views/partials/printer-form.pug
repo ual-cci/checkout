@@ -1,9 +1,12 @@
-form( method="post" )
-	p
-		label( for="name" ) Name:
-		input( name="name" type="text" value=printer.name required autocomplete="off" )#name.form-control
-	p
-		label( for="url" ) URL:
-		input( name="url" type="text" value=printer.url required autocomplete="off" )#url.form-control
-	p
-		input( type="submit" value=action ).btn.btn-default
+form( method="post" ).form-horizontal
+	.form-group
+		label( for="name" ).col-md-2.control-label Name
+		.col-md-3
+			input( name="name" type="text" value=printer.name required autocomplete="off" )#name.form-control
+	.form-group
+		label( for="url" ).col-md-2.control-label URL
+		.col-md-3
+			input( name="url" type="text" value=printer.url required autocomplete="off" )#url.form-control
+	.form-group
+		.col-md-3.col-md-offset-2
+			input( type="submit" value=action ).btn.btn-default

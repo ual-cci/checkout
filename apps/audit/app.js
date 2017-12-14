@@ -21,8 +21,8 @@ app.set( 'views', __dirname + '/views' );
 app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 	res.locals.currentModule = 'audit';
 	var status = req.params.status;
-	Groups.find( function( err, groups ) {
-		Departments.find( function( err, departments ) {
+	Groups.find().sort( 'name' ).exec(  function( err, groups ) {
+		Departments.find().sort( 'name' ).exec(  function( err, departments ) {
 			var date = new Date().setHours( 0, 0, 0, 0 );
 			if ( req.user.audit_point ) date = req.user.audit_point;
 			var filter = {
@@ -38,11 +38,10 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
 			Items.find( filter )
-			 .populate( 'department' )
-			 .populate( 'group' )
-			 .sort( 'name' )
-			 .sort( 'barcode' )
-			 .exec( function( err, items ) {
+				.populate( 'department' )
+				.populate( 'group' )
+				.sort( { 'name': 1, 'barcode': 1 } )
+				.exec( function( err, items ) {
 				res.render( '../../reports/views/report', {
 					status: 'Scanned',
 					items: items,
@@ -60,8 +59,8 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 	res.locals.currentModule = 'audit';
 	var status = req.params.status;
-	Groups.find( function( err, groups ) {
-		Departments.find( function( err, departments ) {
+	Groups.find().sort( 'name' ).exec(  function( err, groups ) {
+		Departments.find().sort( 'name' ).exec(  function( err, departments ) {
 			var date = new Date().setHours( 0, 0, 0, 0 );
 			if ( req.user.audit_point ) date = req.user.audit_point;
 			var filter = {
@@ -78,7 +77,11 @@ app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 			};
 			if ( req.query.department ) filter.department = req.query.department;
 			if ( req.query.group ) filter.group = req.query.group;
-			Items.find( filter ).populate( 'department' ).populate( 'group' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
+			Items.find( filter )
+				.populate( 'department' )
+				.populate( 'group' )
+				.sort( { 'name': 1, 'barcode': 1 } )
+				.exec( function( err, items ) {
 				var result = [], other = [];
 				for ( i in items ) {
 					var item = items[i];

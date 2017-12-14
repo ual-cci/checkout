@@ -14,12 +14,7 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Departments.find( function( err, departments ) {
-		departments.sort( function( a, b ) {
-			if ( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
-			if ( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
-			return 0;
-		} )
+	Departments.find().sort( 'name' ).exec(  function( err, departments ) {
 		res.render( 'departments', { departments: departments } );
 	} )
 } );
@@ -49,13 +44,14 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			req.flash( 'danger', 'Department not found' );
 			res.redirect( app.mountpath );
 		} else {
-			Items.find( { department: req.params.id } ).populate( 'group' ).exec( function( err, items ) {
-				items.sort( function( a, b ) {
-					if ( a.barcode < b.barcode ) return -1;
-					if ( a.barcode > b.barcode ) return 1;
-					return 0;
-				} )
-				res.render( 'department', { department: department, items: items } );
+			Items.find( { department: req.params.id } )
+				.populate( 'group' )
+				.sort( { 'name': 1, 'barcode': 1 } )
+				.exec( function( err, items ) {
+				res.render( 'department', {
+					department: department,
+					items: items
+				} );
 			} );
 		}
 	} )

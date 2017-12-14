@@ -17,12 +17,10 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Courses.find().populate( 'contact' ).exec( function( err, courses ) {
-		courses.sort( function( a, b ) {
-			if ( a.name < b.name ) return -1;
-			if ( a.name > b.name ) return 1;
-			return 0;
-		} )
+	Courses.find()
+		.populate( 'contact' )
+		.sort( 'name' )
+		.exec( function( err, courses ) {
 		res.render( 'courses', { courses: courses } );
 	} )
 } );
@@ -55,23 +53,26 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 			req.flash( 'danger', 'Course not found' );
 			res.redirect( app.mountpath );
 		} else {
-			Users.find( { course: req.params.id, disable: { $ne: true } } ).populate( 'year' ).exec( function( err, users ) {
-				users.sort( function( a, b ) {
-					if ( a.name < b.name ) return -1;
-					if ( a.name > b.name ) return 1;
-					return 0;
-				} )
-				Items.find().populate( 'department' ).populate( 'group' ).populate( 'course' ).populate( 'transactions.user' ).exec( function( err, items ) {
+			Users.find( {
+				course: req.params.id,
+				disable: { $ne: true }
+			} )
+				.populate( 'year' )
+				.sort( 'name' )
+				.exec( function( err, users ) {
+				Items.find()
+					.populate( 'department' )
+					.populate( 'group' )
+					.populate( 'course' )
+					.populate( 'transactions.user' )
+					.exec( function( err, items ) {
 					var email;
 					var user_result = {};
 					var item_results = [];
-					items.sort( function( a, b ) {
-						if ( a.barcode < b.barcode ) return -1;
-						if ( a.barcode > b.barcode ) return 1;
-						return 0;
-					} )
+
 					for ( i in items ) {
 						var item = items[i];
+
 						if ( item.status == 'on-loan' ) {
 							var owner_transaction = 0;
 							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
@@ -109,21 +110,29 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 						return 0;
 					} );
 
-					res.render( 'course', { course: course, users: users, email: email, items: item_results } );
+					res.render( 'course', {
+						course: course,
+						users: users,
+						email: email,
+						items: item_results
+					} );
 				} );
 			} );
 		}
-	} )
-} )
+	} );
+} );
 
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Users.find( function( err, users ) {
+	Users.find().sort( 'name' ).exec( function( err, users ) {
 		Courses.findOne( { _id: req.params.id }, function( err, course ) {
 			if ( course == undefined ) {
 				req.flash( 'danger', 'Course not found' );
 				res.redirect( app.mountpath );
 			} else {
-				res.render( 'edit', { course: course, users: users } );
+				res.render( 'edit', {
+					course: course,
+					users: users
+				} );
 			}
 		} )
 	} )
