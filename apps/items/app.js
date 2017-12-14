@@ -22,8 +22,8 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Groups.find( function( err, groups ) {
-		Departments.find( function( err, departments ) {
+	Groups.find().sort( 'name' ).exec( function( err, groups ) {
+		Departments.find().sort( 'name' ).exec( function( err, departments ) {
 			var filter = {};
 			var total = 0;
 			if ( req.query.department ) filter.department = req.query.department;
@@ -38,12 +38,12 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 					total: 0
 				} );
 			} else {
-				Items.find( filter ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).sort( 'name' ).sort( 'barcode' ).exec( function( err, items ) {
-					items.sort( function( a, b ) {
-						if ( a.barcode < b.barcode ) return -1;
-						if ( a.barcode > b.barcode ) return 1;
-						return 0;
-					} )
+				Items.find( filter )
+				.populate( 'group' )
+				.populate( 'department' )
+				.populate( 'transactions.user' )
+				.sort( { 'name': 1, 'barcode': 1 } )
+				.exec( function( err, items ) {
 					for ( i in items ) {
 						var item = items[i];
 
@@ -102,15 +102,18 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 			res.redirect( app.mountpath );
 		} );
 	} else {
-		Groups.find( function( err, groups ) {
-			Departments.find( function( err, departments ) {
-				Items.find( { _id: { $in: req.body.edit } } ).populate( 'group' ).populate( 'department' ).exec( function( err, items ) {
-					items.sort( function( a, b ) {
-						if ( a.barcode < b.barcode ) return -1;
-						if ( a.barcode > b.barcode ) return 1;
-						return 0;
-					} )
-					res.render( 'edit-multiple', { items: items, groups: groups, departments: departments } );
+		Groups.find().sort( 'name' ).exec( function( err, groups ) {
+			Departments.find().sort( 'name' ).exec( function( err, departments ) {
+				Items.find( { _id: { $in: req.body.edit } } )
+					.populate( 'group' )
+					.populate( 'department' )
+				.sort( 'barcode' )
+					.exec( function( err, items ) {
+					res.render( 'edit-multiple', {
+						items: items,
+						groups: groups,
+						departments: departments
+					} );
 				} );
 			} );
 		} );
@@ -119,8 +122,8 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 
 // Generate items
 app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
-	Departments.find( function( err, departments ) {
-		Groups.find( function( err, groups ) {
+	Departments.find().sort( 'name' ).exec( function( err, departments ) {
+		Groups.find().sort( 'name' ).exec( function( err, groups ) {
 			if ( departments.length > 0 ) {
 				req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
 				res.render( 'generate', { departments: departments, groups: groups, item: {} } );
@@ -213,8 +216,8 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 // Create item
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
-	Departments.find( function( err, departments ) {
-		Groups.find( function( err, groups ) {
+	Departments.find().sort( 'name' ).exec(  function( err, departments ) {
+		Groups.find().sort( 'name' ).exec(  function( err, groups ) {
 			if ( departments.length > 0 ) {
 				res.render( 'create', { item: null, departments: departments, groups: groups } );
 			} else {
@@ -276,8 +279,12 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 
 // List an item
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Printers.find( function( err, printers ) {
-		Items.findById( req.params.id ).populate( 'transactions.user' ).populate( 'group' ).populate( 'department' ).exec( function( err, item ) {
+	Printers.find().sort( 'name' ).exec(  function( err, printers ) {
+		Items.findById( req.params.id )
+			.populate( 'transactions.user' )
+			.populate( 'group' )
+			.populate( 'department' )
+			.exec( function( err, item ) {
 			if ( item == undefined ) {
 				req.flash( 'danger', 'Item not found' );
 				res.redirect( app.mountpath );
@@ -326,13 +333,13 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 
 // Edit item form
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Items.findById( req.params.id ).exec( function( err, item ) {
+	Items.findById( req.params.id, function( err, item ) {
 		if ( item == undefined ) {
 			req.flash( 'danger', 'Item not found' );
 			res.redirect( app.mountpath );
 		} else {
-			Groups.find( function( err, groups ) {
-				Departments.find( function( err, departments ) {
+			Groups.find().sort( 'name' ).exec(  function( err, groups ) {
+				Departments.find().sort( 'name' ).exec(  function( err, departments ) {
 					res.render( 'edit', { item: item, groups: groups, departments: departments } );
 				} );
 			} );

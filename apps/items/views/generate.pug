@@ -6,53 +6,73 @@ block prepend title
 
 block contents
 	.row
-		.col-md-5
-			form( method="post" )
-				p
-					label( for="name" ) Name
+		form( method="post" ).form-horizontal
+			.form-group
+				label( for="name" ).col-md-2.control-label Name
+				.col-md-4
 					input( name="name" type="text" required )#name.form-control
-				p
-					label( for="group" ) Group
+			.form-group
+				label( for="group" ).col-md-2.control-label Group
+				.col-md-4
 					select( name="group" )#group.form-control
 						option( value="" selected ) Select a group
 						for group in groups
 							option( value=group._id )=group.name
-				p
-					label( for="department" ) Department
+			.form-group
+				label( for="department" ).col-md-2.control-label Department
+				.col-md-4
 					select( name="department" required )#department.form-control
 						option( value="" disabled selected ) Select a department
 						for department in departments
 							option( value=department._id )=department.name
-				p
-					label( for="value" ) Value £
-					input( name="value" type="number" )#value.form-control
-				p
-					label( for="notes" ) Notes
+			.form-group
+				label( for="value" ).col-md-2.control-label Value
+				.col-md-4
+					.input-group
+						span.input-group-addon £
+						input( name="value" type="number" )#value.form-control
+					span.help-block Value in whole pounds.
+			.form-group
+				label( for="notes" ).col-md-2.control-label Notes
+				.col-md-4
 					input( name="notes" type="text" )#notes.form-control
-				.page-header
-					h3 Barcode
-				p
-					label( for="prefix" ) Prefix
+			.page-header
+				h3 Barcode
+			.form-group
+				label( for="prefix" ).col-md-2.control-label Prefix
+				.col-md-4
 					input( name="prefix" type="text" autocomplete="off" required )#prefix.form-control
-				p
-					label( for="start" ) Start
+					span.help-block You may wish to add a space XXX(space).
+			.form-group
+				label( for="start" ).col-md-2.control-label Start
+				.col-md-4
 					input( name="start" type="number" min="1" max="98" autocomplete="off" required )#start.form-control
-				p
-					label( for="end" ) End
+					span.help-block The number of the first item.
+			.form-group
+				label( for="end" ).col-md-2.control-label End
+				.col-md-4
 					input( name="end" type="number" min="2" max="99" autocomplete="off" required )#end.form-control
-				.page-header
-					h3 Options
-				p
-					input( name="suffix" type="checkbox" checked )#suffix
-					|  
-					label( for="suffix" ) Suffix name with index number
-				p
-					input( name="print" type="checkbox" checked )#print
-					|  
-					label( for="print" ) Print Barcode Labels
-				p
-					input( name="largeBatch" type="checkbox" )#largeBatch
-					|  
-					label( for="largeBatch" ) I am generating a batch larger than 25 items
-				p
+					span.help-block The number of the last item.
+			.page-header
+				h3 Options
+			.form-group
+				.col-md-4.col-md-offset-2
+					.checkbox
+						label( for="suffix" )
+							input( name="suffix" type="checkbox" checked )#suffix
+							|  Suffix name with index number
+			.form-group
+				.col-md-4.col-md-offset-2
+					.checkbox
+						label( for="print" )
+							input( name="print" type="checkbox" checked )#print
+							|  Print Barcode Labels
+			.form-group
+				.col-md-4.col-md-offset-2
+					.checkbox
+						label( for="largeBatch" )
+							input( name="largeBatch" type="checkbox" )#largeBatch
+							|  I am generating a batch larger than 25 items
+			.form-group
+				.col-md-4.col-md-offset-2
 					input( type="submit" value="Generate" ).btn.btn-default
