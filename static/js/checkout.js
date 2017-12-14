@@ -69,7 +69,7 @@ function select( type, barcode ) {
 			} );
 			break;
 		case 'item':
-			if ( current.type == 'user' ) {
+			if ( current && current.type == 'user' ) {
 				issue( barcode, current.barcode, function( data ) {
 					if ( data.status ) flash( data );
 					updateCurrent();
