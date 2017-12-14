@@ -23,8 +23,11 @@ if users.length > 0
 							include label.pug
 						if ! no_course
 							td
-								- course = user.course
-								include ../../../courses/views/partials/course.pug
+								if user.course
+									- course = user.course
+									include ../../../courses/views/partials/course.pug
+								else
+									| &mdash;
 						td
 							if user.year
 								| #{ user.year.name }
