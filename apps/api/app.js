@@ -250,7 +250,8 @@ app.post( '/return/:item', auth.isLoggedIn, function( req, res ) {
 		} else {
 			return res.json( {
 				status: 'danger',
-				message: 'Unknown item'
+				message: 'Unknown item',
+				barcode: req.params.item
 			} );
 		}
 	} );
