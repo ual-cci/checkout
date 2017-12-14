@@ -227,9 +227,12 @@ function handleKeyPress( e ) {
 			jQuery( '.return a' ).tab( 'show' );
 			break;
 		case 126: // F15
-			jQuery( '.print a' ).tab( 'show' );
+			jQuery( '.user a' ).tab( 'show' );
 			break;
 		case 127: // F16
+			jQuery( '.print a' ).tab( 'show' );
+			break;
+		case 128: // F17
 			jQuery( '.audit a' ).tab( 'show' );
 			break;
 		default:
@@ -381,8 +384,8 @@ function handleUserSubmit( e ) {
 
 	newUser( name, barcode, email, course, year, function( data ) {
 		if ( data.status == 'success' ) {
-			jQuery( '.issue a' ).tab( 'show' );
 			select( data.redirect.type, data.redirect.barcode );
+			jQuery( '.issue a' ).tab( 'show' );
 			clearUserForm();
 		}
 		flash( data );
