@@ -290,6 +290,9 @@ function focus() {
 		case 'label':
 			jQuery( '#label input' ).focus();
 			break;
+		case 'user':
+			jQuery( '#user input[name="barcode"]' ).focus();
+			break;
 	}
 }
 

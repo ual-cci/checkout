@@ -11,14 +11,37 @@
 		div.collapse.navbar-collapse#menu
 			ul.nav.navbar-nav
 				if loggedInUser
-					li( class=( currentModule == 'items' ? 'active' : '' ) )
-						a( href="/items" ) Items
-					
-					li( class=( currentModule == 'users' ? 'active' : '' ) )
-						a( href="/users" ) Users
-						
-						
-					li( class=( currentModule == 'reports' ? 'active' : '' ) ).dropdown
+					li.dropdown
+						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  Manage
+							|  
+							span.caret
+						ul.dropdown-menu
+							li.dropdown-header
+								span.glyphicon.glyphicon-modal-window
+								|  Items
+							li: a( href="/items/create" ) Create
+							li: a( href="/items/generate" ) Generate
+							li: a( href="/items" ) View
+							li( role="separator" ).divider
+							li.dropdown-header
+								span.glyphicon.glyphicon-plus
+								|  Create
+							li: a( href="/courses/create" ) Course
+							li: a( href="/years/create" ) Year
+							li: a( href="/groups/create" ) Group
+							li: a( href="/departments/create" ) Department
+							li( role="separator" ).divider
+							li.dropdown-header
+								span.glyphicon.glyphicon-eye-open
+								|  View
+							li: a( href="/users" ) Users
+							li: a( href="/courses" ) Courses
+							li: a( href="/years" ) Years
+							li: a( href="/groups" ) Groups
+							li: a( href="/departments" ) Departments
+							li( role="separator" ).divider
+							li: a( href="/printers" ) Configure Printers
+					li.dropdown
 						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Reports
 							|  
 							span.caret
@@ -37,32 +60,6 @@
 							li: a( href="/reports/status/reserved" ) Reserved
 							li: a( href="/reports/status/lost" ) Lost
 							li: a( href="/reports/status/broken" ) Broken
-
-					li( class=( currentModule == 'users' ? 'active' : '' ) ).dropdown
-						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  Manage
-							|  
-							span.caret
-						ul.dropdown-menu
-							li.dropdown-header
-								span.glyphicon.glyphicon-eye-open
-								|  View
-							li: a( href="/courses" ) Courses
-							li: a( href="/years" ) Years
-							li: a( href="/groups" ) Groups
-							li: a( href="/departments" ) Departments
-							li( role="separator" ).divider
-							li.dropdown-header
-								span.glyphicon.glyphicon-plus
-								|  Create
-							li: a( href="/courses/create" ) Course
-							li: a( href="/years/create" ) Year
-							li: a( href="/groups/create" ) Group
-							li: a( href="/departments/create" ) Department
-							li( role="separator" ).divider
-							li: a( href="/printers" )
-								span.glyphicon.glyphicon-print
-								|  Configure Printers
-							
 			ul.nav.navbar-nav.navbar-right
 				if loggedInUser
 					li.dropdown
