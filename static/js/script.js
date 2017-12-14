@@ -8,10 +8,18 @@ jQuery( document ).ready( function() {
 	} );
 
 	jQuery( 'input[type=checkbox].checkall' ).bind( 'click', function( ) {
-		if( jQuery( this ).prop( 'checked' ) ) {
-			jQuery( 'input[type=checkbox]' ).prop( 'checked', true );
+		if ( jQuery( '.tab-pane' ).length > 0 ) {
+			if ( jQuery( this ).prop( 'checked' ) ) {
+				jQuery( '.tab-pane.active .table input[type=checkbox]' ).prop( 'checked', true );
+			} else {
+				jQuery( '.tab-pane.active .table input[type=checkbox]' ).prop( 'checked', false );
+			}
 		} else {
-			jQuery( 'input[type=checkbox]' ).prop( 'checked', false );
+			if ( jQuery( this ).prop( 'checked' ) ) {
+				jQuery( '.table input[type=checkbox]' ).prop( 'checked', true );
+			} else {
+				jQuery( '.table input[type=checkbox]' ).prop( 'checked', false );
+			}
 		}
 	} )
 } );
