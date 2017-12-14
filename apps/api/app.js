@@ -17,7 +17,9 @@ var Print = require( __js + '/print' );
 var db = require( __js + '/database' ),
 	Items = db.Items,
 	Users = db.Users,
-	Departments = db.Departments;
+	Departments = db.Departments,
+	Courses = db.Courses,
+	Years = db.Years;
 
 var auth = require( __js + '/authentication' );
 
@@ -503,6 +505,79 @@ app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
 				barcode: req.params.item
 			} );
 		}
+	} );
+} );
+
+app.post( '/new-user', auth.isLoggedIn, function( req, res ) {
+	if ( ! req.body.name ) {
+		return res.json( {
+			status: 'danger',
+			message: 'The user must have a name'
+		} );
+	} else if ( ! req.body.barcode ) {
+		return res.json( {
+			status: 'danger',
+			message: 'The user must have a unique barcode'
+		} );
+	} else if ( ! req.body.email ) {
+		return res.json( {
+			status: 'danger',
+			message: 'The user must have an email address'
+		} );
+	}
+
+	Courses.findById( req.body.course, function( err, course ) {
+		if ( ! course ) {
+			return res.json( {
+				status: 'danger',
+				message: 'The user must be assigned to a course'
+			} );
+		}
+		Years.findById( req.body.year, function( err, year ) {
+			 if ( ! year ) {
+				return res.json( {
+					status: 'danger',
+					message: 'The user must be assigned to a year'
+				} );
+			}
+
+			var user = {
+				_id: require( 'mongoose' ).Types.ObjectId(),
+				name: req.body.name,
+				type: 'student',
+				barcode: req.body.barcode,
+				email: req.body.email,
+				course: course._id,
+				year: year._id,
+				printer: req.body.printer ? ObjectId( req.body.printer ) : null
+			}
+
+			new Users( user ).save( function ( err, result ) {
+				if ( err ) {
+					if ( err.code == 11000 ) {
+						return res.json( {
+							status: 'danger',
+							message: 'The user barcode must be unique'
+						} );
+					} else {
+						console.log( err );
+						return res.json( {
+							status: 'danger',
+							message: 'Error creating user'
+						} );
+					}
+				} else {
+					return res.json( {
+						status: 'success',
+						message: 'User created',
+						redirect: {
+							type: 'user',
+							barcode: result.barcode
+						}
+					} );
+				}
+			} );
+		} );
 	} );
 } );
 

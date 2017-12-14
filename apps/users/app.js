@@ -119,6 +119,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		barcode: req.body.barcode,
 		email: req.body.email,
 		course: ObjectId( req.body.course ),
+		year: ObjectId( req.body.course ),
 		printer: req.body.printer ? ObjectId( req.body.printer ) : null
 	}
 

@@ -8,14 +8,22 @@ var	express = require( 'express' ),
 var auth = require( __js + '/authentication' );
 
 var db = require( __js + '/database' ),
+	Courses = db.Courses,
+	Years = db.Years,
 	Departments = db.Departments;
 
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Departments.find( function( err, departments ) {
-		res.render( 'index', {
-			departments: departments
+	Departments.find().sort( 'name' ).exec( function( err, departments ) {
+		Courses.find().sort( 'name' ).exec( function( err, courses ) {
+			Years.find().sort( 'name' ).exec( function( err, years ) {
+				res.render( 'index', {
+					departments: departments,
+					courses: courses,
+					years: years
+				} );
+			} );
 		} );
 	} );
 } );

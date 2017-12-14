@@ -11,8 +11,11 @@
 			dt Email
 			dd: a( href="mailto:" + user.email )  #{ user.email }
 			dt Course
-			- course = user.course
-			dd: include ../../../apps/courses/views/partials/course.pug
+			if user.course
+				- course = user.course
+				dd: include ../../../apps/courses/views/partials/course.pug
+			else
+				dd –
 			dt Year
 			if user.year
 				dd=user.year.name

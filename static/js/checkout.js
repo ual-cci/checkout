@@ -15,6 +15,7 @@ jQuery( document ).ready( function() {
 	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
 	jQuery( '#audit' ).bind( 'submit', handleAuditSubmit );
 	jQuery( '#label' ).bind( 'submit', handleLabelSubmit );
+	jQuery( '#user form' ).bind( 'submit', handleUserSubmit );
 	jQuery( document ).delegate( '#modules .panel-title', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
@@ -175,6 +176,17 @@ function label( item, cb ) {
 }
 function audit( item, department, cb ) {
 	jQuery.post( '/api/audit/' + item, { department: department }, function( data, status ) {
+		cb( data );
+	} );
+}
+function newUser( name, barcode, email, course, year, cb ) {
+	jQuery.post( '/api/new-user/', {
+		name: name,
+		barcode: barcode,
+		email: email,
+		course: course,
+		year: year
+	}, function( data, status ) {
 		cb( data );
 	} );
 }
@@ -356,4 +368,31 @@ function handleLabelSubmit( e ) {
 	label( term, function( data ) {
 		flash( data );
 	} );
+}
+
+function handleUserSubmit( e ) {
+	e.preventDefault();
+
+	var name = jQuery( '#user form [name="name"]' ).val();
+	var barcode = jQuery( '#user form [name="barcode"]' ).val();
+	var email = jQuery( '#user form [name="email"]' ).val();
+	var course = jQuery( '#user form [name="course"]' ).val();
+	var year = jQuery( '#user form [name="year"]' ).val();
+
+	newUser( name, barcode, email, course, year, function( data ) {
+		if ( data.status == 'success' ) {
+			jQuery( '.issue a' ).tab( 'show' );
+			select( data.redirect.type, data.redirect.barcode );
+			clearUserForm();
+		}
+		flash( data );
+	} )
+}
+
+function clearUserForm() {
+	jQuery( '#user form [name="name"]' ).val('');
+	jQuery( '#user form [name="barcode"]' ).val('');
+	jQuery( '#user form [name="email"]' ).val('');
+	jQuery( '#user form [name="course"]' ).val('');
+	jQuery( '#user form [name="year"]' ).val('');
 }

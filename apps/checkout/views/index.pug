@@ -14,12 +14,15 @@ block contents
 		li.return: a( href="#return" data-toggle="tab" ) Return
 			|  
 			span.badge F14
-		li.print: a( href="#label" data-toggle="tab" ) Label
+		li.user: a( href="#user" data-toggle="tab" ) New User
 			|  
 			span.badge F15
-		li.audit: a( href="#audit" data-toggle="tab" ) Audit
+		li.print: a( href="#label" data-toggle="tab" ) Label
 			|  
 			span.badge F16
+		li.audit: a( href="#audit" data-toggle="tab" ) Audit
+			|  
+			span.badge F17
 	.tab-content.break
 		#issue.tab-pane.active
 			.row
@@ -55,6 +58,11 @@ block contents
 									input( type="text" ).form-control
 				.col-md-9
 					.flash
+		#user.tab-pane
+			.flash
+			- user = {}
+			- action = 'Create'
+			include ../../users/views/partials/user-form.pug
 		#audit.tab-pane
 			.panel.panel-default
 				.panel-body
