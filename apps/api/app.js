@@ -122,9 +122,25 @@ app.get( '/user/:barcode', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.barcode } ).populate( 'group' ).populate( 'department' ).populate( 'transactions.user' ).exec( function ( err, item ) {
+	Items.findOne( { barcode: req.params.barcode } )
+		.populate( 'group' )
+		.populate( 'department' )
+		.populate( 'transactions.user' )
+		.exec( function ( err, item ) {
 		if ( item ) {
+			if ( item.status == 'on-loan' ) {
+				if ( item.transactions && item.transactions.length ) {
+					var last = item.transactions[item.transactions.length - 1];
+					item.owner = {
+						_id: last.user._id,
+						name: last.user.name,
+						barcode: last.user.barcode
+					};
+				}
+			}
+
 			var html = pug.renderFile( __views + '/modules/item.pug', { item: item } );
+
 			var output = {
 				type: 'item',
 				id: item._id,
@@ -132,16 +148,10 @@ app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
 				department: item.department,
 				group: item.group,
 				status: item.status,
+				owner: item.owner,
 				html: html
 			};
 
-			if ( item.transactions && item.transactions.length ) {
-				var last = item.transactions[item.transactions.length - 1];
-				output.owner = {
-					name: last.user.name,
-					barcode: last.user.barcode
-				};
-			}
 			return res.json( output );
 		} else {
 			return res.json( {
