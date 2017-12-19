@@ -20,6 +20,17 @@ block contents
 				span.glyphicon.glyphicon-envelope
 				|  Generate email
 	hr
+	.row
+		form( method="get" )
+			.col-md-2
+				select( name="year" )#year.form-control.input-sm
+					option( value="" selected ) All years
+						for year in years
+							option( value=year._id selected=( year.id == selectedYear ) )=year.name
+			.col-md-1
+				button.btn.btn-default.btn-sm
+					span.glyphicon.glyphicon-filter
+	hr
 	ul.nav.nav-tabs
 		li( role="presentation" ).active
 			a( href="#users", aria-controls="users", role="tab", data-toggle="tab" ) Users

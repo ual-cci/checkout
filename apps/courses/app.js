@@ -9,6 +9,7 @@ var pug = require( 'pug' );
 
 var db = require( __js + '/database' ),
 	Courses = db.Courses,
+	Years = db.Years,
 	Items = db.Items,
 	Users = db.Users;
 
@@ -48,77 +49,88 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 } )
 
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Courses.findOne( { _id: req.params.id } ).populate( 'contact' ).exec( function( err, course ) {
-		if ( course == undefined ) {
-			req.flash( 'danger', 'Course not found' );
-			res.redirect( app.mountpath );
-		} else {
-			Users.find( {
-				course: req.params.id,
-				disable: { $ne: true }
-			} )
-				.populate( 'year' )
-				.sort( 'name' )
-				.exec( function( err, users ) {
-				Items.find()
-					.populate( 'department' )
-					.populate( 'group' )
-					.populate( 'course' )
-					.populate( 'transactions.user' )
-					.exec( function( err, items ) {
-					var email;
-					var user_result = {};
-					var item_results = [];
+	Years.find().sort( 'name' ).exec( function( err, years ) {
+		Courses.findOne( { _id: req.params.id } ).populate( 'contact' ).exec( function( err, course ) {
+			if ( course == undefined ) {
+				req.flash( 'danger', 'Course not found' );
+				res.redirect( app.mountpath );
+			} else {
+				var filter = {
+					course: req.params.id,
+					disable: { $ne: true }
+				};
 
-					for ( i in items ) {
-						var item = items[i];
+				if ( req.query.year ) filter.year = req.query.year;
 
-						if ( item.status == 'on-loan' ) {
-							var owner_transaction = 0;
-							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
-								if ( item.transactions[ i ].status == 'loaned' ) {
-									last_transaction = item.transactions[ i ];
-									break;
+				Users.find( filter )
+					.populate( 'year' )
+					.sort( 'name' )
+					.exec( function( err, users ) {
+
+					Items.find()
+						.populate( 'department' )
+						.populate( 'group' )
+						.populate( 'course' )
+						.populate( 'transactions.user' )
+						.exec( function( err, items ) {
+						var email;
+						var user_result = {};
+						var item_results = [];
+
+						for ( i in items ) {
+							var item = items[i];
+
+							if ( item.status == 'on-loan' ) {
+								var owner_transaction = 0;
+								for ( i = item.transactions.length - 1; i >= 0; i-- ) {
+									if ( item.transactions[ i ].status == 'loaned' ) {
+										last_transaction = item.transactions[ i ];
+										break;
+									}
+								}
+
+								if ( last_transaction.user.course == course._id.toString() && last_transaction.user.disable != true ) {
+										if ( req.query.year && last_transaction.user.year == req.query.year ) {
+											item_results.push( item );
+											item.owner = last_transaction.user;
+
+											if ( user_result[ last_transaction.user._id.toString() ] == undefined )
+												user_result[ last_transaction.user._id.toString() ] = {
+													user: null,
+													items: []
+												};
+
+											var row = user_result[ last_transaction.user._id.toString() ];
+											row.user = last_transaction.user;
+											row.items.push( item );
+										}
 								}
 							}
-
-							if ( last_transaction.user.course == course._id.toString() && last_transaction.user.disable != true ) {
-								item_results.push( item );
-								item.owner = last_transaction.user;
-
-								if ( user_result[ last_transaction.user._id.toString() ] == undefined )
-									user_result[ last_transaction.user._id.toString() ] = {
-										user: null,
-										items: []
-									};
-
-								var row = user_result[ last_transaction.user._id.toString() ];
-								row.user = last_transaction.user;
-								row.items.push( item );
-							}
 						}
-					}
 
-					if ( course.contact != undefined ) {
-						var students = {};
-						email = pug.renderFile( __dirname + '/views/email.pug', { name: course.contact.name, students: user_result } );
-					}
+						if ( course.contact != undefined ) {
+							var students = {};
+							email = pug.renderFile( __dirname + '/views/email.pug', { name: course.contact.name, students: user_result } );
+						}
 
-					item_results.sort( function( a, b ) {
-						if ( a.owner.name < b.owner.name ) return -1;
-						if ( a.owner.name > b.owner.name ) return 1;
-						return 0;
-					} );
+						item_results.sort( function( a, b ) {
+							if ( a.owner.name < b.owner.name ) return -1;
+							if ( a.owner.name > b.owner.name ) return 1;
+							return 0;
+						} );
 
-					res.render( 'course', {
-						course: course,
-						users: users,
-						email: email,
-						items: item_results
+						res.render( 'course', {
+							years: years,
+							selectedYear: req.query.year,
+							course: course,
+							users: users,
+							email: email,
+							items: item_results
+						} );
 					} );
 				} );
-			} );
-		}
+			}
+		} );
 	} );
 } );
 
