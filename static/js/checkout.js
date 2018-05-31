@@ -63,6 +63,7 @@ function select( type, barcode ) {
 			getUser( barcode, function( data ) {
 				if ( data.html ) {
 					addModule( data );
+					focus();
 				} else {
 					flash( data );
 				}
@@ -119,7 +120,10 @@ function addModule( data ) {
 
 	var module = jQuery( data.html );
 	jQuery( '#modules' ).prepend( module );
-	setTimeout( function() { jQuery( module ).remove(); }, 60000 );
+	setTimeout( function() {
+		jQuery( module ).remove();
+		if ( jQuery( '#modules .panel-primary' ).length == 0 ) clearActive();
+	}, 60000 );
 
 }
 function addResult( result, type ) {
