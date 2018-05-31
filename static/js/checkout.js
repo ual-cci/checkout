@@ -4,8 +4,10 @@ var successSound = new buzz.sound( "/sounds/success.wav" );
 var typeTimeout;
 var flashTimeout;
 var one_item;
+var last_item;
 
 var current = {};
+var cursor = 0;
 
 jQuery( document ).ready( function() {
 	focus();
@@ -18,6 +20,7 @@ jQuery( document ).ready( function() {
 	jQuery( '#user form' ).bind( 'submit', handleUserSubmit );
 	jQuery( document ).delegate( '#modules .panel-title', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
+	jQuery( document ).delegate( '#issue .flash .override', 'click', handleOverride );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
 	jQuery( document ).delegate( '#results .list-group-item', 'click', handleResultClick );
 	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) { focus(); } );
@@ -71,10 +74,7 @@ function select( type, barcode ) {
 			break;
 		case 'item':
 			if ( current && current.type == 'user' ) {
-				issue( barcode, current.barcode, function( data ) {
-					if ( data.status ) flash( data );
-					updateCurrent();
-				} );
+				issue( barcode, current.barcode, false, handleItemIssue );
 			} else {
 				getItem( barcode, function( data ) {
 					if ( data.html ) {
@@ -86,7 +86,12 @@ function select( type, barcode ) {
 	}
 }
 
-function flash( data, noTimeout ) {
+function handleItemIssue( data ) {
+	if ( data.status ) flash( data );
+	updateCurrent();
+}
+
+function flash( data ) {
 	var activeTab = '#' + jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) + ' .flash';
 
 	jQuery( activeTab ).children().slice( 10 ).remove();
@@ -94,11 +99,13 @@ function flash( data, noTimeout ) {
 	var html = '<div class="alert">';
 		if ( data.barcode ) html += '<strong>' + data.barcode + '</strong>: ';
 		html += data.message;
+		if ( data.override ) html += '<button style="margin-top:-.3em" class="override btn btn-sm pull-right">Override</button>'
+		if ( data.override ) jQuery( '#issue .flash button.override' ).remove();
 	html += '</div>';
 	var alert = jQuery( html ).addClass( 'alert-' + data.status );
 
 	jQuery( activeTab ).prepend( alert );
-	setTimeout( function() { jQuery( alert ).remove() }, 5000 );
+	// setTimeout( function() { jQuery( alert ).remove() }, 5000 );
 }
 
 function addModule( data ) {
@@ -153,8 +160,14 @@ function addResult( result, type ) {
 	jQuery( '#results #' + type + 's .list-group' ).append( html );
 }
 
-function issue( item, user, cb ) {
-	jQuery.post( '/api/issue/' + item + '/' + user, function( data, status ) {
+function issue( item, user, override, cb ) {
+	var query = '';
+	last_item = {
+		item: item,
+		user: user
+	};
+	if ( override ) query += '?override=true';
+	jQuery.post( '/api/issue/' + item + '/' + user + query, function( data, status ) {
 		cb( data );
 	} );
 }
@@ -224,6 +237,12 @@ function handleKeyPress( e ) {
 			clearActive();
 			focus();
 			break;
+		case 112: // F1
+			jQuery( '.users a' ).tab( 'show' );
+			break;
+		case 113: // F2
+			jQuery( '.items a' ).tab( 'show' );
+			break;
 		case 124: // F13
 			jQuery( '.issue a' ).tab( 'show' );
 			break;
@@ -240,6 +259,7 @@ function handleKeyPress( e ) {
 			jQuery( '.audit a' ).tab( 'show' );
 			break;
 		default:
+			// console.log( e.keyCode );
 			break;
 	}
 }
@@ -324,6 +344,13 @@ function handleItemButtons() {
 				select( 'item', data.barcode );
 			} );
 			break;
+	}
+}
+
+function handleOverride() {
+	if ( last_item ) {
+		issue( last_item.item, last_item.user, true, handleItemIssue );
+		jQuery( this ).parent().remove()
 	}
 }
 

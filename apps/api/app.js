@@ -422,10 +422,11 @@ app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
 											if ( last_transaction.user.toString() == user._id.toString() ) count++;
 										}
 									}
-									if ( count >= item.group.limiter && req.body.override ) {
+									if ( count >= item.group.limiter && ! req.query.override ) {
 										return res.json( {
 											status: 'danger',
 											message: 'You already have ' + count + ' of this type of item out.',
+											override: true,
 											barcode: item.barcode
 										} );
 									} else {
