@@ -89,28 +89,35 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 									}
 								}
 
-								if ( last_transaction.user.course == course._id.toString() && last_transaction.user.disable != true ) {
-										if ( req.query.year && last_transaction.user.year == req.query.year ) {
-											item_results.push( item );
-											item.owner = last_transaction.user;
+								if ( last_transaction.user.course.toString() == course._id.toString()
+									 && last_transaction.user.disable != true ) {
+										 console.log( req.query.year );
+									 if ( ! req.query.year ||
+										  ( req.query.year && last_transaction.user.year && last_transaction.user.year.toString() == req.query.year.toString() ) ) {
+										item_results.push( item );
+										item.owner = last_transaction.user;
 
-											if ( user_result[ last_transaction.user._id.toString() ] == undefined )
-												user_result[ last_transaction.user._id.toString() ] = {
-													user: null,
-													items: []
-												};
-
-											var row = user_result[ last_transaction.user._id.toString() ];
-											row.user = last_transaction.user;
-											row.items.push( item );
+										if ( user_result[ last_transaction.user._id.toString() ] == undefined ) {
+											user_result[ last_transaction.user._id.toString() ] = {
+												user: null,
+												items: []
+											};
 										}
+
+										var row = user_result[ last_transaction.user._id.toString() ];
+										row.user = last_transaction.user;
+										row.items.push( item );
+									}
 								}
 							}
 						}
 
 						if ( course.contact != undefined ) {
 							var students = {};
-							email = pug.renderFile( __dirname + '/views/email.pug', { name: course.contact.name, students: user_result } );
+							email = pug.renderFile( __dirname + '/views/email.pug', {
+								name: course.contact.name,
+								students: user_result
+							} );
 						}
 
 						item_results.sort( function( a, b ) {
