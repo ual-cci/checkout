@@ -105,7 +105,7 @@ function flash( data ) {
 	var alert = jQuery( html ).addClass( 'alert-' + data.status );
 
 	jQuery( activeTab ).prepend( alert );
-	// setTimeout( function() { jQuery( alert ).remove() }, 5000 );
+	setTimeout( function() { jQuery( alert ).remove() }, 5000 );
 }
 
 function addModule( data ) {
