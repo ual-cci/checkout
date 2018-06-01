@@ -494,7 +494,6 @@ app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
 app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
 	Items.findOne( { barcode: req.params.item }, function( err, item ) {
 		if ( item ) {
-			console.log( item );
 			if ( req.user.printer ) {
 				Print.label( item.barcode, req.user.printer.url );
 				return res.json( {
@@ -571,6 +570,7 @@ app.post( '/new-user', auth.isLoggedIn, function( req, res ) {
 							message: 'The user barcode must be unique'
 						} );
 					} else {
+						console.log( 'api user save error:' );
 						console.log( err );
 						return res.json( {
 							status: 'danger',

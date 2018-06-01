@@ -91,7 +91,6 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 								if ( last_transaction.user.course.toString() == course._id.toString()
 									 && last_transaction.user.disable != true ) {
-										 console.log( req.query.year );
 									 if ( ! req.query.year ||
 										  ( req.query.year && last_transaction.user.year && last_transaction.user.year.toString() == req.query.year.toString() ) ) {
 										item_results.push( item );

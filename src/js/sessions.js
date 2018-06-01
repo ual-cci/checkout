@@ -14,6 +14,7 @@ module.exports =  function( app, io ) {
 		collection: 'sessionStore'
 	} );
 	store.on( 'error', function( error ) {
+		console.log( 'session error:' );
 		console.log( error );
 	} );
 
