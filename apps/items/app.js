@@ -177,6 +177,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 			_id: require( 'mongoose' ).Types.ObjectId(),
 			name: req.body.name.trim(),
 			barcode: req.body.prefix.toUpperCase(),
+			label: req.body.label,
 			value: req.body.value,
 			department: ObjectId( req.body.department ),
 			notes: req.body.notes
@@ -189,7 +190,11 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		if ( i < 10 ) index = '0' + index;
 		if ( req.body.suffix ) item.name += " #" + index;
 		item.barcode += index.toString();
-		barcodes.push( item.barcode );
+		barcodes.push( {
+			barcode: item.barcode,
+			text: item.name,
+			type: item.label
+		} );
 		items.push( item );
 	}
 
@@ -233,6 +238,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		_id: require( 'mongoose' ).Types.ObjectId(),
 		name: req.body.name,
 		barcode: req.body.barcode.toUpperCase(),
+		label: req.body.label,
 		value: req.body.value,
 		department: ObjectId( req.body.department ),
 		notes: req.body.notes
@@ -260,7 +266,11 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 			req.flash( 'success', 'Item created' );
 			if ( req.body.print ) {
 				if ( req.user.printer ) {
-					Print.label( req.body.barcode.toUpperCase(), req.user.printer.url );
+					Print.label( {
+						barcode: item.barcode,
+						text: item.name,
+						type: item.label
+					}, req.user.printer.url );
 					req.flash( 'info', 'Label printed to ' + req.user.printer.name );
 				} else {
 					req.flash( 'warning', 'No printer configured' );
@@ -302,7 +312,11 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 			if ( req.query.printer != null ) {
 				Printers.findById( req.query.printer, function( err, printer ) {
 					if ( printer != undefined ) {
-						Print.label( item.barcode, printer.url );
+						Print.label( {
+							barcode: item.barcode,
+							text: item.name,
+							type: item.label
+						}, printer.url );
 						req.flash( 'info', 'Label printed to ' + printer.name );
 						if ( req.get( 'referer' ) && req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
 							res.redirect( app.mountpath );
@@ -316,7 +330,11 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 				} )
 			} else {
 				if ( req.user.printer ) {
-					Print.label( item.barcode, req.user.printer.url );
+					Print.label( {
+						barcode: item.barcode,
+						text: item.name,
+						type: item.label
+					}, req.user.printer.url );
 					req.flash( 'info', 'Label printed to ' + req.user.printer.name );
 					res.redirect( '/' );
 				} else {
@@ -352,6 +370,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	var item = {
 		name: req.body.name,
 		barcode: req.body.barcode,
+		label: req.body.label,
 		department: req.body.department,
 		value: req.body.value,
 		notes: req.body.notes

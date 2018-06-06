@@ -17,7 +17,7 @@ var Print = {
 		var buffer = [];
 
 		var doc = new PDFDocument( {
-			size: [ pt(12), pt(50) ],
+			size: [ pt(20), pt(40) ],
 			layout: 'portrait',
 			margin: 0,
 			autoFirstPage: false
@@ -25,7 +25,19 @@ var Print = {
 
 		var barcodes = [];
 		for ( c in codes ) {
-			barcodes.push( Print.addLabel( doc, codes[c] ) )
+			var code = codes[c];
+			switch( code.type ) {
+				case '2d_compact':
+					barcodes.push( Print.addCompactLabel( doc, code.barcode, code.text ) )
+					break;
+				case '2d_flag':
+					barcodes.push( Print.addFlagLabel( doc, code.barcode, code.text ) )
+					break;
+				default:
+				case '1d_reg':
+					barcodes.push( Print.addRegularLabel( doc, code.barcode, code.text ) )
+					break;
+			}
 		}
 
 		Promise.all( barcodes ).then( function() {
@@ -38,34 +50,127 @@ var Print = {
 			Print.send( buffer, printer );
 		} );
 	},
-	addLabel: function( doc, barcode ) {
+	addRegularLabel: function( doc, barcode, text ) {
 		return new Promise( function( resolve, reject ) {
-			Print.generateBarcodeImage( barcode ).then( function( png ) {
+			Print.generate1DBarcodeImage( barcode ).then( function( png ) {
 				var page = doc.addPage();
 				page.fontSize( 7 );
 				page.rotate( 90 );
-				page.text( barcode, pt(4), pt(-4), {
-					width: pt(30),
+				if ( text ) {
+					page.text( text, pt(2), pt(-17), {
+						width: pt(35),
+						align: 'center'
+					} );
+				}
+				page.text( barcode, pt(2), pt(-4), {
+					width: pt(35),
 					align: 'left'
 				} );
 				page.rotate(-90);
 				page.image( png,  pt(5), pt(2), {
 					width: pt(5),
-					height: pt(30)
+					height: pt(35)
 				} );
 				resolve( page );
 			} )
 		} );
 	},
-	generateBarcodeImage: function( barcode ) {
+	addFlagLabel: function( doc, barcode, text ) {
+		return new Promise( function( resolve, reject ) {
+			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
+				var page = doc.addPage();
+				if ( text ) {
+					page.rotate( 90 );
+					page.fontSize( 7 );
+					page.text( text, pt(2), pt(-17.5), {
+						width: pt(35),
+						align: 'center'
+					} );
+					page.rotate( -90 );
+				}
+
+				page.fontSize( 5 );
+
+				page.image( png,  pt(2), pt(2), {
+					width: pt(8),
+					height: pt(8)
+				} );
+				page.text( barcode, pt(1), pt(12), {
+					width: pt(10),
+					align: 'center'
+				} );
+
+				page.moveTo( pt(0), pt(20) ).lineTo( pt(12), pt(20) ).stroke();
+
+				page.rotate( 180 );
+					page.text( barcode, pt(-11), pt(-28), {
+						width: pt(10),
+						align: 'center'
+					} );
+					page.image( png,  pt(-10), pt(-38), {
+						width: pt(8),
+						height: pt(8)
+					} );
+				page.rotate( -180 );
+				resolve( page );
+			} )
+		} );
+	},
+	addCompactLabel: function( doc, barcode, text ) {
+		return new Promise( function( resolve, reject ) {
+			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
+				var page = doc.addPage();
+				if ( text ) {
+					page.rotate( 90 );
+					page.fontSize( 7 );
+					page.text( text, pt(2), pt(-17.5), {
+						width: pt(35),
+						align: 'center'
+					} );
+					page.rotate( -90 );
+				}
+
+				page.fontSize( 5 );
+				for ( var offset = 0; offset < 3; offset++ ) {
+					var off = offset * 12;
+					page.text( barcode, pt(2), pt(off+10), {
+						width: pt(10),
+						align: 'center'
+					} );
+					page.image( png,  pt(4), pt(off+3), {
+						width: pt(6),
+						height: pt(6)
+					} );
+				}
+				resolve( page );
+			} )
+		} );
+	},
+	generate1DBarcodeImage: function( barcode ) {
 		return new Promise( function ( resolve, reject ) {
 			bwipjs.toBuffer( {
 				bcid: 'code128',
 				scale: 10,
 				text: barcode,
 				height: 5,
-				width: 30,
+				width: 35,
 				rotate: 'R',
+				monochrome: true
+			}, function( err, png ) {
+				if ( err ) return reject( err );
+				return resolve( png );
+			} );
+		} );
+	},
+	generate2DBarcodeImage: function( barcode ) {
+		return new Promise( function ( resolve, reject ) {
+			bwipjs.toBuffer( {
+				bcid: 'microqrcode',
+				scale: 10,
+				text: barcode,
+				height: 6,
+				width: 6,
+				rotate: 'N',
 				monochrome: true
 			}, function( err, png ) {
 				if ( err ) return reject( err );

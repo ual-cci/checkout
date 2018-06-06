@@ -8,6 +8,13 @@ form( method="post" ).form-horizontal
 		.col-md-4
 			input( name="barcode" type="text" value=( item ? item.barcode : '' ) autocomplete="off" required )#barcode.form-control
 	.form-group
+		label( for="label" ).col-md-2.control-label Label
+		.col-md-4
+			select( name="label" required )#label.form-control
+				option( value="1d_reg" selected=( '1d_reg' == ( item ? item.label : '' ) ) ) Regular 1D 
+				option( value="2d_flag" selected=( '2d_flag' == ( item ? item.label : '' ) ) ) Flag 2D
+				option( value="2d_compact" selected=( '2d_compact' == ( item ? item.label : '' ) ) ) Compact 2D
+	.form-group
 		label( for="group" ).col-md-2.control-label Group
 		.col-md-4
 			select( name="group" )#group.form-control

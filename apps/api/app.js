@@ -495,7 +495,11 @@ app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
 	Items.findOne( { barcode: req.params.item }, function( err, item ) {
 		if ( item ) {
 			if ( req.user.printer ) {
-				Print.label( item.barcode, req.user.printer.url );
+				Print.label( {
+					barcode: item.barcode,
+					text: item.name,
+					type: item.label
+				}, req.user.printer.url );
 				return res.json( {
 					status: 'success',
 					message: 'Label printed to ' + req.user.printer.name,

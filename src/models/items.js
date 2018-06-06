@@ -28,6 +28,9 @@ module.exports = {
 		value: {
 			type: Number
 		},
+		label: {
+			type: String
+		},
 		transactions: [ {
 			date: {
 				type: Date,
