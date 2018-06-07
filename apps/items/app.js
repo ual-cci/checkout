@@ -82,6 +82,9 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 		Items.find( { _id: { $in: req.body.edit } }, function( err, items ) {
 			for ( var i = 0; i < items.length; i++ ) {
 				item = items[i];
+				if ( req.body.fields.indexOf( 'label' ) != -1 && req.body.label != '' )
+					item.label = req.body.label;
+
 				if ( req.body.fields.indexOf( 'group' ) != -1 && req.body.group != '' )
 					item.group = ObjectId( req.body.group );
 
@@ -93,6 +96,8 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 
 				if ( req.body.fields.indexOf( 'value' ) != -1 && req.body.value != '' )
 					item.value = req.body.value;
+
+				console.log( item );
 
 				item.save( function( err ) {
 					if ( err ) console.log( err );

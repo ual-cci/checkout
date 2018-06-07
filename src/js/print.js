@@ -100,7 +100,10 @@ var Print = {
 					align: 'center'
 				} );
 
-				page.moveTo( pt(0), pt(20) ).lineTo( pt(12), pt(20) ).stroke();
+				page.moveTo( pt(0), pt(20) )
+					.lineTo( pt(12), pt(20) )
+					.dash( 1, { space: 3 } )
+					.stroke();
 
 				page.rotate( 180 );
 					page.text( barcode, pt(-11), pt(-28), {
@@ -166,10 +169,10 @@ var Print = {
 		return new Promise( function ( resolve, reject ) {
 			bwipjs.toBuffer( {
 				bcid: 'microqrcode',
-				scale: 10,
+				scale: 20,
 				text: barcode,
-				height: 6,
-				width: 6,
+				height: 10,
+				width: 10,
 				rotate: 'N',
 				monochrome: true
 			}, function( err, png ) {

@@ -7,6 +7,16 @@ block prepend title
 block contents
 	<form action="/items/edit" method="post" class="form-horizontal">
 		.form-group
+			label( for="label" ).col-md-2.control-label Label
+			.col-md-4
+				.input-group
+					select( name="label" required )#label.form-control
+						option( value="1d_reg" ) Regular 1D 
+						option( value="2d_flag" ) Flag 2D
+						option( value="2d_compact" ) Compact 2D
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="label" )
+		.form-group
 			label( for="group" ).col-md-2.control-label Group
 			.col-md-4
 				.input-group
