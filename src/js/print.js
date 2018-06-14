@@ -168,7 +168,7 @@ var Print = {
 	generate2DBarcodeImage: function( barcode ) {
 		return new Promise( function ( resolve, reject ) {
 			bwipjs.toBuffer( {
-				bcid: 'microqrcode',
+				bcid: 'azteccode',
 				scale: 20,
 				text: barcode,
 				height: 10,
