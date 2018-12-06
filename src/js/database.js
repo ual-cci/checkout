@@ -2,41 +2,40 @@ var __root = __dirname + '/../..',
 	__src = __root + '/src',
 	__models = __src + '/models';
 
-var fs = require( 'fs' ),
-	mongoose = require( 'mongoose' ),
-	ObjectId = mongoose.Schema.ObjectId,
-	crypto = require( 'crypto' );
+var fs = require( 'fs' );
+var knex = require( 'knex' );
 
-exports.ObjectId = mongoose.Types.ObjectId;
-exports.mongoose = mongoose;
+var db = {
+	pg: null,
+	load_modules: function() {
+		console.log( 'Loading PostgreSQL models:' );
 
-exports.connect = function( url ) {
-	mongoose.Promise = global.Promise;
-	mongoose.connect( url, {
-		useMongoClient: true
-	} );
-	var db = mongoose.connection;
-	db.on( 'connected', function( error ) {
-		console.log( 'Connected to Mongo database.' );
+		var files = fs.readdirSync( __models );
+		for ( var f = 0; f < files.length; f++ ) {
+			var model = require( __models + '/' + files[f] )( db.pg );
+			console.log( '	' + model.name );
+			db[ model.name ] = model;
+		}
+
 		console.log();
-	} );
-	db.on( 'error', function( error ) {
-		console.log( 'Error connecting to Mongo database:' );
-		console.log( error );
-		console.log();
-		process.exit();
-	} );
-
-	return exports;
+	}
 };
 
-console.log( 'Loading models:' );
+module.exports = function( conf ) {
+	if ( global['knex_db'] == undefined ) {
+		console.log( 'Connecting to database...' );
+		console.log();
+		db.pg = knex( {
+			client: 'pg',
+			connection: conf
+		} );
 
-var files = fs.readdirSync( __models );
-for ( var f = 0; f < files.length; f++ ) {
-	var model = require( __models + '/' + files[f] );
-	console.log( '	' + model.name );
-	exports[ model.name ] = model.model;
-}
+		db.load_modules();
 
-console.log();
+		global['knex_db'] = db.pg;
+	} else {
+		db.pg = global['knex_db'];
+	}
+
+	return db;
+};

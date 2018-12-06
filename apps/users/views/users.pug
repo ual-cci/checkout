@@ -5,21 +5,10 @@ block prepend title
 	- heading = title
 
 block contents
+	- filter_path = '/users/'
 	include partials/filter.pug
 	hr
-	ul.nav.nav-tabs
-		li( role="presentation" ).active
-			a( href="#active" aria-controls="active" role="tab" data-toggle="tab" ) Active
-		li( role="presentation" )
-			a( href="#disabled" aria-controls="disabled" role="tab" data-toggle="tab" ) Disabled
-
 	form( action="/users/edit" method="post" )
 		- edit = true
-		.tab-content
-			#active.tab-pane.active( role="tabpanel" )
-				- users = active
-				include partials/user-list.pug
-			#disabled.tab-pane( role="tabpanel" )
-				- users = disabled
-				include partials/user-list.pug
+		include partials/user-list.pug
 		button( type="submit" ).btn.btn-default Edit Selected

@@ -11,6 +11,7 @@ form( method="post" ).form-horizontal
 		label( for="label" ).col-md-2.control-label Label
 		.col-md-4
 			select( name="label" required )#label.form-control
+				option( value="2d_tape" selected=( '2d_tape' == ( item ? item.label : '' ) ) ) Tape 2D
 				option( value="1d_reg" selected=( '1d_reg' == ( item ? item.label : '' ) ) ) Regular 1D 
 				option( value="2d_flag" selected=( '2d_flag' == ( item ? item.label : '' ) ) ) Flag 2D
 				option( value="2d_compact" selected=( '2d_compact' == ( item ? item.label : '' ) ) ) Compact 2D
@@ -20,31 +21,34 @@ form( method="post" ).form-horizontal
 			select( name="group" )#group.form-control
 				option( value="" selected ) Select a group
 				for group in groups
-					option( value=group._id selected=( group.id == ( item ? item.group : '' ) ) )=group.name
+					option( value=group.id selected=( group.id == ( item ? item.group_id : '' ) ) )=group.name
 	.form-group
 		label( for="department" ).col-md-2.control-label Department
 		.col-md-4
 			select( name="department" required )#department.form-control
 				option( value="" disabled selected ) Select a department
 				for department in departments
-					option( value=department._id selected=( department.id == ( item ? item.department : '' ) ) )=department.name
+					option( value=department.id selected=( department.id == ( item ? item.department_id : '' ) ) )=department.name
 	.form-group
 		label( for="value" ).col-md-2.control-label Value
 		.col-md-4
 			.input-group
 				span.input-group-addon &pound;
 				input( name="value" type="number" value=( item ? item.value : '' ) )#value.form-control
-	if action == 'Create'
-		.form-group
-			.col-md-offset-2.col-md-4
-				.checkbox
-					label( for="print" )
-						input( name="print" type="checkbox" checked )#print
-						|  Print Barcode Labels
 	.form-group
 		label( for="notes" ).col-md-2.control-label Notes
 		.col-md-4
-			input( name="notes" type="text" value=( item ? item.notes : '' ) )#notes.form-control
+			textarea( name="notes" type="text" )#notes.form-control #{ item ? item.notes : '' }
+	.form-group
+		.col-md-offset-2.col-md-4
+			.checkbox
+				label( for="print" )
+					if action == 'Create'
+						input( name="print" type="checkbox" checked )#print
+						|  Print Barcode Labels
+					if action == 'Update'
+						input( name="print" type="checkbox" )#print
+						|  Reprint Barcode Labels
 	.form-group
 		.col-md-4.col-md-offset-2
-			button( type="submit" ).btn.btn-default=action
+			button( type="submit" ).btn.btn-primary=action

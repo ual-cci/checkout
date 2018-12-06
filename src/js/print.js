@@ -17,9 +17,6 @@ var Print = {
 		var buffer = [];
 
 		var doc = new PDFDocument( {
-			size: [ pt(20), pt(40) ],
-			layout: 'portrait',
-			margin: 0,
 			autoFirstPage: false
 		} );
 
@@ -27,6 +24,9 @@ var Print = {
 		for ( c in codes ) {
 			var code = codes[c];
 			switch( code.type ) {
+				case '2d_tape':
+					barcodes.push( Print.addTape( doc, code.barcode, code.text ) )
+					break;
 				case '2d_compact':
 					barcodes.push( Print.addCompactLabel( doc, code.barcode, code.text ) )
 					break;
@@ -53,7 +53,11 @@ var Print = {
 	addRegularLabel: function( doc, barcode, text ) {
 		return new Promise( function( resolve, reject ) {
 			Print.generate1DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage();
+				var page = doc.addPage( {
+					size: [ pt(20), pt(40) ],
+					layout: 'portrait',
+					margin: 0
+				} );
 				page.fontSize( 7 );
 				page.rotate( 90 );
 				if ( text ) {
@@ -78,7 +82,11 @@ var Print = {
 	addFlagLabel: function( doc, barcode, text ) {
 		return new Promise( function( resolve, reject ) {
 			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage();
+				var page = doc.addPage( {
+					size: [ pt(20), pt(40) ],
+					layout: 'portrait',
+					margin: 0
+				} );
 				if ( text ) {
 					page.rotate( 90 );
 					page.fontSize( 7 );
@@ -122,7 +130,11 @@ var Print = {
 	addCompactLabel: function( doc, barcode, text ) {
 		return new Promise( function( resolve, reject ) {
 			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage();
+				var page = doc.addPage( {
+					size: [ pt(20), pt(40) ],
+					layout: 'portrait',
+					margin: 0
+				} );
 				if ( text ) {
 					page.rotate( 90 );
 					page.fontSize( 7 );
@@ -145,6 +157,40 @@ var Print = {
 						height: pt(6)
 					} );
 				}
+				resolve( page );
+			} )
+		} );
+	},
+	addTape: function( doc, barcode, text ) {
+		return new Promise( function( resolve, reject ) {
+			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
+				var page = doc.addPage( {
+					size: [ pt(20), pt(10) ],
+					layout: 'landscape',
+					margin: 0
+				} );
+				page.fontSize( 4.5 );
+				page.font('Helvetica-Bold')
+
+				page.text( "Creative\nTechnology\nLab", pt(0), pt(1), {
+					width: pt(10),
+					align: 'left',
+					weight: 'bold',
+					lineGap: -1.5
+				} );
+
+				page.image( png,  pt(0), pt(6), {
+					width: pt(9),
+					height: pt(9)
+				} );
+
+				page.fontSize( 4 );
+				page.font('Helvetica')
+				page.text( barcode, pt(0), pt(16), {
+					width: pt(9),
+					align: 'left'
+				} );
+
 				resolve( page );
 			} )
 		} );

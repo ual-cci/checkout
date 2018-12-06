@@ -10,19 +10,22 @@ block contents
 	ul.nav.nav-tabs#mode
 		li.issue.active: a( href="#issue" data-toggle="tab" ) Issue
 			|  
-			span.badge F13
+			span.badge F1
 		li.return: a( href="#return" data-toggle="tab" ) Return
 			|  
-			span.badge F14
+			span.badge F2
 		li.user: a( href="#user" data-toggle="tab" ) New User
 			|  
-			span.badge F15
+			span.badge F3
 		li.print: a( href="#label" data-toggle="tab" ) Label
 			|  
-			span.badge F16
+			span.badge F4
 		li.audit: a( href="#audit" data-toggle="tab" ) Audit
 			|  
-			span.badge F17
+			span.badge F5
+		li.history: a( href="#history" data-toggle="tab" ) History
+			|  
+			span.badge F6
 	.tab-content.break
 		#issue.tab-pane.active
 			.row
@@ -54,7 +57,7 @@ block contents
 							form
 								.input-group
 									span.input-group-addon
-										span.glyphicon.glyphicon-log-in
+										span.glyphicon.glyphicon-home
 									input( type="text" ).form-control
 				.col-md-9
 					.flash
@@ -78,7 +81,7 @@ block contents
 									select#department.form-control
 										option( value="" ) Don't change department
 										for department in departments
-											option( value=department._id ) #{ department.name }
+											option( value=department.id ) #{ department.name }
 			.flash
 		#label.tab-pane
 			.row
@@ -92,3 +95,7 @@ block contents
 									input( type="text" ).form-control
 				.col-md-9
 					.flash
+		#history.tab-pane
+			.row
+				.col-md-12
+					.list-group.items

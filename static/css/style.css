@@ -1,5 +1,6 @@
 body {
-	padding-top: 50px;
+	padding-top: 80px;
+	padding-bottom: 20px;
 }
 
 body.dev:before {
@@ -13,18 +14,6 @@ body.dev:before {
 }
 
 body.dev .navbar {
-	top: 3px;
-}
-
-.panel.panel-primary h3 {
-	position: relative;
-}
-
-.panel-primary .panel-heading h3:after {
-	position: absolute;
-	right: 0;
-	font-weight: normal;
-	font-size: small;
 	top: 3px;
 }
 
@@ -63,14 +52,6 @@ td.flex {
 	background-color: rgb(217, 237, 247);
 }
 
-.break {
-	margin-top: 1em;
-}
-
-body {
-	margin-top: 40px;
-}
-
 .page-header {
 	margin-top: 0;
 }
@@ -81,4 +62,41 @@ body {
 
 #modules .panel-heading {
 	cursor: pointer;
+}
+
+.break {
+	margin-top: 1em;
+}
+
+/* unused styles? */
+
+.panel.panel-primary h3 {
+	/* position: relative; */
+}
+
+.panel-primary .panel-heading h3:after {
+	/* position: absolute;
+	right: 0;
+	font-weight: normal;
+	font-size: small;
+	top: 3px; */
+}
+
+.action .icon {
+	border-right: 1px solid #ddd;
+	padding: 12px 15px;
+	margin-left: -15px;
+	margin-top: -10px;
+	margin-bottom: -10px;
+	margin-right: 10px;
+}
+
+#history .items {
+	margin-top: -14px;
+}
+
+.action:first-child {
+	border-top: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }

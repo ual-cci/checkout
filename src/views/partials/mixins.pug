@@ -3,3 +3,33 @@ mixin clipboard( text )
 
 mixin messageBlock( status, text )
 	p( style="padding: 1em; margin-top: 1em;" class="bg-" + status )=text
+
+mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
+	if ( sort_by == slug )
+		if sort_dir == 'asc'
+			- alt_dir = 'desc'
+		else
+			- alt_dir = 'asc'
+		
+		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&department=' + ( selected && selected.department ? selected.department : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=' + alt_dir )
+			| #{ text }
+		span( class=( sort_dir == 'asc' ? 'dropup' : 'dropdown' ) )
+			span.caret
+	else
+		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&department=' + ( selected && selected.department ? selected.department : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
+			| #{ text }
+
+mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
+	if ( sort_by == slug )
+		if sort_dir == 'asc'
+			- alt_dir = 'desc'
+		else
+			- alt_dir = 'asc'
+		
+		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=' + alt_dir )
+			| #{ text }
+		span( class=( sort_dir == 'asc' ? 'dropup' : 'dropdown' ) )
+			span.caret
+	else
+		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
+			| #{ text }

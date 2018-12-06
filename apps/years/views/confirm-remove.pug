@@ -1,0 +1,21 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove: ' + selected.name
+	- heading = "Are you sure you want to remove " + selected.name + "?"
+
+block contents
+	form( method="post" ).form-horizontal
+		+messageBlock( 'info', 'Deleting this year will transfer all the users to the new year selected below.' )
+		.form-group
+			label( for="year" ).col-md-2.control-label Transfer users to
+			.col-md-4
+				select( name="year", required )#year.form-control
+					option( value="" disabled selected ) Select a year
+					for year in years
+						option( value=year.id, disabled=year.disabled )=year.name
+		.form-group
+			.col-md-4.col-md-offset-2
+				button( type='submit' ).btn.btn-danger Yes, delete and transfer
+				|  
+				a( href="/years" ).btn.btn-default Cancel

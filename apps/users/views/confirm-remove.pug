@@ -1,0 +1,14 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove: ' + selected.name
+	- heading = "Are you sure you want to remove " + selected.name + "?"
+
+block contents
+	form( method="post" ).form-horizontal
+		+messageBlock( 'info', 'Removing this user will also delete it the historical data about actions performed against this user.' )
+		.form-group
+			.col-md-4
+				button( type='submit' ).btn.btn-danger Yes, delete user
+				|  
+				a( href="/users" ).btn.btn-default Cancel

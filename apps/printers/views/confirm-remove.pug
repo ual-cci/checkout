@@ -1,0 +1,21 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove: ' + selected.name
+	- heading = "Are you sure you want to remove " + selected.name + "?"
+
+block contents
+	form( method="post" ).form-horizontal
+		+messageBlock( 'info', 'Users do not have to be associated with a printer by not selecting a new printer the users will be removed have no default printer.' )
+		.form-group
+			label( for="printer" ).col-md-2.control-label Transfer users to
+			.col-md-4
+				select( name="printer" )#printer.form-control
+					option( value="" disabled selected ) Select a printer
+					for printer in printers
+						option( value=printer.id, disabled=printer.disabled )=printer.name
+		.form-group
+			.col-md-4.col-md-offset-2
+				button( type='submit' ).btn.btn-danger Yes, delete printer
+				|  
+				a( href="/printers" ).btn.btn-default Cancel

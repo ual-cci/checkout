@@ -1,4 +1,4 @@
-if items.length > 0
+if items && items.length > 0
 	.table-responsive
 		table.table.table-striped
 			thead
@@ -6,48 +6,118 @@ if items.length > 0
 					if edit
 						th
 							input( type="checkbox", title="Check All", checked=edit_items ).checkall
-					th Status
-					th Barcode
-					th Name
-					th Owner
-					th Group
-					th Department
-					if total
-						th Value
+					th
+						if multi
+							| Status
+						else
+							+sortItemHead( 'Status', 'status', sortby, direction, selected, filter_path )
+					th
+						if multi
+							| Barcode
+							span.dropup
+								span.caret
+						else
+							+sortItemHead( 'Barcode', 'barcode', sortby, direction, selected, filter_path )
+					th
+						if multi
+							| Name
+						else
+							+sortItemHead( 'Name', 'name', sortby, direction, selected, filter_path )
+					th
+						if multi
+							| Group
+						else
+							+sortItemHead( 'Group', 'group', sortby, direction, selected, filter_path )
+					th 
+						if multi
+							| Department
+						else
+							+sortItemHead( 'Department', 'department', sortby, direction, selected, filter_path )
+					th
+						if multi
+							| Value
+						else
+							+sortItemHead( 'Value', 'value', sortby, direction, selected, filter_path )
+					if ! multi
+						th
+							+sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
+						th
+							small
+								+sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
+						th
+							small
+								+sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
+					if edit
+						th Manage
 			tbody
+				- item_total = 0
 				for item in items
 					tr
 						if edit
-							td: input( type="checkbox", name="edit", value=item._id checked=edit_items )
+							td: input( type="checkbox", name="edit", value=item.id, checked=multi )
 						td
 							- status = item.status
 							include status.pug
 						td
-							if loggedInUser.printer
-								a( href="/items/" + item._id + "/label?printer=" + loggedInUser.printer._id )
-									span.glyphicon.glyphicon-print
-								|  
 							span( data-clipboard-text=item.barcode ).clipboard=item.barcode
 						td
-							a( href="/items/" + item._id ) #{ item.name }
+							a( href="/items/" + item.id )=item.name
 						td
-							if item.owner
-								a( href="/users/" + item.owner._id ) #{ item.owner.name }
+							if item.group_id
+								a( href="/groups/" + item.group_id + "/edit" )=item.group_name
 							else
 								| &mdash;
-						- group = item.group
 						td
-							include ../../../groups/views/partials/group.pug
-						- department = item.department
-						td
-							include ../../../departments/views/partials/department.pug
-						if total
-							td £#{ item.value }
-			if total
-				tfoot
-					tr
+							if item.department_id
+								a( href="/departments/" + item.group_id + "/edit" )=item.department_name
+							else
+								| &mdash;
+						if parseInt( item.value ) > 0
+							- value = parseInt( item.value )
+						else
+							- value = 0
+						
+						- item_total = ( item_total + value )
+						td £#{ value }
+						if ! multi
+							td
+								if item.owner_id
+									a( href="/users/" + item.owner_id )=item.owner_name
+								else
+									| &mdash;
+							td
+								small
+									if item.owner_course_id
+										a( href="/courses/" + item.owner_course_id )=item.owner_course_name
+									else
+										| &mdash;
+							td
+								small
+									if item.owner_year_id
+										a( href="/years/" + item.owner_year_id )=item.owner_year_name
+									else
+										| &mdash;
+							if edit
+								td
+									if loggedInUser.printer_id
+										a( href="/items/" + item.id + "/label?printer=" + loggedInUser.printer_id ).btn.btn-xs.btn-default
+											span.glyphicon.glyphicon-print
+											|  Label
+										|  
+									a( href="/items/" + item.id + '/edit' ).btn.btn-xs.btn-primary
+										span.glyphicon.glyphicon-pencil
+										|  Edit
+									|  
+									a( href="/items/" + item.id + '/remove' ).btn.btn-xs.btn-danger
+										span.glyphicon.glyphicon-trash
+										|  Delete
+						
+			tfoot
+				tr
+					if edit
 						th
-						th( colspan="6" ) Total
-						th £#{ total }
+					th( colspan="5" ) Total
+					th £#{ item_total }
+					th( colspan="4" )
 else
 	+messageBlock( 'warning', 'There are no items to display.' )

@@ -5,7 +5,7 @@ block prepend title
 	- heading = title
 
 block contents
-	<form action="/items/edit" method="post" class="form-horizontal">
+	form( action="/items/edit" method="post" ).form-horizontal
 		.form-group
 			label( for="label" ).col-md-2.control-label Label
 			.col-md-4
@@ -23,7 +23,7 @@ block contents
 					select( name="group" )#group.form-control
 						option( value="" selected ) Select a group
 						for group in groups
-							option( value=group._id )=group.name
+							option( value=group.id )=group.name
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="group" )
 		.form-group
@@ -33,7 +33,7 @@ block contents
 					select( name="department" )#department.form-control
 						option( value="" disabled selected ) Select a department
 						for department in departments
-							option( value=department._id )=department.name
+							option( value=department.id )=department.name
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="department" )
 		.form-group
@@ -56,5 +56,5 @@ block contents
 				button( type="submit" ).btn.btn-default Update
 		h3 Items
 		- edit = true
-		- edit_items = true
+		- multi = true
 		include partials/items-list.pug

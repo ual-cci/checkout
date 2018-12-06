@@ -2,17 +2,21 @@ dl.dl-horizontal
 	dt Barcode
 	dd: span( data-clipboard-text=user.barcode ).clipboard=user.barcode
 	dt Course
-	- course = user.course
-	dd: include ../../../courses/views/partials/course.pug
-	dt Year
-		if user.year
-			dd #{ user.year.name }
+	dd
+		if user.course_id
+			a( href="/courses/" + user.course_id + '/edit' )=user.course_name
 		else
-			dd –
+			| &mdash;
+	dt Year
+	dd
+		if user.year_id
+			| #{ user.year_name }
+		else
+			| &mdash;
 			
-	if user.course.contact
+	if user.course_contact_id
 		dt Staff Contact
-		dd: a( href="/users/" + user.course.contact._id )=user.course.contact.name
+		dd: a( href="/users/" + user.course_contact_id )=user.course_contact_name
 	dt Email
 	dd: a( href="mailto:" + user.email )=user.email
 	dt Status

@@ -6,16 +6,11 @@ var session = require( 'express-session' ),
 	cookie = require('cookie-parser'),
 	passport = require( 'passport' );
 
-var MongoDBStore = require( 'connect-mongodb-session' )( session );
+var PostgreSqlStore = require( 'connect-pg-simple' )( session );
 
 module.exports =  function( app, io ) {
-	var store = new MongoDBStore( {
-		uri: config.mongo,
-		collection: 'sessionStore'
-	} );
-	store.on( 'error', function( error ) {
-		console.log( 'session error:' );
-		console.log( error );
+	var store = new PostgreSqlStore( {
+		conString: config.postgresql,
 	} );
 
 	app.use( cookie() );

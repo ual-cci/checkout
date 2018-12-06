@@ -1,0 +1,35 @@
+if printers.length > 0
+	.table-responsive
+		table.table.table-striped
+			tgroup
+				col( width="20%" )
+				col( width="40%" )
+				col( width="20%" )
+				col( width="20%" )
+			thead
+				tr
+					th Name
+						span.dropup
+							span.caret
+					th URL
+					th View
+					th Manage
+			tbody
+				for printer in printers
+					tr
+						td=printer.name
+						td=printer.url
+						td
+							a( href=printer.url ).btn.btn-xs.btn-default
+								span.glyphicon.glyphicon-print
+								|  View
+						td
+							a( href="/printers/" + printer.id + '/edit' ).btn.btn-xs.btn-primary
+								span.glyphicon.glyphicon-pencil
+								|  Edit
+							|  
+							a( href="/printers/" + printer.id + '/remove' ).btn.btn-xs.btn-danger
+								span.glyphicon.glyphicon-trash
+								|  Delete
+else
+	+messageBlock( 'warning', 'There are no printers to display.' )

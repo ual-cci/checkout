@@ -4,5 +4,12 @@ block prepend title
 	- title = "Courses"
 	- heading = title
 
+block header
+	.page-header
+		h2 #{ heading }
+			a( href="/courses/create" ).btn.btn-default.pull-right
+				span.glyphicon.glyphicon-plus
+				|  Create
+
 block contents
 	include partials/course-list.pug

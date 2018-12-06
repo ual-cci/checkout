@@ -11,63 +11,35 @@
 		div.collapse.navbar-collapse#menu
 			ul.nav.navbar-nav
 				if loggedInUser
-					li.dropdown
-						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  Manage
-							|  
-							span.caret
-						ul.dropdown-menu
-							li.dropdown-header
-								span.glyphicon.glyphicon-modal-window
-								|  Items
-							li: a( href="/items/create" ) Create
-							li: a( href="/items/generate" ) Generate
-							li: a( href="/items" ) View
-							li( role="separator" ).divider
-							li.dropdown-header
-								span.glyphicon.glyphicon-plus
-								|  Create
-							li: a( href="/courses/create" ) Course
-							li: a( href="/years/create" ) Year
-							li: a( href="/groups/create" ) Group
-							li: a( href="/departments/create" ) Department
-							li( role="separator" ).divider
-							li.dropdown-header
-								span.glyphicon.glyphicon-eye-open
-								|  View
-							li: a( href="/users" ) Users
-							li: a( href="/courses" ) Courses
-							li: a( href="/years" ) Years
-							li: a( href="/groups" ) Groups
-							li: a( href="/departments" ) Departments
-							li( role="separator" ).divider
-							li: a( href="/printers" ) Configure Printers
-					li.dropdown
-						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle Reports
-							|  
-							span.caret
-						ul.dropdown-menu
-							li.dropdown-header
-								span.glyphicon.glyphicon-barcode
-								|  Audit
-							li: a( href="/audit/scanned" ) Scanned
-							li: a( href="/audit/missing" ) Missing
-							li( role="separator" ).divider
-							li.dropdown-header
-								span.glyphicon.glyphicon-filter
-								|  Status
-							li: a( href="/reports/status/available" ) Available
-							li: a( href="/reports/status/on-loan" ) On Loan
-							li: a( href="/reports/status/reserved" ) Reserved
-							li: a( href="/reports/status/lost" ) Lost
-							li: a( href="/reports/status/broken" ) Broken
+					li: a( href="/items" ) Items
+					li: a( href="/users" ) Users
 			ul.nav.navbar-nav.navbar-right
 				if loggedInUser
+					li.dropdown
+						li.dropdown
+							a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle  Admin
+								|  
+								span.caret
+							ul.dropdown-menu
+								li: a( href="/groups" ) Groups
+								li: a( href="/departments" ) Departments
+								li( role="separator" ).divider
+								li: a( href="/courses" ) Courses
+								li: a( href="/years" ) Years
+								li( role="separator" ).divider
+								li: a( href="/printers" ) Printers
+								li( role="separator" ).divider
+								li.dropdown-header
+									span.glyphicon.glyphicon-barcode
+									|  Audit
+								li: a( href="/audit/scanned" ) Scanned
+								li: a( href="/audit/missing" ) Missing
 					li.dropdown
 						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle #{ loggedInUser.name }
 							|  
 							span.caret
 						ul.dropdown-menu
-							li: a( href='/users/' + loggedInUser._id + '/edit' )
+							li: a( href='/users/' + loggedInUser.id + '/edit' )
 								span.glyphicon.glyphicon-pencil
 								|  Edit Profile
 							li( role="separator" ).divider

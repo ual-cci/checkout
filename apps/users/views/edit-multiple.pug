@@ -23,7 +23,7 @@ block contents
 					select( name="course" )#course.form-control
 						option( value="" disabled selected ) Select a course
 						for course in courses
-							option( value=course._id )=course.name
+							option( value=course.id )=course.name
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="course" )
 		.form-group
@@ -33,7 +33,7 @@ block contents
 					select( name="year" )#course.form-control
 						option( value="" disabled selected ) Select a year
 						for year in years
-							option( value=year._id )=year.name
+							option( value=year.id )=year.name
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="year" )
 		.form-group
@@ -41,5 +41,5 @@ block contents
 				button( type="submit" ).btn.btn-default Update
 		h3 Items
 		- edit = true
-		- edit_users = true
+		- multi = true
 		include partials/user-list.pug

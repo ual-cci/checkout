@@ -14,56 +14,39 @@ var pug = require( 'pug' ),
 
 var Print = require( __js + '/print' );
 
-var db = require( __js + '/database' ),
+var db = require( __js + '/database' )(),
 	Items = db.Items,
 	Users = db.Users,
 	Departments = db.Departments,
 	Courses = db.Courses,
-	Years = db.Years;
+	Years = db.Years,
+	Actions = db.Actions;
 
 var auth = require( __js + '/authentication' );
 
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/search/:term', auth.isLoggedIn, function( req, res ) {
-	Users.find( { $or: [
-		{ name: { $regex: '.*' + req.params.term + '.*', $options: 'i' } },
-		{ barcode: { $regex: '.*' + req.params.term + '.*', $options: 'i' } }
-	] } ).sort( { disable: 1, name: 1 } ).select( [ 'name', 'barcode', 'disable' ] ).exec( function( err, users ) {
-		Items.find( { $or: [
-			{ name: { $regex: '.*' + req.params.term + '.*', $options: 'i' } },
-			{ barcode: { $regex: '.*' + req.params.term + '.*', $options: 'i' } }
-		] }, function( err, items ) {
-			var cleanItems = [];
-
-			for ( var i in items ) {
-				var item = {
-					_id: items[i]._id,
-					name: items[i].name,
-					barcode: items[i].barcode,
-					status: items[i].status
-				}
-				cleanItems.push( item );
-			}
-
+	Users.search( req.params.term, function( err, users ) {
+		Items.search( req.params.term, function( err, items ) {
 			res.json( {
 				query: req.params.term,
 				users: users,
-				items: cleanItems,
+				items: items,
 			} );
 		} );
 	} );
 } );
 
 app.get( '/identify/:term', auth.isLoggedIn, function( req, res ) {
-	Users.findOne( { barcode: req.params.term }, function( err, user ) {
+	Users.getByBarcode( req.params.term, function( err, user ) {
 		if ( user != undefined ) {
 			return res.json( {
 				kind: 'user',
 				barcode: user.barcode
 			} );
 		}
-		Items.findOne( { barcode: req.params.term }, function ( err, item ) {
+		Items.getByBarcode( req.params.term, function ( err, item ) {
 			if ( item != undefined ) {
 				return res.json( {
 					kind: 'item',
@@ -79,29 +62,22 @@ app.get( '/identify/:term', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/user/:barcode', auth.isLoggedIn, function( req, res ) {
-	Users.findOne( { barcode: req.params.barcode, disable: { $ne: true } } ).populate( 'course' ).populate( 'year' ).exec( function ( err, user ) {
-		if ( user ) {
-			Items.find().exec( function( err, items ) {
-				var onloan = [];
+	var opts = {
+		lookup: [ 'course', 'year' ]
+	};
 
-				for ( item in items ) {
-					item = items[item];
-					if ( item.transactions != undefined ) {
-						for ( t = item.transactions.length - 1; t >= 0; t-- ) {
-							if ( item.transactions[t].user == user._id.toString() &&
-								 item.transactions[t].status == 'loaned' ) {
-								if ( t == item.transactions.length - 1 ) {
-									onloan.push( item );
-								}
-							}
-						}
-					}
-				}
-				var html = pug.renderFile( __views + '/modules/user.pug', { user: user, onloan: onloan, moment: moment } ) ;
+	Users.getByBarcode( req.params.barcode, opts, function ( err, user ) {
+		if ( user ) {
+			Items.getOnLoanToUserId( user.id, function( err, items ) {
+				var html = pug.renderFile( __views + '/modules/user.pug', {
+					user: user,
+					onloan: items,
+					moment: moment
+				} ) ;
 
 				var output = {
 					type: 'user',
-					id: user._id,
+					id: user.id,
 					barcode: user.barcode,
 					name: user.name,
 					email: user.email,
@@ -122,33 +98,22 @@ app.get( '/user/:barcode', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.barcode } )
-		.populate( 'group' )
-		.populate( 'department' )
-		.populate( 'transactions.user' )
-		.exec( function ( err, item ) {
-		if ( item ) {
-			if ( item.status == 'on-loan' ) {
-				if ( item.transactions && item.transactions.length ) {
-					var last = item.transactions[item.transactions.length - 1];
-					item.owner = {
-						_id: last.user._id,
-						name: last.user.name,
-						barcode: last.user.barcode
-					};
-				}
-			}
+	var opts = {
+		lookup: [ 'group', 'department', 'owner' ]
+	}
 
+	Items.getByBarcode( req.params.barcode, opts, function ( err, item ) {
+		if ( item ) {
 			var html = pug.renderFile( __views + '/modules/item.pug', { item: item } );
 
 			var output = {
 				type: 'item',
-				id: item._id,
+				id: item.id,
 				barcode: item.barcode,
-				department: item.department,
-				group: item.group,
+				department: item.department_id,
+				group: item.group_id,
 				status: item.status,
-				owner: item.owner,
+				owner_id: item.owner_id,
 				html: html
 			};
 
@@ -164,345 +129,249 @@ app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/audit/:item', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.item }, function( err, item ) {
-		if ( item == undefined ) {
-			return res.json( {
-				status: 'danger',
-				message: 'Unknown item',
-				barcode: req.params.item
-			} );
-		} else if ( item.status == 'lost' ) {
-			return res.json( {
-				status: 'danger',
-				message: 'Item currently marked as lost',
-				barcode: item.barcode
-			} );
-		} else if ( item.status == 'on-loan' ) {
-			return res.json( {
-				status: 'danger',
-				message: 'Item currently marked as on loan',
-				barcode: item.barcode
-			} );
-		}
-
-		Departments.findOne( { _id: req.body.department }, function( err, department ) {
-			var update = {};
-			update['$push'] = {
-				transactions: {
-					date: new Date(),
-					user: req.user.id,
-					status: 'audited'
-				}
+	Items.audit( req.params.item, function( msg, item ) {
+		if ( msg.status == 'success' ) {
+			var output = {
+				status: msg.status,
+				message: msg.message
 			};
+			if ( item ) {
+				output.barcode = item.barcode;
 
-			if ( department ) {
-				update['$set'] = {
-					'department': department._id
-				}
-			}
-
-			Items.update( { _id: item._id }, update ).then ( function ( status ) {
-				if ( status.n == 1 ) {
-					if ( department && item.department.toString() != department._id.toString() ) {
-						return res.json( {
-							status: 'success',
-							message: 'Item audited and transfered to ' + department.name,
-							barcode: item.barcode
-						} );
-					} else {
-						return res.json( {
-							status: 'success',
-							message: 'Item audited',
-							barcode: item.barcode
-						} );
-					}
-				} else {
-					return res.json( {
-						status: 'danger',
-						message: 'Item not found',
-						barcode: item.barcode
+				if ( req.body.department ) {
+					Departments.getById( req.body.department, function( err, department ) {
+						if ( department ) {
+							Items.update( item.id, {
+								department_id: department.id
+							}, function( err ) {} )
+						}
 					} );
 				}
-			}, function ( err ) {
-				return res.json( {
-					status: 'danger',
-					message: 'Item not found',
-					barcode: item.barcode
-				} );
-			} );
-		} );
+
+				Actions.log( {
+					item_id: item.id,
+					datetime: new Date(),
+					action: 'audited',
+					operator_id: req.user.id
+				}, function( err ) {} );
+			}
+
+			return res.json( output );
+		} else {
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			return res.json( output );
+		}
 	} );
 } );
 
 app.post( '/return/:item', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.item }, function( err, item ) {
-		if ( item != null ) {
-			if ( item.status == 'available' ) {
-				return res.json( {
-					status: 'warning',
-					message: 'Item already returned',
-					barcode: item.barcode
-				} );
-			}
-			Items.update( { _id: item._id }, {
-				$push: {
-					transactions: {
-						date: new Date(),
-						user: req.user.id,
-						status: 'returned'
-					}
+	Items.return( req.params.item, function( msg, item ) {
+		if ( msg.status == 'success' ) {
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			if ( item ) {
+				output.barcode = item.barcode;
+				var action = 'returned';
+				switch ( item.status ) {
+					case 'broken':
+						action = 'repaired';
+						break;
+					case 'lost':
+						action = 'found';
+						break;
 				}
-			}, function ( err ) {
-				return res.json( {
-					status: 'success',
-					message: 'Item returned',
-					barcode: item.barcode
-				} );
-			} );
+				
+				Actions.log( {
+					item_id: item.id,
+					datetime: new Date(),
+					action: action,
+					operator_id: req.user.id,
+					user_id: item.owner_id
+				}, function( err ) {} );
+			}
+
+			return res.json( output );
 		} else {
-			return res.json( {
-				status: 'danger',
-				message: 'Unknown item',
-				barcode: req.params.item
-			} );
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			return res.json( output );
 		}
 	} );
 } );
 
 app.post( '/broken/:item', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.item }, function( err, item ) {
-		if ( item ) {
-			if ( item.status == 'broken' ) {
-				return res.json( {
-					status: 'warning',
-					message: 'Item already marked as broken',
-					barcode: item.barcode
-				} );
-				return;
+	Items.broken( req.params.item, function( msg, item ) {
+		if ( msg.status == 'success' ) {
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			if ( item ) {
+				output.barcode = item.barcode;
+				Actions.log( {
+					item_id: item.id,
+					datetime: new Date(),
+					action: 'broken',
+					operator_id: req.user.id
+				}, function( err ) {} );
 			}
-			Items.update( { _id: item._id }, {
-				$push: {
-					transactions: {
-						date: new Date(),
-						user: req.user.id,
-						status: 'broken'
-					}
-				}
-			} ).then( function ( status ) {
-				if ( status.n == 1 ) {
-					return res.json( {
-						status: 'success',
-						message: 'Item marked as broken',
-						barcode: item.barcode
-					} );
-				} else {
-					return res.json( {
-						status: 'danger',
-						message: 'There was an error updating the item',
-						barcode: item.barcode
-					} );
-				}
-			}, function ( status ) {
-				return res.json( {
-					status: 'danger',
-					message: 'There was an error updating the item',
-					barcode: item.barcode
-				} );
-			} );
+
+			return res.json( output );
 		} else {
-			return res.json( {
-				status: 'danger',
-				message: 'Unknown item',
-				barcode: item.barcode
-			} );
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			return res.json( output );
 		}
 	} );
 } );
 
 app.post( '/lost/:item', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.item }, function( err, item ) {
-		if ( item ) {
-			if ( item.status == 'lost' ) {
-				return res.json( {
-					status: 'warning',
-					message: 'Item already marked as lost',
-					barcode: item.barcode
-				} );
-				return;
+	Items.lost( req.params.item, function( msg, item ) {
+		if ( msg.status == 'success' ) {
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			if ( item ) {
+				output.barcode = item.barcode;
+				Actions.log( {
+					item_id: item.id,
+					datetime: new Date(),
+					action: 'lost',
+					operator_id: req.user.id
+				}, function( err ) {} );
 			}
-			Items.update( { _id: item._id }, {
-				$push: {
-					transactions: {
-						date: new Date(),
-						user: req.user.id,
-						status: 'lost'
-					}
-				}
-			} ).then( function ( status ) {
-				if ( status.n == 1 ) {
-					return res.json( {
-						status: 'success',
-						message: 'Item marked as lost',
-						barcode: item.barcode
-					} );
-				} else {
-					return res.json( {
-						status: 'danger',
-						message: 'There was an error updating the item',
-						barcode: item.barcode
-					} );
-				}
-			}, function ( status ) {
-				return res.json( {
-					status: 'danger',
-					message: 'There was an error updating the item',
-					barcode: item.barcode
-				} );
-			} );
+
+			return res.json( output );
 		} else {
-			return res.json( {
-				status: 'danger',
-				message: 'Unknown item',
-				barcode: item.barcode
-			} );
+			var output = {
+				status: msg.status,
+				message: msg.message
+			};
+			return res.json( output );
 		}
-	} );
+	} )
 } );
 
 app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.item } ).populate( 'group' ).exec( function( err, item ) {
-		if ( item != undefined ) {
-			switch ( item.status ) {
-				case 'on-loan':
-					return res.json( {
-						status: 'danger',
-						message: 'Item already on loan',
-						barcode: item.barcode
-					} );
-				case 'lost':
-					return res.json( {
-						status: 'danger',
-						message: 'Item is currently lost',
-						barcode: item.barcode
-					} );
-				case 'broken':
-					return res.json( {
-						status: 'danger',
-						message: 'Item is currently broken',
-						barcode: item.barcode
-					} );
-				case 'available':
-					// Find user
-					Users.findOne( { barcode: req.params.user }, function( err, user ) {
-						// Check user was found
-						if ( user != null ) {
-							// User: Disabled
-							if ( user.disable ) {
+	var opts = {
+		lookup: [ 'group' ]
+	}
+	Users.getByBarcode( req.params.user, function( msg, user ) {
+		if ( user ) {
+			if ( user.disable ) {
+				res.json( {
+					status: 'danger',
+					message: 'User account been disabled',
+					barcode: user.barcode
+				} );
+			} else {
+				Items.getByBarcode( req.params.item, opts, function( msg, item ) {
+					if ( item ) {
+						switch ( item.status ) {
+							case 'on-loan':
 								return res.json( {
 									status: 'danger',
-									message: 'User has been disabled',
+									message: 'Item already on loan',
 									barcode: item.barcode
 								} );
-							}
+							case 'lost':
+								return res.json( {
+									status: 'danger',
+									message: 'Item is currently lost',
+									barcode: item.barcode
+								} );
+							case 'broken':
+								return res.json( {
+									status: 'danger',
+									message: 'Item is currently broken',
+									barcode: item.barcode
+								} );
+							case 'available':
+								function issue( item, user, operator ) {
+									Items.issue( item.barcode, user.id, function( msg ) {
+										Actions.log( {
+											item_id: item.id,
+											datetime: new Date(),
+											action: 'issued',
+											operator_id: operator.id,
+											user_id: user.id
+										}, function( err ) {} );
 
-							// Item: Part of a group
-							if ( item.group != null && item.group.limiter != null ) {
-								Items.find( { group: item.group._id }, function( err, groupItems ) {
-									var count = 0;
-									for ( i in groupItems ) {
-										var groupItem = groupItems[i];
-										if ( groupItem.status == 'on-loan' ) {
-											var owner_transaction = 0;
-											for ( i = groupItem.transactions.length - 1; i >= 0; i-- ) {
-												if ( groupItem.transactions[ i ].status == 'loaned' ) {
-													last_transaction = groupItem.transactions[ i ];
-													break;
-												}
-											}
-											if ( last_transaction.user.toString() == user._id.toString() ) count++;
-										}
-									}
-									if ( count >= item.group.limiter && ! req.query.override ) {
-										return res.json( {
-											status: 'danger',
-											message: 'You already have ' + count + ' of this type of item out.',
-											override: true,
-											barcode: item.barcode
-										} );
-									} else {
-										Items.update( { _id: item._id }, {
-											$push: {
-												transactions: {
-													date: new Date(),
-													user: user._id,
-													status: 'loaned'
-												}
-											}
-										}, function ( err ) {
+										var output = {
+											status: msg.status,
+											message: msg.message
+										};
+
+										return res.json( output );
+									} )
+								}
+
+								if ( item.group_id && item.group_limiter ) {
+									Items.countItemsByGroupOnLoanToUserById( user.id, item.group_id, function( err, count ) {
+										if ( count >= item.group_limiter && ! req.query.override ) {
 											return res.json( {
-												status: 'success',
-												message: 'Item issued',
+												status: 'danger',
+												message: 'User already has ' + count + ' of this type of item out',
+												override: true,
 												barcode: item.barcode
 											} );
-										} );
-									}
-								} );
-							} else {
-								Items.update( { _id: item._id }, {
-									$push: {
-										transactions: {
-											date: new Date(),
-											user: user._id,
-											status: 'loaned'
+										} else {
+											issue( item, user, req.user );
 										}
-									}
-								}, function ( err ) {
-									return res.json( {
-										status: 'success',
-										message: 'Item issued',
-										barcode: item.barcode
 									} );
+								} else {
+									issue( item, user, req.user );
+								}
+								break;
+							default:
+								return res.json( {
+									status: 'danger',
+									message: 'Unknown error',
+									barcode: item.barcode
 								} );
-							}
-						} else {
-							return res.json( {
-								status: 'danger',
-								message: 'Invalid user',
-								barcode: item.barcode
-							} );
+							break;
 						}
-					} );
-					break;
-				default:
-					return res.json( {
-						status: 'danger',
-						message: 'Unknown error',
-						barcode: item.barcode
-					} );
-				break;
+					} else {
+						return res.json( {
+							status: 'danger',
+							message: 'Unknown item',
+							barcode: req.params.item
+						} );
+					}
+				} )
 			}
 		} else {
 			return res.json( {
 				status: 'danger',
-				message: 'Unknown item',
-				barcode: req.params.item
+				message: 'Unknown user',
+				barcode: req.params.user
 			} );
 		}
-	} );
+	} )
 } );
 
 app.post( '/label/:item', auth.isLoggedIn, function( req, res ) {
-	Items.findOne( { barcode: req.params.item }, function( err, item ) {
+	Items.getByBarcode( req.params.item, function( err, item ) {
 		if ( item ) {
-			if ( req.user.printer ) {
+			if ( req.user.printer_id ) {
 				Print.label( {
 					barcode: item.barcode,
 					text: item.name,
 					type: item.label
-				}, req.user.printer.url );
+				}, req.user.printer_url );
 				return res.json( {
 					status: 'success',
-					message: 'Label printed to ' + req.user.printer.name,
+					message: 'Label printed to ' + req.user.printer_name,
 					barcode: item.barcode
 				} );
 			} else {
@@ -540,14 +409,14 @@ app.post( '/new-user', auth.isLoggedIn, function( req, res ) {
 		} );
 	}
 
-	Courses.findById( req.body.course, function( err, course ) {
+	Courses.getById( req.body.course, function( err, course ) {
 		if ( ! course ) {
 			return res.json( {
 				status: 'danger',
 				message: 'The user must be assigned to a course'
 			} );
 		}
-		Years.findById( req.body.year, function( err, year ) {
+		Years.getById( req.body.year, function( err, year ) {
 			 if ( ! year ) {
 				return res.json( {
 					status: 'danger',
@@ -556,42 +425,47 @@ app.post( '/new-user', auth.isLoggedIn, function( req, res ) {
 			}
 
 			var user = {
-				_id: require( 'mongoose' ).Types.ObjectId(),
 				name: req.body.name,
 				type: 'student',
 				barcode: req.body.barcode,
 				email: req.body.email,
-				course: course._id,
-				year: year._id,
-				printer: req.body.printer ? ObjectId( req.body.printer ) : null
+				course_id: course.id,
+				year_id: year.id
 			}
 
-			new Users( user ).save( function ( err, result ) {
-				if ( err ) {
-					if ( err.code == 11000 ) {
-						return res.json( {
-							status: 'danger',
-							message: 'The user barcode must be unique'
-						} );
-					} else {
-						console.log( 'api user save error:' );
-						console.log( err );
-						return res.json( {
-							status: 'danger',
-							message: 'Error creating user'
-						} );
-					}
-				} else {
+			Users.create( user, function ( err, result ) {
+				if ( ! err ) {
 					return res.json( {
 						status: 'success',
 						message: 'User created',
 						redirect: {
 							type: 'user',
-							barcode: result.barcode
+							barcode: req.body.barcode
+						}
+					} );
+				} else {
+					return res.json( {
+						status: 'danger',
+						message: err.message,
+						redirect: {
+							type: 'user',
+							barcode: req.body.barcode
 						}
 					} );
 				}
 			} );
+		} );
+	} );
+} );
+
+app.get( '/history', auth.isLoggedIn, function( req, res ) {
+	Actions.getDateRange( moment().startOf( 'day' ), moment().endOf( 'day' ), function( err, actions ) {
+		var html = pug.renderFile( __views + '/modules/history.pug', {
+			actions: actions,
+			moment: moment
+		} ) ;
+		res.json( {
+			actions: html
 		} );
 	} );
 } );

@@ -14,7 +14,6 @@ html
 			block css
 				link( rel="stylesheet", href="/css/bootstrap.min.css" )
 				link( rel="stylesheet", href="/css/style.css" )
-				link( rel="stylesheet", href="/css/dashboard.css" )
 			block js
 				script( src="/js/jquery.js" )
 				script( src="/js/bootstrap.js" )
@@ -30,3 +29,12 @@ html
 						h2 #{ heading }
 				include partials/flash.pug
 				block contents
+				block footer
+					.row
+						.col-md-12
+							hr
+							small.text-muted Checkout &mdash;
+								|  
+								a( href="https://github.com/creativetechnologylab/checkout", target="_blank" ) Contribute on GitHub
+							small.text-muted.pull-right
+								| #{ git }

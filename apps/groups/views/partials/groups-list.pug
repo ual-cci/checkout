@@ -1,12 +1,32 @@
 if groups.length > 0
 	.table-responsive
-		table.table.table-striped
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col( width="60%" )
+				col( width="20%" )
+				col( width="20%" )
 			thead
 				tr
 					th Name
+						span.dropup
+							span.caret
+					th View
+					th Manage
 			tbody
 				for group in groups
 					tr
-						td: include group.pug
+						td=group.name
+						td
+							a( href="/items/?group=" + group.id ).btn.btn-xs.btn-default
+								span.glyphicon.glyphicon-modal-window
+								|  Items
+						td
+							a( href="/groups/" + group.id + '/edit' ).btn.btn-xs.btn-primary
+								span.glyphicon.glyphicon-pencil
+								|  Edit
+							|  
+							a( href="/groups/" + group.id + '/remove' ).btn.btn-xs.btn-danger
+								span.glyphicon.glyphicon-trash
+								|  Delete
 else
 	+messageBlock( 'warning', 'There are no groups to display.' )

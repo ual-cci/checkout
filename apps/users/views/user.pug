@@ -7,12 +7,12 @@ block prepend title
 block contents
 	include partials/info.pug
 	p
-		a( href="/users/" + user._id + "/edit" ).btn.btn-default
+		a( href="/users/" + user.id + "/edit" ).btn.btn-default
 			span.glyphicon.glyphicon-pencil
 			|  Edit
 		|  
 		if onloan.length > 0
-			a.btn.btn-default( href="mailto:" + encodeURI( user.email ) + "?cc=" + encodeURI( user.course.contact.email ) + "&subject=" + encodeURI( "IMPORTANT: Items due back" ) + "&body=" + encodeURI( email ) )
+			a.btn.btn-default( href="mailto:" + encodeURI( user.email ) + "?cc=" + encodeURI( user.course_contact_email ) + "&subject=" + encodeURI( "IMPORTANT: Items due back" ) + "&body=" + encodeURI( email ) )
 				span.glyphicon.glyphicon-envelope
 				|  Generate email
 	hr
@@ -27,3 +27,4 @@ block contents
 			include partials/onloan.pug
 		#history( role="tabpanel" ).tab-pane
 			include partials/history.pug
+	

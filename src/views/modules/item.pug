@@ -3,7 +3,7 @@
 		h3.panel-title
 			span.glyphicon.glyphicon-tag
 			|  
-			a( href="/items/" + item._id )=item.name
+			a( href="/items/" + item.id )=item.name
 			- status = item.status
 			.pull-right( style="margin-top: -3px;" ): include ../../../apps/items/views/partials/status.pug
 	.panel-body
@@ -15,19 +15,19 @@
 						span.glyphicon.glyphicon-print
 						|  
 						span.clipboard( data-clipboard-text=item.barcode )=item.barcode
-					if item.group
+					if item.group_id
 						dt Group
-						dd: a( target="_blank" href="/groups/" + item.group._id )=item.group.name
-							if item.group.limiter
+						dd: a( target="_blank" href="/groups/" + item.group_id )=item.group_name
+							if item.group_limiter
 								small
-									em  (Limit per user: #{ item.group.limiter })
+									em  (Limit per user: #{ item.group_limiter })
 						
-					if item.owner
+					if item.owner_id
 						dt Owner:
-						dd: a( target="_blank" href="/users/" + item.owner._id )=item.owner.name
-					if item.department
+						dd: a( target="_blank" href="/users/" + item.owner_id )=item.owner_name
+					if item.department_id
 						dt Department
-						dd: a( target="_blank" href="/departments/" + item.department._id )=item.department.name
+						dd: a( target="_blank" href="/departments/" + item.department_id )=item.department_name
 			.col-md-2.buttons
 				if item.status == 'available'
 					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost

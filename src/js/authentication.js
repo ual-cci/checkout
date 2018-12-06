@@ -5,9 +5,9 @@ var __js = __src + '/js';
 
 var config = require( __config );
 
-var database = require( __js + '/database' );
-var Permissions = database.Permissions,
-	Users = database.Users;;
+var db = require( __js + '/database' )();
+var Permissions = db.Permissions,
+	Users = db.Users;
 
 var passport = require( 'passport' ),
 	LocalStrategy = require( 'passport-local' ).Strategy;
@@ -19,21 +19,21 @@ var Authentication = {
 		// Add support for local authentication
 		passport.use(
 			new LocalStrategy( function( email, password, done ) {
-				Users.findOne( { email: email } ).populate( 'printer' ).exec( function( err, user ) {
+				Users.getByEmail( email, function( err, user ) {
 					if ( user ) {
-						if ( user.type == 'staff' && ! user.disable ) {
+						if ( user.type == 'admin' && ! user.disable ) {
 
 							// LOGIN BYPASS - USE ONLY FOR SETUP!
-							// return done( null, { _id: user._id } );
+							// return done( null, { id: user.id } );
 
-							if ( ! user.password.salt ) return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
+							if ( ! user.pw_salt ) return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
 
 							// Hash the entered password with the users salt
-							Authentication.hashPassword( password, user.password.salt, user.password.iterations, function( hash ) {
+							Authentication.hashPassword( password, user.pw_salt, user.pw_iterations, function( hash ) {
 
 								// Check the hashes match
-								if ( hash == user.password.hash ) {
-									return done( null, { _id: user._id } );
+								if ( hash == user.pw_hash ) {
+									return done( null, { id: user.id } );
 								}
 
 								// Delay by 1 second to slow down password guessing
@@ -57,7 +57,7 @@ var Authentication = {
 		} );
 
 		passport.deserializeUser( function( data, done ) {
-			Users.findById( data._id ).populate( 'printer' ).exec( function( err, user ) {
+			Users.getById( data.id, { lookup: 'printers' }, function( err, user ) {
 				if ( user != null ) {
 					return done( null, user );
 				} else {
@@ -101,7 +101,7 @@ var Authentication = {
 	},
 	loggedIn: function( req ) {
 		// Is the user logged in?
-		if ( req.isAuthenticated() && req.user != undefined && req.user.type == 'staff' ) {
+		if ( req.isAuthenticated() && req.user != undefined && req.user.type == 'admin' ) {
 			return true;
 		} else {
 			return false;

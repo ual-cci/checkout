@@ -3,7 +3,7 @@
 		h3.panel-title
 			span.glyphicon.glyphicon-user
 			|  
-			a( href="/users/" + user._id ) #{ user.name }
+			a( href="/users/" + user.id ) #{ user.name }
 	.panel-body
 		dl.dl-horizontal
 			dt Barcode
@@ -11,16 +11,20 @@
 			dt Email
 			dd: a( href="mailto:" + user.email )  #{ user.email }
 			dt Course
-			if user.course
-				- course = user.course
-				dd: include ../../../apps/courses/views/partials/course.pug
-			else
-				dd –
+			dd
+				if user.course_id
+					a( href="/users?course=" + user.course_id )=user.course_name
+				else
+					| &mdash;
 			dt Year
-			if user.year
-				dd=user.year.name
-			else
-				dd –
+			dd
+				if user.year_id
+					a( href="/users?year=" + user.year_id )=user.year_name
+				else
+					| &mdash;
+			if user.disable
+				dt Account disabled
+				dd Yes
 		if onloan.length > 0
 			h3 On Loan
 
@@ -35,8 +39,7 @@
 			tbody
 				for item in onloan
 					tr
-						- last = item.transactions.length - 1
-						td: a( href="/items/" + item._id )=item.name
+						td: a( href="/items/" + item.id )=item.name
 						td: span.clipboard( data-clipboard-text=item.barcode )=item.barcode
-						td=moment( item.transactions[last].date ).format( 'DD/MM/YYYY' )
-						td=moment( item.transactions[last].date ).format( 'HH:MM:SS' )
+						td=moment( item.updated ).format( 'DD/MM/YYYY' )
+						td=moment( item.updated ).format( 'HH:MM:SS' )

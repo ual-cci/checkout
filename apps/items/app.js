@@ -1,19 +1,18 @@
 var __home = __dirname + "/../..";
-var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
-
-var config = require( __config );
 
 var	express = require( 'express' ),
 	app = express();
 
-var db = require( __js + '/database' ),
+var db = require( __js + '/database' )(),
 	Items = db.Items,
 	Groups = db.Groups,
 	Departments = db.Departments,
+	Courses = db.Courses,
+	Years = db.Years,
 	Printers = db.Printers,
-	ObjectId = db.ObjectId;
+	Actions = db.Actions;
 
 var Print = require( __js + '/print' );
 
@@ -22,98 +21,128 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Groups.find().sort( 'name' ).exec( function( err, groups ) {
-		Departments.find().sort( 'name' ).exec( function( err, departments ) {
-			var filter = {};
-			var total = 0;
-			if ( req.query.department ) filter.department = req.query.department;
-			if ( req.query.group ) filter.group = req.query.group;
-			if ( req.query.department == undefined && req.query.group == undefined ) {
-				res.render( 'items', {
-					items: [],
-					departments: departments,
-					selectedDepartment: req.query.department,
-					groups: groups,
-					selectedGroup: req.query.group,
-					total: 0
-				} );
-			} else {
-				Items.find( filter )
-				.populate( 'group' )
-				.populate( 'department' )
-				.populate( 'transactions.user' )
-				.sort( { 'name': 1, 'barcode': 1 } )
-				.exec( function( err, items ) {
-					for ( i in items ) {
-						var item = items[i];
+	Groups.get( function( err, groups ) {
+		Departments.get( function( err, departments ) {
+			Courses.get( function( err, courses ) {
+				Years.get( function( err, years ) {
+					var selected = {
+						status: req.query.status ? req.query.status : '',
+						department: req.query.department ? req.query.department : '',
+						group: req.query.group ? req.query.group : '',
+						course: req.query.course ? req.query.course : '',
+						year: req.query.year ? req.query.year : ''
+					};
 
-						if ( item.status == 'on-loan' ) {
-							var owner_transaction = 0;
+					if ( Object.keys( req.query ).length == 0 ) {
+						res.render( 'items', {
+							items: null,
+							departments: departments,
+							groups: groups,
+							courses: courses,
+							years: years,
+							selected: selected
+						} );
+					} else {
+						var opts = {
+							lookup: [ 'group', 'department', 'owner' ],
+							where: {}
+						};
 
-							for ( i = item.transactions.length - 1; i >= 0; i-- ) {
-								if ( item.transactions[ i ].status == 'loaned' ) {
-									last_transaction = item.transactions[ i ];
-									break;
-								}
-							}
-							item.owner = last_transaction.user;
+						// Set sort options
+						var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'course', 'year', 'group', 'department', 'value' ];
+						var direction_valid_options = [ 'asc', 'desc' ];
+						if ( sortby_valid_options.indexOf( req.query.sortby ) != -1 && direction_valid_options.indexOf[ req.query.direction ] != -1 ) {
+							var sortby = req.query.sortby;
+							if ( req.query.sortby == 'owner' ) sortby = 'owner_name';
+							if ( req.query.sortby == 'course' ) sortby = 'owner_course_name';
+							if ( req.query.sortby == 'year' ) sortby = 'owner_year_name';
+							if ( req.query.sortby == 'group' ) sortby = 'group_name';
+							if ( req.query.sortby == 'department' ) sortby = 'department_name';
+							opts.orderby = sortby;
+							opts.direction = req.query.direction;
+						} else {
+							opts.orderby = 'barcode';
+							opts.direction = 'asc';
 						}
 
-						if ( item.value != null )
-							total = total + item.value;
-					}
+						// Set filters
+						if ( req.query.status ) opts.where.status = req.query.status;
+						if ( req.query.course ) opts.where.course_id = req.query.course;
+						if ( req.query.year ) opts.where.years_id = req.query.year;
+						if ( req.query.group ) opts.where.group_id = req.query.group;
+						if ( req.query.department ) opts.where.department_id = req.query.department;
 
-					res.render( 'items', {
-						items: items,
-						departments: departments,
-						selectedDepartment: req.query.department,
-						groups: groups,
-						selectedGroup: req.query.group,
-						total: total
-					} );
+						// Get items
+						Items.get( opts, function( err, items ) {
+							res.render( 'items', {
+								items: items,
+								departments: departments,
+								groups: groups,
+								courses: courses,
+								years: years,
+								selected: selected,
+								sortby: ( req.query.sortby ? req.query.sortby : 'barcode' ),
+								direction: ( req.query.direction ? req.query.direction : 'asc' )
+							} );
+						} );
+					}
 				} );
-			}
+			} );
 		} );
 	} );
 } );
 
 app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 	if ( req.body.fields ) {
-		Items.find( { _id: { $in: req.body.edit } }, function( err, items ) {
-			for ( var i = 0; i < items.length; i++ ) {
-				item = items[i];
-				if ( req.body.fields.indexOf( 'label' ) != -1 && req.body.label != '' )
-					item.label = req.body.label;
+		if ( ! Array.isArray( req.body.edit ) ) {
+			req.flash( 'warning', 'Only one item was selected for group editing, use the single edit form' );
+			res.redirect( '/items/' + req.body.edit + '/edit' );
+			return;
+		}
 
-				if ( req.body.fields.indexOf( 'group' ) != -1 && req.body.group != '' )
-					item.group = ObjectId( req.body.group );
+		var item = {}
+		if ( req.body.fields.indexOf( 'label' ) != -1 && req.body.label != '' )
+			item.label = req.body.label;
 
-				if ( req.body.fields.indexOf( 'department' ) != -1 && req.body.department != '' )
-					item.department = ObjectId( req.body.department );
+		if ( req.body.fields.indexOf( 'group' ) != -1 && req.body.group != '' )
+			item.group_id = req.body.group;
 
-				if ( req.body.fields.indexOf( 'notes' ) != -1 && req.body.notes != '' )
-					item.notes = req.body.notes;
+		if ( req.body.fields.indexOf( 'department' ) != -1 && req.body.department != '' )
+			item.department_id = req.body.department;
 
-				if ( req.body.fields.indexOf( 'value' ) != -1 && req.body.value != '' )
-					item.value = req.body.value;
+		if ( req.body.fields.indexOf( 'notes' ) != -1 && req.body.notes != '' )
+			item.notes = req.body.notes;
 
-				console.log( item );
+		if ( req.body.fields.indexOf( 'value' ) != -1 && req.body.value != '' )
+			item.value = req.body.value;
 
-				item.save( function( err ) {
-					if ( err ) console.log( err );
-				} );
+		Items.updateMultiple( req.body.edit, item, function ( err, result ) {
+			if ( ! err ) {
+				req.flash( 'success', 'Items updated' );
+				res.redirect( app.mountpath );
+			} else {
+				req.flash( 'danger', err.message );
+				res.redirect( app.mountpath + '/' + req.params.id );
 			}
-			req.flash( 'success', 'Items updated' );
-			res.redirect( app.mountpath );
 		} );
 	} else {
-		Groups.find().sort( 'name' ).exec( function( err, groups ) {
-			Departments.find().sort( 'name' ).exec( function( err, departments ) {
-				Items.find( { _id: { $in: req.body.edit } } )
-					.populate( 'group' )
-					.populate( 'department' )
-				.sort( 'barcode' )
-					.exec( function( err, items ) {
+		Groups.get( function( err, groups ) {
+			Departments.get( function( err, departments ) {
+				if ( ! Array.isArray( req.body.edit ) ) {
+					req.flash( 'warning', 'Only one item was selected for group editing, use the single edit form' );
+					res.redirect( '/items/' + req.body.edit + '/edit' );
+					return;
+				}
+
+				var opts = {
+					lookup: [ 'group', 'department', 'owner' ],
+					where: {},
+					orderby: 'barcode',
+					direction: 'asc'
+				};
+
+				// Get items
+				Items.getMultipleById( req.body.edit, opts, function( err, items ) {
 					res.render( 'edit-multiple', {
 						items: items,
 						groups: groups,
@@ -127,8 +156,8 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 
 // Generate items
 app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
-	Departments.find().sort( 'name' ).exec( function( err, departments ) {
-		Groups.find().sort( 'name' ).exec( function( err, groups ) {
+	Departments.get( function( err, departments ) {
+		Groups.get( function( err, groups ) {
 			if ( departments.length > 0 ) {
 				req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
 				res.render( 'generate', { departments: departments, groups: groups, item: {} } );
@@ -142,7 +171,7 @@ app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
 
 app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 	var start = parseInt( req.body.start );
-	var end = parseInt( req.body.end );
+	var end = ( start + parseInt( req.body.qty ) ) - 1;
 
 	if ( req.body.name == '' ) {
 		req.flash( 'danger', 'The items require a name' );
@@ -164,7 +193,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', 'The item numbering must start at or above 2' );
 		res.redirect( app.mountpath + '/generate' );
 		return;
-	} else if ( end - start > 25 && ! req.body.largeBatch ) {
+	} else if ( end > 25 && ! req.body.largeBatch ) {
 		req.flash( 'danger', "You can't generate more than 25 items at a time without confirming you want to do this" );
 		res.redirect( app.mountpath + '/generate' );
 		return;
@@ -179,17 +208,17 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 	for ( var i = start; i <= end; i++ ) {
 		var item = {
-			_id: require( 'mongoose' ).Types.ObjectId(),
 			name: req.body.name.trim(),
-			barcode: req.body.prefix.toUpperCase(),
+			barcode: req.body.prefix,
 			label: req.body.label,
 			value: req.body.value,
-			department: ObjectId( req.body.department ),
-			notes: req.body.notes
+			department_id: req.body.department,
+			notes: req.body.notes,
+			status: 'available'
 		}
 
 		if ( req.body.group )
-			item.group = ObjectId( req.body.group );
+			item.group_id = req.body.group;
 
 		var index = i.toString();
 		if ( i < 10 ) index = '0' + index;
@@ -203,31 +232,29 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		items.push( item );
 	}
 
-	Items.collection.insert( items, function( err, status ) {
+	Items.create( items, function ( err, result ) {
 		if ( ! err ) {
-			req.flash( 'success', status.result.n + ' items created' );
+			req.flash( 'success', 'Items created' );
 			if ( req.body.print ) {
-				if ( req.user.printer ) {
-					Print.labels( barcodes, req.user.printer.url );
-					req.flash( 'info', 'Labels printed to ' + req.user.printer.name );
+				if ( req.user.printer_id ) {
+					Print.labels( barcodes, req.user.printer_url );
+					req.flash( 'info', 'Labels printed to ' + req.user.printer_name );
 				} else {
 					req.flash( 'warning', 'No printer configured' );
 				}
 			}
 			res.redirect( app.mountpath );
 		} else {
-			if ( err.code == 11000 ) {
-				req.flash( 'danger', 'One or more barcodes generated by this range were not unique' );
-				res.redirect( app.mountpath + '/generate' );
-			}
+			req.flash( 'danger', err.message );
+			res.redirect( app.mountpath + '/generate' );
 		}
 	} );
 } )
 
 // Create item
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
-	Departments.find().sort( 'name' ).exec(  function( err, departments ) {
-		Groups.find().sort( 'name' ).exec(  function( err, groups ) {
+	Departments.get( function( err, departments ) {
+		Groups.get( function( err, groups ) {
 			if ( departments.length > 0 ) {
 				res.render( 'create', { item: null, departments: departments, groups: groups } );
 			} else {
@@ -240,17 +267,17 @@ app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 
 app.post( '/create', auth.isLoggedIn, function( req, res ) {
 	var item = {
-		_id: require( 'mongoose' ).Types.ObjectId(),
 		name: req.body.name,
-		barcode: req.body.barcode.toUpperCase(),
+		barcode: req.body.barcode,
 		label: req.body.label,
 		value: req.body.value,
-		department: ObjectId( req.body.department ),
-		notes: req.body.notes
+		department_id: req.body.department,
+		notes: req.body.notes,
+		status: 'available'
 	}
 
 	if ( req.body.group )
-		item.group = ObjectId( req.body.group );
+		item.group_id = req.body.group;
 
 	if ( item.name == '' ) {
 		req.flash( 'danger', 'The item requires a name' );
@@ -260,51 +287,50 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', 'The item requires a unique barcode' );
 		res.redirect( app.mountpath + '/create' );
 		return;
-	} else if ( item.department == '' ) {
+	} else if ( ! item.department_id ) {
 		req.flash( 'danger', 'The item must be assigned to a department' );
 		res.redirect( app.mountpath + '/create' );
 		return;
 	}
 
-	new Items( item ).save( function ( err ) {
+	Items.create( item, function ( err, result ) {
 		if ( ! err ) {
 			req.flash( 'success', 'Item created' );
 			if ( req.body.print ) {
-				if ( req.user.printer ) {
+				if ( req.user.printer_id ) {
 					Print.label( {
 						barcode: item.barcode,
 						text: item.name,
 						type: item.label
-					}, req.user.printer.url );
-					req.flash( 'info', 'Label printed to ' + req.user.printer.name );
+					}, req.user.printer_url );
+					req.flash( 'info', 'Label printed to ' + req.user.printer_name );
 				} else {
 					req.flash( 'warning', 'No printer configured' );
 				}
 			}
 			res.redirect( app.mountpath );
 		} else {
-			if ( err.code == 11000 ) {
-				req.flash( 'danger', 'Barcode is not unique' );
-				res.redirect( app.mountpath + '/create' );
-			}
-			console.log( err );
+			req.flash( 'danger', err.message );
+			res.redirect( app.mountpath + '/create' );
 		}
 	} );
 } )
 
 // List an item
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Printers.find().sort( 'name' ).exec(  function( err, printers ) {
-		Items.findById( req.params.id )
-			.populate( 'transactions.user' )
-			.populate( 'group' )
-			.populate( 'department' )
-			.exec( function( err, item ) {
-			if ( item == undefined ) {
+	Printers.get( function( err, printers ) {
+		Items.getById( req.params.id, function( err, item ) {
+			if ( item ) {
+				Actions.getByItemId( item.id, function( err, history ) {
+					res.render( 'item', {
+						item: item,
+						printers: printers,
+						history: history
+					} );
+				} );
+			} else {
 				req.flash( 'danger', 'Item not found' );
 				res.redirect( app.mountpath );
-			} else {
-				res.render( 'item', { item: item, printers: printers } );
 			}
 		} );
 	} );
@@ -312,41 +338,38 @@ app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 
 // Reprint an item
 app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
-	Items.findById( req.params.id,  function( err, item ) {
+	Items.getById( req.params.id,  function( err, item ) {
 		if ( item ) {
-			if ( req.query.printer != null ) {
-				Printers.findById( req.query.printer, function( err, printer ) {
-					if ( printer != undefined ) {
-						Print.label( {
-							barcode: item.barcode,
-							text: item.name,
-							type: item.label
-						}, printer.url );
-						req.flash( 'info', 'Label printed to ' + printer.name );
-						if ( req.get( 'referer' ) && req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
-							res.redirect( app.mountpath );
-						} else {
-							res.redirect( app.mountpath + '/' + item._id.toString() );
-						}
-					} else {
-						req.flash( 'warning', 'Invalid printer' );
-						res.redirect( app.mountpath );
-					}
-				} )
+			var printer_id;
+			if ( req.query.printer ) {
+				printer_id = req.query.printer;
+			} else if ( req.user.printer_id ) {
+				printer_id = req.user.printer_id;
 			} else {
-				if ( req.user.printer ) {
+				req.flash( 'danger', 'No printer selected' );
+				res.redirect( app.mountpath );
+				return;
+			}
+
+			Printers.getById( printer_id, function( err, printer ) {
+				if ( printer ) {
 					Print.label( {
 						barcode: item.barcode,
 						text: item.name,
 						type: item.label
-					}, req.user.printer.url );
-					req.flash( 'info', 'Label printed to ' + req.user.printer.name );
-					res.redirect( '/' );
+					}, printer.url );
+
+					req.flash( 'info', 'Label printed to ' + printer.name );
+					if ( req.get( 'referer' ) && req.get( 'referer' ).indexOf( 'items/' + req.params.id ) == -1 ) {
+						res.redirect( app.mountpath );
+					} else {
+						res.redirect( app.mountpath + '/' + item.id.toString() );
+					}
 				} else {
-					req.flash( 'danger', 'Item not found' );
+					req.flash( 'warning', 'Invalid printer' );
 					res.redirect( app.mountpath );
 				}
-			}
+			} )
 		} else {
 			req.flash( 'danger', 'Item not found' );
 			res.redirect( app.mountpath );
@@ -356,16 +379,20 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 
 // Edit item form
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Items.findById( req.params.id, function( err, item ) {
-		if ( item == undefined ) {
-			req.flash( 'danger', 'Item not found' );
-			res.redirect( app.mountpath );
-		} else {
-			Groups.find().sort( 'name' ).exec(  function( err, groups ) {
-				Departments.find().sort( 'name' ).exec(  function( err, departments ) {
-					res.render( 'edit', { item: item, groups: groups, departments: departments } );
+	Items.getById( req.params.id, function( err, item ) {
+		if ( item ) {
+			Groups.get( function( err, groups ) {
+				Departments.get( function( err, departments ) {
+					res.render( 'edit', {
+						item: item,
+						groups: groups,
+						departments: departments
+					} );
 				} );
 			} );
+		} else {
+			req.flash( 'danger', 'Item not found' );
+			res.redirect( app.mountpath );
 		}
 	} );
 } )
@@ -376,29 +403,77 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		name: req.body.name,
 		barcode: req.body.barcode,
 		label: req.body.label,
-		department: req.body.department,
+		department_id: req.body.department,
 		value: req.body.value,
 		notes: req.body.notes
 	};
 
 	if ( req.body.group != '' ) {
-		item.group = req.body.group;
-	} else {
-		item.group = null;
+		item.group_id = req.body.group;
 	}
 
-	Items.update( { _id: req.params.id }, { $set: item } ).then( function ( status ) {
-		if ( status.nModified == 1 && status.n == 1 ) {
+	Items.update( req.params.id, item, function ( err, result ) {
+		if ( ! err ) {
 			req.flash( 'success', 'Item updated' );
-		} else if ( status.nModified == 0 && status.n == 1 ) {
-			req.flash( 'warning', 'Item was not changed' );
+			if ( req.body.print ) {
+				if ( req.user.printer_id ) {
+					Print.label( {
+						barcode: item.barcode,
+						text: item.name,
+						type: item.label
+					}, req.user.printer_url );
+					req.flash( 'info', 'Label reprinted to ' + req.user.printer_name );
+				} else {
+					req.flash( 'warning', 'No printer configured' );
+				}
+			}
+			res.redirect( app.mountpath + '/' + req.params.id );
 		} else {
-			req.flash( 'danger', 'There was an error updating the item' );
+			req.flash( 'danger', err.message );
+			res.redirect( app.mountpath + '/' + req.params.id );
 		}
-		res.redirect( app.mountpath + '/' + req.params.id );
-	}, function ( status ) {
-		req.flash( 'danger', 'There was an error updating the item' );
-		res.redirect( app.mountpath + '/' + req.params.id );
+	} );
+} )
+
+app.get( '/:id/remove', auth.isLoggedIn, function( req, res ) {
+	Items.getById( req.params.id, function( err, item ) {
+		if ( item ) {
+			res.render( 'confirm-remove', {
+				selected: item
+			} );
+		} else {
+			req.flash( 'danger', 'Item not found' );
+			res.redirect( app.mountpath );
+		}
+	} );
+} )
+
+app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
+	Items.getById( req.params.id, function( err, item ) {
+		if ( ! item ) {
+			req.flash( 'danger', 'Item not found' );
+			res.redirect( app.mountpath );
+			return;
+		}
+
+		Actions.removeByItemId( item.id, function( err ) {
+			if ( err ) {
+				req.flash( 'danger', 'Could not remove item history' );
+				res.redirect( app.mountpath );
+				return;
+			} else {
+				Items.remove( item.id, function( err ) {
+					if ( err ) {
+						req.flash( 'danger', 'Could not remove item' );
+						res.redirect( app.mountpath );
+						return;
+					}
+
+					req.flash( 'success', "Item and it's history removed" );
+					res.redirect( app.mountpath );
+				} );
+			}
+		} )
 	} );
 } )
 

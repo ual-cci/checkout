@@ -1,5 +1,16 @@
-if pastloan.length > 0
-	- items = pastloan
-	include user-items.pug
+if history.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead
+				tr
+					th Name
+					th Barcode
+					th When
+			tbody
+				for row in history
+					tr
+						td: a( href="/items/ " + row.item_id )=row.item_name
+						td: span( data-clipboard-text=row.item_barcode ).clipboard=row.item_barcode
+						td: span( title=moment( row.datetime ).format( 'HH:mm:ss D/M/Y' ) )=moment( row.datetime ).fromNow()
 else
 	+messageBlock( 'warning', 'No items have previously been loaned to this user.' )

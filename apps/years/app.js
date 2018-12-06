@@ -7,7 +7,7 @@ var	express = require( 'express' ),
 
 var pug = require( 'pug' );
 
-var db = require( __js + '/database' ),
+var db = require( __js + '/database' )(),
 	Years = db.Years,
 	Items = db.Items,
 	Users = db.Users;
@@ -17,7 +17,7 @@ var auth = require( __js + '/authentication' );
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Years.find().sort( 'name' ).exec( function( err, years ) {
+	Years.get( function( err, years ) {
 		res.render( 'years', { years: years } );
 	} )
 } );
@@ -32,17 +32,19 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/create' );
 	}
 
-	new Years( {
-		_id: require( 'mongoose' ).Types.ObjectId(),
-		name: req.body.name,
-	} ).save( function ( err ) {
-		req.flash( 'success', 'Year created' );
-		res.redirect( app.mountpath );
+	Years.create( req.body.name, function( err, year ) {
+		if ( err ) {
+			req.flash( 'danger', 'Error creating year' );
+			res.redirect( app.mountpath );
+		} else {
+			req.flash( 'success', 'Year created' );
+			res.redirect( app.mountpath );
+		}
 	} );
 } )
 
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Years.findOne( { _id: req.params.id }, function( err, year ) {
+	Years.getById( req.params.id, function( err, year ) {
 		if ( year ) {
 			res.render( 'edit', { year: year } );
 		} else {
@@ -58,22 +60,75 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/create' );
 	}
 
-	Years.update( { _id: req.params.id }, {
-		$set: {
-			name: req.body.name
-		}
-	} ).then( function ( status ) {
-		if ( status.n == 1 ) {
-			req.flash( 'success', 'Year updated' );
-		} else if ( status.nModified == 0 && status.n == 1 ) {
-			req.flash( 'warning', 'Year was not changed' );
+	Years.update( req.params.id, req.body.name, function( err ) {
+		if ( err ) {
+			req.flash( 'danger', 'Error updating year' );
+			res.redirect( app.mountpath );
 		} else {
-			req.flash( 'danger', 'There was an error updating the year' );
+			req.flash( 'success', 'Year updated' );
+			res.redirect( app.mountpath );
 		}
-		res.redirect( app.mountpath + '/' + req.params.id + '/edit' );
-	}, function ( status ) {
-		req.flash( 'danger', 'There was an error updating the year' );
-		res.redirect( app.mountpath + '/' + req.params.id + '/edit' );
+	} );
+} )
+
+app.get( '/:id/remove', auth.isLoggedIn, function( req, res ) {
+	Years.get( function( err, years ) {
+		var selected = years.filter( function( year ) {
+			return ( year.id == req.params.id ? year : null );
+		} );
+
+		if ( selected[0] ) selected = selected[0];
+
+		var list = years.filter( function( year ) {
+			if ( year.id == req.params.id ) year.disabled = true;
+			return year;
+		} );
+
+		if ( selected ) {
+			res.render( 'confirm-remove', {
+				selected: selected,
+				years: list
+			} );
+		} else {
+			req.flash( 'danger', 'Years not found' );
+			res.redirect( app.mountpath );
+		}
+	} )
+} )
+
+app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
+	Years.getById( req.params.id, function( err, year_to_remove ) {
+		if ( ! year_to_remove ) {
+			req.flash( 'danger', 'Year not found' );
+			res.redirect( app.mountpath );
+			return;
+		}
+		Years.getById( req.body.year, function( err, year_to_become ) {
+			if ( ! year_to_become ) {
+				req.flash( 'danger', 'New year not found' );
+				res.redirect( app.mountpath );
+				return;
+			}
+
+			Users.updateYear( year_to_remove.id, year_to_become.id, function( err ) {
+				if ( err ) {
+					req.flash( 'danger', 'Could not transfer users to new year' );
+					res.redirect( app.mountpath );
+					return;
+				}
+
+				Years.remove( year_to_remove.id, function( err ) {
+					if ( err ) {
+						req.flash( 'danger', 'Could not remove year' );
+						res.redirect( app.mountpath );
+						return;
+					}
+
+					req.flash( 'success', 'Year deleted and users transferred' );
+					res.redirect( app.mountpath );
+				} );
+			} );
+		} );
 	} );
 } )
 

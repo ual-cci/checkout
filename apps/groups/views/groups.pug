@@ -4,5 +4,12 @@ block prepend title
 	- title = "Groups"
 	- heading = title
 
+block header
+	.page-header
+		h2 #{ heading }
+			a( href="/groups/create" ).btn.btn-default.pull-right
+				span.glyphicon.glyphicon-plus
+				|  Create
+
 block contents
 	include partials/groups-list.pug

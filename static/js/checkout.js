@@ -26,6 +26,8 @@ jQuery( document ).ready( function() {
 	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) { focus(); } );
 } );
 
+
+
 function searchTimer() {
 	search( jQuery( '#find input' ).val(), function( data ) {
 		empty();
@@ -216,6 +218,11 @@ function apiGET( method, barcode, cb ) {
 		cb( data );
 	} );
 }
+function getHistory() {
+	jQuery.get( '/api/history', function( data, status ) {
+		jQuery( '#history .items' ).html( data.actions );
+	} );
+}
 
 function empty( clear ) {
 	one_item = null;
@@ -238,28 +245,30 @@ function handleKeyPress( e ) {
 			focus();
 			break;
 		case 112: // F1
-			jQuery( '.users a' ).tab( 'show' );
-			break;
-		case 113: // F2
-			jQuery( '.items a' ).tab( 'show' );
-			break;
-		case 124: // F13
 			jQuery( '.issue a' ).tab( 'show' );
 			break;
-		case 125: // F14
+		case 113: // F2
 			jQuery( '.return a' ).tab( 'show' );
 			break;
-		case 126: // F15
+		case 114: // F3
 			jQuery( '.user a' ).tab( 'show' );
 			break;
-		case 127: // F16
+		case 115: // F4
 			jQuery( '.print a' ).tab( 'show' );
 			break;
-		case 128: // F17
+		case 116: // F5
 			jQuery( '.audit a' ).tab( 'show' );
 			break;
+		case 117: // F6
+			jQuery( '.history a' ).tab( 'show' );
+			break;
+		case 118: // F7
+			jQuery( '.users a' ).tab( 'show' );
+			break;
+		case 119: // F9
+			jQuery( '.items a' ).tab( 'show' );
+			break;
 		default:
-			// console.log( e.keyCode );
 			break;
 	}
 }
@@ -316,6 +325,9 @@ function focus() {
 			break;
 		case 'user':
 			jQuery( '#user input[name="barcode"]' ).focus();
+			break;
+		case 'history':
+			getHistory();
 			break;
 	}
 }
@@ -433,3 +445,10 @@ function clearUserForm() {
 	jQuery( '#user form [name="course"]' ).val('');
 	jQuery( '#user form [name="year"]' ).val('');
 }
+
+function refreshHistory() {
+	if ( jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) == 'history' ) {
+		getHistory();
+	}
+}
+setInterval( refreshHistory, 10000 );

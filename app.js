@@ -15,7 +15,7 @@ console.log();
 
 var config = require( __config );
 
-var database = require( __js + '/database' ).connect( config.mongo );
+var db = require( __js + '/database' )( config.postgresql );
 
 var express = require( 'express' ),
 	app = express(),

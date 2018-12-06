@@ -5,16 +5,16 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var db = require( __js + '/database' ),
-	Items = db.Items,
-	Departments = db.Departments;
+var db = require( __js + '/database' )(),
+	Departments = db.Departments,
+	Items = db.Items;
 
 var auth = require( __js + '/authentication' );
 
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Departments.find().sort( 'name' ).exec(  function( err, departments ) {
+	Departments.get( function( err, departments ) {
 		res.render( 'departments', { departments: departments } );
 	} )
 } );
@@ -29,37 +29,20 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/create' );
 	}
 
-	new Departments( {
-		_id: require( 'mongoose' ).Types.ObjectId(),
-		name: req.body.name,
-	} ).save( function ( err ) {
-		req.flash( 'success', 'Department created' );
-		res.redirect( app.mountpath );
+	Departments.create( req.body.name, function( err, result ) {
+		if ( err ) {
+			req.flash( 'danger', 'Department not created' );
+			res.redirect( app.mountpath );
+		} else {
+			req.flash( 'success', 'Department created' );
+			res.redirect( app.mountpath );
+		}
 	} );
 } )
 
-app.get( '/:id', auth.isLoggedIn, function( req, res ) {
-	Departments.findOne( { _id: req.params.id }, function( err, department ) {
-		if ( department == undefined ) {
-			req.flash( 'danger', 'Department not found' );
-			res.redirect( app.mountpath );
-		} else {
-			Items.find( { department: req.params.id } )
-				.populate( 'group' )
-				.sort( { 'name': 1, 'barcode': 1 } )
-				.exec( function( err, items ) {
-				res.render( 'department', {
-					department: department,
-					items: items
-				} );
-			} );
-		}
-	} )
-} )
-
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Departments.findOne( { _id: req.params.id }, function( err, department ) {
-		if ( department == undefined ) {
+	Departments.getById( req.params.id, function( err, department ) {
+		if ( ! department ) {
 			req.flash( 'danger', 'Department not found' );
 			res.redirect( app.mountpath );
 		} else {
@@ -74,23 +57,77 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/edit' );
 	}
 
-	Departments.update( { _id: req.params.id }, {
-		$set: {
-			name: req.body.name,
-		}
-	} ).then( function ( status ) {
-		if ( status.nModified == 1 && status.n == 1 ) {
-			req.flash( 'success', 'Department updated' );
-		} else if ( status.nModified == 0 && status.n == 1 ) {
-			req.flash( 'warning', 'Department was not changed' );
+	Departments.update( req.params.id, req.body.name, function( err ) {
+		if ( err ) {
+			req.flash( 'danger', 'Department not updated' );
+			res.redirect( app.mountpath );
+			console.log( err );
 		} else {
-			req.flash( 'danger', 'There was an error updating the department' );
+			req.flash( 'success', 'Department updated' );
+			res.redirect( app.mountpath );
 		}
-		res.redirect( app.mountpath + '/' + req.params.id );
-	}, function ( status ) {
-		req.flash( 'danger', 'There was an error updating the department' );
-		res.redirect( app.mountpath + '/' + req.params.id );
-	}  );
+	} );
+} )
+
+app.get( '/:id/remove', auth.isLoggedIn, function( req, res ) {
+	Departments.get( function( err, departments ) {
+		var selected = departments.filter( function( department ) {
+			return ( department.id == req.params.id ? department : null );
+		} );
+
+		if ( selected[0] ) selected = selected[0];
+
+		var list = departments.filter( function( department ) {
+			if ( department.id == req.params.id ) department.disabled = true;
+			return department;
+		} );
+
+		if ( selected ) {
+			res.render( 'confirm-remove', {
+				selected: selected,
+				departments: list
+			} );
+		} else {
+			req.flash( 'danger', 'Departments not found' );
+			res.redirect( app.mountpath );
+		}
+	} )
+} )
+
+app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
+	Departments.getById( req.params.id, function( err, department_to_remove ) {
+		if ( ! department_to_remove ) {
+			req.flash( 'danger', 'Department not found' );
+			res.redirect( app.mountpath );
+			return;
+		}
+		Departments.getById( req.body.department, function( err, department_to_become ) {
+			if ( ! department_to_become ) {
+				req.flash( 'danger', 'New department not found' );
+				res.redirect( app.mountpath );
+				return;
+			}
+
+			Items.updateDepartment( department_to_remove.id, department_to_become.id, function( err ) {
+				if ( err ) {
+					req.flash( 'danger', 'Could not transfer items to new department' );
+					res.redirect( app.mountpath );
+					return;
+				}
+
+				Departments.remove( department_to_remove.id, function( err ) {
+					if ( err ) {
+						req.flash( 'danger', 'Could not remove department' );
+						res.redirect( app.mountpath );
+						return;
+					}
+
+					req.flash( 'success', 'Department deleted and items transferred' );
+					res.redirect( app.mountpath );
+				} );
+			} );
+		} );
+	} );
 } )
 
 module.exports = function( config ) { return app; };

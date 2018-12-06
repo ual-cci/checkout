@@ -1,14 +1,39 @@
 if courses.length > 0
 	.table-responsive
-		table.table.table-striped
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col( width="40%" )
+				col( width="20%" )
+				col( width="20%" )
+				col( width="20%" )
 			thead
 				tr
 					th Name
+						span.dropup
+							span.caret
 					th Contact
+					th View
+					th Manage
 			tbody
 				for course in courses
 					tr
-						td: include course.pug
+						td=course.name
 						td: include contact.pug
+						td
+							a( href="/users/?course=" + course.id ).btn.btn-xs.btn-default
+								span.glyphicon.glyphicon-user
+								|  Users
+							|  
+							a( href="/items/?course=" + course.id ).btn.btn-xs.btn-default
+								span.glyphicon.glyphicon-modal-window
+								|  Items
+						td
+							a( href="/courses/" + course.id + '/edit' ).btn.btn-xs.btn-primary
+								span.glyphicon.glyphicon-pencil
+								|  Edit
+							|  
+							a( href="/courses/" + course.id + '/remove' ).btn.btn-xs.btn-danger
+								span.glyphicon.glyphicon-trash
+								|  Delete
 else
 	+messageBlock( 'warning', 'There are no courses to display.' )

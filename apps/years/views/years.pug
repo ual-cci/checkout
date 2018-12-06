@@ -4,5 +4,12 @@ block prepend title
 	- title = "Years"
 	- heading = title
 
+block header
+	.page-header
+		h2 #{ heading }
+			a( href="/years/create" ).btn.btn-default.pull-right
+				span.glyphicon.glyphicon-plus
+				|  Create
+
 block contents
 	include partials/year-list.pug

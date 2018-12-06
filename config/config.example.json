@@ -1,7 +1,7 @@
 {
 	"name": "Checkout",
 	"port": "8080",
-	"mongo": "mongodb://localhost:27017/checkout",
+	"postgresql": "postgres://pg_user@localhost:5432/checkout",
 	"secret": "123",
 	"dev": true,
 	"iterations": 50000

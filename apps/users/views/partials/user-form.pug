@@ -17,14 +17,14 @@ form( method="post" ).form-horizontal
 			select( name="course" )#course.form-control
 				option( value="" disabled selected ) Select a course
 				for course in courses
-					option( value=course._id selected=( course.id == user.course ) )=course.name
+					option( value=course.id selected=( course.id == user.course_id ) )=course.name
 	.form-group
 		label( for="year" ).col-md-2.control-label Year
 		.col-md-4
 			select( name="year" )#year.form-control
 				option( value="" disabled selected ) Select a year
 				for year in years
-					option( value=year._id selected=( year.id == user.year ) )=year.name
+					option( value=year.id selected=( year.id == user.year_id ) )=year.name
 	if action == 'Update'
 		.form-group
 			.col-md-4.col-md-offset-2
@@ -41,7 +41,7 @@ form( method="post" ).form-horizontal
 			.col-md-4
 				select( name="type" )#type.form-control
 					option( value="student" selected=( user.type == 'student' ) ) User
-					option( value="staff" selected=( user.type == 'staff' ) ) Admin
+					option( value="admin" selected=( user.type == 'admin' ) ) Admin
 		.form-group
 			label( for="password" ).col-md-2.control-label Password
 			.col-md-4
@@ -54,7 +54,7 @@ form( method="post" ).form-horizontal
 				select( name="printer" )#printer.form-control
 					option( value="" ) None
 					for printer in printers
-						option( value=printer._id selected=( printer.id == user.printer ) )=printer.name
+						option( value=printer.id selected=( printer.id == user.printer_id ) )=printer.name
 		.form-group
 			label( for="audit_point" ).col-md-2.control-label Audit Point
 			.col-md-4

@@ -5,15 +5,12 @@ if items.length > 0
 				tr
 					th Name
 					th Barcode
-					th Date
-					th Time
+					th When
 			tbody
 				for item in items
 					tr
-						td: a( href="/items/ " + item._id )=item.name
+						td: a( href="/items/ " + item.id )=item.name
 						td: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
-						- last = item.transactions.length - 1
-						td #{ moment( item.transactions[last].date ).format( 'DD/MM/YYYY' ) }
-						td #{ moment( item.transactions[last].date ).format( 'HH:MM:SS' ) }
+						td: span( title=moment( item.updated ).format( 'HH:mm:ss D/M/Y' ) )=moment( item.updated ).fromNow()
 else
 	p There are no items to display.

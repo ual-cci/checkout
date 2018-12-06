@@ -4,14 +4,24 @@ block prepend title
 	- title = "Items"
 	- heading = title
 
+block header
+	.page-header
+		h2=heading
+			a( href="/items/generate" ).btn.btn-default.btn-m.pull-right
+				span.glyphicon.glyphicon-asterisk
+				|  Generate Items
+			a( href="/items/create", style="margin-right: 1em;" ).btn.btn-default.btn-m.pull-right
+				span.glyphicon.glyphicon-plus
+				|  Create Item
+
 block contents
-	- newButtons = true
+	- filter_path = '/items/'
 	include partials/filter.pug
-	hr
-	if items.length == 0
+	if items === null
 		+messageBlock( 'info', 'Items will be shown after selecting your filtering options above.' )
 	else
 		form( action="/items/edit", method="post" )
 			- edit = true
 			include partials/items-list.pug
-			button( type="submit" ).btn.btn-default Edit Selected
+			if items && items.length > 0
+				button( type="submit" ).btn.btn-default Edit Selected

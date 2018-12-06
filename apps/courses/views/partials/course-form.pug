@@ -9,7 +9,9 @@ form( method="post" ).form-horizontal
 			select( name="contact" )#contact.form-control
 				option( value="", selected ) Select a course contact
 				for user in users
-					option( value=user._id, selected=( user.id == course.contact ) )=user.name
+					option( value=user.id, selected=( user.id == course.contact_id ) )=user.name
 	.form-group
 		.col-md-4.col-md-offset-2
-			button( type="submit" ).btn.btn-default=action
+			button( type="submit" ).btn.btn-primary=action
+			|  
+			a( href="/courses" ).btn.btn-default Cancel

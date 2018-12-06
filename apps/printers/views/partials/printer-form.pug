@@ -9,4 +9,6 @@ form( method="post" ).form-horizontal
 			input( name="url" type="text" value=printer.url required autocomplete="off" )#url.form-control
 	.form-group
 		.col-md-3.col-md-offset-2
-			input( type="submit" value=action ).btn.btn-default
+			input( type="submit" value=action ).btn.btn-primary
+			|  
+			a( href="/printers" ).btn.btn-default Cancel

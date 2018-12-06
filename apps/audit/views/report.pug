@@ -1,19 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Missing"
+	- title = status
 	- heading = title
 
 block contents
 	include ../../items/views/partials/filter.pug
-
-	hr
-
-	h3 Missing items
-	p Items not scanned today that should have been scanned.
-	include ../../items/views/partials/items-list.pug
-
-	h3 Other
-	p Items not expected to be in the audit.
-	- items = other
 	include ../../items/views/partials/items-list.pug
