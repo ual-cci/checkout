@@ -21,9 +21,12 @@ var Authentication = {
 			new LocalStrategy( function( email, password, done ) {
 				Users.getByEmail( email, function( err, user ) {
 					if ( user ) {
+						// Has account exceeded it's password tries?
+						if ( user.pw_attempts >= config['password-tries'] ) {
+							return done( null, false, { message: 'Account locked out' } );
+						}
+
 						if ( user.type == 'admin' && ! user.disable ) {
-
-
 							if ( ! user.pw_salt ) return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
 
 							// Hash the entered password with the users salt
@@ -31,14 +34,25 @@ var Authentication = {
 
 								// Check the hashes match
 								if ( hash == user.pw_hash ) {
-									return done( null, { id: user.id } );
+									var flash = {};
+									if ( user.pw_attempts > 0 ) {
+										flash.message = `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`;
+										Users.update( user.id, { pw_attempts: 0 }, function( err ) {} )
+									}
+
+									return done( null, { id: user.id }, flash );
 								}
+
+								// Increment password tries
+								Users.update( user.id, { pw_attempts: user.pw_attempts + 1 }, function( err ) {} )
 
 								// Delay by 1 second to slow down password guessing
 								return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
 							} );
 						} else {
-							return done( null, false );
+							// If account is disabled or not admin
+							// Delay by 1 second to slow down password guessing
+							return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
 						}
 					} else {
 						// If email address doesn't match
