@@ -23,8 +23,6 @@ var Authentication = {
 					if ( user ) {
 						if ( user.type == 'admin' && ! user.disable ) {
 
-							// LOGIN BYPASS - USE ONLY FOR SETUP!
-							// return done( null, { id: user.id } );
 
 							if ( ! user.pw_salt ) return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
 
