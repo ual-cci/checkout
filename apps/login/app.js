@@ -13,7 +13,7 @@ app.get( '/', function ( req, res ) {
 } );
 
 app.post( '/', passport.authenticate( 'local', {
-	failureRedirect: '/',
+	failureRedirect: '/login',
 	failureFlash: true,
 	successFlash: true
 } ), function ( req, res ) {
