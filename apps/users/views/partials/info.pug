@@ -27,7 +27,13 @@ dl.dl-horizontal
 			| Active
 	dt Type
 	dd
-		if user.type == 'staff'
-			| Staff
+		if user.type == 'admin'
+			| Admin
 		else
 			| User
+	if user.pw_attempts > 0
+		dt Password Attempts 
+		dd=user.pw_attempts
+			if user.pw_attempts >= config.pw_tries
+				|  (Locked Out) – 
+				a( href=`/users/${user.id}/reset` ) Reset

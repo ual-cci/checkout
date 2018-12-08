@@ -280,4 +280,19 @@ app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
 	} );
 } )
 
+app.get( '/:id/reset', auth.isLoggedIn, function( req, res ) {
+	var user = {
+		pw_attempts: 0
+	};
+
+	Users.update( req.params.id, user, function ( err ) {
+		if ( ! err ) {
+			req.flash( 'success', 'Password attempts reset to zero' );
+		} else {
+			req.flash( 'danger', err.message );
+		}
+		res.redirect( app.mountpath + '/' + req.params.id );
+	} );
+} )
+
 module.exports = function( config ) { return app; };

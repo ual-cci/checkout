@@ -18,6 +18,8 @@ function templateLocals( req, res, next ) {
 	if ( config.dev ) res.locals.dev = true;
 	res.locals.loggedInUser = req.user;
 	res.locals.moment = require( 'moment' );
+	res.locals.config = {};
+	res.locals.config.pw_tries = config['password-tries'];
 	next();
 };
 
