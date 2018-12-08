@@ -11,7 +11,7 @@ app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	req.logout();
-	res.redirect( '/' );
+	res.redirect( '/login' );
 } );
 
 module.exports = function( config, sio ) {

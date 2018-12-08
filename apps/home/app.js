@@ -1,14 +1,14 @@
+var __home = __dirname + "/../..";
+var __src = __home + '/src';
+var __js = __src + '/js';
+
 var	express = require( 'express' ),
 	app = express();
 
-app.set( 'views', __dirname + '/views' );
+var auth = require( __js + '/authentication' );
 
-app.get( '/', function ( req, res ) {
-	if ( req.isAuthenticated() ) {
-		res.redirect( '/checkout' );
-	} else {
-		res.redirect( '/login' );
-	}
+app.get( '/', auth.isLoggedIn, function ( req, res ) {
+	res.redirect( '/checkout' );
 } );
 
 module.exports = function( config ) { return app; };

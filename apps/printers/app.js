@@ -13,12 +13,14 @@ var auth = require( __js + '/authentication' );
 
 app.set( 'views', __dirname + '/views' );
 
+// View
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Printers.get( function( err, printers ) {
 		res.render( 'printers', { printers: printers } );
 	} )
 } );
 
+// Create
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
 	res.render( 'create', { printer: {} } );
 } );
@@ -85,8 +87,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 	} );
 } )
 
-
-
+// Remove
 app.get( '/:id/remove', auth.isLoggedIn, function( req, res ) {
 	Printers.get( function( err, printers ) {
 		var selected = printers.filter( function( printer ) {
