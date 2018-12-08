@@ -126,7 +126,6 @@ var Authentication = {
 				return next();
 			default:
 			case false:
-				if ( req.method == 'GET' ) req.session.requestedUrl = req.originalUrl;
 				req.flash( 'error', "Please login" );
 				res.redirect( '/login' );
 				return;
