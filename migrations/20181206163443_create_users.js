@@ -4,8 +4,8 @@ exports.up = function(knex, Promise) {
     table.increments();
     table.string('email').notNullable().unique();
     table.string('name').notNullable();
-    table.string('pw_salt').nullable();
-    table.string('pw_hash').nullable();
+    table.text('pw_salt').nullable();
+    table.text('pw_hash').nullable();
     table.string('type').defaultTo('user').notNullable();
     table.timestamp('audit_point', true).nullable();
     table.boolean('disable').nullable().defaultTo(false);
