@@ -2,7 +2,8 @@
   "scripts": {
     "start": "node app.js",
     "db:migrate": "knex migrate:latest",
-    "db:rollback": "knex migrate:rollback"
+    "db:rollback": "knex migrate:rollback",
+    "db:seed": "knex seed:run"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
