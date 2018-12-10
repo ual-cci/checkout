@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "npm update && node app.js",
+    "start": "node app.js",
     "db:migrate": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback"
   },
