@@ -10,7 +10,9 @@ var Permissions = db.Permissions,
 	Users = db.Users;
 
 var passport = require( 'passport' ),
-	LocalStrategy = require( 'passport-local' ).Strategy;
+  LocalStrategy = require( 'passport-local' ).Strategy;
+
+const logger = require('./logger.js');
 
 var crypto = require( 'crypto' );
 
@@ -19,6 +21,10 @@ var Authentication = {
 		// Add support for local authentication
 		passport.use(
 			new LocalStrategy( function( email, password, done ) {
+        logger.info('Log in state', [
+          email,
+          password
+        ]);
 				Users.getByEmail( email, function( err, user ) {
 					if ( user ) {
 						// Has account exceeded it's password tries?

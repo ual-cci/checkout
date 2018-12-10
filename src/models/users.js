@@ -1,3 +1,5 @@
+const logger = require('../js/logger.js');
+
 var db;
 
 var model = {
@@ -131,7 +133,7 @@ var model = {
 		if ( typeof opts == 'function' ) {
 			cb = opts;
 			opts = {};
-		}
+    }
 		model.getBy( email, 'email', opts, cb );
 	},
 	getBy: function( term, type, opts, cb ) {
@@ -141,7 +143,11 @@ var model = {
 			case 'id': query.where( 'users.id', term ); break;
 			case 'barcode': query.where( 'users.barcode', term ); break;
 			case 'email': query.where( 'users.email', term ); break;
-		}
+    }
+
+    logger.info('sql debug', [
+      query.toString()
+    ]);
 
 		query.asCallback( function( err, res ) {
 				if ( res ) {
