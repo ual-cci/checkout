@@ -1,5 +1,6 @@
+require('dotenv').config();
+
 var __home = __dirname;
-var __config = __home + '/config/config.json';
 var __static = __home + '/static';
 var __src = __home + '/src';
 var __apps = __home + '/apps';
@@ -13,9 +14,7 @@ console.log();
 console.log( "Starting..." );
 console.log();
 
-var config = require( __config );
-
-var db = require( __js + '/database' )( config.postgresql );
+var db = require( __js + '/database' )( process.env.APP_PG );
 
 var express = require( 'express' ),
 	app = express(),
@@ -55,7 +54,7 @@ app.set( 'view cache', false );
 app_loader( app );
 
 // Start server
-var listener = server.listen( config.port ,config.host, function () {
+var listener = server.listen( process.env.APP_PORT ,process.env.APP_HOST, function () {
 	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
 	console.log();
 } );

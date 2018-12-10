@@ -1,10 +1,8 @@
 var __home = __dirname + "/../..";
-var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
 var __views = __src + '/views';
 
-var config = require( __config );
 
 var	express = require( 'express' ),
 	app = express();
@@ -185,7 +183,7 @@ app.post( '/return/:item', auth.isLoggedIn, function( req, res ) {
 						action = 'found';
 						break;
 				}
-				
+
 				Actions.log( {
 					item_id: item.id,
 					datetime: new Date(),

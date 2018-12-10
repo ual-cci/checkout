@@ -1,9 +1,6 @@
 var __home = __dirname + '/../..';
-var __config = __home + '/config/config.json';
 var __src = __home + '/src';
 var __js = __src + '/js';
-
-var config = require( __config );
 
 var db = require( __js + '/database' )();
 var Permissions = db.Permissions,
@@ -28,7 +25,7 @@ var Authentication = {
 				Users.getByEmail( email, function( err, user ) {
 					if ( user ) {
 						// Has account exceeded it's password tries?
-						if ( user.pw_attempts >= config['password-tries'] ) {
+						if ( user.pw_attempts >= process.env.USER_PW_TRIES ) {
 							return done( null, false, { message: 'Account locked out' } );
 						}
 
@@ -108,11 +105,11 @@ var Authentication = {
 	// Utility function generates a salt and hash from a plain text password
 	generatePassword: function( password, callback ) {
 		Authentication.generateSalt( function( salt ) {
-			Authentication.hashPassword( password, salt, config.iterations, function( hash ) {
+			Authentication.hashPassword( password, salt, process.env.USER_PW_ITERATIONS, function( hash ) {
 				callback( {
 					salt: salt,
 					hash: hash,
-					iterations: config.iterations
+					iterations: process.env.USER_PW_ITERATIONS
 				} );
 			} );
 		} );

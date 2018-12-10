@@ -1,7 +1,4 @@
 var __root = __dirname + '/../..';
-var __config = __root + '/config/config.json';
-
-var config = require( __config );
 
 var apps = [];
 
@@ -15,11 +12,11 @@ gitRev.short( function( str ) {
 
 function templateLocals( req, res, next ) {
 	res.locals.git = git;
-	if ( config.dev ) res.locals.dev = true;
+	if ( process.env.APP_DEV ) res.locals.dev = true;
 	res.locals.loggedInUser = req.user;
 	res.locals.moment = require( 'moment' );
 	res.locals.config = {};
-	res.locals.config.pw_tries = config['password-tries'];
+	res.locals.config.pw_tries = process.env.USER_PW_TRIES;
 	next();
 };
 

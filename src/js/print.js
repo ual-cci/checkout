@@ -1,9 +1,6 @@
 var __root = '../..';
 var __src = __root + '/src';
 var __js = __src + '/js';
-var __config = __root + '/config/config.json';
-
-var config = require( __config );
 
 var PDFDocument = require( 'pdfkit' );
 var bwipjs = require( 'bwip-js' );
@@ -94,7 +91,7 @@ var Print = {
 	send: function( buffer, printer ) {
 		var file = {
 			"operation-attributes-tag": {
-				"requesting-user-name": config.name,
+				"requesting-user-name": process.env.APP_NAME,
 				"job-name": "Labels",
 				"requesting-user-name": "Checkout",
 				"document-format": "application/pdf"
