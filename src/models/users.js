@@ -54,6 +54,7 @@ var model = {
 				type: 'users.type',
 				pw_hash: 'users.pw_hash',
 				pw_salt: 'users.pw_salt',
+				pw_attempts: 'users.pw_attempts',
 				pw_iterations: 'users.pw_iterations',
 				audit_point: 'users.audit_point',
 				printer_id: 'users.printer_id'

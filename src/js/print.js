@@ -24,18 +24,9 @@ var Print = {
 		for ( c in codes ) {
 			var code = codes[c];
 			switch( code.type ) {
-				case '2d_tape':
-					barcodes.push( Print.addTape( doc, code.barcode, code.text ) )
-					break;
-				case '2d_compact':
-					barcodes.push( Print.addCompactLabel( doc, code.barcode, code.text ) )
-					break;
-				case '2d_flag':
-					barcodes.push( Print.addFlagLabel( doc, code.barcode, code.text ) )
-					break;
 				default:
-				case '1d_reg':
-					barcodes.push( Print.addRegularLabel( doc, code.barcode, code.text ) )
+				case '12mm':
+					barcodes.push( Print.add12mmTape( doc, code.barcode, code.text ) )
 					break;
 			}
 		}
@@ -50,118 +41,7 @@ var Print = {
 			Print.send( buffer, printer );
 		} );
 	},
-	addRegularLabel: function( doc, barcode, text ) {
-		return new Promise( function( resolve, reject ) {
-			Print.generate1DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage( {
-					size: [ pt(20), pt(40) ],
-					layout: 'portrait',
-					margin: 0
-				} );
-				page.fontSize( 7 );
-				page.rotate( 90 );
-				if ( text ) {
-					page.text( text, pt(2), pt(-17), {
-						width: pt(35),
-						align: 'center'
-					} );
-				}
-				page.text( barcode, pt(2), pt(-4), {
-					width: pt(35),
-					align: 'left'
-				} );
-				page.rotate(-90);
-				page.image( png,  pt(5), pt(2), {
-					width: pt(5),
-					height: pt(35)
-				} );
-				resolve( page );
-			} )
-		} );
-	},
-	addFlagLabel: function( doc, barcode, text ) {
-		return new Promise( function( resolve, reject ) {
-			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage( {
-					size: [ pt(20), pt(40) ],
-					layout: 'portrait',
-					margin: 0
-				} );
-				if ( text ) {
-					page.rotate( 90 );
-					page.fontSize( 7 );
-					page.text( text, pt(2), pt(-17.5), {
-						width: pt(35),
-						align: 'center'
-					} );
-					page.rotate( -90 );
-				}
-
-				page.fontSize( 5 );
-
-				page.image( png,  pt(2), pt(2), {
-					width: pt(8),
-					height: pt(8)
-				} );
-				page.text( barcode, pt(1), pt(12), {
-					width: pt(10),
-					align: 'center'
-				} );
-
-				page.moveTo( pt(0), pt(20) )
-					.lineTo( pt(12), pt(20) )
-					.dash( 1, { space: 3 } )
-					.stroke();
-
-				page.rotate( 180 );
-					page.text( barcode, pt(-11), pt(-28), {
-						width: pt(10),
-						align: 'center'
-					} );
-					page.image( png,  pt(-10), pt(-38), {
-						width: pt(8),
-						height: pt(8)
-					} );
-				page.rotate( -180 );
-				resolve( page );
-			} )
-		} );
-	},
-	addCompactLabel: function( doc, barcode, text ) {
-		return new Promise( function( resolve, reject ) {
-			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage( {
-					size: [ pt(20), pt(40) ],
-					layout: 'portrait',
-					margin: 0
-				} );
-				if ( text ) {
-					page.rotate( 90 );
-					page.fontSize( 7 );
-					page.text( text, pt(2), pt(-17.5), {
-						width: pt(35),
-						align: 'center'
-					} );
-					page.rotate( -90 );
-				}
-
-				page.fontSize( 5 );
-				for ( var offset = 0; offset < 3; offset++ ) {
-					var off = offset * 12;
-					page.text( barcode, pt(2), pt(off+10), {
-						width: pt(10),
-						align: 'center'
-					} );
-					page.image( png,  pt(4), pt(off+3), {
-						width: pt(6),
-						height: pt(6)
-					} );
-				}
-				resolve( page );
-			} )
-		} );
-	},
-	addTape: function( doc, barcode, text ) {
+	add12mmTape: function( doc, barcode, text ) {
 		return new Promise( function( resolve, reject ) {
 			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
 				var page = doc.addPage( {
@@ -193,22 +73,6 @@ var Print = {
 
 				resolve( page );
 			} )
-		} );
-	},
-	generate1DBarcodeImage: function( barcode ) {
-		return new Promise( function ( resolve, reject ) {
-			bwipjs.toBuffer( {
-				bcid: 'code128',
-				scale: 10,
-				text: barcode,
-				height: 5,
-				width: 35,
-				rotate: 'R',
-				monochrome: true
-			}, function( err, png ) {
-				if ( err ) return reject( err );
-				return resolve( png );
-			} );
 		} );
 	},
 	generate2DBarcodeImage: function( barcode ) {

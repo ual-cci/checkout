@@ -15,6 +15,7 @@ module.exports =  function( app, io ) {
 
 	app.use( cookie() );
 	app.use( session( {
+		name: 'checkout_session',
 		secret: config.secret,
 		cookie: { maxAge: 31*24*60*60*1000 },
 		saveUninitialized: false,
