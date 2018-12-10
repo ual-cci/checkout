@@ -105,11 +105,11 @@ var Authentication = {
 	// Utility function generates a salt and hash from a plain text password
 	generatePassword: function( password, callback ) {
 		Authentication.generateSalt( function( salt ) {
-			Authentication.hashPassword( password, salt, process.env.USER_PW_ITERATIONS, function( hash ) {
+			Authentication.hashPassword( password, salt, parseInt(process.env.USER_PW_ITERATIONS, 10), function( hash ) {
 				callback( {
 					salt: salt,
 					hash: hash,
-					iterations: process.env.USER_PW_ITERATIONS
+					iterations: parseInt(process.env.USER_PW_ITERATIONS, 10)
 				} );
 			} );
 		} );
