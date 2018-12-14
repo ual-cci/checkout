@@ -36,3 +36,5 @@ config/config.json
 .DS_Store
 
 .env
+
+snippets
