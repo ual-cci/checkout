@@ -6,7 +6,6 @@ exports.seed = function(knex, Promise) {
       // Inserts seed entries
       return knex('printers').insert([
         {
-          id: 1,
           name: 'Brother Tape',
           url: 'http://localhost:631/printers/Brother_PT_P900W'
         },

@@ -4,11 +4,11 @@ exports.seed = function(knex, Promise) {
   return knex('years').del()
     .then(function () {
       return knex('years').insert([
-        {id: 1, name: 'Graduated'},
-        {id: 2, name: '3rd Year'},
-        {id: 3, name: '2nd Year'},
-        {id: 4, name: '1st Year'},
-        {id: 5, name: 'N/A'},
+        { name: 'Graduated' },
+        { name: '3rd Year' },
+        { name: '2nd Year' },
+        { name: '1st Year' },
+        { name: 'N/A' },
       ]);
     });
 };

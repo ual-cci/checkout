@@ -5,7 +5,7 @@ exports.seed = function(knex, Promise) {
     .then(function () {
       // Inserts seed entries
       return knex('departments').insert([
-        {id: 15, name: 'Creative Technology Lab'}
+        { name: 'Creative Technology Lab' }
       ]);
     });
 };

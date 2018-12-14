@@ -33,11 +33,11 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		name: req.body.name
 	}
 
-	if ( req.body.limiter ) group.limiter = req.body.limiter;
+  if ( req.body.limiter ) group.limiter = req.body.limiter;
 
 	Groups.create( group, function( err, group ) {
 		if ( err ) {
-			req.flash( 'danger', 'Error creating group' );
+			req.flash( 'danger', `Error creating group: ${err.detail}` );
 			res.redirect( app.mountpath );
 		} else {
 			req.flash( 'success', 'Group created' );
