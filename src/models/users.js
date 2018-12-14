@@ -142,7 +142,8 @@ var model = {
 		switch ( type ) {
 			case 'id': query.where( 'users.id', term ); break;
 			case 'barcode': query.where( 'users.barcode', term ); break;
-			case 'email': query.where( 'users.email', term ); break;
+      case 'email': query.where( 'users.email', term ); break;
+    }
 
 		query.asCallback( function( err, res ) {
 				if ( res ) {
