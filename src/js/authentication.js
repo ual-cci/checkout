@@ -18,10 +18,6 @@ var Authentication = {
 		// Add support for local authentication
 		passport.use(
 			new LocalStrategy( function( email, password, done ) {
-        logger.info('Log in state', [
-          email,
-          password
-        ]);
 				Users.getByEmail( email, function( err, user ) {
 					if ( user ) {
 						// Has account exceeded it's password tries?

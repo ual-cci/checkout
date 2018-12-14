@@ -143,11 +143,6 @@ var model = {
 			case 'id': query.where( 'users.id', term ); break;
 			case 'barcode': query.where( 'users.barcode', term ); break;
 			case 'email': query.where( 'users.email', term ); break;
-    }
-
-    logger.info('sql debug', [
-      query.toString()
-    ]);
 
 		query.asCallback( function( err, res ) {
 				if ( res ) {
