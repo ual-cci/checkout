@@ -9,8 +9,6 @@ var Permissions = db.Permissions,
 var passport = require( 'passport' ),
   LocalStrategy = require( 'passport-local' ).Strategy;
 
-const logger = require('./logger.js');
-
 var crypto = require( 'crypto' );
 
 var Authentication = {

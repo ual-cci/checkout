@@ -7,12 +7,19 @@ var __apps = __home + '/apps';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
-console.log();
-console.log( "Checkout" );
-console.log( "========" );
-console.log();
-console.log( "Starting..." );
-console.log();
+var log = require( __js + '/logging' ).log;
+log.info( {
+	app: 'main',
+	action: 'start'
+} );
+
+if ( process.env.NODE_ENV == "development" ) {
+	log.warn( {
+		app: 'main',
+		action: 'dev-mode',
+		message: "Developer mode activated"
+	} );
+}
 
 var db = require( __js + '/database' )( process.env.APP_PG );
 
@@ -24,6 +31,9 @@ var flash = require( 'express-flash' ),
 	body = require( 'body-parser' );
 
 var app_loader = require( __js + '/app-loader' );
+
+// Add logging capabilities
+require( __js + '/logging' ).installMiddleware( app );
 
 // Use helmet
 app.use( helmet() );
@@ -55,6 +65,10 @@ app_loader( app );
 
 // Start server
 var listener = server.listen( process.env.APP_PORT ,process.env.APP_HOST, function () {
-	console.log( "Server started on: " + listener.address().address + ':' + listener.address().port );
-	console.log();
+	log.info( {
+		app: 'main',
+		action: 'start-webserver',
+		message: 'Started',
+		address: listener.address()
+	} );
 } );

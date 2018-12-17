@@ -1,5 +1,3 @@
-const logger = require('../js/logger.js');
-
 var db;
 
 var model = {

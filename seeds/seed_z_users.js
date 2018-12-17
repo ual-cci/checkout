@@ -1,6 +1,4 @@
 const Authentication = require('../src/js/authentication.js');
-const logger = require('../src/js/logger.js');
-
 
 const seedFunction = function(knex, Promise) {
   let res;
