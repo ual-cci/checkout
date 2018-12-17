@@ -62,7 +62,6 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 				app: 'groups',
 				action: 'create',
 				sensitive: {
-					id: id,
 					group: group
 				}
 			} );
@@ -223,16 +222,18 @@ app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
 									error: err
 								}
 							} );
-						} else {
-							req.flash( 'success', 'Group deleted and items transferred' );
-							res.redirect( app.mountpath );
 
-							req.log.debug( {
-								app: 'group',
-								action: 'remove',
-								message: 'Removed and items transfered'
-							} );
+							return;
 						}
+
+						req.flash( 'success', 'Group deleted and items transferred' );
+						res.redirect( app.mountpath );
+
+						req.log.debug( {
+							app: 'group',
+							action: 'remove',
+							message: 'Removed and transfered'
+						} );
 					} );
 				} );
 			} );
