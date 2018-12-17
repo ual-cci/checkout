@@ -11,4 +11,6 @@ block contents
 	form( action="/users/edit" method="post" )
 		- edit = true
 		include partials/user-list.pug
-		button( type="submit" ).btn.btn-default Edit Selected
+		button( type="submit" ).btn.btn-sm.btn-primary
+			span.glyphicon.glyphicon-pencil
+			|  Edit Selected
