@@ -47,11 +47,9 @@ var logger = bunyan.createLogger( bunyanConfig );
 
 function loggingMiddleware(req, res, next) {
 	var log = req.log;
-	function logAThing( level, params, req )
-	{
+	function logAThing( level, params, req ) {
 		params.ip = req.connection.remoteAddress; //TODO: this will only be correct when behind a reverse proxy, if app.set('trust proxy') is enabled!
-		if (! params.sensitive )
-		{
+		if (! params.sensitive ) {
 			params.sensitive = {};
 		}
 		if ( req.user ) {
