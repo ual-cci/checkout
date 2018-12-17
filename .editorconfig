@@ -20,3 +20,7 @@ insert_final_newline = ignore
 
 [*.md]
 trim_trailing_whitespace = false
+
+# The PUG files may have extra whitespace
+[*.pug]
+trim_trailing_whitespace = false
