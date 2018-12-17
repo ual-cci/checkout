@@ -20,7 +20,10 @@ insert_final_newline = ignore
 
 [*.md]
 trim_trailing_whitespace = false
+<<<<<<< HEAD
 
 # The PUG files may have extra whitespace
 [*.pug]
 trim_trailing_whitespace = false
+=======
+>>>>>>> Add basic logging and move dev mode into npm run dev
