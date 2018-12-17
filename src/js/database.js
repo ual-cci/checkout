@@ -1,30 +1,43 @@
 var __root = __dirname + '/../..',
 	__src = __root + '/src',
+	__js = __src + '/js',
 	__models = __src + '/models';
 
 var fs = require( 'fs' );
 var knex = require( 'knex' );
 
+var log = require( __js + '/logging' ).log;
+
 var db = {
 	pg: null,
 	load_modules: function() {
-		console.log( 'Loading PostgreSQL models:' );
-
 		var files = fs.readdirSync( __models );
+
+		log.info( {
+			app: 'database',
+			action: 'loading-models',
+			message: 'Loading models',
+		} );
+
 		for ( var f = 0; f < files.length; f++ ) {
 			var model = require( __models + '/' + files[f] )( db.pg );
-			console.log( '	' + model.name );
+			log.debug( {
+				app: 'database',
+				action: 'load-model',
+				model: model.name
+			} );
 			db[ model.name ] = model;
 		}
-
-		console.log();
 	}
 };
 
 module.exports = function( conf ) {
 	if ( global['knex_db'] == undefined ) {
-		console.log( 'Connecting to database...' );
-		console.log();
+		log.debug( {
+			app: 'database',
+			action: 'connect',
+			message: 'Connected to database'
+		} );
 		db.pg = knex( {
 			client: 'pg',
 			connection: conf

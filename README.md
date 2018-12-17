@@ -1,6 +1,9 @@
 # Checkout
 Checkout is a bespoke software system for managing items within the Creative Technology Lab.
 
+# Running it
+You can run Checkout with `npm run start` if you are developing use `npm run dev`.
+
 # .env
 The `.env` file will not be present on fresh clone of this repo, but a .env.example will be.
 Please copy this file and rename it to be .env. The example file will have all of the keys that
