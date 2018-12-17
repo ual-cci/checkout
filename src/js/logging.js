@@ -34,7 +34,7 @@ if ( process.env.LOG_STDOUT ) {
 	)
 }
 
-if ( process.env.LOG_PATH != undefined ) {
+if ( process.env.LOG_PATH ) {
 	bunyanConfig.streams.push({
 		type: "rotating-file",
 		path: process.env.LOG_PATH,
@@ -61,7 +61,7 @@ function loggingMiddleware(req, res, next) {
 				lastname: req.user.lastname,
 				email: req.user.email
 			};
-			params.anon_userid = hash('sha1').update(req.user.uuid + randomKey).digest('base64');
+			params.anon_userid = hash('sha1').update(req.user.id + randomKey).digest('base64');
 		}
 		if ( req.sessionID )
 		{
