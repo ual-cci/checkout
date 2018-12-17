@@ -1,9 +1,0 @@
-{
-	"name": "Checkout",
-	"port": "8080",
-	"postgresql": "postgres://pg_user@localhost:5432/checkout",
-	"secret": "123",
-	"dev": true,
-	"iterations": 50000,
-	"password-tries": 3
-}
