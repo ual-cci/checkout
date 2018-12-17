@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node app.js APP_DEV=true | ./node_modules/.bin/bunyan",
+    "start": "node app.js | ./node_modules/.bin/bunyan",
     "dev": "NODE_ENV=development node ./node_modules/.bin/nodemon app.js | ./node_modules/.bin/bunyan",
     "db:migrate": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback",
