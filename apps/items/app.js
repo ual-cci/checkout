@@ -20,6 +20,21 @@ var auth = require( __js + '/authentication' );
 
 app.set( 'views', __dirname + '/views' );
 
+app.post( '/multi' , auth.isLoggedIn, function(req, res) {
+  Items.getMultipleById( req.body.ids.split(','), {}, function( err, items ) {
+    const barcodes = items.map(item => {
+      return {
+        barcode: item.barcode,
+        text: item.name,
+        type: item.label
+      };
+    });
+    Print.labels( barcodes, req.user.printer_url );
+    req.flash( 'success', "Printed those labels" );
+    res.redirect( app.mountpath );
+  } );
+});
+
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Groups.get( function( err, groups ) {
 		Departments.get( function( err, departments ) {

@@ -21,5 +21,52 @@ jQuery( document ).ready( function() {
 				jQuery( '.table input[type=checkbox]' ).prop( 'checked', false );
 			}
 		}
-	} )
+  } )
+
+  // MultiPrint button shim
+  const multiPrint = document.getElementById('multi-print');
+  if (multiPrint) { // must be the items page
+    const itemsForm = document.getElementById('items-form');
+
+    itemsForm.addEventListener('change', (e) => {
+      const fd = new FormData(itemsForm);
+      const ids = fd.getAll('edit');
+
+      if (ids.length === 0) {
+        multiPrint.setAttribute('disabled', 'disabled');
+      } else {
+        multiPrint.removeAttribute('disabled');
+      }
+    }, false);
+
+    multiPrint.addEventListener('click', (e) => {
+      e.preventDefault();
+      const fd = new FormData(itemsForm);
+      const ids = fd.getAll('edit');
+
+      if (ids.length) {
+        const hf = createForm(ids);
+        document.body.appendChild(hf);
+        hf.submit();
+      }
+    }, false);
+
+    function createForm(ids) {
+      const oldForm = document.getElementById('hidden-form');
+      if (oldForm) {
+        oldForm.parentElement.removeChild(oldForm);
+      }
+
+      const form = document.createElement('FORM');
+      form.setAttribute('action', '/items/multi');
+      form.setAttribute('method', 'post');
+      form.setAttribute('id', 'hidden-form');
+      const input = document.createElement('INPUT');
+      input.setAttribute('type', 'hidden');
+      input.setAttribute('name', 'ids');
+      input.value = ids.join(',');
+      form.appendChild(input);
+      return form;
+    }
+  }
 } );

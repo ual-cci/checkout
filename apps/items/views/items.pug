@@ -20,8 +20,9 @@ block contents
 	if items === null
 		+messageBlock( 'info', 'Items will be shown after selecting your filtering options above.' )
 	else
-		form( action="/items/edit", method="post" )
+		form#items-form( action="/items/edit", method="post" )
 			- edit = true
 			include partials/items-list.pug
 			if items && items.length > 0
 				button( type="submit" ).btn.btn-default Edit Selected
+				button#multi-print(disabled type="button" ).btn.btn-default Print Selected Labels
