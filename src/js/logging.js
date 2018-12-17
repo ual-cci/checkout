@@ -67,6 +67,7 @@ function loggingMiddleware(req, res, next) {
 		}
 		if ( params.sensitive ) {
 			log[level](params);
+			params.sanitised = true;
 			delete params.sensitive;
 		}
 		log[level](params);
