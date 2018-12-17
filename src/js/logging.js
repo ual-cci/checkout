@@ -47,11 +47,9 @@ var logger = bunyan.createLogger( bunyanConfig );
 
 function loggingMiddleware(req, res, next) {
 	var log = req.log;
-	function logAThing( level, params, req )
-	{
+	function logAThing( level, params, req ) {
 		params.ip = req.connection.remoteAddress; //TODO: this will only be correct when behind a reverse proxy, if app.set('trust proxy') is enabled!
-		if (! params.sensitive )
-		{
+		if (! params.sensitive ) {
 			params.sensitive = {};
 		}
 		if ( req.user ) {
@@ -63,13 +61,11 @@ function loggingMiddleware(req, res, next) {
 			};
 			params.anon_userid = hash('sha1').update(req.user.id + randomKey).digest('base64');
 		}
-		if ( req.sessionID )
-		{
+		if ( req.sessionID ) {
 			params.sensitive.sessionID = req.sessionID;
 			params.anon_sessionId = hash('sha1').update(req.sessionID + randomKey).digest('base64');
 		}
-		if (params.sensitive)
-		{
+		if ( params.sensitive ) {
 			log[level](params);
 			delete params.sensitive;
 		}
@@ -77,20 +73,19 @@ function loggingMiddleware(req, res, next) {
 	}
 
 	req.log = {
-		info: function (params)
-		{
+		info: function ( params ) {
 			logAThing( 'info', params , req );
 		},
-		debug: function (params)
-		{
+		debug: function ( params ) {
 			logAThing( 'debug', params , req );
 		},
-		error: function (params)
-		{
+		warn: function ( params ) {
+			logAThing( 'warn', params , req );
+		},
+		error: function ( params ) {
 			logAThing( 'error', params , req );
 		},
-		fatal: function (params)
-		{
+		fatal: function ( params ) {
 			logAThing( 'fatal', params , req );
 		}
 	}
