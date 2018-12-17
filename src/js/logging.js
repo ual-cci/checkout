@@ -34,11 +34,7 @@ if ( process.env.LOG_STDOUT ) {
 	)
 }
 
-<<<<<<< HEAD
 if ( process.env.LOG_PATH ) {
-=======
-if ( process.env.LOG_PATH != undefined ) {
->>>>>>> Add basic logging and move dev mode into npm run dev
 	bunyanConfig.streams.push({
 		type: "rotating-file",
 		path: process.env.LOG_PATH,
@@ -51,17 +47,11 @@ var logger = bunyan.createLogger( bunyanConfig );
 
 function loggingMiddleware(req, res, next) {
 	var log = req.log;
-<<<<<<< HEAD
-	function logAThing( level, params, req ) {
-		params.ip = req.connection.remoteAddress; //TODO: this will only be correct when behind a reverse proxy, if app.set('trust proxy') is enabled!
-		if (! params.sensitive ) {
-=======
 	function logAThing( level, params, req )
 	{
 		params.ip = req.connection.remoteAddress; //TODO: this will only be correct when behind a reverse proxy, if app.set('trust proxy') is enabled!
 		if (! params.sensitive )
 		{
->>>>>>> Add basic logging and move dev mode into npm run dev
 			params.sensitive = {};
 		}
 		if ( req.user ) {
@@ -71,7 +61,6 @@ function loggingMiddleware(req, res, next) {
 				lastname: req.user.lastname,
 				email: req.user.email
 			};
-<<<<<<< HEAD
 			params.anon_userid = hash('sha1').update(req.user.id + randomKey).digest('base64');
 		}
 		if ( req.sessionID ) {
@@ -81,25 +70,12 @@ function loggingMiddleware(req, res, next) {
 		if ( params.sensitive ) {
 			log[level](params);
 			params.sanitised = true;
-=======
-			params.anon_userid = hash('sha1').update(req.user.uuid + randomKey).digest('base64');
-		}
-		if ( req.sessionID )
-		{
-			params.sensitive.sessionID = req.sessionID;
-			params.anon_sessionId = hash('sha1').update(req.sessionID + randomKey).digest('base64');
-		}
-		if (params.sensitive)
-		{
-			log[level](params);
->>>>>>> Add basic logging and move dev mode into npm run dev
 			delete params.sensitive;
 		}
 		log[level](params);
 	}
 
 	req.log = {
-<<<<<<< HEAD
 		info: function ( params ) {
 			logAThing( 'info', params , req );
 		},
@@ -113,22 +89,6 @@ function loggingMiddleware(req, res, next) {
 			logAThing( 'error', params , req );
 		},
 		fatal: function ( params ) {
-=======
-		info: function (params)
-		{
-			logAThing( 'info', params , req );
-		},
-		debug: function (params)
-		{
-			logAThing( 'debug', params , req );
-		},
-		error: function (params)
-		{
-			logAThing( 'error', params , req );
-		},
-		fatal: function (params)
-		{
->>>>>>> Add basic logging and move dev mode into npm run dev
 			logAThing( 'fatal', params , req );
 		}
 	}
