@@ -394,7 +394,7 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 
 // Edit item form
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Items.getById( req.params.id, function( err, item ) {
+	Items.getById( req.params.id, { lookup: ['group', 'department']}, function( err, item ) {
 		if ( item ) {
 			Groups.get( function( err, groups ) {
 				Departments.get( function( err, departments ) {
