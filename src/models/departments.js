@@ -1,18 +1,11 @@
 const db = require('../js/database.js');
 
 var model = {
-	name: 'Courses',
-	table: 'courses',
+	name: 'Departments',
+	table: 'departments',
 	get: function( cb ) {
 		db( model.table )
-			.select( {
-				id: 'courses.id',
-				name: 'courses.name',
-				contact_name: 'users.name',
-				contact_id: 'users.id'
-			} )
-			.orderBy( 'courses.name', 'asc' )
-			.leftJoin( 'users', 'courses.contact_id', 'users.id' )
+			.orderBy( 'name', 'asc' )
 			.asCallback( function( err, res ) {
 			return cb( err, res );
 		} )
@@ -29,16 +22,20 @@ var model = {
 				}
 		} )
 	},
-	create: function( values, cb ) {
+	create: function( name, cb ) {
 		db( model.table )
-			.insert( values, 'id' )
+			.insert( {
+				name: name
+			}, 'id' )
 			.asCallback( function( err, res ) {
 			return cb( err, res );
 		} )
 	},
-	update: function( id, values, cb ) {
+	update: function( id, name, cb ) {
 		db( model.table )
-			.update( values )
+			.update( {
+				name: name
+			} )
 			.where( 'id', id )
 			.asCallback( function( err, res ) {
 			return cb( err );

@@ -5,9 +5,8 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var db = require( __js + '/database' )(),
-	Groups = db.Groups,
-	Items = db.Items;
+const Groups = require('../../src/models/groups.js');
+const Items = require('../../src/models/items.js');
 
 var auth = require( __js + '/authentication' );
 

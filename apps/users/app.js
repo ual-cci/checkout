@@ -7,13 +7,12 @@ var	express = require( 'express' ),
 
 var pug = require( 'pug' );
 
-var db = require( __js + '/database' )(),
-	Items = db.Items,
-	Users = db.Users,
-	Courses = db.Courses,
-	Years = db.Years,
-	Printers = db.Printers,
-	Actions = db.Actions;
+const Items = require('../../src/models/items.js');
+const Users = require('../../src/models/users.js');
+const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
+const Printers = require('../../src/models/printers.js');
+const Actions = require('../../src/models/actions.js');
 
 var auth = require( __js + '/authentication' );
 

@@ -7,10 +7,9 @@ var	express = require( 'express' ),
 
 var auth = require( __js + '/authentication' );
 
-var db = require( __js + '/database' )(),
-	Courses = db.Courses,
-	Years = db.Years,
-	Locations = db.Locations;
+const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
+const Departments = require('../../src/models/departments.js');
 
 app.set( 'views', __dirname + '/views' );
 

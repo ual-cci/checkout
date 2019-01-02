@@ -5,9 +5,8 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var db = require( __js + '/database' )(),
-	Printers = db.Printers,
-	Users = db.Users;
+const Printers = require('../../src/models/printers.js');
+const Users = require('../../src/models/users.js');
 
 var auth = require( __js + '/authentication' );
 
