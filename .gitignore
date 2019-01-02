@@ -38,4 +38,3 @@ config/config.json
 .env
 
 snippets
-package-lock.json
