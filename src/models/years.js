@@ -1,4 +1,4 @@
-var db;
+const db = require('../js/database.js');
 
 var model = {
 	name: 'Years',
@@ -51,7 +51,4 @@ var model = {
 	}
 };
 
-module.exports = function( database ) {
-	db = database;
-	return model;
-}
+module.exports = model;

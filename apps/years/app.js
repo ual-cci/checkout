@@ -7,10 +7,9 @@ var	express = require( 'express' ),
 
 var pug = require( 'pug' );
 
-var db = require( __js + '/database' )(),
-	Years = db.Years,
-	Items = db.Items,
-	Users = db.Users;
+const Years = require('../../src/models/years.js');
+const Items = require('../../src/models/items.js');
+const Users = require('../../src/models/users.js');
 
 var auth = require( __js + '/authentication' );
 

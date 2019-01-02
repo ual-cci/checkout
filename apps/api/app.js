@@ -12,13 +12,12 @@ var pug = require( 'pug' ),
 
 var Print = require( __js + '/print' );
 
-var db = require( __js + '/database' )(),
-	Items = db.Items,
-	Users = db.Users,
-	Departments = db.Departments,
-	Courses = db.Courses,
-	Years = db.Years,
-	Actions = db.Actions;
+const Items = require('../../src/models/items.js');
+const Users = require('../../src/models/users.js');
+const Departments = require('../../src/models/departments.js');
+const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
+const Actions = require('../../src/models/actions.js');
 
 var auth = require( __js + '/authentication' );
 

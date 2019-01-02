@@ -5,14 +5,13 @@ var __js = __src + '/js';
 var	express = require( 'express' ),
 	app = express();
 
-var db = require( __js + '/database' )(),
-	Items = db.Items,
-	Groups = db.Groups,
-	Departments = db.Departments,
-	Courses = db.Courses,
-	Years = db.Years,
-	Printers = db.Printers,
-	Actions = db.Actions;
+const Items = require('../../src/models/items.js');
+const Groups = require('../../src/models/groups.js');
+const Departments = require('../../src/models/departments.js');
+const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
+const Printers = require('../../src/models/printers.js');
+const Actions = require('../../src/models/actions.js');
 
 var Print = require( __js + '/print' );
 

@@ -7,12 +7,11 @@ var	express = require( 'express' ),
 
 var moment = require( 'moment' );
 
-var db = require( __js + '/database' )(),
-	Items = db.Items,
-	Departments = db.Departments,
-	Groups = db.Groups
-	Courses = db.Courses,
-	Years = db.Years;
+const Items = require('../../src/models/items.js');
+const Departments = require('../../src/models/departments.js');
+const Groups = require('../../src/models/groups.js');
+const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
 
 var auth = require( __js + '/authentication' );
 

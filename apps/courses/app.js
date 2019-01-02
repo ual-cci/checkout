@@ -7,9 +7,8 @@ var	express = require( 'express' ),
 
 var pug = require( 'pug' );
 
-var db = require( __js + '/database' )(),
-	Courses = db.Courses,
-	Users = db.Users;
+const Courses = require('../../src/models/courses.js');
+const Users = require('../../src/models/users.js');
 
 var auth = require( __js + '/authentication' );
 
