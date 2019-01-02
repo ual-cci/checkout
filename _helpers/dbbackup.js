@@ -10,7 +10,7 @@ const { DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
 const BACKUP_LIMIT = 30;
 
 const backupFileDir = path.join(homedir, 'checkout_backups');
-const backupFileName = `backup-${moment().format('YYYY-MM-DD.HH-mm-ss')}.sql`;
+const backupFileName = `backup-${moment().format('YYYY-MM-DD.HH-mm-ss')}.backup`;
 
 fs.ensureDir(backupFileDir, err => {
 	if (err) {
@@ -43,7 +43,7 @@ function trimBackups() {
 }
 
 function runBackup() {
-	exec(`pg_dump --dbname=postgresql://${ DB_USER }:${ DB_PASS }@${ DB_HOST }:${ DB_PORT }/${ DB_NAME } > ${backupFileDir}/${backupFileName}`);
+	exec(`pg_dump -h ${ DB_HOST } -U ${ DB_USER } -F c -b -v -f "${ path.join(backupFileDir, backupFileName) }" -d ${ DB_NAME }`);
 
-	console.log(`Saved ${ backupFileName }`);
+	console.log(`Saved ${ path.join(backupFileDir, backupFileName) }`);
 }
