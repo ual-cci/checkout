@@ -5,17 +5,10 @@ var __js = __src + '/js';
 
 var apps = [];
 
-var log = require( __js + '/logging' ).log;
-
 var gitRev = require( 'git-rev' );
 var git = '';
 
 gitRev.short( function( str ) {
-	log.debug( {
-		app: 'template-locals',
-		action: 'git-hash',
-		hash: str
-	} );
 	git = str;
 } );
 

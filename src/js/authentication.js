@@ -2,9 +2,8 @@ var __home = __dirname + '/../..';
 var __src = __home + '/src';
 var __js = __src + '/js';
 
-var db = require( __js + '/database' )();
-var Permissions = db.Permissions,
-	Users = db.Users;
+const db = require('../js/database.js');
+const Users = require('../models/users.js');
 
 var passport = require( 'passport' ),
   LocalStrategy = require( 'passport-local' ).Strategy;
