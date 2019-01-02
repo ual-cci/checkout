@@ -7,8 +7,10 @@ var session = require( 'express-session' ),
 var PostgreSqlStore = require( 'connect-pg-simple' )( session );
 
 module.exports =  function( app, io ) {
+  const { DB_USER, DB_HOST, DB_PORT, DB_NAME } = process.env;
+  const pg_target = `postgres://${DB_USER}@${ DB_HOST }:${ DB_PORT }/${ DB_NAME }`;
 	var store = new PostgreSqlStore( {
-		conString: process.env.APP_PG,
+		conString: pg_target,
 	} );
 
 	app.use( cookie() );

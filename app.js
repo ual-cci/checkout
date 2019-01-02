@@ -21,7 +21,9 @@ if ( process.env.NODE_ENV == "development" ) {
 	} );
 }
 
-var db = require( __js + '/database' )( `postgres://${process.env.DB_LOCAL_USER}@localhost:5432/checkout` );
+const { DB_USER, DB_HOST, DB_PORT, DB_NAME } = process.env;
+const pg_target = `postgres://${DB_USER}@${ DB_HOST }:${ DB_PORT }/${ DB_NAME }`;
+var db = require( __js + '/database' )(pg_target);
 
 var express = require( 'express' ),
 	app = express(),
