@@ -1,26 +1,84 @@
-var __root = __dirname + '/../..';
-var __apps = __root + '/apps';
-var __src = __root + '/src';
-var __js = __src + '/js';
+const fs = require( 'fs' );
+const path = require('path');
+const helmet = require( 'helmet' );
 
-var fs = require( 'fs' );
-	helmet = require( 'helmet' );
+const templateLocals = require('../js/template-locals.js');
 
-var app;
-var apps = [];
+const ROOT = path.join(__dirname, '..', '..');
+const APP_ROOT = path.join(ROOT, 'apps');
 
-module.exports = function( a ) {
-	// Grab the express app reference locally
-	app = a;
+function loadApp(file) {
+  if ( fs.statSync(file).isDirectory() ) {
+    var config_file = path.join(file, '/config.json');
 
+    if ( fs.existsSync( config_file ) ) {
+      // Parse the config into apps array
+      var output = JSON.parse( fs.readFileSync( config_file ) );
+      output.uid = file;
+      if ( ! output.priority ) output.priority = 100;
+      output.app = path.join(file, 'app.js');
+
+      output.subapps = [];
+
+      // Check for sub apps directory
+      var subapp_path = path.join(file, 'apps');
+      if ( fs.existsSync( subapp_path ) ) {
+        output.subapps = loadApps(subapp_path);
+      }
+
+      output.subapps.sort(byPriority);
+
+      return output;
+    }
+  } else {
+    return false;
+  }
+}
+
+function byPriority( a, b ) {
+  return a.priority < b.priority;
+};
+
+function loadApps(root) {
+  var files = fs.readdirSync(root);
+
+  const apps = files.map(f => {
+    return loadApp(path.join(root, f));
+  }).filter(f => f);
+
+  apps.sort(byPriority);
+
+  return apps;
+}
+
+function setupAppRoute(mainApp, childApp) {
+  var new_app = require( childApp.app )(childApp);
+  new_app.use( helmet() );
+  mainApp.use( '/' + childApp.path, new_app );
+  new_app.locals.basedir = ROOT;
+
+  if ( childApp.subapps.length > 0 ) {
+    childApp.subapps.forEach(subApp => {
+      setupAppRoute(mainApp, subApp);
+    });
+  }
+}
+
+function routeApps(app, apps) {
+  apps.forEach(childApp => {
+    setupAppRoute(app, childApp);
+  });
+}
+
+module.exports = function(app) {
 	// Loop through main app director contents
-	loadApps();
+	const apps = loadApps(APP_ROOT);
 
 	// Load template locals;
-	app.use( require( __js + '/template-locals' )( apps ) );
+	app.use(templateLocals(apps));
 
 	// Route apps
-	routeApps();
+	routeApps(app, apps);
 
 	// Error 404
 	app.use( function ( req, res, next ) {
@@ -34,86 +92,3 @@ module.exports = function( a ) {
 		res.render( '500', { error: ( res.locals.dev ? err.stack : undefined ) } );
 	} );
 };
-
-function loadApps() {
-	var files = fs.readdirSync( __apps );
-
-	for ( var f in files ) {
-
-		// Only read directories
-		var file = __apps + '/' + files[f];
-		if ( fs.statSync( file ).isDirectory() ) {
-
-			// Check for a config.json file
-			var config_file = file + '/config.json';
-			if ( fs.existsSync( config_file ) ) {
-
-				// Parse the config into apps array
-				var output = JSON.parse( fs.readFileSync( config_file ) );
-				output.uid = files[f];
-				if ( ! output.priority ) output.priority = 100;
-				output.app = file + '/app.js';
-
-				// Check for sub apps directory
-				output.subapps = [];
-				var subapp_path = file + '/apps';
-				if ( fs.existsSync( subapp_path ) ) {
-
-					// Fetch the contents of the subapp directory
-					var subapps = fs.readdirSync( subapp_path );
-					for ( var a in subapps ) {
-
-						// Only read directories
-						var subapp = subapp_path + '/' + subapps[a];
-						if ( fs.statSync( subapp ).isDirectory() ) {
-
-							// Check for a config.json file
-							var sub_config_file = subapp + '/config.json';
-							if ( fs.existsSync( sub_config_file ) ) {
-
-								// Parse the config into apps array
-								var subapp_output = JSON.parse( fs.readFileSync ( sub_config_file ) );
-								subapp_output.uid = subapps[a];
-								if ( ! subapp_output.priority ) subapp_output.priority = 100;
-								subapp_output.app = subapp + '/app.js';
-
-								output.subapps.push( subapp_output );
-							}
-						}
-					}
-				}
-
-				output.subapps.sort( function( a, b ) {
-					return a.priority < b.priority;
-				} );
-
-				apps.push( output );
-			}
-		}
-	}
-
-	apps.sort( function( a, b ) {
-		return a.priority < b.priority;
-	} );
-}
-
-function routeApps() {
-	for ( var a in apps ) {
-		var _app = apps[a];
-
-		var new_app = require( _app.app )( _app );
-		new_app.use( helmet() );
-		app.use( '/' + _app.path, new_app );
-
-		if ( _app.subapps.length > 0 ) {
-			for ( var s in _app.subapps ) {
-				var _sapp = _app.subapps[s];
-
-				var new_sub_app = require( _sapp.app )( _sapp );
-				new_sub_app.locals.basedir = __root;
-				new_sub_app.use( helmet() );
-				new_app.use( '/' + _sapp.path, new_sub_app );
-			}
-		}
-	}
-}

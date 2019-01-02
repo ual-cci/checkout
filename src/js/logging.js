@@ -1,17 +1,14 @@
-require('dotenv').config();
-
 var __root = '../..';
 var __static = __root + '/static';
 var __src = __root + '/src';
 var __views = __src + '/views';
 var __js = __src + '/js';
 
-var bunyan = require( 'bunyan' ),
-	bunyanMiddleware = require( 'bunyan-middleware' )
+const bunyan = require('bunyan');
+const bunyanMiddleware = require('bunyan-middleware');
 
-var crypto = require('crypto')
-var hash = crypto.createHash;
-var randomKey = crypto.randomBytes(256);
+const crypto = require('crypto')
+const randomKey = crypto.randomBytes(256);
 
 // Bunyan logging
 var bunyanConfig = {
@@ -59,11 +56,11 @@ function loggingMiddleware(req, res, next) {
 				lastname: req.user.lastname,
 				email: req.user.email
 			};
-			params.anon_userid = hash('sha1').update(req.user.id + randomKey).digest('base64');
+			params.anon_userid = crypto.createHash('sha1').update(req.user.id + randomKey).digest('base64');
 		}
 		if ( req.sessionID ) {
 			params.sensitive.sessionID = req.sessionID;
-			params.anon_sessionId = hash('sha1').update(req.sessionID + randomKey).digest('base64');
+			params.anon_sessionId = crypto.createHash('sha1').update(req.sessionID + randomKey).digest('base64');
 		}
 		if ( params.sensitive ) {
 			log[level](params);
