@@ -29,5 +29,8 @@
     "pdfkit": "^0.8.3",
     "pg": "^7.7.1",
     "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "fs-extra": "^7.0.1"
   }
 }
