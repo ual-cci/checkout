@@ -144,13 +144,6 @@ app.post( '/audit/:item', auth.isLoggedIn, function( req, res ) {
 						}
 					} );
 				}
-
-				Actions.log( {
-					item_id: item.id,
-					datetime: new Date(),
-					action: 'audited',
-					operator_id: req.user.id
-				}, function( err ) {} );
 			}
 
 			return res.json( output );
@@ -182,14 +175,6 @@ app.post( '/return/:item', auth.isLoggedIn, function( req, res ) {
 						action = 'found';
 						break;
 				}
-
-				Actions.log( {
-					item_id: item.id,
-					datetime: new Date(),
-					action: action,
-					operator_id: req.user.id,
-					user_id: item.owner_id
-				}, function( err ) {} );
 			}
 
 			return res.json( output );
@@ -212,12 +197,6 @@ app.post( '/broken/:item', auth.isLoggedIn, function( req, res ) {
 			};
 			if ( item ) {
 				output.barcode = item.barcode;
-				Actions.log( {
-					item_id: item.id,
-					datetime: new Date(),
-					action: 'broken',
-					operator_id: req.user.id
-				}, function( err ) {} );
 			}
 
 			return res.json( output );
@@ -240,12 +219,6 @@ app.post( '/lost/:item', auth.isLoggedIn, function( req, res ) {
 			};
 			if ( item ) {
 				output.barcode = item.barcode;
-				Actions.log( {
-					item_id: item.id,
-					datetime: new Date(),
-					action: 'lost',
-					operator_id: req.user.id
-				}, function( err ) {} );
 			}
 
 			return res.json( output );
@@ -296,14 +269,6 @@ app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
 							case 'available':
 								function issue( item, user, operator ) {
 									Items.issue( item.barcode, user.id, function( msg ) {
-										Actions.log( {
-											item_id: item.id,
-											datetime: new Date(),
-											action: 'issued',
-											operator_id: operator.id,
-											user_id: user.id
-										}, function( err ) {} );
-
 										var output = {
 											status: msg.status,
 											message: msg.message

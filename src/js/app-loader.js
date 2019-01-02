@@ -3,8 +3,6 @@ var __apps = __root + '/apps';
 var __src = __root + '/src';
 var __js = __src + '/js';
 
-var log = require( __js + '/logging' ).log;
-
 var fs = require( 'fs' );
 	helmet = require( 'helmet' );
 
@@ -39,12 +37,6 @@ module.exports = function( a ) {
 
 function loadApps() {
 	var files = fs.readdirSync( __apps );
-
-	log.info( {
-		app: 'app-loader',
-		action: 'loading-apps',
-		message: 'Loading apps',
-	} );
 
 	for ( var f in files ) {
 
@@ -108,11 +100,6 @@ function loadApps() {
 function routeApps() {
 	for ( var a in apps ) {
 		var _app = apps[a];
-		log.debug( {
-			app: 'app-loader',
-			action: 'load-app',
-			path: '/' + _app.path
-		} );
 
 		var new_app = require( _app.app )( _app );
 		new_app.use( helmet() );
@@ -121,11 +108,6 @@ function routeApps() {
 		if ( _app.subapps.length > 0 ) {
 			for ( var s in _app.subapps ) {
 				var _sapp = _app.subapps[s];
-				log.debug( {
-					app: 'app-loader',
-					action: 'load-app',
-					path: '/' + _app.path + '/' + _sapp.path
-				} );
 
 				var new_sub_app = require( _sapp.app )( _sapp );
 				new_sub_app.locals.basedir = __root;
