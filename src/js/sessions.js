@@ -1,16 +1,14 @@
-var __home = __dirname + '/../..';
-
-var session = require( 'express-session' ),
-	cookie = require('cookie-parser'),
-	passport = require( 'passport' );
+const session = require( 'express-session' );
+const cookie = require('cookie-parser');
+const passport = require( 'passport' );
 
 var PostgreSqlStore = require( 'connect-pg-simple' )( session );
 
+const { constructTarget } = require('../js/utils.js');
+
 module.exports =  function( app, io ) {
-  const { DB_USER, DB_HOST, DB_PORT, DB_NAME } = process.env;
-  const pg_target = `postgres://${DB_USER}@${ DB_HOST }:${ DB_PORT }/${ DB_NAME }`;
 	var store = new PostgreSqlStore( {
-		conString: pg_target,
+		conString: constructTarget(),
 	} );
 
 	app.use( cookie() );

@@ -1,16 +1,9 @@
-var __root = __dirname + '/../..';
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
-
-var apps = [];
-
 var gitRev = require( 'git-rev' );
 var git = '';
 
-gitRev.short( function( str ) {
+gitRev.short(str => {
 	git = str;
-} );
+});
 
 function templateLocals( req, res, next ) {
 	res.locals.git = git;
@@ -22,7 +15,6 @@ function templateLocals( req, res, next ) {
 	next();
 };
 
-module.exports = function( a ) {
-	apps = a;
+module.exports = function( apps ) {
 	return templateLocals;
 }

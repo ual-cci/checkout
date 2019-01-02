@@ -1,16 +1,10 @@
-var __home = __dirname + '/../..';
-var __src = __home + '/src';
-var __js = __src + '/js';
+const passport = require( 'passport' );
+const LocalStrategy = require( 'passport-local' ).Strategy;
+const crypto = require( 'crypto' );
 
-const db = require('../js/database.js');
 const Users = require('../models/users.js');
 
-var passport = require( 'passport' ),
-  LocalStrategy = require( 'passport-local' ).Strategy;
-
-var crypto = require( 'crypto' );
-
-var Authentication = {
+const Authentication = {
 	auth: function( app ) {
 		// Add support for local authentication
 		passport.use(

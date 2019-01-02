@@ -1,12 +1,8 @@
-var __root = '../..';
-var __src = __root + '/src';
-var __js = __src + '/js';
+const PDFDocument = require( 'pdfkit' );
+const bwipjs = require( 'bwip-js' );
+const ipp = require( 'ipp' );
 
-var PDFDocument = require( 'pdfkit' );
-var bwipjs = require( 'bwip-js' );
-var ipp = require( 'ipp' );
-
-var Print = {
+const Print = {
 	label: function( code, printer ) {
 		Print.labels( [ code ], printer );
 	},
