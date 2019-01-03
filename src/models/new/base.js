@@ -17,6 +17,59 @@ class BaseModel {
     return [];
   }
 
+  create(values) {
+    return new Promise((resolve, reject) => {
+      const query = db(this.options.table).insert(values, 'id')
+
+      if (this.options.debug) {
+        console.log(query.toString());
+      }
+
+      query.then(ids => {
+          resolve(ids);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  update(id, values) {
+    return new Promise((resolve, reject) => {
+      const query = db(this.options.table).update(values).where('id', id);
+
+      if (this.options.debug) {
+        console.log(query.toString());
+      }
+
+      query.then(ids => {
+          resolve(ids);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  remove(id) {
+    return new Promise((resolve, reject) => {
+      const query = this.query().get()
+        .where( 'id', id )
+        .delete();
+
+      if (this.options.debug) {
+        console.log(query.toString());
+      }
+
+      query.then(() => {
+          resolve(id);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   _safeguard() {
     if (!this._queryObj) {
       this.query();
@@ -73,12 +126,13 @@ class BaseModel {
     this._safeguard();
 
     args.forEach(a => {
+      const column = a[0].indexOf('.') >= 0 ? a[0] : `${this.options.table}.${a[0]}`;
       switch (a.length) {
         case 2:
-          this._queryObj[type](a[0], a[1]);
+          this._queryObj[type](column, a[1]);
           break;
         case 3:
-          this._queryObj[type](a[0], a[1], a[2]);
+          this._queryObj[type](column, a[1], a[2]);
           break;
       }
     });
@@ -153,11 +207,23 @@ class BaseModel {
     return this._queryObj;
   }
 
-  return(func) {
+  return() {
     return new Promise((resolve, reject) => {
       this.get()
         .then(results => {
           resolve(results);
+        })
+        .catch(err => {
+          reject(err);
+        })
+    });
+  }
+
+  returnSingle() {
+    return new Promise((resolve, reject) => {
+      this.get()
+        .then(results => {
+          resolve(results.length ? results[0] : false);
         })
         .catch(err => {
           reject(err);

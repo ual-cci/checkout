@@ -18,7 +18,7 @@ class CourseModel extends BaseModel {
   }
 
   get properties() {
-    return ['id', 'name'];
+    return ['id', 'name', 'contact_id'];
   }
 
   getAll() {
