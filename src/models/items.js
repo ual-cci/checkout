@@ -3,72 +3,6 @@ const db = require('../js/database.js');
 var model = {
 	name: 'Items',
 	table: 'items',
-	search: function( term, cb ) {
-		var query = db( model.table )
-			.select( {
-				id: 'items.id',
-				name: 'items.name',
-				barcode: 'items.barcode',
-				status: 'items.status'
-			} )
-			.where( 'name', 'ilike', '%' + term + '%' )
-			.orWhere( 'barcode', 'ilike', '%' + term + '%' )
-			.orderBy( 'name', 'asc' )
-			.asCallback( function( err, res ) {
-				return cb( err, res );
-			} );
-	},
-	get: function( opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
-
-		var query = model.basicQuery( opts );
-
-		query.asCallback( function( err, res ) {
-			return cb( err, res );
-		} )
-	},
-	getMultipleById: function( ids, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
-
-		var query = model.basicQuery( opts )
-			.whereIn( 'items.id', ids )
-			.asCallback( function( err, res ) {
-				return cb( err, res );
-			} );
-	},
-	getOnLoanToUserId: function( user_id, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
-
-		var query = model.basicQuery( opts )
-			.where( 'status', 'on-loan' )
-			.where( 'owner_id', user_id )
-			.asCallback( function( err, res ) {
-				return cb( err, res );
-			} );
-	},
-	countItemsByGroupOnLoanToUserById: function( user_id, group_id, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
-
-		var query = model.basicQuery( opts )
-			.where( 'status', 'on-loan' )
-			.where( 'owner_id', user_id )
-			.where( 'group_id', user_id )
-			.asCallback( function( err, res ) {
-				return cb( err, res.length );
-			} );
-	},
 	basicQuery: function( opts ) {
 		var query = db( model.table )
 			.select( {
@@ -154,6 +88,72 @@ var model = {
 		}
 
 		return query;
+	},
+	search: function( term, cb ) {
+		var query = db( model.table )
+			.select( {
+				id: 'items.id',
+				name: 'items.name',
+				barcode: 'items.barcode',
+				status: 'items.status'
+			} )
+			.where( 'name', 'ilike', '%' + term + '%' )
+			.orWhere( 'barcode', 'ilike', '%' + term + '%' )
+			.orderBy( 'name', 'asc' )
+			.asCallback( function( err, res ) {
+				return cb( err, res );
+			} );
+	},
+	get: function( opts, cb ) {
+		if ( typeof opts == 'function' ) {
+			cb = opts;
+			opts = {};
+		}
+
+		var query = model.basicQuery( opts );
+
+		query.asCallback( function( err, res ) {
+			return cb( err, res );
+		});
+	},
+	getMultipleById: function( ids, opts, cb ) {
+		if ( typeof opts == 'function' ) {
+			cb = opts;
+			opts = {};
+		}
+
+		var query = model.basicQuery( opts )
+			.whereIn( 'items.id', ids )
+			.asCallback( function( err, res ) {
+				return cb( err, res );
+			} );
+	},
+	getOnLoanToUserId: function( user_id, opts, cb ) {
+		if ( typeof opts == 'function' ) {
+			cb = opts;
+			opts = {};
+		}
+
+		var query = model.basicQuery( opts )
+			.where( 'status', 'on-loan' )
+			.where( 'owner_id', user_id )
+			.asCallback( function( err, res ) {
+				return cb( err, res );
+			} );
+	},
+	countItemsByGroupOnLoanToUserById: function( user_id, group_id, opts, cb ) {
+		if ( typeof opts == 'function' ) {
+			cb = opts;
+			opts = {};
+		}
+
+		var query = model.basicQuery( opts )
+			.where( 'status', 'on-loan' )
+			.where( 'owner_id', user_id )
+			.where( 'group_id', user_id )
+			.asCallback( function( err, res ) {
+				return cb( err, res.length );
+			} );
 	},
 	getById: function( id, opts, cb ) {
 		if ( typeof opts == 'function' ) {
