@@ -1,30 +1,14 @@
-var __home = __dirname + "/../..";
-var __src = __home + '/src';
-var __js = __src + '/js';
+var	express = require( 'express' );
 
-var	express = require( 'express' ),
-	app = express();
+const auth = require('../../src/js/authentication.js');
+const CheckoutController = require('./controller.js');
 
-var auth = require( __js + '/authentication' );
-
-const Courses = require('../../src/models/courses.js');
-const Years = require('../../src/models/years.js');
-const Departments = require('../../src/models/departments.js');
+const app = express();
+const controller = new CheckoutController();
 
 app.set( 'views', __dirname + '/views' );
-
-app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Departments.get( function( err, departments ) {
-		Courses.get( function( err, courses ) {
-			Years.get( function( err, years ) {
-				res.render( 'index', {
-					departments: departments,
-					courses: courses,
-					years: years
-				} );
-			} );
-		} );
-	} );
-} );
+app.get( '/', auth.isLoggedIn, (req, res) => {
+  controller.getHome(req, res);
+});
 
 module.exports = function( config ) { return app; };
