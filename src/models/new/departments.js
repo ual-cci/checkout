@@ -6,6 +6,10 @@ class DepartmentModel extends BaseModel {
       name: 'Departments'
     }));
   }
+
+  getAll() {
+    return this.orderBy(['name']).return();
+  }
 }
 
 module.exports = DepartmentModel;

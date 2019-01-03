@@ -1,15 +1,15 @@
 const BaseModel = require('./base.js');
 
-class GroupModel extends BaseModel {
+class YearModel extends BaseModel {
   constructor(opts = {}) {
     super(Object.assign({}, opts, {
-      name: 'Groups'
+      name: 'Years'
     }));
   }
 
   getAll() {
-    return this.orderBy(['name']).return();
+    return this.orderBy(['name']).return()
   }
 }
 
-module.exports = GroupModel;
+module.exports = YearModel;
