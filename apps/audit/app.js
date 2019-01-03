@@ -1,9 +1,10 @@
 const	express = require( 'express' );
 
 const auth = require('../../src/js/authentication' );
+const config = require('./config.json');
 const AuditController = require('./controller.js');
 
-const controller = new AuditController();
+const controller = new AuditController(['/', config.path].join(''));
 const app = express();
 app.set( 'views', __dirname + '/views' );
 
