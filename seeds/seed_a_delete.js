@@ -7,7 +7,7 @@ exports.seed = function(knex, Promise) {
     .then(Promise.all([
       knex('courses').del(),
       knex('years').del(),
-      knex('departments').del(),
+      knex('locations').del(),
       knex('groups').del(),
       knex('printers').del(),
     ]));
