@@ -28,31 +28,31 @@ const seedFunction = function(knex, Promise) {
           .then(function () {
             res(knex('users').insert([
               {
-                'email': 't.lynch@arts.ac.uk',
-                'name': 'Tom Lynch',
+                'email': 'j.appleseed@example.com',
+                'name': 'Jonny Appleseed',
                 'pw_salt': salt,
                 'pw_hash': hash,
                 'type': 'admin',
-                'audit_point': '2018-01-01 00:01:00',
+                'audit_point': '2000-01-01 00:00:00',
                 'disable': false,
                 'printer_id': printerId,
                 'course_id': courseId,
                 'year_id': yearId,
-                'barcode': '123408051717',
+                'barcode': 'JAPPLESEED123',
                 'pw_iterations': iterations
               },
               {
-                'email': 'j.thaw@arts.ac.uk',
-                'name': 'Jonny Thaw',
+                'email': 'a.smith@example.com',
+                'name': 'Amanda Smith',
                 'pw_salt': salt,
                 'pw_hash': hash,
                 'type': 'admin',
-                'audit_point': '2018-01-01 00:01:00',
+                'audit_point': '2000-01-01 00:00:00',
                 'disable': false,
                 'printer_id': printerId,
                 'course_id': courseId,
                 'year_id': yearId,
-                'barcode': '123408229992',
+                'barcode': 'ASMITH456',
                 'pw_iterations': iterations
               }
             ]));
