@@ -30,9 +30,9 @@ if items && items.length > 0
 							+sortItemHead( 'Group', 'group', sortby, direction, selected, filter_path )
 					th 
 						if multi
-							| Department
+							| Location
 						else
-							+sortItemHead( 'Department', 'department', sortby, direction, selected, filter_path )
+							+sortItemHead( 'Location', 'location', sortby, direction, selected, filter_path )
 					th
 						if multi
 							| Value
@@ -68,8 +68,8 @@ if items && items.length > 0
 							else
 								| &mdash;
 						td
-							if item.department_id
-								a( href="/departments/" + item.group_id + "/edit" )=item.department_name
+							if item.location_id
+								a( href="/locations/" + item.group_id + "/edit" )=item.location_name
 							else
 								| &mdash;
 						if parseInt( item.value ) > 0

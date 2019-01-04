@@ -1,4 +1,4 @@
-if departments.length > 0
+if locations.length > 0
 	.table-responsive
 		table.table.table-striped.table-hover.table-condensed
 			tgroup
@@ -13,20 +13,20 @@ if departments.length > 0
 					th View
 					th Manage
 			tbody
-				for department in departments
+				for location in locations
 					tr
-						td=department.name
+						td=location.name
 						td
-							a( href="/items/?department=" + department.id ).btn.btn-xs.btn-default
+							a( href="/items/?location=" + location.id ).btn.btn-xs.btn-default
 								span.glyphicon.glyphicon-modal-window
 								|  Items
 						td
-							a( href="/departments/" + department.id + '/edit' ).btn.btn-xs.btn-primary
+							a( href="/locations/" + location.id + '/edit' ).btn.btn-xs.btn-primary
 								span.glyphicon.glyphicon-pencil
 								|  Edit
 							|  
-							a( href="/departments/" + department.id + '/remove' ).btn.btn-xs.btn-danger
+							a( href="/locations/" + location.id + '/remove' ).btn.btn-xs.btn-danger
 								span.glyphicon.glyphicon-trash
 								|  Delete
 else
-	+messageBlock( 'warning', 'There are no departments to display.' )
+	+messageBlock( 'warning', 'There are no locations to display.' )

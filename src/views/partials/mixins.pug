@@ -11,12 +11,12 @@ mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 		else
 			- alt_dir = 'asc'
 		
-		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&department=' + ( selected && selected.department ? selected.department : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=' + alt_dir )
+		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&location=' + ( selected && selected.location ? selected.location : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=' + alt_dir )
 			| #{ text }
 		span( class=( sort_dir == 'asc' ? 'dropup' : 'dropdown' ) )
 			span.caret
 	else
-		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&department=' + ( selected && selected.department ? selected.department : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
+		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&location=' + ( selected && selected.location ? selected.location : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
 			| #{ text }
 
 mixin sortUserHead( text, slug, sort_by, sort_dir, selected )

@@ -3,12 +3,18 @@ h4: include status.pug
 dl.dl-horizontal
 	dt Barcode
 	dd: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
-	dt Department
-	- department = item.department
-	dd: include ../../../departments/views/partials/department.pug
+	dt Location
+	dd
+		if item.location_name
+			a( href="/locations/" + item.location_id + '/edit' )=item.location_name
+		else
+			| &mdash;
 	dt Group
-	- group = item.group
-	dd: include ../../../groups/views/partials/group.pug
+	dd
+		if item.group_id
+			a( href="/groups/" + item.group_id + '/edit' )=item.group_name
+		else
+			| &mdash;
 	if item.value
 		dt Value
 		dd £#{ item.value }

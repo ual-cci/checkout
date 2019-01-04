@@ -10,16 +10,16 @@ var auth = require( __js + '/authentication' );
 var db = require( __js + '/database' )(),
 	Courses = db.Courses,
 	Years = db.Years,
-	Departments = db.Departments;
+	Locations = db.Locations;
 
 app.set( 'views', __dirname + '/views' );
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Departments.get( function( err, departments ) {
+	Locations.get( function( err, locations ) {
 		Courses.get( function( err, courses ) {
 			Years.get( function( err, years ) {
 				res.render( 'index', {
-					departments: departments,
+					locations: locations,
 					courses: courses,
 					years: years
 				} );

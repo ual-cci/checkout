@@ -25,9 +25,9 @@
 					if item.owner_id
 						dt Owner:
 						dd: a( target="_blank" href="/users/" + item.owner_id )=item.owner_name
-					if item.department_id
-						dt Department
-						dd: a( target="_blank" href="/departments/" + item.department_id )=item.department_name
+					if item.location_id
+						dt Location
+						dd: a( target="_blank" href="/locations/" + item.location_id )=item.location_name
 			.col-md-2.buttons
 				if item.status == 'available'
 					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost

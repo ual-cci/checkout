@@ -107,8 +107,8 @@ var model = {
 			query.where( 'items.group_id', opts.where.group_id );
 		}
 
-		if ( opts.where && parseInt( opts.where.department_id ) ) {
-			query.where( 'items.department_id', opts.where.department_id );
+		if ( opts.where && parseInt( opts.where.location_id ) ) {
+			query.where( 'items.location_id', opts.where.location_id );
 		}
 
 		// Must come after all the others
@@ -126,11 +126,11 @@ var model = {
 			} );
 		}
 
-		if ( opts.lookup && opts.lookup.indexOf( 'department' ) != -1 ) {
-			query.leftJoin( 'departments', 'departments.id', 'items.department_id' )
+		if ( opts.lookup && opts.lookup.indexOf( 'location' ) != -1 ) {
+			query.leftJoin( 'locations', 'locations.id', 'items.location_id' )
 			.select( {
-				department_id: 'departments.id',
-				department_name: 'departments.name',
+				location_id: 'locations.id',
+				location_name: 'locations.name',
 			} );
 		}
 
@@ -396,14 +396,14 @@ var model = {
 				}
 			} )
 	},
-	updateDepartment: function( id, new_id, cb ) {
+	updateLocation: function( id, new_id, cb ) {
 		db( model.table )
-			.update( { 'department_id': new_id } )
-			.where( 'department_id', id )
+			.update( { 'location_id': new_id } )
+			.where( 'location_id', id )
 			.asCallback( function( err ) {
 				if ( err ) {
 					console.log( err );
-					return cb( { message: 'Unable to update items department' } );
+					return cb( { message: "Unable to update item's location" } );
 				}
 				return cb( err );
 			} )

@@ -1,8 +1,8 @@
 var db;
 
 var model = {
-	name: 'Departments',
-	table: 'departments',
+	name: 'Locations',
+	table: 'locations',
 	get: function( cb ) {
 		db( model.table )
 			.orderBy( 'name', 'asc' )
