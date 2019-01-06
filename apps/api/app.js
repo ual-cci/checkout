@@ -137,7 +137,7 @@ app.post( '/audit/:item', auth.isLoggedIn, function( req, res ) {
 				output.barcode = item.barcode;
 
 				if ( req.body.location ) {
-					Locations.getById( req.body.location, function( err, location ) {
+					Locations.getByBarcode( req.body.location, function( err, location ) {
 						if ( location ) {
 							Items.update( item.id, {
 								location_id: location.id
