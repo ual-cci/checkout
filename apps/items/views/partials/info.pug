@@ -2,19 +2,11 @@
 h4: include status.pug
 dl.dl-horizontal
 	dt Barcode
-	dd: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
+	dd: +clipboard( item.barcode )
 	dt Location
-	dd
-		if item.location_name
-			a( href="/locations/" + item.location_id + '/edit' )=item.location_name
-		else
-			| &mdash;
+	dd: +location( item.location_name, item.location_id )
 	dt Group
-	dd
-		if item.group_id
-			a( href="/groups/" + item.group_id + '/edit' )=item.group_name
-		else
-			| &mdash;
+	dd: +group( item.group_name, item.group_id )
 	if item.value
 		dt Value
 		dd £#{ item.value }

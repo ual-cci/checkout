@@ -39,14 +39,11 @@ if items && items.length > 0
 						else
 							+sortItemHead( 'Value', 'value', sortby, direction, selected, filter_path )
 					if ! multi
-						th
-							+sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
-						th
-							small
-								+sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
-						th
-							small
-								+sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
+						th: small: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
+						th: small: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
+								
+					//- Manage
 					if edit
 						th Manage
 			tbody
@@ -58,20 +55,13 @@ if items && items.length > 0
 						td
 							- status = item.status
 							include status.pug
-						td
-							span( data-clipboard-text=item.barcode ).clipboard=item.barcode
-						td
-							a( href="/items/" + item.id )=item.name
-						td
-							if item.group_id
-								a( href="/groups/" + item.group_id + "/edit" )=item.group_name
-							else
-								| &mdash;
-						td
-							if item.location_id
-								a( href="/locations/" + item.group_id + "/edit" )=item.location_name
-							else
-								| &mdash;
+							
+						td: +item( item.name, item.id )
+						td: +clipboard( item.barcode )
+						td: +group( item.group_name, item.group_id )
+						td: +location( item.location_name, item.location_id )
+						
+						//- Value
 						if parseInt( item.value ) > 0
 							- value = parseInt( item.value )
 						else
@@ -80,38 +70,23 @@ if items && items.length > 0
 						- item_total = ( item_total + value )
 						td £#{ value }
 						if ! multi
-							td
-								if item.owner_id
-									a( href="/users/" + item.owner_id )=item.owner_name
-								else
+							if item.owner_id
+								td: +user( item.owner_name, item.owner_id )
+								td: small: +course( item.owner_course_name, item.owner_course_id )
+								td: small: +year( item.owner_year_name, item.owner_year_id )
+							else
+								td( colspan=3 )
 									| &mdash;
-							td
-								small
-									if item.owner_course_id
-										a( href="/courses/" + item.owner_course_id )=item.owner_course_name
-									else
-										| &mdash;
-							td
-								small
-									if item.owner_year_id
-										a( href="/years/" + item.owner_year_id )=item.owner_year_name
-									else
-										| &mdash;
+								
+							//- Manage	
 							if edit
 								td
 									if loggedInUser.printer_id
-										a( href="/items/" + item.id + "/label?printer=" + loggedInUser.printer_id ).btn.btn-xs.btn-default
-											span.glyphicon.glyphicon-print
-											|  Label
-										|  
-									a( href="/items/" + item.id + '/edit' ).btn.btn-xs.btn-primary
-										span.glyphicon.glyphicon-pencil
-										|  Edit
-									|  
-									a( href="/items/" + item.id + '/remove' ).btn.btn-xs.btn-danger
-										span.glyphicon.glyphicon-trash
-										|  Delete
-						
+										+compactLabelBtn( "/items/" + item.id + "/label?printer=" + loggedInUser.printer_id )
+										+space
+									+compactEditBtn( "/items/" + item.id + '/edit' )
+									+space
+									+compactDeleteBtn( "/items/" + item.id + '/remove' )
 			tfoot
 				tr
 					if edit

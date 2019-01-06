@@ -334,8 +334,9 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 // List an item
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Printers.get( function( err, printers ) {
-		var opts = { lookup: [ 'group', 'location' ] };
-		Items.getById( req.params.id, opts, function( err, item ) {
+		Items.getById( req.params.id, {
+			lookup: [ 'group', 'location' ]
+		}, function( err, item ) {
 			if ( item ) {
 				Actions.getByItemId( item.id, function( err, history ) {
 					res.render( 'item', {

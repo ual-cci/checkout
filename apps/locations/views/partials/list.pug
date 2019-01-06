@@ -17,16 +17,10 @@ if locations.length > 0
 					tr
 						td=location.name
 						td
-							a( href="/items/?location=" + location.id ).btn.btn-xs.btn-default
-								span.glyphicon.glyphicon-modal-window
-								|  Items
+							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?location=' + location.id )
 						td
-							a( href="/locations/" + location.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/locations/" + location.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( '/locations/' + location.id + '/edit' )
+							+space
+							+deleteBtn( '/locations/' + location.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no locations to display.' )

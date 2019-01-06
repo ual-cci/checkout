@@ -18,22 +18,14 @@ if courses.length > 0
 				for course in courses
 					tr
 						td=course.name
-						td: include contact.pug
+						td: +user( course.contact_name, course.contact_id )
 						td
-							a( href="/users/?course=" + course.id ).btn.btn-xs.btn-default
-								span.glyphicon.glyphicon-user
-								|  Users
-							|  
-							a( href="/items/?course=" + course.id ).btn.btn-xs.btn-default
-								span.glyphicon.glyphicon-modal-window
-								|  Items
+							+btn( 'xs', 'default', 'user', 'Users', '/users/?course=' + course.id )
+							+space
+							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?course=' + course.id )
 						td
-							a( href="/courses/" + course.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/courses/" + course.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( '/courses/' + course.id + '/edit' )
+							+space
+							+deleteBtn( '/courses/' + course.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no courses to display.' )

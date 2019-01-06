@@ -1,8 +1,80 @@
 mixin clipboard( text )
-	span( data-clipboard-text=text ).clipboard=text
+	span( data-clipboard-text=text, title="Click to copy" ).clipboard=text
+
+mixin email( address )
+	a( href="mailto:" + address )=address
+
+mixin fulldate( date )
+	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ) )=moment( date ).format( 'DD/MM/YYYY HH:mm' )
+
+mixin relative( date )
+	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ) )=moment( date ).fromNow()
 
 mixin messageBlock( status, text )
 	p( style="padding: 1em; margin-top: 1em;" class="bg-" + status )=text
+
+mixin item( name, id )
+	if name
+		a( href="/items/" + id )=name
+	else
+		| &mdash;
+
+mixin user( name, id )
+	if name
+		a( href="/users/" + id )=name
+	else
+		| &mdash;
+
+mixin course( name, id )
+	if name
+		a( href="/users/?course=" + id )=name
+	else
+		| &mdash;
+
+mixin year( name, id )
+	if name
+		a( href="/users/?year=" + id )=name
+	else
+		| &mdash;
+
+mixin department( name, id )
+	if name
+		a( href="/items/?department=" + id )=name
+	else
+		| &mdash;
+		
+mixin group( name, id )
+	if name
+		a( href="/items/?group=" + id )=name
+	else
+		| &mdash;
+
+mixin btn( size, colour, icon, text, url )
+	a( href=url, class='btn-' + size, class='btn-' + colour ).btn
+		span.glyphicon( class='glyphicon-' + icon )
+		if text
+			|  #{ text }
+
+mixin labelBtn( url )
+	+btn( 'xs', 'default', 'print', 'Label', url )
+
+mixin compactLabelBtn( url )
+	+btn( 'xs', 'default', 'print', '', url )
+
+mixin editBtn( url )
+	+btn( 'xs', 'primary', 'pencil', 'Edit', url )
+
+mixin compactEditBtn( url )
+	+btn( 'xs', 'primary', 'pencil', '', url )
+
+mixin deleteBtn( url )
+	+btn( 'xs', 'danger', 'trash', 'Delete', url )
+
+mixin compactDeleteBtn( url )
+	+btn( 'xs', 'danger', 'trash', '', url )
+
+mixin space
+	|  
 
 mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 	if ( sort_by == slug )

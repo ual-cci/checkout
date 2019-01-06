@@ -11,13 +11,9 @@ if history.length > 0
 				tr
 					- status = row.action
 					td: include status.pug
-					td
-						if row.user_id
-							a( href="/users/" + row.user_id )=row.user_name
-						else
-							| &mdash;
-					td: span( title=moment( row.datetime ).format( 'HH:mm:ss D/M/Y' ) )=moment( row.datetime ).fromNow()
-					td: a( href="/users/" + row.operator_id )=row.operator_name
+					td: +user( row.user_name, row.user_id )
+					td: +relative( row.datetime )
+					td: +user( row.operator_name, row.operator_id )
 					
 else
 	+messageBlock( 'warning', 'This item has no history.' )
