@@ -2,12 +2,12 @@ if locations.length > 0
 	.table-responsive
 		table.table.table-striped.table-hover.table-condensed
 			tgroup
-				col( width="60%" )
-				col( width="20%" )
-				col( width="20%" )
+				col( width="40%" )
+				col( width="20%", colspan="3" )
 			thead
 				tr
 					th Name
+					th Barcode
 						span.dropup
 							span.caret
 					th View
@@ -16,6 +16,7 @@ if locations.length > 0
 				for location in locations
 					tr
 						td=location.name
+						td: +clipboard( location.barcode )
 						td
 							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?location=' + location.id )
 						td

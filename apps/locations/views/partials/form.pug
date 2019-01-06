@@ -4,6 +4,10 @@ form( method="post" ).form-horizontal
 		.col-md-4
 			input( name="name", type="text", value=location.name, required )#name.form-control
 	.form-group
+		label( for="barcode" ).col-md-2.control-label Barcode
+		.col-md-4
+			input( name="barcode", type="text", value=location.barcode, required )#barcode.form-control
+	.form-group
 		.col-md-4.col-md-offset-2
 			button( type="submit" ).btn.btn-primary=action
 			|  

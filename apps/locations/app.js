@@ -29,7 +29,15 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/create' );
 	}
 
-	Locations.create( req.body.name, function( err, result ) {
+	if ( req.body.barcode == '' ) {
+		req.flash( 'danger', 'The location requires a barcode' );
+		res.redirect( app.mountpath + '/create' );
+	}
+
+	Locations.create( {
+		name: req.body.name,
+		barcode: req.body.barcode
+	}, function( err, result ) {
 		if ( err ) {
 			req.flash( 'danger', 'Location not created' );
 			res.redirect( app.mountpath );
@@ -57,7 +65,10 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		res.redirect( app.mountpath + '/edit' );
 	}
 
-	Locations.update( req.params.id, req.body.name, function( err ) {
+	Locations.update( req.params.id, {
+		name: req.body.name,
+		barcode: req.body.barcode
+	}, function( err ) {
 		if ( err ) {
 			req.flash( 'danger', 'Location not updated' );
 			res.redirect( app.mountpath );
