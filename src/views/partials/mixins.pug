@@ -49,6 +49,33 @@ mixin group( name, id )
 	else
 		| &mdash;
 
+mixin btn( size, colour, icon, text, url )
+	a( href=url, class='btn-' + size, class='btn-' + colour ).btn
+		span.glyphicon( class='glyphicon-' + icon )
+		if text
+			|  #{ text }
+
+mixin labelBtn( url )
+	+btn( 'xs', 'default', 'print', 'Label', url )
+
+mixin compactLabelBtn( url )
+	+btn( 'xs', 'default', 'print', '', url )
+
+mixin editBtn( url )
+	+btn( 'xs', 'primary', 'pencil', 'Edit', url )
+
+mixin compactEditBtn( url )
+	+btn( 'xs', 'primary', 'pencil', '', url )
+
+mixin deleteBtn( url )
+	+btn( 'xs', 'danger', 'trash', 'Delete', url )
+
+mixin compactDeleteBtn( url )
+	+btn( 'xs', 'danger', 'trash', '', url )
+
+mixin space
+	|  
+
 mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 	if ( sort_by == slug )
 		if sort_dir == 'asc'
