@@ -21,12 +21,8 @@ if groups.length > 0
 								span.glyphicon.glyphicon-modal-window
 								|  Items
 						td
-							a( href="/groups/" + group.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/groups/" + group.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( '/groups/' + group.id + '/edit' )
+							+space
+							+deleteBtn( '/groups/' + group.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no groups to display.' )
