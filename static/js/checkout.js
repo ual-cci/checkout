@@ -1,6 +1,8 @@
 var errorSound = new buzz.sound( "/sounds/error.wav" );
 var successSound = new buzz.sound( "/sounds/success.wav" );
 
+var locationRegex = /^L:(.+)$/;
+
 var typeTimeout;
 var flashTimeout;
 var one_item;
@@ -401,11 +403,31 @@ function handleAuditSubmit( e ) {
 	var term = jQuery( '#audit input' ).val();
 	jQuery( '#audit input' ).val('');
 
-	audit( term, jQuery( '#location' ).val(), function( data ) {
-		if ( data.status == 'success' ) successSound.play();
-		if ( data.status == 'danger' ) errorSound.play();
-		flash( data );
-	} );
+	var locationMatch = term.match( locationRegex )
+	if ( locationMatch ) {
+		if ( jQuery( '#location' ).children( 'option[value="' + locationMatch[1] + '"]' ).length == 1 ) {
+			jQuery( '#location' ).val( locationMatch[1] );
+			successSound.play();
+			flash( {
+				barcode: locationMatch[1],
+				message: 'Location changed',
+				status: 'success'
+			} );
+		} else {
+			errorSound.play();
+			flash( {
+				barcode: locationMatch[1],
+				message: 'Unknown location',
+				status: 'danger'
+			} );
+		}
+	} else {
+		audit( term, jQuery( '#location' ).val(), function( data ) {
+			if ( data.status == 'success' ) successSound.play();
+			if ( data.status == 'danger' ) errorSound.play();
+			flash( data );
+		} );
+	}
 }
 
 function handleLabelSubmit( e ) {
