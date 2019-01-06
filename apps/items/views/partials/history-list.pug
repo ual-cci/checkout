@@ -16,7 +16,7 @@ if history.length > 0
 							a( href="/users/" + row.user_id )=row.user_name
 						else
 							| &mdash;
-					td: span( title=moment( row.datetime ).format( 'HH:mm:ss D/M/Y' ) )=moment( row.datetime ).fromNow()
+					td: +relative( row.datetime )
 					td: a( href="/users/" + row.operator_id )=row.operator_name
 					
 else

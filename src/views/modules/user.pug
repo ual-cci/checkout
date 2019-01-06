@@ -1,3 +1,5 @@
+include ../partials/mixins.pug
+
 .panel.panel-primary( data-barcode=user.barcode, data-type='user' )
 	.panel-heading
 		h3.panel-title
@@ -34,12 +36,10 @@
 				tr
 					th Name
 					th Barcode
-					th Date
-					th Time
+					th When
 			tbody
 				for item in onloan
 					tr
 						td: a( href="/items/" + item.id )=item.name
 						td: span.clipboard( data-clipboard-text=item.barcode )=item.barcode
-						td=moment( item.updated ).format( 'DD/MM/YYYY' )
-						td=moment( item.updated ).format( 'HH:MM:SS' )
+						td: +fulldate( item.updated )
