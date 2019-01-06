@@ -38,18 +38,13 @@ if users && users.length > 0
 						if edit
 							td: input( type="checkbox", name="edit", value=user.id, checked=multi )
 						td: +user( user.name, user.id )
-							include label.pug
 						td: +course( user.course_name, user.course_id )
 						td: +year( user.year_name, user.year_id )
 						td: +clipboard( user.barcode )
 						td: +email( user.email )
 						td
-							a( href="/users/" + user.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/users/" + user.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( "/users/" + user.id + '/edit' )
+							+space
+							+deleteBtn( "/users/" + user.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no users to display.' )
