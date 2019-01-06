@@ -81,18 +81,12 @@ if items && items.length > 0
 							//- Manage	
 							if edit
 								td
-									a( href="/items/" + item.id + "/label?printer=" + loggedInUser.printer_id ).btn.btn-xs.btn-default
-										span.glyphicon.glyphicon-print
-										|  Label
-									|  
-									a( href="/items/" + item.id + '/edit' ).btn.btn-xs.btn-primary
-										span.glyphicon.glyphicon-pencil
-										|  Edit
-									|  
-									a( href="/items/" + item.id + '/remove' ).btn.btn-xs.btn-danger
-										span.glyphicon.glyphicon-trash
-										|  Delete
-						
+									if loggedInUser.printer_id
+										+compactLabelBtn( "/items/" + item.id + "/label?printer=" + loggedInUser.printer_id )
+										+space
+									+compactEditBtn( "/items/" + item.id + '/edit' )
+									+space
+									+compactDeleteBtn( "/items/" + item.id + '/remove' )
 			tfoot
 				tr
 					if edit
