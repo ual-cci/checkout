@@ -20,6 +20,8 @@ include ../partials/mixins.pug
 					if item.group_id
 						dt Group
 						dd: +group( item.group_name, item.group_id )
+						dt Location
+						dd: +location( item.location_name, item.location_id )
 					if item.owner_id
 						dt Owner:
 						dd: +user( item.owner_name, item.owner_id )

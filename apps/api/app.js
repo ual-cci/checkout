@@ -15,7 +15,7 @@ var Print = require( __js + '/print' );
 var db = require( __js + '/database' )(),
 	Items = db.Items,
 	Users = db.Users,
-	Departments = db.Departments,
+	Locations = db.Locations,
 	Courses = db.Courses,
 	Years = db.Years,
 	Actions = db.Actions;
@@ -97,7 +97,7 @@ app.get( '/user/:barcode', auth.isLoggedIn, function( req, res ) {
 
 app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
 	var opts = {
-		lookup: [ 'group', 'department', 'owner' ]
+		lookup: [ 'group', 'location', 'owner' ]
 	}
 
 	Items.getByBarcode( req.params.barcode, opts, function ( err, item ) {
@@ -108,7 +108,7 @@ app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
 				type: 'item',
 				id: item.id,
 				barcode: item.barcode,
-				department: item.department_id,
+				location: item.location_id,
 				group: item.group_id,
 				status: item.status,
 				owner_id: item.owner_id,
@@ -136,11 +136,11 @@ app.post( '/audit/:item', auth.isLoggedIn, function( req, res ) {
 			if ( item ) {
 				output.barcode = item.barcode;
 
-				if ( req.body.department ) {
-					Departments.getById( req.body.department, function( err, department ) {
-						if ( department ) {
+				if ( req.body.location ) {
+					Locations.getById( req.body.location, function( err, location ) {
+						if ( location ) {
 							Items.update( item.id, {
-								department_id: department.id
+								location_id: location.id
 							}, function( err ) {} )
 						}
 					} );

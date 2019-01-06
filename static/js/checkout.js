@@ -193,8 +193,8 @@ function label( item, cb ) {
 		cb( data );
 	} );
 }
-function audit( item, department, cb ) {
-	jQuery.post( '/api/audit/' + item, { department: department }, function( data, status ) {
+function audit( item, location, cb ) {
+	jQuery.post( '/api/audit/' + item, { location: location }, function( data, status ) {
 		cb( data );
 	} );
 }
@@ -401,7 +401,7 @@ function handleAuditSubmit( e ) {
 	var term = jQuery( '#audit input' ).val();
 	jQuery( '#audit input' ).val('');
 
-	audit( term, jQuery( '#department' ).val(), function( data ) {
+	audit( term, jQuery( '#location' ).val(), function( data ) {
 		if ( data.status == 'success' ) successSound.play();
 		if ( data.status == 'danger' ) errorSound.play();
 		flash( data );

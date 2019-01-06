@@ -20,12 +20,12 @@ form( method="post" ).form-horizontal
 				for group in groups
 					option( value=group.id selected=( group.id == ( item ? item.group_id : '' ) ) )=group.name
 	.form-group
-		label( for="department" ).col-md-2.control-label Department
+		label( for="location" ).col-md-2.control-label Location
 		.col-md-4
-			select( name="department" required )#department.form-control
-				option( value="" disabled selected ) Select a department
-				for department in departments
-					option( value=department.id selected=( department.id == ( item ? item.department_id : '' ) ) )=department.name
+			select( name="location" required )#location.form-control
+				option( value="" disabled selected ) Select a location
+				for location in locations
+					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) )=location.name
 	.form-group
 		label( for="value" ).col-md-2.control-label Value
 		.col-md-4

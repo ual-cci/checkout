@@ -27,15 +27,15 @@ block contents
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="group" )
 		.form-group
-			label( for="department" ).col-md-2.control-label Department
+			label( for="location" ).col-md-2.control-label Location
 			.col-md-4
 				.input-group
-					select( name="department" )#department.form-control
-						option( value="" disabled selected ) Select a department
-						for department in departments
-							option( value=department.id )=department.name
+					select( name="location" )#location.form-control
+						option( value="" disabled selected ) Select a location
+						for location in locations
+							option( value=location.id )=location.name
 					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="department" )
+						input( type="checkbox" name="fields[]" value="location" )
 		.form-group
 			label( for="value" ).col-md-2.control-label Value
 			.col-md-4
