@@ -37,25 +37,12 @@ if users && users.length > 0
 					tr
 						if edit
 							td: input( type="checkbox", name="edit", value=user.id, checked=multi )
-						td
-							a( href="/users/" + user.id )=user.name
-							|  
+						td: +user( user.name, user.id )
 							include label.pug
-						if ! no_course
-							td
-								if user.course_id
-									a( href="/courses/" + user.course_id + "/edit" )=user.course_name
-								else
-									| &mdash;
-						td
-							if user.year_id
-								a( href="/years/" + user.year_id + "/edit" )=user.year_name
-							else
-								| &mdash;
-						td
-							span( data-clipboard-text=user.barcode ).clipboard=user.barcode
-						td
-							a( href="mailto:" + user.email )=user.email
+						td: +course( user.course_name, user.course_id )
+						td: +year( user.year_name, user.year_id )
+						td: +clipboard( user.barcode )
+						td: +email( user.email )
 						td
 							a( href="/users/" + user.id + '/edit' ).btn.btn-xs.btn-primary
 								span.glyphicon.glyphicon-pencil

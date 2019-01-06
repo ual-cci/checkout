@@ -9,8 +9,8 @@ if items.length > 0
 			tbody
 				for item in items
 					tr
-						td: a( href="/items/ " + item.id )=item.name
-						td: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
+						td: +item( item.name, item.id )
+						td: +clipboard( item.barcode )
 						td: +relative( item.updated )
 else
 	p There are no items to display.

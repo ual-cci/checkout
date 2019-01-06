@@ -5,25 +5,17 @@ include ../partials/mixins.pug
 		h3.panel-title
 			span.glyphicon.glyphicon-user
 			|  
-			a( href="/users/" + user.id ) #{ user.name }
+			+user( user.name, user.id )
 	.panel-body
 		dl.dl-horizontal
 			dt Barcode
-			dd: span.clipboard( data-clipboard-text=user.barcode )=user.barcode
+			dd: +clipboard( user.barcode )
 			dt Email
-			dd: a( href="mailto:" + user.email )  #{ user.email }
+			dd: +email( user.email )
 			dt Course
-			dd
-				if user.course_id
-					a( href="/users?course=" + user.course_id )=user.course_name
-				else
-					| &mdash;
+			dd: +course( user.course_name, user.course_id )
 			dt Year
-			dd
-				if user.year_id
-					a( href="/users?year=" + user.year_id )=user.year_name
-				else
-					| &mdash;
+			dd: +year( user.year_name, user.year_id )
 			if user.disable
 				dt Account disabled
 				dd Yes
@@ -40,6 +32,6 @@ include ../partials/mixins.pug
 			tbody
 				for item in onloan
 					tr
-						td: a( href="/items/" + item.id )=item.name
-						td: span.clipboard( data-clipboard-text=item.barcode )=item.barcode
+						td: +item( item.name, item.id )
+						td: +clipboard( item.barcode )
 						td: +fulldate( item.updated )
