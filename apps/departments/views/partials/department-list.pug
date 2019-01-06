@@ -17,16 +17,10 @@ if departments.length > 0
 					tr
 						td=department.name
 						td
-							a( href="/items/?department=" + department.id ).btn.btn-xs.btn-default
-								span.glyphicon.glyphicon-modal-window
-								|  Items
+							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?department=' + department.id )
 						td
-							a( href="/departments/" + department.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/departments/" + department.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( '/departments/' + department.id + '/edit' )
+							+space
+							+deleteBtn( '/departments/' + department.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no departments to display.' )
