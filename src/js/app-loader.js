@@ -33,7 +33,7 @@ module.exports = function( a ) {
 	// Error 500
 	app.use( function ( err, req, res, next ) {
 		res.status( 500 );
-		res.render( '500', { error: ( process.env.APP_DEV ? err.stack : undefined ) } );
+		res.render( '500', { error: ( res.locals.dev ? err.stack : undefined ) } );
 	} );
 };
 

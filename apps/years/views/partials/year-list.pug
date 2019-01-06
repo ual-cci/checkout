@@ -15,12 +15,8 @@ if years.length > 0
 					tr
 						td=year.name
 						td
-							a( href="/years/" + year.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/years/" + year.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( '/years/' + year.id + '/edit' )
+							+space
+							+deleteBtn( '/years/' + year.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no years to display.' )

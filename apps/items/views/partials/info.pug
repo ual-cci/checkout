@@ -2,13 +2,11 @@
 h4: include status.pug
 dl.dl-horizontal
 	dt Barcode
-	dd: span( data-clipboard-text=item.barcode ).clipboard=item.barcode
+	dd: +clipboard( item.barcode )
 	dt Department
-	- department = item.department
-	dd: include ../../../departments/views/partials/department.pug
+	dd: +department( item.department_name, item.department_id )
 	dt Group
-	- group = item.group
-	dd: include ../../../groups/views/partials/group.pug
+	dd: +group( item.group_name, item.group_id )
 	if item.value
 		dt Value
 		dd £#{ item.value }

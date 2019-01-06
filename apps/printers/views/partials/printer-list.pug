@@ -24,12 +24,8 @@ if printers.length > 0
 								span.glyphicon.glyphicon-print
 								|  View
 						td
-							a( href="/printers/" + printer.id + '/edit' ).btn.btn-xs.btn-primary
-								span.glyphicon.glyphicon-pencil
-								|  Edit
-							|  
-							a( href="/printers/" + printer.id + '/remove' ).btn.btn-xs.btn-danger
-								span.glyphicon.glyphicon-trash
-								|  Delete
+							+editBtn( '/printers/' + printer.id + '/edit' )
+							+space
+							+deleteBtn( '/printers/' + printer.id + '/remove' )
 else
 	+messageBlock( 'warning', 'There are no printers to display.' )

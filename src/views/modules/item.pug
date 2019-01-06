@@ -1,3 +1,5 @@
+include ../partials/mixins.pug
+
 .panel.panel-primary( data-barcode=item.barcode, data-type='item' )
 	.panel-heading
 		h3.panel-title
@@ -14,20 +16,13 @@
 					dd
 						span.glyphicon.glyphicon-print
 						|  
-						span.clipboard( data-clipboard-text=item.barcode )=item.barcode
+						+clipboard( item.barcode )
 					if item.group_id
 						dt Group
-						dd: a( target="_blank" href="/groups/" + item.group_id )=item.group_name
-							if item.group_limiter
-								small
-									em  (Limit per user: #{ item.group_limiter })
-						
+						dd: +group( item.group_name, item.group_id )
 					if item.owner_id
 						dt Owner:
-						dd: a( target="_blank" href="/users/" + item.owner_id )=item.owner_name
-					if item.department_id
-						dt Department
-						dd: a( target="_blank" href="/departments/" + item.department_id )=item.department_name
+						dd: +user( item.owner_name, item.owner_id )
 			.col-md-2.buttons
 				if item.status == 'available'
 					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost
