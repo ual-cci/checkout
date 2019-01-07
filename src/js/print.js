@@ -25,6 +25,9 @@ var Print = {
 				case '12mm':
 					barcodes.push( Print.add12mmTape( doc, code.barcode, code.text ) )
 					break;
+				case '36mm':
+					barcodes.push( Print.add36mmTape( doc, code.barcode, code.text ) )
+					break;
 			}
 		}
 
@@ -66,6 +69,31 @@ var Print = {
 				page.text( barcode, pt(0), pt(16), {
 					width: pt(9),
 					align: 'left'
+				} );
+
+				resolve( page );
+			} )
+		} );
+	},
+	add36mmTape: function( doc, barcode, text ) {
+		return new Promise( function( resolve, reject ) {
+			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
+				var page = doc.addPage( {
+					size: [ pt(36), pt(36) ],
+					layout: 'landscape',
+					margin: 0
+				} );
+				page.image( png,  pt(5.5), pt(2), {
+					width: pt(25),
+					height: pt(25)
+				} );
+
+				page.fontSize( 15 );
+				page.font('Helvetica-Bold')
+
+				page.text( text, pt(0), pt(29), {
+					width: pt(36),
+					align: 'center'
 				} );
 
 				resolve( page );
