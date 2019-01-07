@@ -17,6 +17,10 @@ class BaseModel {
     return [];
   }
 
+  _reset() {
+    this.query();
+  }
+
   create(values) {
     return new Promise((resolve, reject) => {
       const query = db(this.options.table).insert(values, 'id')
@@ -30,6 +34,9 @@ class BaseModel {
         })
         .catch(err => {
           reject(err);
+        })
+        .finally(() => {
+          this._reset();
         });
     });
   }
@@ -47,6 +54,9 @@ class BaseModel {
         })
         .catch(err => {
           reject(err);
+        })
+        .finally(() => {
+          this._reset();
         });
     });
   }
@@ -66,6 +76,9 @@ class BaseModel {
         })
         .catch(err => {
           reject(err);
+        })
+        .finally(() => {
+          this._reset();
         });
     });
   }
@@ -229,6 +242,10 @@ class BaseModel {
           reject(err);
         })
     });
+  }
+
+  getById(id) {
+    return this.where([['id', id]]).returnSingle();
   }
 }
 

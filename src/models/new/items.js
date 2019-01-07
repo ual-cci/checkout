@@ -43,6 +43,23 @@ class ItemModel extends BaseModel {
   get properties() {
     return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated'];
   }
+
+  updateDepartment(oldDepartmentId, newDepartmentId) {
+    return new Promise((resolve, reject) => {
+      this.query()
+        .get()
+        .where('department_id', oldDepartmentId)
+        .update({
+          'department_id': newDepartmentId
+        })
+        .then(() => {
+          resolve(newDepartmentId);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 }
 
 module.exports = ItemModel;
