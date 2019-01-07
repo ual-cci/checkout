@@ -4,19 +4,22 @@ const NewUsers = require('../../src/models/new/users.js');
 class CoursesController {
   constructor(mountPath) {
     this.mountPath = mountPath;
+
+    this.models = {
+      courses: new NewCourses(),
+      users: new NewUsers()
+    };
   }
 
   getHome(req, res) {
-    const coursesModel = new NewCourses();
-    coursesModel.getAll()
+    this.models.courses.getAll()
       .then(courses => {
         res.render( 'courses', { courses } );
       });
   }
 
   getCreate(req, res) {
-    const usersModel = new NewUsers();
-    usersModel.getAll()
+    this.models.users.getAll()
       .then(users => {
         res.render( 'create', { course: {}, users } );
       });
@@ -36,8 +39,7 @@ class CoursesController {
       course.contact_id = Number( req.body.contact );
     }
 
-    const coursesModel = new NewCourses();
-    coursesModel.create(course)
+    this.models.courses.create(course)
       .then(ids => {
         req.flash('success', 'Course created');
         res.redirect(this.mountPath);
@@ -49,17 +51,9 @@ class CoursesController {
   }
 
   getEdit(req, res) {
-    const usersModel = new NewUsers();
-    const coursesModel = new NewCourses();
-
     Promise.all([
-      usersModel.getAll(),
-      coursesModel
-        .lookup(['user'])
-        .where([
-          ['id', req.params.id]
-        ])
-        .returnSingle()
+      this.models.users.getAll(),
+      this.models.courses.lookup(['user']).getById(req.params.id)
     ])
       .then(results => {
         const users = results[0];
@@ -78,8 +72,6 @@ class CoursesController {
   }
 
   postEdit(req, res) {
-    const coursesModel = new NewCourses();
-
     if ( req.body.name == '' ) {
       req.flash( 'danger', 'The course requires a name' );
       res.redirect(`${this.mountPath}/create`);
@@ -95,7 +87,7 @@ class CoursesController {
       course.contact_id = null;
     }
 
-    coursesModel.update(req.params.id, course)
+    this.models.courses.update(req.params.id, course)
       .then(ids => {
         req.flash('success', 'Course updated');
         res.redirect(this.mountPath);
@@ -107,9 +99,7 @@ class CoursesController {
   }
 
   getRemove(req, res) {
-    const coursesModel = new NewCourses();
-
-    coursesModel.getAll()
+    this.models.courses.getAll()
       .then(courses => {
         const selectedCourse = courses.find(c => c.id === parseInt(req.params.id, 10));
 
@@ -136,34 +126,20 @@ class CoursesController {
   }
 
   postRemove(req, res) {
-    const coursesModel = new NewCourses();
-    const usersModel = new NewUsers();
-
     Promise.all([
-      coursesModel.query()
-        .where([['id', req.params.id]])
-        .returnSingle(),
-      coursesModel.query()
-        .where([['id', req.body.course]])
-        .returnSingle()
+      this.models.courses.query().getById(req.params.id),
+      this.models.courses.query().getById(req.body.course)
     ])
       .then(([ courseToRemove, courseToBecome ]) => {
-        if (!courseToRemove) {
-          req.flash( 'danger', 'Course to remove not found' );
+        if (!courseToBecome || !courseToRemove) {
+          req.flash( 'danger', 'Course to remove/become not found' );
           res.redirect(this.mountPath);
-          return;
-        }
-
-        if (!courseToBecome) {
-          req.flash( 'danger', 'New course not found' );
-          res.redirect(this.mountPath);
-          return;
         }
 
         return { courseToRemove, courseToBecome };
       })
       .then(({ courseToRemove, courseToBecome }) => {
-        usersModel.updateCourse(courseToRemove.id, courseToBecome.id)
+        this.models.users.updateCourse(courseToRemove.id, courseToBecome.id)
           .then(id => {
             coursesModel.remove(courseToRemove.id)
               .then(() => {
