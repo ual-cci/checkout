@@ -1,7 +1,7 @@
 
 exports.up = function(knex, Promise) {
   return knex.schema.table('locations', table => {
-    table.string('barcode').notNullable().unique();
+    table.string('barcode').unique();
   });
 };
 
