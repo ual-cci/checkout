@@ -412,8 +412,9 @@ function handleAuditSubmit( e ) {
 
 	var locationMatch = term.match( locationRegex )
 	if ( locationMatch ) {
-		if ( jQuery( '#location' ).children( 'option[value="' + locationMatch[1] + '"]' ).length == 1 ) {
-			jQuery( '#location' ).val( locationMatch[1] );
+    var child = jQuery( '#location' ).children( 'option[data-barcode="' + locationMatch[1] + '"]' );
+		if ( child.length == 1 ) {
+			jQuery( '#location' ).val( child.val() );
 			locationSuccessSound.play();
 			flash( {
 				barcode: locationMatch[1],

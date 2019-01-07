@@ -81,7 +81,7 @@ block contents
 									select#location.form-control
 										option( value="" ) Don't change location
 										for location in locations
-											option( value=location.barcode ) #{ location.name }
+											option( value=location.id, data-barcode=(location.barcode ? location.barcode : null)) #{ location.name }
 			.flash
 		#label.tab-pane
 			.row
