@@ -76,10 +76,17 @@ block contents
 									span.input-group-addon
 										span.glyphicon.glyphicon-barcode
 									input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
-							.col-md-3
+							.col-md-2
+								.input-group
+									select#locationMode.form-control
+										option( value="1" ) Just audit
+										option( value="2" ) Check location and audit
+										option( value="3" ) Update location and audit
+										
+							.col-md-2
 								.input-group
 									select#location.form-control
-										option( value="" ) Don't change location
+										option( value="" ) Select location
 										for location in locations
 											option( value=location.id, data-barcode=(location.barcode ? location.barcode : null)) #{ location.name }
 			.flash
