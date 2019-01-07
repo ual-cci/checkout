@@ -127,42 +127,72 @@ app.get( '/item/:barcode', auth.isLoggedIn, function( req, res ) {
 } );
 
 app.post( '/audit/:item', auth.isLoggedIn, function( req, res ) {
-	Items.audit( req.params.item, function( msg, item ) {
-		if ( msg.status == 'success' ) {
-			var output = {
-				status: msg.status,
-				message: msg.message
-			};
-			if ( item ) {
-				output.barcode = item.barcode;
+	Items.getByBarcode( req.params.item, {
+		lookup: [ 'location' ]
+	}, function( err, item ) {
+		if ( item ) {
+			var audit = false;
 
-				if ( req.body.location ) {
-					Locations.getById( req.body.location, function( err, location ) {
-						if ( location ) {
-							Items.update( item.id, {
-								location_id: location.id
-							}, function( err ) {} )
+			// No location
+			if ( ! req.body.location ) audit = true;
+			// Overriden
+			if ( req.body.override && req.body.override == 'true' ) audit = true;
+			// Location unchanged
+			if ( req.body.location == item.location_id  ) audit = true;
+
+			if ( audit ) {
+				Items.audit( req.params.item, function( msg, item ) {
+					if ( msg.status == 'success' ) {
+						var output = {
+							status: msg.status,
+							message: msg.message
+						};
+						if ( item ) {
+							output.barcode = item.barcode;
+
+							if ( req.body.location ) {
+								Locations.getById( req.body.location, function( err, location ) {
+									if ( location ) {
+										Items.update( item.id, {
+											location_id: location.id
+										}, function( err ) {} )
+									}
+								} );
+							}
+
+							Actions.log( {
+								item_id: item.id,
+								datetime: new Date(),
+								action: 'audited',
+								operator_id: req.user.id
+							}, function( err ) {} );
 						}
-					} );
-				}
 
-				Actions.log( {
-					item_id: item.id,
-					datetime: new Date(),
-					action: 'audited',
-					operator_id: req.user.id
-				}, function( err ) {} );
+						return res.json( output );
+					} else {
+						var output = {
+							status: msg.status,
+							message: msg.message
+						};
+						return res.json( output );
+					}
+				} );
+			} else {
+				var output = {
+					barcode: item.barcode,
+					status: 'danger',
+					message: 'Item is in the wrong location, should be: <strong>' + item.location_name + '</strong> (' + item.location_barcode + ')'
+				};
+				return res.json( output );
 			}
-
-			return res.json( output );
 		} else {
 			var output = {
-				status: msg.status,
-				message: msg.message
+				status: 'danger',
+				message: 'Unknown item'
 			};
 			return res.json( output );
 		}
-	} );
+	} )
 } );
 
 app.post( '/return/:item', auth.isLoggedIn, function( req, res ) {

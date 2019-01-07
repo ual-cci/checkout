@@ -202,8 +202,8 @@ function label( item, cb ) {
 		cb( data );
 	} );
 }
-function audit( item, location, cb ) {
-	jQuery.post( '/api/audit/' + item, { location: location }, function( data, status ) {
+function audit( item, location, override, cb ) {
+	jQuery.post( '/api/audit/' + item, { location: location, override: override }, function( data, status ) {
 		cb( data );
 	} );
 }
@@ -412,7 +412,7 @@ function handleAuditSubmit( e ) {
 
 	var locationMatch = term.match( locationRegex )
 	if ( locationMatch ) {
-    var child = jQuery( '#location' ).children( 'option[data-barcode="' + locationMatch[1] + '"]' );
+		var child = jQuery( '#location' ).children( 'option[data-barcode="' + locationMatch[1].trim() + '"]' );
 		if ( child.length == 1 ) {
 			jQuery( '#location' ).val( child.val() );
 			locationSuccessSound.play();
@@ -430,7 +430,12 @@ function handleAuditSubmit( e ) {
 			} );
 		}
 	} else {
-		audit( term, jQuery( '#location' ).val(), function( data ) {
+		var location = jQuery( '#location' ).val();
+		var mode = jQuery( '#locationMode' ).val();
+		var override = false;
+		if ( mode == 3 ) override = true;
+		if ( mode == 1 ) location = null;
+		audit( term, location, override, function( data ) {
 			if ( data.status == 'success' ) auditSuccessSound.play();
 			if ( data.status == 'danger' ) auditErrorSound.play();
 			flash( data );
