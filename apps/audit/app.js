@@ -9,7 +9,7 @@ var moment = require( 'moment' );
 
 var db = require( __js + '/database' )(),
 	Items = db.Items,
-	Departments = db.Departments,
+	Locations = db.Locations,
 	Groups = db.Groups
 	Courses = db.Courses,
 	Years = db.Years;
@@ -22,11 +22,11 @@ app.set( 'views', __dirname + '/views' );
 app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 	var status = req.params.status;
 	Groups.get( function( err, groups ) {
-		Departments.get( function( err, departments ) {
+		Locations.get( function( err, locations ) {
 			var date = moment().startOf( 'day' );
 			if ( req.user.audit_point ) date = moment( req.user.audit_point );
 			var opts = {
-				lookup: [ 'group', 'department', 'owner' ],
+				lookup: [ 'group', 'location', 'owner' ],
 				where: {
 					audited: date
 				}
@@ -34,18 +34,18 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 
 			var selected = {
 				status: req.query.status ? req.query.status : '',
-				department: req.query.department ? req.query.department : '',
+				location: req.query.location ? req.query.location : '',
 				group: req.query.group ? req.query.group : ''
 			};
 
 			// Set sort options
-			var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'group', 'department', 'value' ];
+			var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'group', 'location', 'value' ];
 			var direction_valid_options = [ 'asc', 'desc' ];
 			if ( sortby_valid_options.indexOf( req.query.sortby ) != -1 && direction_valid_options.indexOf[ req.query.direction ] != -1 ) {
 				var sortby = req.query.sortby;
 				if ( req.query.sortby == 'owner' ) sortby = 'owner_name';
 				if ( req.query.sortby == 'group' ) sortby = 'group_name';
-				if ( req.query.sortby == 'department' ) sortby = 'department_name';
+				if ( req.query.sortby == 'location' ) sortby = 'location_name';
 				opts.orderby = sortby;
 				opts.direction = req.query.direction;
 			} else {
@@ -56,14 +56,14 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 			// Set filters
 			if ( req.query.status ) opts.where.status = req.query.status;
 			if ( req.query.group ) opts.where.group_id = req.query.group;
-			if ( req.query.department ) opts.where.department_id = req.query.department;
+			if ( req.query.location ) opts.where.location_id = req.query.location;
 
 			// Get items
 			Items.get( opts, function( err, items ) {
 				res.render( 'report', {
 					status: 'Scanned',
 					items: items,
-					departments: departments,
+					locations: locations,
 					groups: groups,
 					selected: selected,
 					sortby: ( req.query.sortby ? req.query.sortby : 'barcode' ),
@@ -79,11 +79,11 @@ app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
 app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 	var status = req.params.status;
 	Groups.get( function( err, groups ) {
-		Departments.get( function( err, departments ) {
+		Locations.get( function( err, locations ) {
 			var date = moment().startOf( 'day' );
 			if ( req.user.audit_point ) date = moment( req.user.audit_point );
 			var opts = {
-				lookup: [ 'group', 'department', 'owner' ],
+				lookup: [ 'group', 'location', 'owner' ],
 				where: {
 					missing: date
 				}
@@ -91,18 +91,18 @@ app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 
 			var selected = {
 				status: req.query.status ? req.query.status : '',
-				department: req.query.department ? req.query.department : '',
+				location: req.query.location ? req.query.location : '',
 				group: req.query.group ? req.query.group : ''
 			};
 
 			// Set sort options
-			var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'group', 'department', 'value' ];
+			var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'group', 'location', 'value' ];
 			var direction_valid_options = [ 'asc', 'desc' ];
 			if ( sortby_valid_options.indexOf( req.query.sortby ) != -1 && direction_valid_options.indexOf[ req.query.direction ] != -1 ) {
 				var sortby = req.query.sortby;
 				if ( req.query.sortby == 'owner' ) sortby = 'owner_name';
 				if ( req.query.sortby == 'group' ) sortby = 'group_name';
-				if ( req.query.sortby == 'department' ) sortby = 'department_name';
+				if ( req.query.sortby == 'location' ) sortby = 'location_name';
 				opts.orderby = sortby;
 				opts.direction = req.query.direction;
 			} else {
@@ -113,14 +113,14 @@ app.get( '/missing', auth.isLoggedIn, function( req, res ) {
 			// Set filters
 			if ( req.query.status ) opts.where.status = req.query.status;
 			if ( req.query.group ) opts.where.group_id = req.query.group;
-			if ( req.query.department ) opts.where.department_id = req.query.department;
+			if ( req.query.location ) opts.where.location_id = req.query.location;
 
 			// Get items
 			Items.get( opts, function( err, items ) {
 				res.render( 'report', {
 					status: 'Missing',
 					items: items,
-					departments: departments,
+					locations: locations,
 					groups: groups,
 					selected: selected,
 					sortby: ( req.query.sortby ? req.query.sortby : 'barcode' ),

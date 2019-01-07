@@ -1,0 +1,27 @@
+if locations.length > 0
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col( width="40%" )
+				col( width="20%", colspan="3" )
+			thead
+				tr
+					th Name
+					th Barcode
+						span.dropup
+							span.caret
+					th View
+					th Manage
+			tbody
+				for location in locations
+					tr
+						td=location.name
+						td: +clipboard( location.barcode )
+						td
+							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?location=' + location.id )
+						td
+							+editBtn( '/locations/' + location.id + '/edit' )
+							+space
+							+deleteBtn( '/locations/' + location.id + '/remove' )
+else
+	+messageBlock( 'warning', 'There are no locations to display.' )

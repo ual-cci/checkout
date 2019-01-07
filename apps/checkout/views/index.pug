@@ -78,10 +78,10 @@ block contents
 									input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
 							.col-md-3
 								.input-group
-									select#department.form-control
-										option( value="" ) Don't change department
-										for department in departments
-											option( value=department.id ) #{ department.name }
+									select#location.form-control
+										option( value="" ) Don't change location
+										for location in locations
+											option( value=location.id, data-barcode=(location.barcode ? location.barcode : null)) #{ location.name }
 			.flash
 		#label.tab-pane
 			.row

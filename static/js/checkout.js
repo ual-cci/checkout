@@ -1,5 +1,11 @@
-var errorSound = new buzz.sound( "/sounds/error.wav" );
-var successSound = new buzz.sound( "/sounds/success.wav" );
+var auditErrorSound = new buzz.sound( "/sounds/audit-error.wav" );
+var auditSuccessSound = new buzz.sound( "/sounds/audit-success.wav" );
+var locationErrorSound = new buzz.sound( "/sounds/location-error.mp3" );
+var locationSuccessSound = new buzz.sound( "/sounds/location-success.mp3" );
+var warningSound = new buzz.sound( "/sounds/warning.mp3" );
+var errorSound = new buzz.sound( "/sounds/error.mp3" );
+
+var locationRegex = /^L:(.+)$/;
 
 var typeTimeout;
 var flashTimeout;
@@ -98,6 +104,9 @@ function flash( data ) {
 
 	jQuery( activeTab ).children().slice( 10 ).remove();
 
+	if ( data.status == 'warning' ) warningSound.play();
+	if ( data.status == 'danger' ) errorSound.play();
+
 	var html = '<div class="alert">';
 		if ( data.barcode ) html += '<strong>' + data.barcode + '</strong>: ';
 		html += data.message;
@@ -193,8 +202,8 @@ function label( item, cb ) {
 		cb( data );
 	} );
 }
-function audit( item, department, cb ) {
-	jQuery.post( '/api/audit/' + item, { department: department }, function( data, status ) {
+function audit( item, location, cb ) {
+	jQuery.post( '/api/audit/' + item, { location: location }, function( data, status ) {
 		cb( data );
 	} );
 }
@@ -401,11 +410,32 @@ function handleAuditSubmit( e ) {
 	var term = jQuery( '#audit input' ).val();
 	jQuery( '#audit input' ).val('');
 
-	audit( term, jQuery( '#department' ).val(), function( data ) {
-		if ( data.status == 'success' ) successSound.play();
-		if ( data.status == 'danger' ) errorSound.play();
-		flash( data );
-	} );
+	var locationMatch = term.match( locationRegex )
+	if ( locationMatch ) {
+    var child = jQuery( '#location' ).children( 'option[data-barcode="' + locationMatch[1] + '"]' );
+		if ( child.length == 1 ) {
+			jQuery( '#location' ).val( child.val() );
+			locationSuccessSound.play();
+			flash( {
+				barcode: locationMatch[1],
+				message: 'Location changed',
+				status: 'success'
+			} );
+		} else {
+			locationErrorSound.play();
+			flash( {
+				barcode: locationMatch[1],
+				message: 'Unknown location',
+				status: 'danger'
+			} );
+		}
+	} else {
+		audit( term, jQuery( '#location' ).val(), function( data ) {
+			if ( data.status == 'success' ) auditSuccessSound.play();
+			if ( data.status == 'danger' ) auditErrorSound.play();
+			flash( data );
+		} );
+	}
 }
 
 function handleLabelSubmit( e ) {

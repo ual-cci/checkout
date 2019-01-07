@@ -1,9 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Create Department"
+	- title = 'Edit: ' + location.name
 	- heading = title
 
 block contents
-	- action = 'Create'
-	include partials/department-form.pug
+	- action = 'Update'
+	include partials/form.pug

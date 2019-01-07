@@ -8,7 +8,7 @@ var	express = require( 'express' ),
 var db = require( __js + '/database' )(),
 	Items = db.Items,
 	Groups = db.Groups,
-	Departments = db.Departments,
+	Locations = db.Locations,
 	Courses = db.Courses,
 	Years = db.Years,
 	Printers = db.Printers,
@@ -37,12 +37,12 @@ app.post( '/multi' , auth.isLoggedIn, function(req, res) {
 
 app.get( '/', auth.isLoggedIn, function ( req, res ) {
 	Groups.get( function( err, groups ) {
-		Departments.get( function( err, departments ) {
+		Locations.get( function( err, locations ) {
 			Courses.get( function( err, courses ) {
 				Years.get( function( err, years ) {
 					var selected = {
 						status: req.query.status ? req.query.status : '',
-						department: req.query.department ? req.query.department : '',
+						location: req.query.location ? req.query.location : '',
 						group: req.query.group ? req.query.group : '',
 						course: req.query.course ? req.query.course : '',
 						year: req.query.year ? req.query.year : ''
@@ -51,7 +51,7 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 					if ( Object.keys( req.query ).length == 0 ) {
 						res.render( 'items', {
 							items: null,
-							departments: departments,
+							locations: locations,
 							groups: groups,
 							courses: courses,
 							years: years,
@@ -59,12 +59,12 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 						} );
 					} else {
 						var opts = {
-							lookup: [ 'group', 'department', 'owner' ],
+							lookup: [ 'group', 'location', 'owner' ],
 							where: {}
 						};
 
 						// Set sort options
-						var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'course', 'year', 'group', 'department', 'value' ];
+						var sortby_valid_options = [ 'status', 'barcode', 'name', 'owner', 'course', 'year', 'group', 'location', 'value' ];
 						var direction_valid_options = [ 'asc', 'desc' ];
 						if ( sortby_valid_options.indexOf( req.query.sortby ) != -1 && direction_valid_options.indexOf[ req.query.direction ] != -1 ) {
 							var sortby = req.query.sortby;
@@ -72,7 +72,7 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 							if ( req.query.sortby == 'course' ) sortby = 'owner_course_name';
 							if ( req.query.sortby == 'year' ) sortby = 'owner_year_name';
 							if ( req.query.sortby == 'group' ) sortby = 'group_name';
-							if ( req.query.sortby == 'department' ) sortby = 'department_name';
+							if ( req.query.sortby == 'location' ) sortby = 'location_name';
 							opts.orderby = sortby;
 							opts.direction = req.query.direction;
 						} else {
@@ -85,13 +85,13 @@ app.get( '/', auth.isLoggedIn, function ( req, res ) {
 						if ( req.query.course ) opts.where.course_id = req.query.course;
 						if ( req.query.year ) opts.where.years_id = req.query.year;
 						if ( req.query.group ) opts.where.group_id = req.query.group;
-						if ( req.query.department ) opts.where.department_id = req.query.department;
+						if ( req.query.location ) opts.where.location_id = req.query.location;
 
 						// Get items
 						Items.get( opts, function( err, items ) {
 							res.render( 'items', {
 								items: items,
-								departments: departments,
+								locations: locations,
 								groups: groups,
 								courses: courses,
 								years: years,
@@ -122,8 +122,8 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 		if ( req.body.fields.indexOf( 'group' ) != -1 && req.body.group != '' )
 			item.group_id = req.body.group;
 
-		if ( req.body.fields.indexOf( 'department' ) != -1 && req.body.department != '' )
-			item.department_id = req.body.department;
+		if ( req.body.fields.indexOf( 'location' ) != -1 && req.body.location != '' )
+			item.location_id = req.body.location;
 
 		if ( req.body.fields.indexOf( 'notes' ) != -1 && req.body.notes != '' )
 			item.notes = req.body.notes;
@@ -142,7 +142,7 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 		} );
 	} else {
 		Groups.get( function( err, groups ) {
-			Departments.get( function( err, departments ) {
+			Locations.get( function( err, locations ) {
 				if ( ! Array.isArray( req.body.edit ) ) {
 					req.flash( 'warning', 'Only one item was selected for group editing, use the single edit form' );
 					res.redirect( '/items/' + req.body.edit + '/edit' );
@@ -150,7 +150,7 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 				}
 
 				var opts = {
-					lookup: [ 'group', 'department', 'owner' ],
+					lookup: [ 'group', 'location', 'owner' ],
 					where: {},
 					orderby: 'barcode',
 					direction: 'asc'
@@ -161,7 +161,7 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 					res.render( 'edit-multiple', {
 						items: items,
 						groups: groups,
-						departments: departments
+						locations: locations
 					} );
 				} );
 			} );
@@ -171,13 +171,13 @@ app.post( '/edit', auth.isLoggedIn, function ( req, res ) {
 
 // Generate items
 app.get( '/generate', auth.isLoggedIn, function ( req, res ) {
-	Departments.get( function( err, departments ) {
+	Locations.get( function( err, locations ) {
 		Groups.get( function( err, groups ) {
-			if ( departments.length > 0 ) {
+			if ( locations.length > 0 ) {
 				req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
-				res.render( 'generate', { departments: departments, groups: groups, item: {} } );
+				res.render( 'generate', { locations: locations, groups: groups, item: {} } );
 			} else {
-				req.flash( 'warning', 'Create at least one department before creating items' )
+				req.flash( 'warning', 'Create at least one location before creating items' )
 				res.redirect( app.mountpath );
 			}
 		} );
@@ -212,8 +212,8 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', "You can't generate more than 25 items at a time without confirming you want to do this" );
 		res.redirect( app.mountpath + '/generate' );
 		return;
-	} else if ( req.body.department == '' ) {
-		req.flash( 'danger', 'The items must be assigned to a department' );
+	} else if ( req.body.location == '' ) {
+		req.flash( 'danger', 'The items must be assigned to a location' );
 		res.redirect( app.mountpath + '/generate' );
 		return;
 	}
@@ -227,7 +227,7 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 			barcode: req.body.prefix,
 			label: req.body.label,
 			value: req.body.value,
-			department_id: req.body.department,
+			location_id: req.body.location,
 			notes: req.body.notes,
 			status: 'available'
 		}
@@ -268,12 +268,12 @@ app.post( '/generate', auth.isLoggedIn, function( req, res ) {
 
 // Create item
 app.get( '/create', auth.isLoggedIn, function ( req, res ) {
-	Departments.get( function( err, departments ) {
+	Locations.get( function( err, locations ) {
 		Groups.get( function( err, groups ) {
-			if ( departments.length > 0 ) {
-				res.render( 'create', { item: null, departments: departments, groups: groups } );
+			if ( locations.length > 0 ) {
+				res.render( 'create', { item: null, locations: locations, groups: groups } );
 			} else {
-				req.flash( 'warning', 'Create at least one department before creating items' )
+				req.flash( 'warning', 'Create at least one location before creating items' )
 				res.redirect( app.mountpath );
 			}
 		} );
@@ -286,7 +286,7 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		barcode: req.body.barcode,
 		label: req.body.label,
 		value: req.body.value,
-		department_id: req.body.department,
+		location_id: req.body.location,
 		notes: req.body.notes,
 		status: 'available'
 	}
@@ -302,8 +302,8 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 		req.flash( 'danger', 'The item requires a unique barcode' );
 		res.redirect( app.mountpath + '/create' );
 		return;
-	} else if ( ! item.department_id ) {
-		req.flash( 'danger', 'The item must be assigned to a department' );
+	} else if ( ! item.location_id ) {
+		req.flash( 'danger', 'The item must be assigned to a location' );
 		res.redirect( app.mountpath + '/create' );
 		return;
 	}
@@ -334,7 +334,9 @@ app.post( '/create', auth.isLoggedIn, function( req, res ) {
 // List an item
 app.get( '/:id', auth.isLoggedIn, function( req, res ) {
 	Printers.get( function( err, printers ) {
-		Items.getById( req.params.id, function( err, item ) {
+		Items.getById( req.params.id, {
+			lookup: [ 'group', 'location' ]
+		}, function( err, item ) {
 			if ( item ) {
 				Actions.getByItemId( item.id, function( err, history ) {
 					res.render( 'item', {
@@ -394,14 +396,14 @@ app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 
 // Edit item form
 app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-	Items.getById( req.params.id, { lookup: ['group', 'department']}, function( err, item ) {
+	Items.getById( req.params.id, { lookup: ['group', 'location']}, function( err, item ) {
 		if ( item ) {
 			Groups.get( function( err, groups ) {
-				Departments.get( function( err, departments ) {
+				Locations.get( function( err, locations ) {
 					res.render( 'edit', {
 						item: item,
 						groups: groups,
-						departments: departments
+						locations: locations
 					} );
 				} );
 			} );
@@ -418,7 +420,7 @@ app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
 		name: req.body.name,
 		barcode: req.body.barcode,
 		label: req.body.label,
-		department_id: req.body.department,
+		location_id: req.body.location,
 		value: req.body.value,
 		notes: req.body.notes
 	};

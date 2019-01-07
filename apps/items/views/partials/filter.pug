@@ -36,11 +36,11 @@
 				for group in groups
 					option( value=group.id, selected=( group.id == selected.group ) ) #{ group.name }
 		.col-md-2
-			label( for="department" ) Department
-			select( name="department" )#department.form-control.input-sm
+			label( for="location" ) Location
+			select( name="location" )#location.form-control.input-sm
 				option( value="", selected ) &mdash;
-				for department in departments
-					option( value=department.id, selected=( department.id == selected.department ) ) #{ department.name }
+				for location in locations
+					option( value=location.id, selected=( location.id == selected.location ) ) #{ location.name }
 		
 		.col-md-2( class='col-md-offset-' + ( skip * 2 ) )
 			div( style="padding-top: 1.8em;" )

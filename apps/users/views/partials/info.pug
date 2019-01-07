@@ -1,24 +1,15 @@
 dl.dl-horizontal
 	dt Barcode
-	dd: span( data-clipboard-text=user.barcode ).clipboard=user.barcode
+	dd: +clipboard( user.barcode )
 	dt Course
-	dd
-		if user.course_id
-			a( href="/courses/" + user.course_id + '/edit' )=user.course_name
-		else
-			| &mdash;
+	dd: +course( user.course_name, user.course_id )
 	dt Year
-	dd
-		if user.year_id
-			| #{ user.year_name }
-		else
-			| &mdash;
-			
+	dd: +year( user.year_name, user.year_id )
 	if user.course_contact_id
 		dt Staff Contact
-		dd: a( href="/users/" + user.course_contact_id )=user.course_contact_name
+		dd: +user( user.course_contact_name, user.course_contact_id )
 	dt Email
-	dd: a( href="mailto:" + user.email )=user.email
+	dd: +email( user.email )
 	dt Status
 	dd
 		if user.disable
