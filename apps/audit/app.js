@@ -1,21 +1,24 @@
 const	express = require( 'express' );
 
 const auth = require('../../src/js/authentication' );
-const config = require('./config.json');
 const AuditController = require('./controller.js');
 
-const controller = new AuditController(['/', config.path].join(''));
 const app = express();
 app.set( 'views', __dirname + '/views' );
 
+app.use((req, res, next) => {
+  req.controller = new AuditController();
+  next();
+});
+
 // Audited report
-app.get( '/scanned', auth.isLoggedIn, function( req, res ) {
-  controller.getScanned(req, res);
+app.get( '/scanned', auth.isLoggedIn, (req, res ) => {
+  req.controller.getScanned(req, res);
 } );
 
 // Missing report
-app.get( '/missing', auth.isLoggedIn, function( req, res ) {
-  controller.getMissing(req, res);
+app.get( '/missing', auth.isLoggedIn, (req, res ) => {
+  req.controller.getMissing(req, res);
 });
 
 module.exports = function( config ) { return app; };

@@ -1,10 +1,23 @@
 const moment = require( 'moment' );
 
+const BaseController = require('../../src/js/common/BaseController.js');
+const config = require('./config.json');
+
 const NewItems = require('../../src/models/new/items.js');
 const NewDepartments = require('../../src/models/new/departments.js');
 const NewGroups = require('../../src/models/new/groups.js');
 
-class AuditController {
+class AuditController extends BaseController {
+  constructor() {
+    super({ path: config.path });
+
+    this.models = {
+      departments: new NewDepartments(),
+      groups: new NewGroups(),
+      items: new NewItems()
+    };
+  }
+
   /**
    *  A helper function to determine whether the columns
    *  are being sorted by anything
@@ -53,9 +66,6 @@ class AuditController {
   getShared(req, res) {
     const { orderBy, direction } = this.getSortBy(req.query.sortby, req.query.direction);
 
-    const departmentsModel = new NewDepartments();
-    const groupsModel = new NewGroups();
-
     const selected = {
       status: req.query.status ? req.query.status : '',
       department: req.query.department ? req.query.department : '',
@@ -63,8 +73,8 @@ class AuditController {
     };
 
     return Promise.all([
-      groupsModel.getAll(),
-      departmentsModel.getAll()
+      this.models.groups.getAll(),
+      this.models.departments.getAll()
     ])
       .then(results => {
         return {
@@ -79,9 +89,7 @@ class AuditController {
   }
 
   getSharedQuery(selected, orderBy, direction) {
-    const itemsModel = new NewItems();
-
-    return itemsModel.query()
+    return this.models.items.query()
       .lookup(['group', 'department', 'user', 'course', 'year'])
       .if(selected.status, (query) => {
         query.where('status', selected.status);
