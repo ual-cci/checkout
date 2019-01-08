@@ -17,10 +17,19 @@ class BaseModel {
     return [];
   }
 
+  /**
+   * Method to erase or reset references to
+   * a previous query
+   */
   _reset() {
     this.query();
   }
 
+  /**
+   * Creates a new row using the given values
+   *
+   * @param {Object} values
+   */
   create(values) {
     return new Promise((resolve, reject) => {
       const query = db(this.options.table).insert(values, 'id')
@@ -41,9 +50,15 @@ class BaseModel {
     });
   }
 
+  /**
+   * Updates a row's values using its ID
+   *
+   * @param {Number} id
+   * @param {Object} values
+   */
   update(id, values) {
     return new Promise((resolve, reject) => {
-      const query = db(this.options.table).update(values).where('id', id);
+      const query = this.query().where([['id', id]]).get().update(values);
 
       if (this.options.debug) {
         console.log(query.toString());
@@ -61,6 +76,37 @@ class BaseModel {
     });
   }
 
+  /**
+   * Update multiple rows with the same values at once
+   *
+   * @param {Array} ids
+   * @param {Object} values
+   */
+  updateMultiple(ids, values) {
+    return new Promise((resolve, reject) => {
+      const query = this.query().getMultipleByIds(ids).update(values);
+
+      if (this.options.debug) {
+        console.log(query.toString());
+      }
+
+      query.then(ids => {
+          resolve(ids);
+        })
+        .catch(err => {
+          reject(err);
+        })
+        .finally(() => {
+          this._reset();
+        });
+    });
+  }
+
+  /**
+   * Removes a row from the DB using its ID
+   *
+   * @param {Number} id
+   */
   remove(id) {
     return new Promise((resolve, reject) => {
       const query = this.query().get()
@@ -83,12 +129,27 @@ class BaseModel {
     });
   }
 
+  /**
+   * Makes sure a query has been created
+   * and creates one if not
+   *
+   * @private
+   */
   _safeguard() {
     if (!this._queryObj) {
       this.query();
     }
   }
 
+  /**
+   * A helper function to turn a list into knex like
+   * select object
+   *
+   * @param {Array} properties The list of properties
+   * @param {String?} table An override for table to select from
+   * @param {String?} prefix A prefix if the selects need to be aliased
+   * @private
+   */
   _propertiesToSelect(properties, table = false, prefix = '') {
     const obj = {};
 
@@ -187,17 +248,19 @@ class BaseModel {
 
     keys.forEach(k => {
       if (k in joins) {
-        const { table, join, properties, prefix } = joins[k];
+        const { table, join, properties, prefix, alias } = joins[k];
 
         // If the key is absolute (with .) use it, if not create it
         const foreignJoinKey = join[0].indexOf('.') >= 0 ? join[0] : `${table}.${join[0]}`;
         const tableJoinKey = join[1].indexOf('.') >= 0 ? join[1] : `${this.options.table}.${join[1]}`;
 
-        this._queryObj.leftJoin(table, foreignJoinKey, tableJoinKey)
+        const tableTarget = alias ? `${table} AS ${alias}` : table;
+
+        this._queryObj.leftJoin(tableTarget, foreignJoinKey, tableJoinKey)
           .select(
             this._propertiesToSelect(
               properties,
-              table,
+              alias ? alias : table,
               prefix ? prefix :`${k}_`
             )
           );
@@ -220,6 +283,10 @@ class BaseModel {
     return this._queryObj;
   }
 
+  /**
+   * Wrapper to return results while
+   * adding a universal catch
+   */
   return() {
     return new Promise((resolve, reject) => {
       this.get()
@@ -232,6 +299,10 @@ class BaseModel {
     });
   }
 
+  /**
+   * Wrapper method to resolve as the single
+   * and first item from a query
+   */
   returnSingle() {
     return new Promise((resolve, reject) => {
       this.get()
@@ -244,8 +315,23 @@ class BaseModel {
     });
   }
 
+  /**
+   * Return item from id
+   *
+   * @param {Number} id
+   */
   getById(id) {
     return this.where([['id', id]]).returnSingle();
+  }
+
+  /**
+   * Wrapper function to return multiple items
+   * using their ids
+   *
+   * @param {Array} ids
+   */
+  getMultipleByIds(ids) {
+    return this.query().get().whereIn(`${this.options.table}.id`, ids);
   }
 }
 
