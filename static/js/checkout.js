@@ -138,7 +138,7 @@ function addModule( data ) {
 function addResult( result, type ) {
 	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
 	switch ( result.status ) {
-		case 'available':
+		case AVAILABILITY.AVAILABLE:
 			html += ' <span class="label label-success">&nbsp;</span>';
 			break;
 		case 'on-loan':

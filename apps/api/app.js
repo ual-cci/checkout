@@ -19,6 +19,8 @@ const Courses = require('../../src/models/courses.js');
 const Years = require('../../src/models/years.js');
 const Actions = require('../../src/models/actions.js');
 
+const { AVAILABILITY } = require('../../src/js/common/constants');
+
 var auth = require( __js + '/authentication' );
 
 app.set( 'views', __dirname + '/views' );
@@ -248,25 +250,25 @@ app.post( '/issue/:item/:user', auth.isLoggedIn, function( req, res ) {
 				Items.getByBarcode( req.params.item, opts, function( msg, item ) {
 					if ( item ) {
 						switch ( item.status ) {
-							case 'on-loan':
+							case AVAILABILITY.ON_LOAN:
 								return res.json( {
 									status: 'danger',
 									message: 'Item already on loan',
 									barcode: item.barcode
 								} );
-							case 'lost':
+							case AVAILABILITY.LOST:
 								return res.json( {
 									status: 'danger',
 									message: 'Item is currently lost',
 									barcode: item.barcode
 								} );
-							case 'broken':
+							case AVAILABILITY.BROKEN:
 								return res.json( {
 									status: 'danger',
 									message: 'Item is currently broken',
 									barcode: item.barcode
 								} );
-							case 'available':
+							case AVAILABILITY.AVAILABLE:
 								function issue( item, user, operator ) {
 									Items.issue( item.barcode, user.id, function( msg ) {
 										var output = {

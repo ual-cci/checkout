@@ -7,6 +7,8 @@ const NewItems = require('../../src/models/new/items.js');
 const NewDepartments = require('../../src/models/new/departments.js');
 const NewGroups = require('../../src/models/new/groups.js');
 
+const { getSortBy } = require('../../src/js/utils.js');
+
 class AuditController extends BaseController {
   constructor() {
     super({ path: config.path });
@@ -19,44 +21,6 @@ class AuditController extends BaseController {
   }
 
   /**
-   *  A helper function to determine whether the columns
-   *  are being sorted by anything
-   *
-   * @param {String?} _sortby The column to sort by
-   * @param {String?} _direction One of 'asc' or 'desc'
-   */
-  getSortBy(_sortby, _direction) {
-    const sort_options = ['status', 'barcode', 'name', 'owner', 'group', 'department', 'value'];
-    const dir_options = ['asc', 'desc'];
-
-    if (sort_options.indexOf(_sortby) >= 0 && dir_options.indexOf(_direction) >= 0) {
-      const sort = {
-        orderBy: _sortby,
-        direction: _direction
-      };
-
-      switch(_sortby) {
-        case 'owner':
-          sort.orderBy = 'owner_name';
-          break;
-        case 'group':
-          sort.orderBy = 'group_name';
-          break;
-        case 'department':
-          sort.orderBy = 'department_name';
-          break;
-      }
-
-      return sort;
-    }
-
-    return {
-      orderBy: 'barcode',
-      direction: 'asc'
-    };
-  }
-
-  /**
    * The same method that both routes need so combined into
    * one not-repeated method
    *
@@ -64,7 +28,7 @@ class AuditController extends BaseController {
    * @param {Object} res
    */
   getShared(req, res) {
-    const { orderBy, direction } = this.getSortBy(req.query.sortby, req.query.direction);
+    const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction);
 
     const selected = {
       status: req.query.status ? req.query.status : '',
