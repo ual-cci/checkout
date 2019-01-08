@@ -60,6 +60,23 @@ class ItemModel extends BaseModel {
         });
     });
   }
+
+  updateGroup(oldGroupId, newGroupId = null) {
+    return new Promise((resolve, reject) => {
+      this.query()
+        .get()
+        .where('group_id', oldGroupId)
+        .update({
+          'group_id': newGroupId
+        })
+        .then(() => {
+          resolve(newGroupId);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    })
+  }
 }
 
 module.exports = ItemModel;

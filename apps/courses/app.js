@@ -1,39 +1,42 @@
 const express = require( 'express' );
 
 const auth = require('../../src/js/authentication.js');
-const config = require('./config.json');
 const CoursesController = require('./controller.js');
 
 const app = express();
-const controller = new CoursesController(['/', config.path].join(''));
+
+app.use((req, res, next) => {
+  req.controller = new CoursesController();
+  next();
+});
 
 app.set( 'views', __dirname + '/views' );
-app.get( '/', auth.isLoggedIn, function ( req, res ) {
-  controller.getHome(req, res);
+app.get( '/', auth.isLoggedIn, (req, res ) => {
+  req.controller.getHome(req, res);
 });
 
-app.get( '/create', auth.isLoggedIn, function ( req, res ) {
-  controller.getCreate(req, res);
+app.get( '/create', auth.isLoggedIn, (req, res ) => {
+  req.controller.getCreate(req, res);
 });
 
-app.post( '/create', auth.isLoggedIn, function( req, res ) {
-  controller.postCreate(req, res);
+app.post( '/create', auth.isLoggedIn, (req, res) => {
+  req.controller.postCreate(req, res);
 });
 
-app.get( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-  controller.getEdit(req, res);
+app.get( '/:id/edit', auth.isLoggedIn, (req, res) => {
+  req.controller.getEdit(req, res);
 });
 
-app.post( '/:id/edit', auth.isLoggedIn, function( req, res ) {
-  controller.postEdit(req, res);
+app.post( '/:id/edit', auth.isLoggedIn, (req, res) => {
+  req.controller.postEdit(req, res);
 });
 
-app.get( '/:id/remove', auth.isLoggedIn, function( req, res ) {
-  controller.getRemove(req, res);
+app.get( '/:id/remove', auth.isLoggedIn, (req, res) => {
+  req.controller.getRemove(req, res);
 });
 
-app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
-  controller.postRemove(req, res);
+app.post( '/:id/remove', auth.isLoggedIn, (req, res) => {
+  req.controller.postRemove(req, res);
 });
 
 module.exports = function( config ) { return app; };

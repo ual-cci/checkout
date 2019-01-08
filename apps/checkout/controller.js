@@ -1,24 +1,33 @@
+const BaseController = require('../../src/js/common/BaseController.js');
+const config = require('./config.json');
+
 const NewDepartments = require('../../src/models/new/departments.js');
 const NewCourses = require('../../src/models/new/courses.js');
 const NewYears = require('../../src/models/new/years.js');
 
-class CheckoutController {
-  getHome(req, res) {
-    const departmentsModel = new NewDepartments();
-    const coursesModel = new NewCourses();
-    const yearsModel = new NewYears();
+class CheckoutController extends BaseController {
+  constructor() {
+    super({ path: config.path });
 
+    this.models = {
+      departments: new NewDepartments(),
+      courses: new NewCourses(),
+      years: new NewYears()
+    };
+  }
+
+  getHome(req, res) {
     Promise.all([
-      departmentsModel.getAll(),
-      coursesModel.getAll(),
-      yearsModel.getAll(),
+      this.models.departments.getAll(),
+      this.models.courses.getAll(),
+      this.models.years.getAll(),
     ])
-      .then(results => {
-        res.render( 'index', {
-          departments: results[0],
-          courses: results[1],
-          years: results[2]
-        } );
+      .then(([departments, courses, years]) => {
+        res.render('index', {
+          departments,
+          courses,
+          years
+        });
       });
   }
 }
