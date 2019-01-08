@@ -40,6 +40,10 @@ class ItemModel extends BaseModel {
     };
   }
 
+  get bootstrap() {
+    return ['group', 'department', 'user', 'course', 'year'];
+  }
+
   get properties() {
     return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated'];
   }

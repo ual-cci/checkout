@@ -10,7 +10,7 @@ class GroupController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      groups: new NewGroups({ debug: true }),
+      groups: new NewGroups(),
       items: new NewItems(),
     };
   }

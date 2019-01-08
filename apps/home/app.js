@@ -1,14 +1,10 @@
-var __home = __dirname + "/../..";
-var __src = __home + '/src';
-var __js = __src + '/js';
+const express = require( 'express' );
+const auth = require('../../src/js/authentication.js');
 
-var	express = require( 'express' ),
-	app = express();
+const app = express();
 
-var auth = require( __js + '/authentication' );
-
-app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	res.redirect( '/checkout' );
-} );
+app.get('/', auth.isLoggedIn, (req, res) => {
+	res.redirect('/checkout');
+});
 
 module.exports = function( config ) { return app; };

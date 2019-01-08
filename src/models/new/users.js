@@ -21,7 +21,8 @@ class UserModel extends BaseModel {
       },
       contact: {
         prefix: 'course_contact_',
-        table: 'users AS contact',
+        table: 'users',
+        alias: 'contact',
         join: ['courses.contact_id', 'contact.id'],
         properties: ['id', 'name', 'email']
       },
