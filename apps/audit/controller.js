@@ -54,7 +54,6 @@ class AuditController extends BaseController {
 
   getSharedQuery(selected, orderBy, direction) {
     return this.models.items.query()
-      .lookup(['group', 'department', 'user', 'course', 'year'])
       .if(selected.status, (query) => {
         query.where('status', selected.status);
       })

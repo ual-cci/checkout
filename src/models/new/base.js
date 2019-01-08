@@ -17,6 +17,10 @@ class BaseModel {
     return [];
   }
 
+  get bootstrap() {
+    return [];
+  }
+
   /**
    * Method to erase or reset references to
    * a previous query
@@ -170,6 +174,8 @@ class BaseModel {
     if (this.properties.length) {
       this._queryObj.select(this._propertiesToSelect(this.properties));
     }
+
+    this.lookup(this.bootstrap);
 
     return this;
   }

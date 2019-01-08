@@ -13,13 +13,12 @@ class BaseController {
    */
   getRoute(route = '') {
     const tail = typeof route === 'string' ? route : route.join('');
-
-    return [this.mountPath, route].join('');
+    return [this.mountPath, tail].join('');
   }
 
   displayError(req, res, err, route = '', message = 'Error - ') {
     req.flash('danger', [message, err].join(''));
-    res.redirect(this.getRoute(route));
+    res.redirect(route);
   }
 }
 
