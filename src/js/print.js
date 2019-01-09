@@ -17,13 +17,19 @@ var Print = {
 			autoFirstPage: false
 		} );
 
+		var docSize = '';
 		var barcodes = [];
 		for ( c in codes ) {
 			var code = codes[c];
 			switch( code.type ) {
 				default:
 				case '12mm':
+					size = "Custom.12x18mm";
 					barcodes.push( Print.add12mmTape( doc, code.barcode, code.text ) )
+					break;
+				case '36mm':
+					size = "Custom.36x36mm";
+					barcodes.push( Print.add36mmTape( doc, code.barcode, code.text ) )
 					break;
 			}
 		}
@@ -35,37 +41,62 @@ var Print = {
 		doc.on( 'data', buffer.push.bind( buffer ) );
 
 		doc.on( 'end', function() {
-			Print.send( buffer, printer );
+			Print.send( buffer, printer, size );
 		} );
 	},
 	add12mmTape: function( doc, barcode, text ) {
 		return new Promise( function( resolve, reject ) {
 			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
 				var page = doc.addPage( {
-					size: [ pt(20), pt(10) ],
+					size: [ pt(18), pt(12) ],
 					layout: 'landscape',
 					margin: 0
 				} );
 				page.fontSize( 4.5 );
 				page.font('Helvetica-Bold')
 
-				page.text( "Creative\nTechnology\nLab", pt(0), pt(1), {
+				page.text( "Creative\nTechnology\nLab", pt(1), pt(1), {
 					width: pt(10),
 					align: 'left',
 					weight: 'bold',
 					lineGap: -1.5
 				} );
 
-				page.image( png,  pt(0), pt(6), {
+				page.image( png,  pt(1), pt(6), {
 					width: pt(9),
 					height: pt(9)
 				} );
 
 				page.fontSize( 4 );
 				page.font('Helvetica')
-				page.text( barcode, pt(0), pt(16), {
+				page.text( barcode, pt(1), pt(16), {
 					width: pt(9),
 					align: 'left'
+				} );
+
+				resolve( page );
+			} )
+		} );
+	},
+	add36mmTape: function( doc, barcode, text ) {
+		return new Promise( function( resolve, reject ) {
+			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
+				var page = doc.addPage( {
+					size: [ pt(36), pt(36) ],
+					layout: 'landscape',
+					margin: 0
+				} );
+				page.image( png,  pt(5.5), pt(2), {
+					width: pt(25),
+					height: pt(25)
+				} );
+
+				page.fontSize( 15 );
+				page.font('Helvetica-Bold')
+
+				page.text( text, pt(0), pt(29), {
+					width: pt(36),
+					align: 'center'
 				} );
 
 				resolve( page );
@@ -88,13 +119,16 @@ var Print = {
 			} );
 		} );
 	},
-	send: function( buffer, printer ) {
+	send: function( buffer, printer, size ) {
 		var file = {
+			"job-attributes-tag": {
+				"media": [ size ]
+			},
 			"operation-attributes-tag": {
 				"requesting-user-name": process.env.APP_NAME,
 				"job-name": "Labels",
 				"requesting-user-name": "Checkout",
-				"document-format": "application/pdf"
+				"document-format": "application/pdf",
 			},
 			data: Buffer.concat( buffer )
 		};

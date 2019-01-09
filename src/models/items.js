@@ -131,6 +131,7 @@ var model = {
 			.select( {
 				location_id: 'locations.id',
 				location_name: 'locations.name',
+				location_barcode: 'locations.barcode',
 			} );
 		}
 

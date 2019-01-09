@@ -7,9 +7,12 @@ var	express = require( 'express' ),
 
 var db = require( __js + '/database' )(),
 	Locations = db.Locations,
-	Items = db.Items;
+	Items = db.Items,
+	Printers = db.Printers;
 
 var auth = require( __js + '/authentication' );
+
+var Print = require( __js + '/print' );
 
 app.set( 'views', __dirname + '/views' );
 
@@ -99,7 +102,7 @@ app.get( '/:id/remove', auth.isLoggedIn, function( req, res ) {
 				locations: list
 			} );
 		} else {
-			req.flash( 'danger', 'Locations not found' );
+			req.flash( 'danger', 'Location not found' );
 			res.redirect( app.mountpath );
 		}
 	} )
@@ -138,6 +141,43 @@ app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
 				} );
 			} );
 		} );
+	} );
+} )
+
+// Reprint a location
+app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
+	Locations.getById( req.params.id, function( err, location ) {
+		if ( location ) {
+			var printer_id;
+			if ( req.query.printer ) {
+				printer_id = req.query.printer;
+			} else if ( req.user.printer_id ) {
+				printer_id = req.user.printer_id;
+			} else {
+				req.flash( 'danger', 'No printer selected' );
+				res.redirect( app.mountpath );
+				return;
+			}
+
+			Printers.getById( printer_id, function( err, printer ) {
+				if ( printer ) {
+					Print.label( {
+						barcode: 'L:' + location.barcode,
+						text: location.barcode,
+						type: '36mm'
+					}, printer.url );
+
+					req.flash( 'info', 'Label printed to ' + printer.name );
+					res.redirect( app.mountpath );
+				} else {
+					req.flash( 'warning', 'Invalid printer' );
+					res.redirect( app.mountpath );
+				}
+			} )
+		} else {
+			req.flash( 'danger', 'Location not found' );
+			res.redirect( app.mountpath );
+		}
 	} );
 } )
 
