@@ -75,7 +75,7 @@ class AuditController extends BaseController {
         query.where([
           ['audited', '>=', date]
         ])
-        .get()
+        .expose()
         .then(items => {
           res.render( 'report', {
             status: 'Scanned',
@@ -100,7 +100,7 @@ class AuditController extends BaseController {
             this.where('items.audited', null).orWhere('items.audited', '<', date);
           });
         })
-        .get()
+        .expose()
         .then(items => {
           res.render( 'report', {
             status: 'Missing',

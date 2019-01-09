@@ -88,7 +88,7 @@ class ItemController extends BaseController {
             .orderBy([
               [ orderBy, direction ]
             ])
-            .get()
+            .expose()
             .then(items => {
               res.render( 'items', {
                 items,
@@ -149,7 +149,7 @@ class ItemController extends BaseController {
             .orderBy([
               ['barcode', 'asc']
             ])
-            .get()
+            .expose()
             .whereIn('items.id', req.body.edit)
             .then(items => {
               res.render('edit-multiple', {

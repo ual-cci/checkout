@@ -2,13 +2,14 @@ const BaseModel = require('./base.js');
 
 class GroupModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Groups'
-    }));
+    super({
+      ...opts,
+      table: 'groups'
+    });
   }
 
   getAll() {
-    return this.orderBy(['name']).return();
+    return this.orderBy(['name']).retrieve();
   }
 }
 

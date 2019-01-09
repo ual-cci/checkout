@@ -2,13 +2,14 @@ const BaseModel = require('./base.js');
 
 class DepartmentModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Departments'
-    }));
+    super({
+      ...opts,
+      table: 'departments'
+    });
   }
 
   getAll() {
-    return this.orderBy(['name']).return();
+    return this.orderBy(['name']).retrieve();
   }
 }
 

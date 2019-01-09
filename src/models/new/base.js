@@ -1,10 +1,9 @@
 const db = require('../../js/database.js');
 
 class BaseModel {
-  constructor({ name, table, debug = false }) {
+  constructor({ table, debug = false }) {
     this.options = {
-      name,
-      table: table || name.toLowerCase(),
+      table: table,
       debug
     };
   }
@@ -62,7 +61,7 @@ class BaseModel {
    */
   update(id, values) {
     return new Promise((resolve, reject) => {
-      const query = this.query().where([['id', id]]).get().update(values);
+      const query = this.query().where([['id', id]]).expose().update(values);
 
       if (this.options.debug) {
         console.log(query.toString());
@@ -113,7 +112,7 @@ class BaseModel {
    */
   remove(id) {
     return new Promise((resolve, reject) => {
-      const query = this.query().get()
+      const query = this.query().expose()
         .where( 'id', id )
         .delete();
 
@@ -279,7 +278,7 @@ class BaseModel {
   /**
    * Return the raw query object
    */
-  get() {
+  expose() {
     this._safeguard();
 
     if (this.options.debug) {
@@ -293,9 +292,9 @@ class BaseModel {
    * Wrapper to return results while
    * adding a universal catch
    */
-  return() {
+  retrieve() {
     return new Promise((resolve, reject) => {
-      this.get()
+      this.expose()
         .then(results => {
           resolve(results);
         })
@@ -309,9 +308,9 @@ class BaseModel {
    * Wrapper method to resolve as the single
    * and first item from a query
    */
-  returnSingle() {
+  retrieveSingle() {
     return new Promise((resolve, reject) => {
-      this.get()
+      this.expose()
         .then(results => {
           resolve(results.length ? results[0] : false);
         })
@@ -327,7 +326,7 @@ class BaseModel {
    * @param {Number} id
    */
   getById(id) {
-    return this.where([['id', id]]).returnSingle();
+    return this.where([['id', id]]).retrieveSingle();
   }
 
   /**
@@ -337,7 +336,7 @@ class BaseModel {
    * @param {Array} ids
    */
   getMultipleByIds(ids) {
-    return this.query().get().whereIn(`${this.options.table}.id`, ids);
+    return this.query().expose().whereIn(`${this.options.table}.id`, ids);
   }
 }
 

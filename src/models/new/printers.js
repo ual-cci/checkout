@@ -2,13 +2,14 @@ const BaseModel = require('./base.js');
 
 class PrinterModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Printers'
-    }));
+    super({
+      ...opts,
+      table: 'printers'
+    });
   }
 
   getAll() {
-    return this.orderBy(['name']).return();
+    return this.orderBy(['name']).retrieve();
   }
 }
 

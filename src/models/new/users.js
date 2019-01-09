@@ -2,9 +2,10 @@ const BaseModel = require('./base.js');
 
 class UserModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Users'
-    }));
+    super({
+      ...opts,
+      table: 'users'
+    });
   }
 
   get joins() {
@@ -39,13 +40,13 @@ class UserModel extends BaseModel {
   }
 
   getAll() {
-    return this.return();
+    return this.retrieve();
   }
 
   updateCourse(oldCourseId, newCourseId) {
     return new Promise((resolve, reject) => {
       this.query()
-        .get()
+        .expose()
         .where('course_id', oldCourseId)
         .update({
           'course_id': newCourseId

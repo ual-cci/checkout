@@ -2,9 +2,10 @@ const BaseModel = require('./base.js');
 
 class ItemModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Items'
-    }));
+    super({
+      ...opts,
+      table: 'items'
+    });
   }
 
   get joins() {
@@ -51,7 +52,7 @@ class ItemModel extends BaseModel {
   updateDepartment(oldDepartmentId, newDepartmentId) {
     return new Promise((resolve, reject) => {
       this.query()
-        .get()
+        .expose()
         .where('department_id', oldDepartmentId)
         .update({
           'department_id': newDepartmentId
@@ -68,7 +69,7 @@ class ItemModel extends BaseModel {
   updateGroup(oldGroupId, newGroupId = null) {
     return new Promise((resolve, reject) => {
       this.query()
-        .get()
+        .expose()
         .where('group_id', oldGroupId)
         .update({
           'group_id': newGroupId

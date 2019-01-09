@@ -2,9 +2,10 @@ const BaseModel = require('./base.js');
 
 class ActionModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Actions'
-    }));
+    super({
+      ...opts,
+      table: 'actions'
+    });
   }
 
   get joins() {
@@ -45,7 +46,7 @@ class ActionModel extends BaseModel {
       .orderBy([
         ['datetime', 'desc']
       ])
-      .return();
+      .retrieve();
   }
 
   getByItemBarcode(barcode) {
@@ -57,7 +58,7 @@ class ActionModel extends BaseModel {
       .orderBy([
         ['datetime', 'desc']
       ])
-      .return();
+      .retrieve();
   }
 
   removeByItemId(itemId) {
@@ -65,7 +66,7 @@ class ActionModel extends BaseModel {
       .where([
         ['item_id', itemId]
       ])
-      .get()
+      .expose()
       .delete();
   }
 }

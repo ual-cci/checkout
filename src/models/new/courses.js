@@ -2,9 +2,10 @@ const BaseModel = require('./base.js');
 
 class CourseModel extends BaseModel {
   constructor(opts = {}) {
-    super(Object.assign({}, opts, {
-      name: 'Courses'
-    }));
+    super({
+      ...opts,
+      table: 'courses'
+    });
   }
 
   get joins() {
@@ -22,7 +23,7 @@ class CourseModel extends BaseModel {
   }
 
   getAll() {
-    return this.lookup(['user']).orderBy(['name']).return();
+    return this.lookup(['user']).orderBy(['name']).retrieve();
   }
 }
 
