@@ -148,19 +148,6 @@ app.post( '/:id/remove', auth.isLoggedIn, function( req, res ) {
 app.get( '/:id/label', auth.isLoggedIn, function( req, res ) {
 	Locations.getById( req.params.id, function( err, location ) {
 		if ( location ) {
-			res.render( 'confirm-print', {
-				location: location
-			} );
-		} else {
-			req.flash( 'danger', 'Location not found' );
-			res.redirect( app.mountpath );
-		}
-	} )
-} );
-
-app.post( '/:id/label', auth.isLoggedIn, function( req, res ) {
-	Locations.getById( req.params.id, function( err, location ) {
-		if ( location ) {
 			var printer_id;
 			if ( req.query.printer ) {
 				printer_id = req.query.printer;
