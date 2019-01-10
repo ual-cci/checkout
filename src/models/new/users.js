@@ -47,6 +47,10 @@ class UserModel extends BaseModel {
     return this.query().where([['barcode', barcode]]).retrieveSingle();
   }
 
+  getByEmail(email) {
+    return this.query().where([['email', email]]).retrieveSingle();
+  }
+
   updateCourse(oldCourseId, newCourseId) {
     return new Promise((resolve, reject) => {
       this.query()
