@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewPrinters = require('../../src/models//printers');
-const NewUsers = require('../../src/models//users');
+const Printers = require('../../src/models/printers');
+const Users = require('../../src/models/users');
 
 const config = require('./config.json');
 
@@ -10,8 +10,8 @@ class PrintersController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      users: new NewUsers(),
-      printers: new NewPrinters(),
+      users: new Users(),
+      printers: new Printers(),
     };
   }
 

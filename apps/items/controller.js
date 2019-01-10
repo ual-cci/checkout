@@ -1,12 +1,12 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewItems = require('../../src/models//items.js');
-const NewGroups = require('../../src/models//groups.js');
-const NewDepartments = require('../../src/models//departments.js');
-const NewCourses = require('../../src/models//courses.js');
-const NewYears = require('../../src/models//years.js');
-const NewPrinters = require('../../src/models//printers.js');
-const NewActions = require('../../src/models//actions.js');
+const Items = require('../../src/models/items.js');
+const Groups = require('../../src/models/groups.js');
+const Locations = require('../../src/models/locations.js');
+const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
+const Printers = require('../../src/models/printers.js');
+const Actions = require('../../src/models/actions.js');
 
 // TODO
 const Print = require('../../src/js/print');
@@ -20,13 +20,13 @@ class ItemController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      items: new NewItems(),
-      groups: new NewGroups(),
-      departments: new NewDepartments(),
-      courses: new NewCourses(),
-      years: new NewYears(),
-      printers: new NewPrinters(),
-      actions: new NewActions(),
+      items: new Items(),
+      groups: new Groups(),
+      locations: new Locations(),
+      courses: new Courses(),
+      years: new Years(),
+      printers: new Printers(),
+      actions: new Actions(),
     };
   }
 
@@ -59,14 +59,14 @@ class ItemController extends BaseController {
   getRoot(req, res) {
     Promise.all([
       this.models.groups.getAll(),
-      this.models.departments.getAll(),
+      this.models.locations.getAll(),
       this.models.courses.getAll(),
       this.models.years.getAll()
     ])
-      .then(([groups, departments, courses, years]) => {
+      .then(([groups, locations, courses, years]) => {
         const selected = {
           status: req.query.status ? req.query.status : '',
-          department: req.query.department ? req.query.department : '',
+          location: req.query.location ? req.query.location : '',
           group: req.query.group ? req.query.group : '',
           course: req.query.course ? req.query.course : '',
           year: req.query.year ? req.query.year : ''
@@ -76,7 +76,7 @@ class ItemController extends BaseController {
           // If there is no query, display no items as none are matched
           res.render('items', {
             items: null,
-            departments,
+            locations,
             groups,
             courses,
             years,
@@ -102,8 +102,8 @@ class ItemController extends BaseController {
             .if((req.query.group), query => {
               query.where('group_id', req.query.group);
             })
-            .if((req.query.department), query => {
-              query.where('department_id', req.query.department);
+            .if((req.query.location), query => {
+              query.where('location_id', req.query.location);
             })
             .orderBy([
               [ orderBy, direction ]
@@ -112,7 +112,7 @@ class ItemController extends BaseController {
             .then(items => {
               res.render( 'items', {
                 items,
-                departments,
+                locations,
                 groups,
                 courses,
                 years,
@@ -146,8 +146,8 @@ class ItemController extends BaseController {
 
     // Checks if its a request with data
     if (req.body.fields) {
-      const keys = ['label', 'group', 'department', 'notes', 'value'];
-      const values = ['label', 'group_id', 'department_id', 'notes', 'value'];
+      const keys = ['label', 'group', 'location', 'notes', 'value'];
+      const values = ['label', 'group_id', 'location_id', 'notes', 'value'];
       const item = {};
 
       keys.forEach((k, index) => {
@@ -166,9 +166,9 @@ class ItemController extends BaseController {
     } else {
       Promise.all([
         this.models.groups.getAll(),
-        this.models.departments.getAll()
+        this.models.locations.getAll()
       ])
-        .then(([groups, departments]) => {
+        .then(([groups, locations]) => {
 
           this.models.items.query()
             .orderBy([
@@ -180,7 +180,7 @@ class ItemController extends BaseController {
               res.render('edit-multiple', {
                 items,
                 groups,
-                departments
+                locations
               });
             });
         });
@@ -195,15 +195,15 @@ class ItemController extends BaseController {
    */
   getGenerate(req, res) {
     Promise.all([
-      this.models.departments.getAll(),
+      this.models.locations.getAll(),
       this.models.groups.getAll()
     ])
-      .then(([departments, groups]) => {
-        if (departments.length > 0) {
+      .then(([locations, groups]) => {
+        if (locations.length > 0) {
           req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
-          res.render( 'generate', { departments: departments, groups: groups, item: {} } );
+          res.render( 'generate', { locations: locations, groups: groups, item: {} } );
         } else {
-          req.flash( 'warning', 'Create at least one department before creating items' )
+          req.flash( 'warning', 'Create at least one location before creating items' )
           res.redirect(this.getRoute());
         }
       });
@@ -241,8 +241,8 @@ class ItemController extends BaseController {
         message: 'You can\'t generate more than 25 items at a time without confirming you want to do this'
       },
       {
-        condition: (req.body.department == ''),
-        message: 'The items must be assigned to a department'
+        condition: (req.body.location == ''),
+        message: 'The items must be assigned to a location'
       }
     ];
 
@@ -257,7 +257,7 @@ class ItemController extends BaseController {
         barcode: req.body.prefix,
         label: req.body.label,
         value: req.body.value,
-        department_id: req.body.department,
+        location_id: req.body.location,
         notes: req.body.notes,
         status: AVAILABILITY.AVAILABLE
       }
@@ -301,14 +301,14 @@ class ItemController extends BaseController {
    */
   getCreate(req, res) {
     Promise.all([
-      this.models.departments.getAll(),
+      this.models.locations.getAll(),
       this.models.groups.getAll()
     ])
-      .then(([departments, groups]) => {
-        if (departments.length > 0) {
-          res.render( 'create', { item: null, departments, groups } );
+      .then(([locations, groups]) => {
+        if (locations.length > 0) {
+          res.render( 'create', { item: null, locations, groups } );
         } else {
-          req.flash( 'warning', 'Create at least one department before creating items' )
+          req.flash( 'warning', 'Create at least one location before creating items' )
           res.redirect(this.getRoute());
         }
       });
@@ -326,7 +326,7 @@ class ItemController extends BaseController {
       barcode: req.body.barcode,
       label: req.body.label,
       value: req.body.value,
-      department_id: req.body.department,
+      location_id: req.body.location,
       notes: req.body.notes,
       status: AVAILABILITY.AVAILABLE
     }
@@ -345,8 +345,8 @@ class ItemController extends BaseController {
         message: 'The item requires a unique barcode'
       },
       {
-        condition: (!item.department_id),
-        message: 'The item must be assigned to a department'
+        condition: (!item.location_id),
+        message: 'The item must be assigned to a location'
       }
     ];
 
@@ -495,9 +495,9 @@ class ItemController extends BaseController {
     Promise.all([
       this.models.items.getById(req.params.id),
       this.models.groups.getAll(),
-      this.models.departments.getAll()
+      this.models.locations.getAll()
     ])
-      .then(([item, groups, departments]) => {
+      .then(([item, groups, locations]) => {
         if (!item) {
           throw new Error('Item not found');
         }
@@ -505,7 +505,7 @@ class ItemController extends BaseController {
         res.render('edit', {
           item,
           groups,
-          departments
+          locations
         });
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
@@ -522,7 +522,7 @@ class ItemController extends BaseController {
       name: req.body.name,
       barcode: req.body.barcode,
       label: req.body.label,
-      department_id: req.body.department,
+      location_id: req.body.location,
       value: req.body.value,
       notes: req.body.notes
     };

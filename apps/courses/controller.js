@@ -1,16 +1,16 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 const config = require('./config.json');
 
-const NewCourses = require('../../src/models//courses.js');
-const NewUsers = require('../../src/models//users.js');
+const Courses = require('../../src/models/courses.js');
+const Users = require('../../src/models/users.js');
 
 class CoursesController extends BaseController {
   constructor() {
     super({ path: config.path });
 
     this.models = {
-      courses: new NewCourses(),
-      users: new NewUsers()
+      courses: new Courses(),
+      users: new Users()
     };
   }
 

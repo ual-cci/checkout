@@ -2,7 +2,7 @@ const passport = require( 'passport' );
 const LocalStrategy = require( 'passport-local' ).Strategy;
 const crypto = require( 'crypto' );
 
-const UsersModel = require('../models//users');
+const UsersModel = require('../models/users');
 
 const Authentication = {
 	auth: function( app ) {

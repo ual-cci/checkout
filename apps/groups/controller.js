@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewGroups = require('../../src/models//groups.js');
-const NewItems = require('../../src/models//items.js');
+const Groups = require('../../src/models/groups.js');
+const Items = require('../../src/models/items.js');
 
 const config = require('./config.json');
 
@@ -10,8 +10,8 @@ class GroupController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      groups: new NewGroups(),
-      items: new NewItems(),
+      groups: new Groups(),
+      items: new Items(),
     };
   }
 

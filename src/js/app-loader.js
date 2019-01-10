@@ -88,6 +88,7 @@ module.exports = function(app) {
 
 	// Error 500
 	app.use( function ( err, req, res, next ) {
+    console.log(err);
 		res.status( 500 );
 		res.render( '500', { error: ( res.locals.dev ? err.stack : undefined ) } );
 	} );

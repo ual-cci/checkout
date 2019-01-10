@@ -16,9 +16,9 @@ class ItemModel extends BaseModel {
         join: ['id', 'group_id'],
         properties: ['id', 'name', 'limiter']
       },
-      department: {
-        table: 'departments',
-        join: ['id', 'department_id'],
+      location: {
+        table: 'locations',
+        join: ['id', 'location_id'],
         properties: ['id', 'name']
       },
       user: {
@@ -43,23 +43,23 @@ class ItemModel extends BaseModel {
   }
 
   get bootstrap() {
-    return ['group', 'department', 'user', 'course', 'year'];
+    return ['group', 'location', 'user', 'course', 'year'];
   }
 
   get properties() {
     return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated'];
   }
 
-  updateDepartment(oldDepartmentId, newDepartmentId) {
+  updateLocation(oldLocationId, newLocationId) {
     return new Promise((resolve, reject) => {
       this.query()
         .expose()
-        .where('department_id', oldDepartmentId)
+        .where('location_id', oldLocationId)
         .update({
-          'department_id': newDepartmentId
+          'location_id': newLocationId
         })
         .then(() => {
-          resolve(newDepartmentId);
+          resolve(newLocationId);
         })
         .catch(err => {
           reject(err);

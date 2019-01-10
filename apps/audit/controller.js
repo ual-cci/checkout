@@ -3,9 +3,9 @@ const moment = require( 'moment' );
 const BaseController = require('../../src/js/common/BaseController.js');
 const config = require('./config.json');
 
-const NewItems = require('../../src/models//items.js');
-const NewDepartments = require('../../src/models//departments.js');
-const NewGroups = require('../../src/models//groups.js');
+const Items = require('../../src/models/items.js');
+const Locations = require('../../src/models/locations.js');
+const Groups = require('../../src/models/groups.js');
 
 const { getSortBy } = require('../../src/js/utils.js');
 const { SORTBY_MUTATIONS } = require('../../src/js/common/constants.js');
@@ -15,9 +15,9 @@ class AuditController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      departments: new NewDepartments(),
-      groups: new NewGroups(),
-      items: new NewItems()
+      locations: new Locations(),
+      groups: new Groups(),
+      items: new Items()
     };
   }
 
@@ -35,18 +35,18 @@ class AuditController extends BaseController {
 
     const selected = {
       status: req.query.status ? req.query.status : '',
-      department: req.query.department ? req.query.department : '',
+      location: req.query.location ? req.query.location : '',
       group: req.query.group ? req.query.group : ''
     };
 
     return Promise.all([
       this.models.groups.getAll(),
-      this.models.departments.getAll()
+      this.models.locations.getAll()
     ])
       .then(results => {
         return {
           groups: results[0],
-          departments: results[1],
+          locations: results[1],
           query: this.getSharedQuery(selected, orderBy, direction),
           selected,
           orderBy,
@@ -73,8 +73,8 @@ class AuditController extends BaseController {
       .if(selected.group, (query) => {
         query.where('group_id', selected.group);
       })
-      .if(selected.department, (query) => {
-        query.where('department_id', selected.department);
+      .if(selected.location, (query) => {
+        query.where('location_id', selected.location);
       })
       .orderBy([
         [ orderBy, direction ]
@@ -90,7 +90,7 @@ class AuditController extends BaseController {
   getScanned(req, res) {
     const date = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
     this.getShared(req, res)
-      .then(({groups, departments, query, selected, orderBy, direction}) => {
+      .then(({groups, locations, query, selected, orderBy, direction}) => {
         query.where([
           ['audited', '>=', date]
         ])
@@ -99,7 +99,7 @@ class AuditController extends BaseController {
           res.render( 'report', {
             status: 'Scanned',
             items: items,
-            departments: departments,
+            locations: locations,
             groups: groups,
             selected: selected,
             sortby: ( req.query.sortby ? req.query.sortby : 'barcode' ),
@@ -119,7 +119,7 @@ class AuditController extends BaseController {
   getMissing(req, res) {
     const date = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
     this.getShared(req, res)
-      .then(({groups, departments, query, selected, orderBy, direction}) => {
+      .then(({groups, locations, query, selected, orderBy, direction}) => {
         query.raw((query) => {
           query.andWhere(function() {
             this.where('items.audited', null).orWhere('items.audited', '<', date);
@@ -130,7 +130,7 @@ class AuditController extends BaseController {
           res.render( 'report', {
             status: 'Missing',
             items: items,
-            departments: departments,
+            locations: locations,
             groups: groups,
             selected: selected,
             sortby: orderBy,

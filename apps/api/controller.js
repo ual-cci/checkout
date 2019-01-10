@@ -7,12 +7,12 @@ const BaseController = require('../../src/js/common/BaseController.js');
 const { AVAILABILITY, ACTIONS } = require('../../src/js/common/constants');
 const config = require('./config.json');
 
-const NewItems = require('../../src/models//items.js');
-const NewDepartments = require('../../src/models//departments.js');
-const NewGroups = require('../../src/models//groups.js');
-const NewUsers = require('../../src/models//users.js');
-const NewActions = require('../../src/models//actions.js');
-const NewCourses = require('../../src/models//courses.js');
+const Items = require('../../src/models/items.js');
+const Locations = require('../../src/models/locations.js');
+const Groups = require('../../src/models/groups.js');
+const Users = require('../../src/models/users.js');
+const Actions = require('../../src/models/actions.js');
+const Courses = require('../../src/models/courses.js');
 
 const Print = require('../../src/js/print');
 
@@ -21,12 +21,12 @@ class ApiController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      departments: new NewDepartments(),
-      groups: new NewGroups(),
-      items: new NewItems(),
-      users: new NewUsers(),
-      actions: new NewActions(),
-      courses: new NewCourses(),
+      locations: new Locations(),
+      groups: new Groups(),
+      items: new Items(),
+      users: new Users(),
+      actions: new Actions(),
+      courses: new Courses(),
     };
   }
 
@@ -163,7 +163,7 @@ class ApiController extends BaseController {
           type: 'item',
           id: item.id,
           barcode: item.barcode,
-          department: item.department_id,
+          location: item.location_id,
           group: item.group_id,
           status: item.status,
           owner_id: item.owner_id,
@@ -188,18 +188,18 @@ class ApiController extends BaseController {
       .then(item => {
         persist.item = item;
 
-        if (req.body.department) {
-          return this.models.departments.getById(req.body.department);
+        if (req.body.location) {
+          return this.models.locations.getById(req.body.location);
         }
 
         return false;
       })
-      .then(department => {
+      .then(location => {
         const { item } = persist;
 
-        if (department) {
+        if (location) {
           return this.models.items.update(item.id, {
-            department_id: department.id
+            location_id: location.id
           });
         }
 

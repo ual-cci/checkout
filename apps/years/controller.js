@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewYears = require('../../src/models//years.js');
-const NewUsers = require('../../src/models//users.js');
+const Years = require('../../src/models/years.js');
+const Users = require('../../src/models/users.js');
 
 const config = require('./config.json');
 
@@ -10,8 +10,8 @@ class YearsController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      years: new NewYears(),
-      users: new NewUsers()
+      years: new Years(),
+      users: new Users()
     };
   }
 

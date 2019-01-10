@@ -4,12 +4,12 @@ const config = require('./config.json');
 const BaseController = require('../../src/js/common/BaseController.js');
 const auth = require('../../src/js/authentication');
 
-const NewCourses = require('../../src/models//courses');
-const NewUsers = require('../../src/models//users');
-const NewYears = require('../../src/models//years');
-const NewItems = require('../../src/models//items');
-const NewActions = require('../../src/models//actions');
-const NewPrinters = require('../../src/models//printers');
+const Courses = require('../../src/models/courses');
+const Users = require('../../src/models/users');
+const Years = require('../../src/models/years');
+const Items = require('../../src/models/items');
+const Actions = require('../../src/models/actions');
+const Printers = require('../../src/models/printers');
 
 const { getSortBy } = require('../../src/js/utils.js');
 const { STATUS, SORTBY_MUTATIONS } = require('../../src/js/common/constants');
@@ -19,12 +19,12 @@ class UsersController extends BaseController {
     super({ path: config.path });
 
     this.models = {
-      users: new NewUsers(),
-      courses: new NewCourses(),
-      years: new NewYears(),
-      items: new NewItems(),
-      actions: new NewActions(),
-      printers: new NewPrinters(),
+      users: new Users(),
+      courses: new Courses(),
+      years: new Years(),
+      items: new Items(),
+      actions: new Actions(),
+      printers: new Printers(),
     };
   }
 
