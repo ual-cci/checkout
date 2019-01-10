@@ -17,8 +17,26 @@ class BaseController {
   }
 
   displayError(req, res, err, route = '', message = 'Error - ') {
+    // TODO add error logging
+    console.log(err);
     req.flash('danger', [message, err].join(''));
-    res.redirect(route);
+    return res.redirect(route);
+  }
+
+  displayErrorJson(req, res, err) {
+    const data = {
+      status: 'danger'
+    };
+
+    const _err = typeof err === 'string' ? { message: err } : err;
+
+    // TODO add error logging
+    console.log(_err);
+
+    return res.json({
+      ...data,
+      ..._err
+    });
   }
 }
 

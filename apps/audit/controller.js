@@ -8,6 +8,7 @@ const NewDepartments = require('../../src/models/new/departments.js');
 const NewGroups = require('../../src/models/new/groups.js');
 
 const { getSortBy } = require('../../src/js/utils.js');
+const { SORTBY_MUTATIONS } = require('../../src/js/common/constants.js');
 
 class AuditController extends BaseController {
   constructor() {
@@ -28,7 +29,9 @@ class AuditController extends BaseController {
    * @param {Object} res
    */
   getShared(req, res) {
-    const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction);
+    const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
+      mutator: SORTBY_MUTATIONS.ITEMS
+    });
 
     const selected = {
       status: req.query.status ? req.query.status : '',

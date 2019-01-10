@@ -1,18 +1,20 @@
-var __home = __dirname + "/../..";
-var __src = __home + '/src';
-var __js = __src + '/js';
+const express = require( 'express' );
 
-var	express = require( 'express' ),
-	app = express();
+const auth = require('../../src/js/authentication');
+const LogoutController = require('./controller');
 
-var auth = require( __js + '/authentication' );
+const app = express();
 
 app.set( 'views', __dirname + '/views' );
 
-app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	req.logout();
-	res.redirect( '/login' );
-} );
+app.use((req, res, next) => {
+  req.controller = new LogoutController();
+  next();
+});
+
+app.get('/', auth.isLoggedIn, (req, res) => {
+  req.controller.getRoot(req, res);
+});
 
 module.exports = function( config, sio ) {
 	return app;

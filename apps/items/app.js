@@ -1,18 +1,9 @@
 const express = require( 'express' );
 
 const ItemController = require('./controller');
-
-const Items = require('../../src/models/items.js');
-const Groups = require('../../src/models/groups.js');
-const Departments = require('../../src/models/departments.js');
-const Courses = require('../../src/models/courses.js');
-const Years = require('../../src/models/years.js');
-const Printers = require('../../src/models/printers.js');
-const Actions = require('../../src/models/actions.js');
+const auth = require('../../src/js/authentication');
 
 const app = express();
-
-const auth = require('../../src/js/authentication');
 
 app.set( 'views', __dirname + '/views' );
 
@@ -22,7 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.get( '/', auth.isLoggedIn, (req, res) => {
-  req.controller.getHome(req, res);
+  req.controller.getRoot(req, res);
 });
 
 app.post('/multi', auth.isLoggedIn, (req, res) => {

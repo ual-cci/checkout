@@ -11,7 +11,7 @@ const NewActions = require('../../src/models/new/actions.js');
 // TODO
 const Print = require('../../src/js/print');
 const { getSortBy } = require('../../src/js/utils.js');
-const { AVAILABILITY } = require('../../src/js/common/constants');
+const { AVAILABILITY, SORTBY_MUTATIONS } = require('../../src/js/common/constants');
 
 const config = require('./config.json');
 
@@ -40,7 +40,7 @@ class ItemController extends BaseController {
     }
   }
 
-  getHome(req, res) {
+  getRoot(req, res) {
     Promise.all([
       this.models.groups.getAll(),
       this.models.departments.getAll(),
@@ -66,7 +66,9 @@ class ItemController extends BaseController {
             selected
           });
         } else {
-          const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction);
+          const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
+            mutator: SORTBY_MUTATIONS.ITEMS
+          });
 
           // Get items
           this.models.items.query()

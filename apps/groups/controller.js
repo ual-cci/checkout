@@ -15,7 +15,7 @@ class GroupController extends BaseController {
     };
   }
 
-  getHome(req, res) {
+  getRoot(req, res) {
     this.models.groups.getAll()
       .then(groups => {
         res.render('groups', { groups });

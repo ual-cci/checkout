@@ -147,7 +147,7 @@ function addModule( data ) {
 function addResult( result, type ) {
 	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
 	switch ( result.status ) {
-		case AVAILABILITY.AVAILABLE:
+		case 'available':
 			html += ' <span class="label label-success">&nbsp;</span>';
 			break;
 		case 'on-loan':
@@ -218,7 +218,7 @@ function newUser( name, barcode, email, course, year, cb ) {
 		cb( data );
 	} );
 }
-function search( barcode, cb ) { apiGET( 'search', barcode, cb ); }
+function search( barcode, cb ) { barcode ? apiGET( 'search', barcode, cb ) : null; }
 function getItem( barcode, cb ) { apiGET( 'item', barcode, cb ); }
 function getUser( barcode, cb ) { apiGET( 'user', barcode, cb ); }
 function identify( barcode, cb ) { apiGET( 'identify', barcode, cb ); }

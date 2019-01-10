@@ -1,28 +1,29 @@
-var	express = require( 'express' ),
-	app = express(),
-	passport = require( 'passport' );
+const express = require( 'express' );
+const passport = require('passport');
+
+const LoginController = require('./controller');
+
+const app = express();
 
 app.set( 'views', __dirname + '/views' );
 
-app.get( '/', function ( req, res ) {
-	if ( req.isAuthenticated() ) {
-		res.redirect( '/checkout' );
-	} else {
-		res.render( 'login' );
-	}
-} );
+app.use((req, res, next) => {
+  req.controller = new LoginController();
+  next();
+});
 
-app.post( '/', passport.authenticate( 'local', {
+app.get('/', (req, res) => {
+  req.controller.getRoot(req, res);
+});
+
+const passportAuth = passport.authenticate('local', {
 	failureRedirect: '/login',
 	failureFlash: true,
 	successFlash: true
-} ), function ( req, res ) {
-	if ( req.session.requested != undefined ) {
-		res.redirect( req.session.requested );
-		delete req.session.requested;
-	} else {
-		res.redirect( '/checkout' );
-	}
-} );
+});
+
+app.post('/', passportAuth, (req, res) => {
+  req.controller.postRoot();
+});
 
 module.exports = function( config ) { return app; };

@@ -163,6 +163,10 @@ class BaseModel {
     return obj;
   }
 
+  _getColumn(name, table = false) {
+    return name.indexOf('.') >= 0 ? name : `${ table ? table : this.options.table }.${ name }`;
+  }
+
   /**
    * Creates a new knex query and attaches the
    * models default selects to it
@@ -256,8 +260,8 @@ class BaseModel {
         const { table, join, properties, prefix, alias } = joins[k];
 
         // If the key is absolute (with .) use it, if not create it
-        const foreignJoinKey = join[0].indexOf('.') >= 0 ? join[0] : `${table}.${join[0]}`;
-        const tableJoinKey = join[1].indexOf('.') >= 0 ? join[1] : `${this.options.table}.${join[1]}`;
+        const foreignJoinKey = this._getColumn(join[0], table)
+        const tableJoinKey = this._getColumn(join[1]);
 
         const tableTarget = alias ? `${table} AS ${alias}` : table;
 
@@ -337,6 +341,19 @@ class BaseModel {
    */
   getMultipleByIds(ids) {
     return this.query().expose().whereIn(`${this.options.table}.id`, ids);
+  }
+
+  search(term, columns = ['name'], orderBy = ['name', 'asc']) {
+    return this.query()
+      .raw(query => {
+        columns.forEach((col, index) => {
+          const method = index === 0 ? 'where' : 'orWhere';
+          const _col = this._getColumn(col);
+          query[method](_col, 'ilike', `%${ term }%`);
+        });
+      })
+      .orderBy([ orderBy ])
+      .expose();
   }
 }
 

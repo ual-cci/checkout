@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/', auth.isLoggedIn, function(req, res) {
-  req.controller.getHome(req, res);
+  req.controller.getRoot(req, res);
 });
 
 app.get('/create', auth.isLoggedIn, function(req, res) {

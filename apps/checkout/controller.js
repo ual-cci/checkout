@@ -16,7 +16,7 @@ class CheckoutController extends BaseController {
     };
   }
 
-  getHome(req, res) {
+  getRoot(req, res) {
     Promise.all([
       this.models.departments.getAll(),
       this.models.courses.getAll(),

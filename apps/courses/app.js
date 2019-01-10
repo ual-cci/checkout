@@ -12,7 +12,7 @@ app.use((req, res, next) => {
 
 app.set( 'views', __dirname + '/views' );
 app.get( '/', auth.isLoggedIn, (req, res ) => {
-  req.controller.getHome(req, res);
+  req.controller.getRoot(req, res);
 });
 
 app.get( '/create', auth.isLoggedIn, (req, res ) => {

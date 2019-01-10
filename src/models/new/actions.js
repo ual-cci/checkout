@@ -1,5 +1,7 @@
 const BaseModel = require('./base.js');
 
+const { ACTIONS } = require('../../js/common/constants');
+
 class ActionModel extends BaseModel {
   constructor(opts = {}) {
     super({
@@ -38,6 +40,13 @@ class ActionModel extends BaseModel {
     return ['id', 'item_id', 'user_id', 'datetime', 'action', 'operator_id'];
   }
 
+  create(values) {
+    return super.create({
+      ...values,
+      datetime: new Date(),
+    });
+  }
+
   getByItemId(itemId) {
     return this.query()
       .where([
@@ -68,6 +77,39 @@ class ActionModel extends BaseModel {
       ])
       .expose()
       .delete();
+  }
+
+  removeByUserId(userId) {
+    return this.query()
+      .where([
+        ['user_id', userId]
+      ])
+      .expose()
+      .delete();
+  }
+
+  getByUserId(userId) {
+    return this.query()
+      .where([
+        ['user_id', userId]
+      ])
+      .orderBy([
+        ['datetime', 'desc']
+      ])
+      .retrieve();
+  }
+
+  getDateRange(start, end) {
+    return this.query()
+      .lookup(['item'])
+      .raw(query => {
+        query.whereBetween( 'datetime', [ start, end ] )
+        .andWhereNot('action', ACTIONS.AUDITED)
+      })
+      .orderBy([
+        ['datetime', 'desc']
+      ])
+      .retrieve();
   }
 }
 

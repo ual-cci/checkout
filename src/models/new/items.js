@@ -1,4 +1,5 @@
 const BaseModel = require('./base.js');
+const { AVAILABILITY } = require('../../js/common/constants');
 
 class ItemModel extends BaseModel {
   constructor(opts = {}) {
@@ -81,6 +82,79 @@ class ItemModel extends BaseModel {
           reject(err);
         });
     })
+  }
+
+  getOnLoanByUserId(userId) {
+    return this.query()
+      .where([
+        ['status', AVAILABILITY.ON_LOAN],
+        ['owner_id', userId]
+      ])
+      .expose();
+  }
+
+  search(term) {
+    return super.search(term, ['name', 'barcode'], ['name', 'asc']);
+  }
+
+  getByBarcode(barcode) {
+    return this.query().where([['barcode', barcode]]).retrieveSingle();
+  }
+
+  audit(barcode) {
+    return this.getByBarcode(barcode)
+        .then(item => {
+          if (!item) {
+            throw new Error('Unknown item');
+          }
+
+          return this.query()
+            .update(item.id, {
+              audited: new Date()
+            })
+            .then(id => {
+              return item;
+            });
+        });
+  }
+
+  changeStatus(barcode, status) {
+    return this.getByBarcode(barcode)
+        .then(item => {
+          if (!item) {
+            throw new Error('Unknown item');
+          }
+
+          return this.query()
+            .update(item.id, {
+              status: status,
+              owner_id: null,
+              updated: new Date()
+            })
+            .then(id => {
+              return item;
+            });
+        });
+  }
+
+  return(barcode) {
+    return this.changeStatus(barcode, AVAILABILITY.AVAILABLE);
+  }
+
+  broken(barcode) {
+    return this.changeStatus(barcode, AVAILABILITY.BROKEN);
+  }
+
+  lost(barcode) {
+    return this.changeStatus(barcode, AVAILABILITY.LOST);
+  }
+
+  issue(itemId, userId, operator) {
+    return this.update(itemId, {
+      status: AVAILABILITY.ON_LOAN,
+      owner_id: userId,
+      updated: new Date()
+    });
   }
 }
 

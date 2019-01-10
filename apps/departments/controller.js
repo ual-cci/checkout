@@ -15,7 +15,7 @@ class DepartmentController extends BaseController {
     };
   }
 
-  getHome(req, res) {
+  getRoot(req, res) {
     this.models.departments.getAll()
       .then(departments => {
         res.render('departments', { departments });

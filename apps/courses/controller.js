@@ -14,7 +14,7 @@ class CoursesController extends BaseController {
     };
   }
 
-  getHome(req, res) {
+  getRoot(req, res) {
     this.models.courses.getAll()
       .then(courses => {
         res.render( 'courses', { courses } );
