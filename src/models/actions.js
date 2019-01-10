@@ -1,152 +1,116 @@
-const db = require('../js/database.js');
+const BaseModel = require('./base.js');
 
-var model = {
-	name: 'Actions',
-	table: 'actions',
-	getDateRange: function( a, b, cb ) {
-		var query = db( model.table )
-			.select( {
-				datetime: 'actions.datetime',
-				action: 'actions.action'
-			} )
-			.whereBetween( 'datetime', [ a, b ] )
-			.andWhereNot( 'action', 'audited' )
-			.orderBy( 'actions.datetime', 'desc' )
-				.leftJoin( 'items', 'items.id', 'actions.item_id' )
-				.select( {
-					item_id: 'items.id',
-					item_name: 'items.name',
-					item_barcode: 'items.barcode',
-				} )
-				.leftJoin( 'users AS owner', 'owner.id', 'actions.user_id' )
-				.select( {
-					owner_id: 'owner.id',
-					owner_name: 'owner.name',
-					owner_barcode: 'owner.barcode',
-				} )
-				.leftJoin( 'users AS operator', 'operator.id', 'actions.operator_id' )
-				.select( {
-					operator_id: 'operator.id',
-					operator_name: 'operator.name',
-					operator_barcode: 'operator.barcode',
-				} )
-				.asCallback( function( err, res ) {
-					if ( res ) {
-						return cb( err, res );
-					} else {
-						return cb( err );
-					}
-			} )
-	},
-	getByItemId: function( id, cb ) {
-		model.getByItem( id, 'id', cb );
-	},
-	getByItemBarcode: function( barcode, cb ) {
-		model.getByItem( barcode, 'barcode', cb );
-	},
-	getByItem: function( term, type, cb ) {
-		var query = db( model.table )
-			.select( {
-				id: 'actions.id',
-				item_id: 'actions.item_id',
-				action: 'actions.action',
-				datetime: 'actions.datetime'
-			} );
+const { ACTIONS } = require('../js/common/constants');
 
-		switch ( type ) {
-			case 'id':
-				query.where( 'item_id', term );
-				break;
+class ActionModel extends BaseModel {
+  constructor(opts = {}) {
+    super({
+      ...opts,
+      table: 'actions'
+    });
+  }
 
-			case 'barcode':
-				query.leftJoin( 'items', 'items.id', 'actions.item_id' )
-				query.where( 'items.barcode', term );
-				break;
-		}
+  get joins() {
+    return {
+      item: {
+        table: 'items',
+        join: ['id', 'item_id'],
+        properties: ['id', 'name', 'barcode']
+      },
+      user: {
+        table: 'users',
+        join: ['id', 'user_id'],
+        properties: ['id', 'name']
+      },
+      operator: {
+        prefix: 'operators_',
+        table: 'users',
+        alias: 'operators',
+        join: ['operators.id', 'operator_id'],
+        properties: ['id', 'name']
+      }
+    };
+  }
 
-		query.orderBy( 'actions.datetime', 'desc' )
-			.leftJoin( 'users', 'users.id', 'actions.user_id' )
-			.select( {
-				user_id: 'users.id',
-				user_name: 'users.name',
-			} )
-			.leftJoin( 'users AS operators', 'operators.id', 'actions.operator_id' )
-			.select( {
-				operator_id: 'operators.id',
-				operator_name: 'operators.name',
-			} )
-			.asCallback( function( err, res ) {
-				if ( res ) {
-					return cb( err, res );
-				} else {
-					return cb( err );
-				}
-		} )
-	},
-	getUserHistoryById: function( id, cb ) {
-		var query = db( model.table )
-			.select( {
-				id: 'actions.id',
-				action: 'actions.action',
-				datetime: 'actions.datetime'
-			} )
-			.orderBy( 'actions.datetime', 'desc' )
-			.leftJoin( 'items', 'items.id', 'actions.item_id' )
-			.select( {
-				item_id: 'items.id',
-				item_name: 'items.name',
-				item_barcode: 'items.barcode',
-			} )
-			.where( 'user_id', id )
-			.andWhere( 'action', 'returned' )
-			.asCallback( function( err, res ) {
-				if ( res ) {
-					return cb( err, res );
-				} else {
-					return cb( err );
-				}
-		} )
-	},
-	log: function( data, cb ) {
-		var action = {
-			item_id: data.item_id,
-			action: data.action,
-			operator_id: data.operator_id,
-			user_id: data.user_id
-		}
+  get bootstrap() {
+    return ['user', 'operator'];
+  }
 
-		if ( data.datetime ) {
-			action.datetime = data.datetime;
-		} else {
-			action.datetime = new Date();
-		}
+  get properties() {
+    return ['id', 'item_id', 'user_id', 'datetime', 'action', 'operator_id'];
+  }
 
-		var q = db( model.table )
-			.insert( action )
-			.asCallback( function( err ) {
-				if ( err ) {
-					console.log( err );
-					return cb( { message: 'Unable to log action' } );
-				}
-				cb();
-			} )
-	},
-	removeByUserId: function( id, cb ) {
-		db( model.table )
-			.where( 'user_id', id )
-			.delete()
-			.asCallback( function( err, res ) {
-			return cb( err );
-		} )
-	},
-	removeByItemId: function( id, cb ) {
-		db( model.table )
-			.where( 'item_id', id )
-			.delete()
-			.asCallback( function( err, res ) {
-			return cb( err );
-		} )
-	}
-};
+  create(values) {
+    return super.create({
+      ...values,
+      datetime: new Date(),
+    });
+  }
 
-module.exports = model;
+  getByItemId(itemId) {
+    return this.query()
+      .where([
+        ['item_id', itemId]
+      ])
+      .orderBy([
+        ['datetime', 'desc']
+      ])
+      .retrieve();
+  }
+
+  getByItemBarcode(barcode) {
+    return this.query()
+      .lookup(['item'])
+      .where([
+        ['barcode', barcode]
+      ])
+      .orderBy([
+        ['datetime', 'desc']
+      ])
+      .retrieve();
+  }
+
+  removeByItemId(itemId) {
+    return this.query()
+      .where([
+        ['item_id', itemId]
+      ])
+      .expose()
+      .delete();
+  }
+
+  removeByUserId(userId) {
+    return this.query()
+      .where([
+        ['user_id', userId]
+      ])
+      .expose()
+      .delete();
+  }
+
+  getByUserId(userId) {
+    return this.query()
+      .where([
+        ['user_id', userId]
+      ])
+      .orderBy([
+        ['datetime', 'desc']
+      ])
+      .retrieve();
+  }
+
+  getDateRange(start, end) {
+    return this.query()
+      .lookup(['item'])
+      .raw(query => {
+        query.whereBetween( 'datetime', [ start, end ] )
+        .andWhereNot('action', ACTIONS.AUDITED)
+      })
+      .orderBy([
+        ['datetime', 'desc']
+      ])
+      .retrieve();
+  }
+}
+
+module.exports = ActionModel;

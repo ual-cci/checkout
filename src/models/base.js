@@ -1,4 +1,4 @@
-const db = require('../../js/database.js');
+const db = require('../js/database.js');
 
 class BaseModel {
   constructor({ table, debug = false }) {

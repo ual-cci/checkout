@@ -1,9 +1,9 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 const config = require('./config.json');
 
-const NewDepartments = require('../../src/models/new/departments.js');
-const NewCourses = require('../../src/models/new/courses.js');
-const NewYears = require('../../src/models/new/years.js');
+const NewDepartments = require('../../src/models//departments.js');
+const NewCourses = require('../../src/models//courses.js');
+const NewYears = require('../../src/models//years.js');
 
 class CheckoutController extends BaseController {
   constructor() {

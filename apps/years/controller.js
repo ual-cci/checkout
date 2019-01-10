@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewYears = require('../../src/models/new/years.js');
-const NewUsers = require('../../src/models/new/users.js');
+const NewYears = require('../../src/models//years.js');
+const NewUsers = require('../../src/models//users.js');
 
 const config = require('./config.json');
 

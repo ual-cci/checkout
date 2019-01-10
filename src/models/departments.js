@@ -1,54 +1,16 @@
-const db = require('../js/database.js');
+const BaseModel = require('./base.js');
 
-var model = {
-	name: 'Departments',
-	table: 'departments',
-	get: function( cb ) {
-		db( model.table )
-			.orderBy( 'name', 'asc' )
-			.asCallback( function( err, res ) {
-			return cb( err, res );
-		} )
-	},
-	getById: function( id, cb ) {
-		db( model.table )
-			.where( 'id', id )
-			.orderBy( 'name', 'asc' )
-			.asCallback( function( err, res ) {
-				if ( res ) {
-					return cb( err, res[0] );
-				} else {
-					return cb( err );
-				}
-		} )
-	},
-	create: function( name, cb ) {
-		db( model.table )
-			.insert( {
-				name: name
-			}, 'id' )
-			.asCallback( function( err, res ) {
-			return cb( err, res );
-		} )
-	},
-	update: function( id, name, cb ) {
-		db( model.table )
-			.update( {
-				name: name
-			} )
-			.where( 'id', id )
-			.asCallback( function( err, res ) {
-			return cb( err );
-		} )
-	},
-	remove: function( id, cb ) {
-		db( model.table )
-			.where( 'id', id )
-			.delete()
-			.asCallback( function( err, res ) {
-			return cb( err );
-		} )
-	}
-};
+class DepartmentModel extends BaseModel {
+  constructor(opts = {}) {
+    super({
+      ...opts,
+      table: 'departments'
+    });
+  }
 
-module.exports = model;
+  getAll() {
+    return this.orderBy(['name']).retrieve();
+  }
+}
+
+module.exports = DepartmentModel;

@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewPrinters = require('../../src/models/new/printers');
-const NewUsers = require('../../src/models/new/users');
+const NewPrinters = require('../../src/models//printers');
+const NewUsers = require('../../src/models//users');
 
 const config = require('./config.json');
 

@@ -1,8 +1,8 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 const config = require('./config.json');
 
-const NewCourses = require('../../src/models/new/courses.js');
-const NewUsers = require('../../src/models/new/users.js');
+const NewCourses = require('../../src/models//courses.js');
+const NewUsers = require('../../src/models//users.js');
 
 class CoursesController extends BaseController {
   constructor() {

@@ -1,12 +1,12 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewItems = require('../../src/models/new/items.js');
-const NewGroups = require('../../src/models/new/groups.js');
-const NewDepartments = require('../../src/models/new/departments.js');
-const NewCourses = require('../../src/models/new/courses.js');
-const NewYears = require('../../src/models/new/years.js');
-const NewPrinters = require('../../src/models/new/printers.js');
-const NewActions = require('../../src/models/new/actions.js');
+const NewItems = require('../../src/models//items.js');
+const NewGroups = require('../../src/models//groups.js');
+const NewDepartments = require('../../src/models//departments.js');
+const NewCourses = require('../../src/models//courses.js');
+const NewYears = require('../../src/models//years.js');
+const NewPrinters = require('../../src/models//printers.js');
+const NewActions = require('../../src/models//actions.js');
 
 // TODO
 const Print = require('../../src/js/print');

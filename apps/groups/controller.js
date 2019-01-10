@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewGroups = require('../../src/models/new/groups.js');
-const NewItems = require('../../src/models/new/items.js');
+const NewGroups = require('../../src/models//groups.js');
+const NewItems = require('../../src/models//items.js');
 
 const config = require('./config.json');
 

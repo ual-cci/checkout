@@ -4,12 +4,12 @@ const config = require('./config.json');
 const BaseController = require('../../src/js/common/BaseController.js');
 const auth = require('../../src/js/authentication');
 
-const NewCourses = require('../../src/models/new/courses');
-const NewUsers = require('../../src/models/new/users');
-const NewYears = require('../../src/models/new/years');
-const NewItems = require('../../src/models/new/items');
-const NewActions = require('../../src/models/new/actions');
-const NewPrinters = require('../../src/models/new/printers');
+const NewCourses = require('../../src/models//courses');
+const NewUsers = require('../../src/models//users');
+const NewYears = require('../../src/models//years');
+const NewItems = require('../../src/models//items');
+const NewActions = require('../../src/models//actions');
+const NewPrinters = require('../../src/models//printers');
 
 const { getSortBy } = require('../../src/js/utils.js');
 const { STATUS, SORTBY_MUTATIONS } = require('../../src/js/common/constants');

@@ -7,12 +7,12 @@ const BaseController = require('../../src/js/common/BaseController.js');
 const { AVAILABILITY, ACTIONS } = require('../../src/js/common/constants');
 const config = require('./config.json');
 
-const NewItems = require('../../src/models/new/items.js');
-const NewDepartments = require('../../src/models/new/departments.js');
-const NewGroups = require('../../src/models/new/groups.js');
-const NewUsers = require('../../src/models/new/users.js');
-const NewActions = require('../../src/models/new/actions.js');
-const NewCourses = require('../../src/models/new/courses.js');
+const NewItems = require('../../src/models//items.js');
+const NewDepartments = require('../../src/models//departments.js');
+const NewGroups = require('../../src/models//groups.js');
+const NewUsers = require('../../src/models//users.js');
+const NewActions = require('../../src/models//actions.js');
+const NewCourses = require('../../src/models//courses.js');
 
 const Print = require('../../src/js/print');
 

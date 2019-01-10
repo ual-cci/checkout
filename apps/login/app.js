@@ -23,7 +23,7 @@ const passportAuth = passport.authenticate('local', {
 });
 
 app.post('/', passportAuth, (req, res) => {
-  req.controller.postRoot();
+  req.controller.postRoot(req, res);
 });
 
 module.exports = function( config ) { return app; };
