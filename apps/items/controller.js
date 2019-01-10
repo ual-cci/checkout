@@ -30,16 +30,32 @@ class ItemController extends BaseController {
     };
   }
 
+  /**
+   * Cycles through an array of conditions and if any are matched
+   * to redirect with an error
+   *
+   * @param {Array} checks Object array of shape { message, condition }
+   * @param {String} redirect Endpoint to redirect to
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   _checkFields(checks, redirect, req, res) {
     for (let i = 0; i < checks.length; i++) {
       if (checks[i].condition) {
-        req.flash('danger', checks[i].message);
-        res.redirect(this.getRoute(redirect));
+        this.displayError(req, res, checks[i].message, this.getRoute(redirect));
         break;
       }
     }
   }
 
+  /**
+   * Builds the data necessary for the home page
+   * with the relevant ordering inferred by the query
+   * parameters
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getRoot(req, res) {
     Promise.all([
       this.models.groups.getAll(),
@@ -57,6 +73,7 @@ class ItemController extends BaseController {
         };
 
         if (Object.keys(req.query).length == 0) {
+          // If there is no query, display no items as none are matched
           res.render('items', {
             items: null,
             departments,
@@ -72,6 +89,7 @@ class ItemController extends BaseController {
 
           // Get items
           this.models.items.query()
+            // Section of if commands to add queries into query
             .if((req.query.status), (query) => {
               query.where('status', req.query.status);
             })
@@ -107,24 +125,30 @@ class ItemController extends BaseController {
       });
   }
 
+  /**
+   * Endpoint for both displaying and posting data for
+   * multi item edit.
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postEdit(req, res) {
-    const singleItemCheck = (edit) => {
-      if (!Array.isArray(edit)) {
-        this.displayError(
-          req,
-          res,
-          'Only one item was selected for group editing, use the single edit form',
-          this.getRoute([`/${req.body.edit}`, '/edit'])
-        );
-      }
-    };
+    // If the ID passed is singular, redirect
+    // to the single edit form
+    if (!Array.isArray(edit)) {
+      this.displayError(
+        req,
+        res,
+        'Only one item was selected for group editing, use the single edit form',
+        this.getRoute([`/${req.body.edit}`, '/edit'])
+      );
+    }
 
+    // Checks if its a request with data
     if (req.body.fields) {
-      singleItemCheck(req.body.edit);
-
       const keys = ['label', 'group', 'department', 'notes', 'value'];
       const values = ['label', 'group_id', 'department_id', 'notes', 'value'];
-      const item = {}
+      const item = {};
 
       keys.forEach((k, index) => {
         if (req.body.fields.indexOf(k) >= 0 && req.body[k])
@@ -145,7 +169,6 @@ class ItemController extends BaseController {
         this.models.departments.getAll()
       ])
         .then(([groups, departments]) => {
-          singleItemCheck(req.body.edit);
 
           this.models.items.query()
             .orderBy([
@@ -164,6 +187,12 @@ class ItemController extends BaseController {
     }
   }
 
+  /**
+   * Get generate page with necessary data
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getGenerate(req, res) {
     Promise.all([
       this.models.departments.getAll(),
@@ -180,6 +209,12 @@ class ItemController extends BaseController {
       });
   }
 
+  /**
+   * Endpoint for posting the generation of items
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postGenerate(req, res) {
     const start = parseInt( req.body.start );
     const end = (start + parseInt(req.body.qty)) - 1;
@@ -258,6 +293,12 @@ class ItemController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute('/generate')));
   }
 
+  /**
+   * Gets the data for a create page
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getCreate(req, res) {
     Promise.all([
       this.models.departments.getAll(),
@@ -273,6 +314,12 @@ class ItemController extends BaseController {
       });
   }
 
+  /**
+   * Endpoint for creating an item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postCreate(req, res) {
     const item = {
       name: req.body.name,
@@ -284,8 +331,9 @@ class ItemController extends BaseController {
       status: AVAILABILITY.AVAILABLE
     }
 
-    if ( req.body.group )
+    if (req.body.group) {
       item.group_id = req.body.group;
+    }
 
     const checks = [
       {
@@ -327,6 +375,12 @@ class ItemController extends BaseController {
       });
   }
 
+  /**
+   * Gets the item and the associated action history
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getItem(req, res) {
     let _printers;
     let _item;
@@ -357,6 +411,14 @@ class ItemController extends BaseController {
       });
   }
 
+  /**
+   * Gets a label for a given item and prints it
+   * using either the specified printer or the
+   * user's printer
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getLabel(req, res) {
     let _item;
     this.models.items.getById(req.params.id)
@@ -398,6 +460,12 @@ class ItemController extends BaseController {
       });
   }
 
+  /**
+   * Prints multiple labels at once
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getMulti(req, res) {
     this.models.getMultipleById(req.body.ids.split(','))
       .then(items => {
@@ -417,6 +485,12 @@ class ItemController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
 
+  /**
+   * Gets the edit page for a given item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getEdit(req, res) {
     Promise.all([
       this.models.items.getById(req.params.id),
@@ -437,6 +511,12 @@ class ItemController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
 
+  /**
+   * Posts the edits made to an item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postEdit(req, res) {
     const item = {
       name: req.body.name,
@@ -473,6 +553,12 @@ class ItemController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute(`/${req.params.id}`)));
   }
 
+  /**
+   * Gets the remove page for an item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getRemove(req, res) {
     this.models.items.getById(req.params.id)
       .then(item => {
@@ -487,6 +573,12 @@ class ItemController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
 
+  /**
+   * Endpoint for removing an item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postRemove(req, res) {
     let _item;
     this.models.items.getById(req.params.id)

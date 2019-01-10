@@ -14,6 +14,12 @@ class CoursesController extends BaseController {
     };
   }
 
+  /**
+   * Gathers all courses to display
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getRoot(req, res) {
     this.models.courses.getAll()
       .then(courses => {
@@ -21,6 +27,12 @@ class CoursesController extends BaseController {
       });
   }
 
+  /**
+   * Returns the create course page
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getCreate(req, res) {
     this.models.users.getAll()
       .then(users => {
@@ -28,6 +40,12 @@ class CoursesController extends BaseController {
       });
   }
 
+  /**
+   * The endpoint to create a new course
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postCreate(req, res) {
     if (req.body.name == '') {
       this.displayError(req, res, 'The course requires a name', this.getRoute('/create'));
@@ -49,6 +67,12 @@ class CoursesController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Unable to create course – '));
   }
 
+  /**
+   * Gets the data for the edit course page
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getEdit(req, res) {
     Promise.all([
       this.models.users.getAll(),
@@ -67,6 +91,12 @@ class CoursesController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error editing - '));
   }
 
+  /**
+   * Posts an edit for a course
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postEdit(req, res) {
     if (req.body.name == '') {
       this.displayError(req, res, 'The course requires a name', this.getRoute());
@@ -90,6 +120,12 @@ class CoursesController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getCreate(), 'Unable to update course – '));
   }
 
+  /**
+   * Gets the data to populate the remove page
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getRemove(req, res) {
     this.models.courses.getAll()
       .then(courses => {
@@ -119,6 +155,13 @@ class CoursesController extends BaseController {
       });
   }
 
+  /**
+   * Endpoint for removing a course and transferring
+   * the users to a new course
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postRemove(req, res) {
     let removeId;
 

@@ -16,6 +16,16 @@ class BaseController {
     return [this.mountPath, tail].join('');
   }
 
+  /**
+   * A generic error method allowing piping of errors and
+   * handling of logging
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   * @param {String} err The error message from the specific problem
+   * @param {String?} route The route to redirect to in the subapp
+   * @param {String?} message The prefix for all the errors
+   */
   displayError(req, res, err, route = '', message = 'Error - ') {
     // TODO add error logging
     console.log(err);
@@ -23,6 +33,15 @@ class BaseController {
     return res.redirect(route);
   }
 
+
+  /**
+   * A generic error method allowing piping of errors and
+   * handling of logging before returning JSON
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   * @param {String|Object} err The error message from the specific problem
+   */
   displayErrorJson(req, res, err) {
     const data = {
       status: 'danger'

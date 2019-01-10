@@ -183,12 +183,25 @@ class BaseModel {
     return this;
   }
 
+  /**
+   * Allows querying on the base knex object
+   * withouting ejecting it
+   *
+   * @param {Function} func Querying function utilising the knex object
+   */
   raw(func) {
     this._safeguard();
     func(this._queryObj);
     return this;
   }
 
+  /**
+   * A block that can be inlined in a promise chain, to apply
+   * modifications to a query if matched
+   *
+   * @param {*} condition The conditional statement to execute the code
+   * @param {Function} func A raw interfacing function
+   */
   if(condition, func) {
     this._safeguard();
 
@@ -343,6 +356,13 @@ class BaseModel {
     return this.query().expose().whereIn(`${this.options.table}.id`, ids);
   }
 
+  /**
+   * A method to search the underlying table
+   *
+   * @param {String} term Search term
+   * @param {Array} columns Columns to try match
+   * @param {Array} orderBy Column to order by
+   */
   search(term, columns = ['name'], orderBy = ['name', 'asc']) {
     return this.query()
       .raw(query => {

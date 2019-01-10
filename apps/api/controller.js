@@ -30,6 +30,13 @@ class ApiController extends BaseController {
     };
   }
 
+  /**
+   * Search end point that searches both users
+   * and items by barcode and name
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getSearch(req, res) {
     const { term } = req.params;
     Promise.all([
@@ -45,6 +52,13 @@ class ApiController extends BaseController {
       });
   }
 
+  /**
+   * Returns the type of object that is found
+   * when searching a barcode
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getIdentify(req, res) {
     Promise.all([
       this.models.users.getByBarcode(req.params.term),
@@ -74,6 +88,14 @@ class ApiController extends BaseController {
       });
   }
 
+  /**
+   * Lookups a user by barcode.
+   * Attaches the items that are associated to the user
+   * if found
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getUser(req, res) {
     let persist;
 
@@ -103,7 +125,7 @@ class ApiController extends BaseController {
           moment: moment
         });
 
-        var output = {
+        const output = {
           type: 'user',
           id: user.id,
           barcode: user.barcode,
@@ -118,6 +140,13 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Gets the item by barcode and returns the
+   * rendered html partial
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getItem(req, res) {
     this.models.items.getByBarcode(req.params.barcode)
       .then(item => {
@@ -146,6 +175,12 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Creates an audit for an item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postAudit(req, res) {
     let persist = {};
 
@@ -154,8 +189,7 @@ class ApiController extends BaseController {
         persist.item = item;
 
         if (req.body.department) {
-          return this.models.departments.getById(req.body.department)
-            .then(department)
+          return this.models.departments.getById(req.body.department);
         }
 
         return false;
@@ -183,6 +217,13 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Sets an item as returned and logs an action
+   * noting the capacity in which it was returned.
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postReturn(req, res) {
     let persist = {};
     this.models.items.return(req.params.item)
@@ -216,6 +257,13 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Marks an item as broken and logs an action
+   * noting that
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postBroken(req, res) {
     let persist = {};
     this.models.items.broken(req.params.item)
@@ -238,6 +286,13 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Marks an item as lost and logs an action
+   * nothing that
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postLost(req, res) {
     this.models.items.lost(req.params.item)
       .then(item => {
@@ -250,7 +305,16 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Issues out an item to a user and logs an
+   * action noting that
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postIssue(req, res) {
+
+    // First grab both user and item by barcodes
     Promise.all([
       this.models.users.getByBarcode(req.params.user),
       this.models.items.getByBarcode(req.params.item)
@@ -282,7 +346,10 @@ class ApiController extends BaseController {
       .then(({ user, item }) => {
         const result = { user, item };
 
+        // Checks if item is part of group and has a limiter
         if ( item.group_id && item.group_limiter ) {
+
+          // Sees if the item count has been exceed for this user
           return this.models.items.query()
             .where([
               ['owner_id', user.id],
@@ -303,6 +370,7 @@ class ApiController extends BaseController {
         }
       })
       .then(({ user, item ,count }) => {
+        // If the count has been marked as an issue, display that to the user
         if (count) {
           throw ({
             message: `User already has ${ count } of this type of item out`,
@@ -311,6 +379,7 @@ class ApiController extends BaseController {
           });
         }
 
+        // Issue the item to the user and log an action
         return Promise.all([
           this.models.items.issue(item.id, user.id, req.user),
           this.models.actions.create({
@@ -330,6 +399,12 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Attempts to print a label for any given item
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postLabel(req, res) {
     this.models.getByBarcode(req.params.item)
       .then(item => {
@@ -362,6 +437,12 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Endpoint to create a new user
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postNewUser(req, res) {
     const cachedError = (err) => {
       return this.displayErrorJson(req, res, err);
@@ -425,6 +506,12 @@ class ApiController extends BaseController {
       .catch(err => this.displayErrorJson(req, res, err));
   }
 
+  /**
+   * Gets the actions for the current day
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getHistory(req, res) {
     this.models.actions.getDateRange(
       moment().startOf('day'),

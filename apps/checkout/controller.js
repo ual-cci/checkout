@@ -16,6 +16,13 @@ class CheckoutController extends BaseController {
     };
   }
 
+  /**
+   * Gets all the data necessary for load of the
+   * home page
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getRoot(req, res) {
     Promise.all([
       this.models.departments.getAll(),

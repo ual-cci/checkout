@@ -110,6 +110,13 @@ class GroupController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
 
+  /**
+   * Endpoint for removing a group and optionally
+   * transferring the items to a new group
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postRemove(req, res) {
     let removeId;
     this.models.groups.getById(req.params.id)

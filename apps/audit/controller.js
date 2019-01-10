@@ -55,6 +55,16 @@ class AuditController extends BaseController {
       });
   }
 
+  /**
+   * Returns the base query that the routes
+   * share between them
+   *
+   * @param {Object} selected
+   * @param {String} orderBy
+   * @param {String} direction
+   *
+   * @returns {Object} Query
+   */
   getSharedQuery(selected, orderBy, direction) {
     return this.models.items.query()
       .if(selected.status, (query) => {
@@ -71,6 +81,12 @@ class AuditController extends BaseController {
       ]);
   }
 
+  /**
+   * Gets the scanned items
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getScanned(req, res) {
     const date = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
     this.getShared(req, res)
@@ -94,6 +110,12 @@ class AuditController extends BaseController {
       });
   }
 
+  /**
+   * Gets all missing items
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   getMissing(req, res) {
     const date = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
     this.getShared(req, res)

@@ -91,6 +91,13 @@ class DepartmentController extends BaseController {
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
 
+  /**
+   * Endpoint for removing a department and transferring
+   * all items to a new department
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
   postRemove(req, res) {
     let removeId;
 
