@@ -1,62 +1,77 @@
-var __home = __dirname + '/../..';
-var __src = __home + '/src';
-var __js = __src + '/js';
+const passport = require( 'passport' );
+const LocalStrategy = require( 'passport-local' ).Strategy;
+const crypto = require( 'crypto' );
 
-var db = require( __js + '/database' )();
-var Permissions = db.Permissions,
-	Users = db.Users;
+const UsersModel = require('../models/users');
 
-var passport = require( 'passport' ),
-  LocalStrategy = require( 'passport-local' ).Strategy;
-
-var crypto = require( 'crypto' );
-
-var Authentication = {
+const Authentication = {
 	auth: function( app ) {
-		// Add support for local authentication
+    // Add support for local authentication
+    const users = new UsersModel();
 		passport.use(
 			new LocalStrategy( function( email, password, done ) {
-				Users.getByEmail( email, function( err, user ) {
-					if ( user ) {
-						// Has account exceeded it's password tries?
-						if ( user.pw_attempts >= process.env.USER_PW_TRIES ) {
-							return done( null, false, { message: 'Account locked out' } );
-						}
+        users.getByEmail(email)
+          .then(user => {
+            if (!user) {
+              throw new Error('Invalid Login');
+            }
 
-						if ( user.type == 'admin' && ! user.disable ) {
-							if ( ! user.pw_salt ) return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
+            if (user.pw_attempts >= process.env.USER_PW_TRIES) {
+              throw new Error('Account locked out');
+            }
 
-							// Hash the entered password with the users salt
-							Authentication.hashPassword( password, user.pw_salt, user.pw_iterations, function( hash ) {
+            if (user.type == 'admin' && !user.disable) {
+							if (!user.pw_salt) {
+                throw new Error('Invalid login');
+              }
 
-								// Check the hashes match
-								if ( hash == user.pw_hash ) {
-									var flash = {};
-									if ( user.pw_attempts > 0 ) {
-										flash.message = `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`;
-										Users.update( user.id, { pw_attempts: 0 }, function( err ) {} )
-									}
+              return new Promise((resolve, reject) => {
+                // Hash the entered password with the users salt
+                Authentication.hashPassword( password, user.pw_salt, user.pw_iterations, (hash) => {
 
-									return done( null, { id: user.id }, flash );
-								}
+                  // Check the hashes match
+                  if ( hash == user.pw_hash ) {
+                    var flash = {};
+                    if ( user.pw_attempts > 0 ) {
+                      flash.message = `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`;
 
-								// Increment password tries
-								Users.update( user.id, { pw_attempts: user.pw_attempts + 1 }, function( err ) {} )
-
-								// Delay by 1 second to slow down password guessing
-								return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
-							} );
+                      users.update(user.id, {
+                        pw_attempts: 0
+                      })
+                        .then(() => {
+                          resolve({ user, flash });
+                        })
+                        .catch(err => reject(err));
+                    }
+                  } else {
+                    users.update(user.id, {
+                      pw_attempts: user.pw_attempts + 1
+                    })
+                      .then(id => {
+                        reject('Invalid Login');
+                      })
+                      .catch(err => reject(err));
+                  }
+                } );
+              });
 						} else {
-							// If account is disabled or not admin
-							// Delay by 1 second to slow down password guessing
-							return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
+							throw new Error('Invalid login');
 						}
-					} else {
-						// If email address doesn't match
-						// Delay by 1 second to slow down password guessing
-						return setTimeout( function() { return done( null, false, { message: 'Invalid login' } ); }, 1000 );
-					}
-				} );
+          })
+          .then(({ user, flash }) => {
+            done(null, { id: user.id }, flash);
+          })
+          .catch(err => {
+						setTimeout(() => {
+              done(
+                null,
+                false,
+                {
+                  message: err
+                }
+              );
+            }, 1000);
+          });
 			}
 		) );
 
@@ -66,13 +81,16 @@ var Authentication = {
 		} );
 
 		passport.deserializeUser( function( data, done ) {
-			Users.getById( data.id, { lookup: 'printers' }, function( err, user ) {
-				if ( user != null ) {
-					return done( null, user );
-				} else {
-					return done( null, false );
-				}
-			} );
+      users.query()
+        .lookup(['printers'])
+        .getById(data.id)
+        .then(user => {
+          if (user) {
+            return done( null, user );
+          } else {
+            return done( null, false );
+          }
+        })
 		} );
 
 		// Include support for passport and sessions

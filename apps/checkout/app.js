@@ -1,31 +1,19 @@
-var __home = __dirname + "/../..";
-var __src = __home + '/src';
-var __js = __src + '/js';
+const express = require( 'express' );
 
-var	express = require( 'express' ),
-	app = express();
+const auth = require('../../src/js/authentication.js');
+const CheckoutController = require('./controller.js');
 
-var auth = require( __js + '/authentication' );
-
-var db = require( __js + '/database' )(),
-	Courses = db.Courses,
-	Years = db.Years,
-	Locations = db.Locations;
+const app = express();
 
 app.set( 'views', __dirname + '/views' );
 
-app.get( '/', auth.isLoggedIn, function ( req, res ) {
-	Locations.get( function( err, locations ) {
-		Courses.get( function( err, courses ) {
-			Years.get( function( err, years ) {
-				res.render( 'index', {
-					locations: locations,
-					courses: courses,
-					years: years
-				} );
-			} );
-		} );
-	} );
-} );
+app.use((req, res, next) => {
+  req.controller = new CheckoutController();
+  next();
+});
+
+app.get( '/', auth.isLoggedIn, (req, res) => {
+  req.controller.getRoot(req, res);
+});
 
 module.exports = function( config ) { return app; };

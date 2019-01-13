@@ -1,438 +1,161 @@
-var db;
+const BaseModel = require('./base.js');
+const { AVAILABILITY } = require('../js/common/constants');
 
-var model = {
-	name: 'Items',
-	table: 'items',
-	search: function( term, cb ) {
-		var query = db( model.table )
-			.select( {
-				id: 'items.id',
-				name: 'items.name',
-				barcode: 'items.barcode',
-				status: 'items.status'
-			} )
-			.where( 'name', 'ilike', '%' + term + '%' )
-			.orWhere( 'barcode', 'ilike', '%' + term + '%' )
-			.orderBy( 'name', 'asc' )
-			.asCallback( function( err, res ) {
-				return cb( err, res );
-			} );
-	},
-	get: function( opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
+class ItemModel extends BaseModel {
+  constructor(opts = {}) {
+    super({
+      ...opts,
+      table: 'items'
+    });
+  }
 
-		var query = model.basicQuery( opts );
+  get joins() {
+    return {
+      group: {
+        table: 'groups',
+        join: ['id', 'group_id'],
+        properties: ['id', 'name', 'limiter']
+      },
+      location: {
+        table: 'locations',
+        join: ['id', 'location_id'],
+        properties: ['id', 'name']
+      },
+      user: {
+        prefix: 'owner_',
+        table: 'users',
+        join: ['id', 'owner_id'],
+        properties: ['id', 'name']
+      },
+      course: {
+        prefix: 'owner_course_',
+        table: 'courses',
+        join: ['id', 'users.course_id'],
+        properties: ['id', 'name']
+      },
+      year: {
+        prefix: 'owner_year_',
+        table: 'years',
+        join: ['id', 'users.year_id'],
+        properties: ['id', 'name']
+      }
+    };
+  }
 
-		query.asCallback( function( err, res ) {
-			return cb( err, res );
-		} )
-	},
-	getMultipleById: function( ids, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
+  get bootstrap() {
+    return ['group', 'location', 'user', 'course', 'year'];
+  }
 
-		var query = model.basicQuery( opts )
-			.whereIn( 'items.id', ids )
-			.asCallback( function( err, res ) {
-				return cb( err, res );
-			} );
-	},
-	getOnLoanToUserId: function( user_id, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
+  get properties() {
+    return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated'];
+  }
 
-		var query = model.basicQuery( opts )
-			.where( 'status', 'on-loan' )
-			.where( 'owner_id', user_id )
-			.asCallback( function( err, res ) {
-				return cb( err, res );
-			} );
-	},
-	countItemsByGroupOnLoanToUserById: function( user_id, group_id, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
+  updateLocation(oldLocationId, newLocationId) {
+    return new Promise((resolve, reject) => {
+      this.query()
+        .expose()
+        .where('location_id', oldLocationId)
+        .update({
+          'location_id': newLocationId
+        })
+        .then(() => {
+          resolve(newLocationId);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 
-		var query = model.basicQuery( opts )
-			.where( 'status', 'on-loan' )
-			.where( 'owner_id', user_id )
-			.where( 'group_id', user_id )
-			.asCallback( function( err, res ) {
-				return cb( err, res.length );
-			} );
-	},
-	basicQuery: function( opts ) {
-		var query = db( model.table )
-			.select( {
-				id: 'items.id',
-				name: 'items.name',
-				barcode: 'items.barcode',
-				notes: 'items.notes',
-				value: 'items.value',
-				label: 'items.label',
-				status: 'items.status',
-				audited: 'items.audited',
-				updated: 'items.updated',
-			} )
+  updateGroup(oldGroupId, newGroupId = null) {
+    return new Promise((resolve, reject) => {
+      this.query()
+        .expose()
+        .where('group_id', oldGroupId)
+        .update({
+          'group_id': newGroupId
+        })
+        .then(() => {
+          resolve(newGroupId);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    })
+  }
 
-		if ( opts.where && opts.where.audited ) {
-			query.where( 'items.audited', '>=', opts.where.audited );
-		}
+  getOnLoanByUserId(userId) {
+    return this.query()
+      .where([
+        ['status', AVAILABILITY.ON_LOAN],
+        ['owner_id', userId]
+      ])
+      .expose();
+  }
 
-		if ( opts.orderby && opts.direction ) {
-			query.orderBy( opts.orderby, opts.direction );
-		}
+  search(term) {
+    return super.search(term, ['name', 'barcode'], ['name', 'asc']);
+  }
 
-		if ( opts.where && opts.where.status ) {
-			query.where( 'items.status', opts.where.status );
-		}
+  getByBarcode(barcode) {
+    return this.query().where([['barcode', barcode]]).retrieveSingle();
+  }
 
-		if ( opts.where && parseInt( opts.where.course_id ) ) {
-			query.where( 'courses.id', opts.where.course_id );
-		}
+  audit(barcode) {
+    return this.getByBarcode(barcode)
+        .then(item => {
+          if (!item) {
+            throw new Error('Unknown item');
+          }
 
-		if ( opts.where && parseInt( opts.where.years_id ) ) {
-			query.where( 'years.id', opts.where.years_id );
-		}
+          return this.query()
+            .update(item.id, {
+              audited: new Date()
+            })
+            .then(id => {
+              return item;
+            });
+        });
+  }
 
-		if ( opts.where && parseInt( opts.where.group_id ) ) {
-			query.where( 'items.group_id', opts.where.group_id );
-		}
+  changeStatus(barcode, status) {
+    return this.getByBarcode(barcode)
+        .then(item => {
+          if (!item) {
+            throw new Error('Unknown item');
+          }
 
-		if ( opts.where && parseInt( opts.where.location_id ) ) {
-			query.where( 'items.location_id', opts.where.location_id );
-		}
+          return this.query()
+            .update(item.id, {
+              status: status,
+              owner_id: null,
+              updated: new Date()
+            })
+            .then(id => {
+              return item;
+            });
+        });
+  }
 
-		// Must come after all the others
-		if ( opts.where && opts.where.missing ) {
-			query.andWhere( 'items.audited', null )
-				.orWhere( 'items.audited', '<', opts.where.missing );
-		}
+  return(barcode) {
+    return this.changeStatus(barcode, AVAILABILITY.AVAILABLE);
+  }
 
-		if ( opts.lookup && opts.lookup.indexOf( 'group' ) != -1 ) {
-			query.leftJoin( 'groups', 'groups.id', 'items.group_id' )
-			.select( {
-				group_id: 'groups.id',
-				group_name: 'groups.name',
-				group_limiter: 'groups.limiter',
-			} );
-		}
+  broken(barcode) {
+    return this.changeStatus(barcode, AVAILABILITY.BROKEN);
+  }
 
-		if ( opts.lookup && opts.lookup.indexOf( 'location' ) != -1 ) {
-			query.leftJoin( 'locations', 'locations.id', 'items.location_id' )
-			.select( {
-				location_id: 'locations.id',
-				location_name: 'locations.name',
-				location_barcode: 'locations.barcode',
-			} );
-		}
+  lost(barcode) {
+    return this.changeStatus(barcode, AVAILABILITY.LOST);
+  }
 
-		if ( opts.lookup && opts.lookup.indexOf( 'owner' ) != -1 ) {
-			query.leftJoin( 'users', 'users.id', 'items.owner_id' )
-			.select( {
-				owner_id: 'users.id',
-				owner_name: 'users.name',
-			} );
-			query.leftJoin( 'courses', 'users.course_id', 'courses.id' )
-			.select( {
-				owner_course_id: 'courses.id',
-				owner_course_name: 'courses.name',
-			} );
-			query.leftJoin( 'years', 'users.year_id', 'years.id' )
-			.select( {
-				owner_year_id: 'years.id',
-				owner_year_name: 'years.name',
-			} );
-		}
-
-		return query;
-	},
-	getById: function( id, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
-		model.getBy( id, 'id', opts, cb );
-	},
-	getByBarcode: function( barcode, opts, cb ) {
-		if ( typeof opts == 'function' ) {
-			cb = opts;
-			opts = {};
-		}
-		model.getBy( barcode, 'barcode', opts, cb );
-	},
-	getBy: function( term, type, opts, cb ) {
-		var query = model.basicQuery( opts );
-
-		switch ( type ) {
-			case 'id': query.where( 'items.id', term ); break;
-			case 'barcode': query.where( 'items.barcode', term ); break;
-		}
-
-		query.asCallback( function( err, res ) {
-				if ( res ) {
-					return cb( err, res[0] );
-				} else {
-					return cb( err );
-				}
-		} );
-	},
-	create: function( values, cb ) {
-		db( model.table )
-			.insert( values )
-			.asCallback( function( err, res ) {
-				if ( err ) {
-					switch ( err.constraint ) {
-						case 'items_barcode_unique':
-							return cb( { message: 'Barcode is not unique' } );
-							break;
-						case 'items_name_unique':
-							return cb( { message: 'Name is not unique' } );
-							break;
-						default:
-							console.log( err );
-							return cb( { message: 'Unable to create item' } );
-							break;
-					}
-				}
-				return cb( err, res );
-			} )
-	},
-	update: function( id, values, cb ) {
-		db( model.table )
-			.update( values )
-			.where( 'id', id )
-			.asCallback( function( err ) {
-				if ( err ) {
-					switch ( err.constraint ) {
-						case 'items_barcode_unique':
-							return cb( { message: 'Barcode(s) is/are not unique' } );
-							break;
-						case 'items_name_unique':
-							return cb( { message: 'Name is not unique' } );
-							break;
-						default:
-							console.log( err );
-							return cb( { message: 'Unable to update item' } );
-							break;
-					}
-				}
-				return cb( err );
-			} )
-	},
-	updateMultiple: function( ids, values, cb ) {
-		var q = db( model.table )
-			.update( values )
-			.whereIn( 'id', ids )
-			.asCallback( function( err ) {
-				if ( err ) {
-					console.log( err );
-					return cb( { message: 'Unable to update item' } );
-				}
-				return cb( err );
-			} )
-	},
-	return: function( barcode, cb ) {
-		db( model.table )
-			.select( '*' )
-			.where( 'barcode', barcode )
-			.asCallback( function( err, items ) {
-				if ( items[0] ) {
-					var item = items[0];
-					if ( item.status == 'available' ) {
-						cb( { message: 'Item already returned', status: 'warning' } );
-					} else {
-						db( model.table )
-							.update( {
-								status: 'available',
-								owner_id: null,
-								updated: new Date()
-							} )
-							.where( 'id', item.id )
-							.asCallback( function( err ) {
-								if ( err ) {
-									console.log( err );
-									return cb( { message: 'Unable to update item', status: 'danger' } );
-								} else {
-									cb( { message: 'Item returned', status: 'success' }, item );
-								}
-							} )
-					}
-				} else {
-					cb( { message: 'Unknown item', status: 'danger' }, null );
-				}
-			} )
-	},
-	broken: function( barcode, cb ) {
-		db( model.table )
-			.select( '*' )
-			.where( 'barcode', barcode )
-			.asCallback( function( err, items ) {
-				if ( items[0] ) {
-					var item = items[0];
-					if ( item.status == 'broken' ) {
-						cb( { message: 'Item already marked as broken', status: 'warning' } );
-					} else if ( item.status == 'lost' ) {
-						cb( { message: 'Item marked as lost', status: 'warning' } );
-					} else {
-						db( model.table )
-							.update( {
-								status: 'broken',
-								owner_id: null,
-								updated: new Date()
-							} )
-							.where( 'id', item.id )
-							.asCallback( function( err ) {
-								if ( err ) {
-									console.log( err );
-									return cb( { message: 'Unable to update item', status: 'danger' } );
-								} else {
-									cb( { message: 'Item marked as broken', status: 'success' }, item );
-								}
-							} )
-					}
-				} else {
-					cb( { message: 'Unknown item', status: 'danger' }, null );
-				}
-			} )
-	},
-	lost: function( barcode, cb ) {
-		db( model.table )
-			.select( '*' )
-			.where( 'barcode', barcode )
-			.asCallback( function( err, items ) {
-				if ( items[0] ) {
-					var item = items[0];
-					if ( item.status == 'lost' ) {
-						cb( { message: 'Item already marked as lost', status: 'warning' } );
-					} else if ( item.status == 'broken' ) {
-						cb( { message: 'Item marked as broken', status: 'warning' } );
-					} else {
-						db( model.table )
-							.update( {
-								status: 'lost',
-								owner_id: null,
-								updated: new Date()
-							} )
-							.where( 'id', item.id )
-							.asCallback( function( err ) {
-								if ( err ) {
-									console.log( err );
-									return cb( { message: 'Unable to update item', status: 'danger' } );
-								} else {
-									cb( { message: 'Item marked as lost', status: 'success' }, item );
-								}
-							} )
-					}
-				} else {
-					cb( { message: 'Unknown item', status: 'danger' }, null );
-				}
-			} )
-	},
-	issue: function( item_barcode, user_id, cb ) {
-		db( model.table )
-			.select( '*' )
-			.where( 'barcode', item_barcode )
-			.asCallback( function( err, items ) {
-				if ( items[0] ) {
-					var item = items[0];
-					if ( item.status == 'lost' ) {
-						cb( { message: 'Item marked as lost', status: 'warning' } );
-					} else if ( item.status == 'broken' ) {
-						cb( { message: 'Item marked as broken', status: 'warning' } );
-					} else if ( item.status == 'on-loan' ) {
-						cb( { message: 'Item already on loan to another suer', status: 'warning' } );
-					} else {
-						db( model.table )
-							.update( {
-								status: 'on-loan',
-								owner_id: user_id,
-								updated: new Date()
-							} )
-							.where( 'id', item.id )
-							.asCallback( function( err ) {
-								if ( err ) {
-									console.log( err );
-									return cb( { message: 'Unable to update item', status: 'danger' } );
-								} else {
-									cb( { message: 'Item issued', status: 'success' }, item );
-								}
-							} )
-					}
-				} else {
-					cb( { message: 'Unknown item', status: 'danger' }, null );
-				}
-			} )
-	},
-	audit: function( barcode , cb ) {
-		db( model.table )
-			.select( '*' )
-			.where( 'barcode', barcode )
-			.asCallback( function( err, items ) {
-				if ( items[0] ) {
-					var item = items[0];
-					db( model.table )
-						.update( {
-							audited: new Date()
-						} )
-						.where( 'id', item.id )
-						.asCallback( function( err ) {
-							if ( err ) {
-								console.log( err );
-								return cb( { message: 'Unable to audit item', status: 'danger' } );
-							} else {
-								cb( { message: 'Item audited', status: 'success' }, item );
-							}
-						} )
-				} else {
-					cb( { message: 'Unknown item', status: 'danger' }, null );
-				}
-			} )
-	},
-	updateLocation: function( id, new_id, cb ) {
-		db( model.table )
-			.update( { 'location_id': new_id } )
-			.where( 'location_id', id )
-			.asCallback( function( err ) {
-				if ( err ) {
-					console.log( err );
-					return cb( { message: "Unable to update item's location" } );
-				}
-				return cb( err );
-			} )
-	},
-	updateGroup: function( id, new_id, cb ) {
-		db( model.table )
-			.update( { 'group_id': new_id } )
-			.where( 'group_id', id )
-			.asCallback( function( err ) {
-				if ( err ) {
-					console.log( err );
-					return cb( { message: 'Unable to update items group' } );
-				}
-				return cb( err );
-			} )
-	},
-	remove: function( id, cb ) {
-		db( model.table )
-			.where( 'id', id )
-			.delete()
-			.asCallback( function( err, res ) {
-			return cb( err );
-		} )
-	}
-};
-
-module.exports = function( database ) {
-	db = database;
-
-	return model;
+  issue(itemId, userId, operator) {
+    return this.update(itemId, {
+      status: AVAILABILITY.ON_LOAN,
+      owner_id: userId,
+      updated: new Date()
+    });
+  }
 }
+
+module.exports = ItemModel;
