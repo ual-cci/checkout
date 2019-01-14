@@ -47,7 +47,19 @@ class BaseController {
       status: 'danger'
     };
 
-    const _err = typeof err === 'string' ? { message: err } : err;
+    let _err;
+
+    if (err instanceof Error) {
+      _err = {
+        message: err.message
+      };
+    } else if (typeof err === 'string') {
+      _err = {
+        message: err
+      };
+    } else {
+      _err = err;
+    }
 
     // TODO add error logging
     console.log(_err);
