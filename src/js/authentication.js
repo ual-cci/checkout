@@ -86,7 +86,7 @@ const Authentication = {
 
 		passport.deserializeUser( function( data, done ) {
       users.query()
-        .lookup(['printers'])
+        .lookup(['printer'])
         .getById(data.id)
         .then(user => {
           if (user) {
