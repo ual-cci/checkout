@@ -282,6 +282,7 @@ class ItemController extends BaseController {
 
         if (req.body.print) {
           if (req.user.printer_id) {
+            console.log(req.user.printer_url);
             Print.labels(barcodes, req.user.printer_url);
             req.flash('info', `Labels printed to ${req.user.printer_name}`);
           } else {
