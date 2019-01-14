@@ -13,6 +13,7 @@ const Groups = require('../../src/models/groups.js');
 const Users = require('../../src/models/users.js');
 const Actions = require('../../src/models/actions.js');
 const Courses = require('../../src/models/courses.js');
+const Years = require('../../src/models/years.js');
 
 const Print = require('../../src/js/print');
 
@@ -27,6 +28,7 @@ class ApiController extends BaseController {
       users: new Users(),
       actions: new Actions(),
       courses: new Courses(),
+      years: new Years(),
     };
   }
 
@@ -277,6 +279,8 @@ class ApiController extends BaseController {
         });
       })
       .then(() => {
+        const { item } = persist;
+
         return res.json({
           status: 'success',
           message: 'Successfully posted as broken',
