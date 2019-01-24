@@ -94,7 +94,7 @@ class ItemController extends BaseController {
               query.where('status', req.query.status);
             })
             .if((req.query.course), query => {
-              query.where('course.id', req.query.course);
+              query.where('courses.id', req.query.course);
             })
             .if((req.query.year), query => {
               query.where('years.id', req.query.year);
