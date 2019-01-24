@@ -101,7 +101,7 @@ class PrintersController extends BaseController {
 
         res.render('confirm-remove', {
           selected,
-          groups: list
+          printers: list
         });
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
