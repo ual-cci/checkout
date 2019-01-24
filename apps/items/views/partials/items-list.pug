@@ -56,8 +56,8 @@ if items && items.length > 0
 							- status = item.status
 							include status.pug
 							
-						td: +item( item.name, item.id )
 						td: +clipboard( item.barcode )
+						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )
 						
