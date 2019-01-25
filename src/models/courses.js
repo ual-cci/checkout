@@ -23,7 +23,7 @@ class CourseModel extends BaseModel {
   }
 
   getAll() {
-    return this.lookup(['user']).orderBy(['name']).retrieve();
+    return this.lookup(['user']).orderBy([['name']]).retrieve();
   }
 }
 

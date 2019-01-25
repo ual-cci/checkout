@@ -9,7 +9,7 @@ class GroupModel extends BaseModel {
   }
 
   getAll() {
-    return this.orderBy(['name']).retrieve();
+    return this.orderBy([['name']]).retrieve();
   }
 }
 
