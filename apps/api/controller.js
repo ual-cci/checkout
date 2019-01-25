@@ -464,6 +464,14 @@ class ApiController extends BaseController {
       return cachedError('The user must have an email address');
     }
 
+    if (!req.body.course) {
+      return cachedError('User must be attached to a course');
+    }
+
+    if (!req.body.year) {
+      return cachedError('User must be attached to a year');
+    }
+
     Promise.all([
       this.models.courses.getById(req.body.course),
       this.models.years.getById(req.body.year)
