@@ -207,7 +207,16 @@ class ApiController extends BaseController {
 
         return false;
       })
-      .catch(result => {
+      .then(result => {
+        const { item } = persist;
+
+        return this.models.actions.create({
+          item_id: item.id,
+          action: ACTIONS.AUDITED,
+          operator_id: req.user.id
+        });
+      })
+      .then(() => {
         const { item } = persist;
 
         res.json({
