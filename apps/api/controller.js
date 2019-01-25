@@ -410,7 +410,7 @@ class ApiController extends BaseController {
    * @param {Object} res Express response object
    */
   postLabel(req, res) {
-    this.models.getByBarcode(req.params.item)
+    this.models.items.getByBarcode(req.params.item)
       .then(item => {
         if (!item) {
           throw ({
