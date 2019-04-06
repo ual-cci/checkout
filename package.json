@@ -10,29 +10,29 @@
     "body-parser": "^1.18.3",
     "bunyan": "^1.8.12",
     "bunyan-middleware": "^0.8.0",
-    "bwip-js": "^1.7.1",
+    "bwip-js": "^1.7.2",
     "connect-pg-simple": "^5.0.0",
-    "cookie-parser": "^1.4.1",
+    "cookie-parser": "^1.4.4",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-flash": "0.0.2",
     "express-session": "^1.15.6",
     "git-rev": "^0.2.1",
-    "helmet": "^3.15.0",
+    "helmet": "^3.16.0",
     "ipp": "^1.1.0",
     "knex": "^0.14.6",
-    "moment": "^2.23.0",
-    "nodemon": "^1.18.9",
+    "moment": "^2.24.0",
+    "nodemon": "^1.18.10",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.7.0",
-    "pdfkit": "^0.8.3",
-    "pg": "^7.7.1",
+    "pdfkit": "^0.9.0",
+    "pg": "^7.9.0",
     "pug": "^2.0.3"
   },
   "devDependencies": {
     "fs-extra": "^7.0.1",
     "jsonfile": "^5.0.0",
-    "winston": "^3.1.0"
+    "winston": "^3.2.1"
   }
 }
