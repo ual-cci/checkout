@@ -99,7 +99,6 @@ mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 			| #{ text }
 
 mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
-	- sort_by = sort_by.split('_')[0]
 	if ( sort_by == slug )
 		if sort_dir == 'asc'
 			- alt_dir = 'desc'
