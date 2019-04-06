@@ -9,7 +9,7 @@ module.exports = {
     ACTIVE: 'active',
     DISABLED: 'disabled'
   },
-  DEFAULT_SORTS: [ 'status', 'barcode', 'name', 'owner', 'course', 'year', 'group', 'location', 'value' ],
+  DEFAULT_SORTS: [ 'status', 'barcode', 'name', 'owner', 'course', 'year', 'group', 'location', 'department', 'value' ],
   DEFAULT_DIRECTIONS: [ 'asc', 'desc' ],
   ACTIONS: {
     AUDITED: 'audited',
@@ -39,6 +39,8 @@ module.exports = {
           return 'group_name';
         case 'location':
           return 'location_name';
+        case 'department':
+          return 'department_name';
         default:
           return sortBy;
       }

@@ -27,6 +27,13 @@ form( method="post" ).form-horizontal
 				for location in locations
 					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) )=location.name
 	.form-group
+		label( for="department" ).col-md-2.control-label Department
+		.col-md-4
+			select( name="department" required )#department.form-control
+				option( value="" selected ) Select a department
+				for department in departments
+					option( value=department.id selected=( department.id == ( item ? item.department_id : '' ) ) )=department.name
+	.form-group
 		label( for="value" ).col-md-2.control-label Value
 		.col-md-4
 			.input-group

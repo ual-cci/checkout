@@ -1,9 +1,9 @@
-- skip = 0
-.row
-	form( method="get" )
+- skip = 2
+form( method="get" )
+	.row
 		input( type="hidden", name="sortby", value=sortby )
 		input( type="hidden", name="direction", value=direction )
-		.col-md-2
+		.col-md-1
 			label( for="status" ) Status
 			select( name="status" )#status.form-control.input-sm
 				option( value="", selected ) &mdash;
@@ -11,8 +11,26 @@
 				option( value='on-loan', selected=( selected.status == 'on-loan' ) ) On Loan
 				option( value='broken', selected=( selected.status == 'broken' ) ) Broken
 				option( value='lost', selected=( selected.status == 'lost' ) ) Lost
+		.col-md-1
+			label( for="groups" ) Group
+			select( name="group" )#group.form-control.input-sm
+				option( value="", selected ) &mdash;
+				for group in groups
+					option( value=group.id, selected=( group.id == selected.group ) ) #{ group.name }
+		.col-md-1
+			label( for="location" ) Location
+			select( name="location" )#location.form-control.input-sm
+				option( value="", selected ) &mdash;
+				for location in locations
+					option( value=location.id, selected=( location.id == selected.location ) ) #{ location.name }
+		.col-md-1
+			label( for="department" ) Department
+			select( name="department" )#department.form-control.input-sm
+				option( value="", selected ) &mdash;
+				for department in departments
+					option( value=department.id, selected=( department.id == selected.department ) ) #{ department.name }
 		if courses
-			.col-md-2
+			.col-md-1
 				label( for="course" ) Course
 				select( name="course" )#group.form-control.input-sm
 					option( value="", selected ) &mdash;
@@ -21,7 +39,7 @@
 		else
 			- skip++
 		if years
-			.col-md-2
+			.col-md-1
 				label( for="year" ) Year
 				select( name="year" )#year.form-control.input-sm
 					option( value="", selected ) &mdash;
@@ -29,19 +47,7 @@
 						option( value=year.id, selected=( year.id == selected.year ) ) #{ year.name }
 		else
 			- skip++
-		.col-md-2
-			label( for="groups" ) Group
-			select( name="group" )#group.form-control.input-sm
-				option( value="", selected ) &mdash;
-				for group in groups
-					option( value=group.id, selected=( group.id == selected.group ) ) #{ group.name }
-		.col-md-2
-			label( for="location" ) Location
-			select( name="location" )#location.form-control.input-sm
-				option( value="", selected ) &mdash;
-				for location in locations
-					option( value=location.id, selected=( location.id == selected.location ) ) #{ location.name }
-		
+
 		.col-md-2( class='col-md-offset-' + ( skip * 2 ) )
 			div( style="padding-top: 1.8em;" )
 				a( href=filter_path + "?clear=" ).btn.btn-default.btn-sm.pull-right

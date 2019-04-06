@@ -33,6 +33,11 @@ if items && items.length > 0
 							| Location
 						else
 							+sortItemHead( 'Location', 'location', sortby, direction, selected, filter_path )
+					th 
+						if multi
+							| Department
+						else
+							+sortItemHead( 'Department', 'department', sortby, direction, selected, filter_path )
 					th
 						if multi
 							| Value
@@ -60,6 +65,7 @@ if items && items.length > 0
 						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )
+						td: +department( item.department_name, item.department_id )
 						
 						//- Value
 						if parseInt( item.value ) > 0
@@ -91,7 +97,7 @@ if items && items.length > 0
 				tr
 					if edit
 						th
-					th( colspan="5" ) Total
+					th( colspan="6" ) Total
 					th £#{ item_total }
 					th( colspan="4" )
 else
