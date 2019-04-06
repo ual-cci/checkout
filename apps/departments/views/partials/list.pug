@@ -1,0 +1,25 @@
+if departments.length > 0
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col( width="40%" )
+				col( width="20%", colspan="3" )
+			thead
+				tr
+					th Name
+						span.dropup
+							span.caret
+					th View
+					th Manage
+			tbody
+				for department in departments
+					tr
+						td=department.name
+						td
+							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?department=' + department.id )
+						td
+							+editBtn( '/departments/' + department.id + '/edit' )
+							+space
+							+deleteBtn( '/departments/' + department.id + '/remove' )
+else
+	+messageBlock( 'warning', 'There are no departments to display.' )
