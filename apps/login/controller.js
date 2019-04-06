@@ -9,7 +9,7 @@ class LoginController extends BaseController {
 
   getRoot(req, res) {
     if (req.isAuthenticated()) {
-      res.redirect(this.getRoute());
+      res.redirect('/');
     } else {
       res.render('login');
     }
