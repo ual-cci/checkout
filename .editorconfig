@@ -24,3 +24,5 @@ trim_trailing_whitespace = false
 # The PUG files may have extra whitespace
 [*.pug]
 trim_trailing_whitespace = false
+indent_style = tab
+indent_size = 4
