@@ -18,6 +18,7 @@ class ActionModel extends BaseModel {
         properties: ['id', 'name', 'barcode']
       },
       user: {
+        prefix: 'owner_',
         table: 'users',
         join: ['id', 'user_id'],
         properties: ['id', 'name']
