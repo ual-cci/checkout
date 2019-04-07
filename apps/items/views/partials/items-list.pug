@@ -68,13 +68,13 @@ if items && items.length > 0
 						td: +department( item.department_name, item.department_id )
 						
 						//- Value
-						if parseInt( item.value ) > 0
-							- value = parseInt( item.value )
+						if parseFloat( item.value ) > 0
+							- value = parseFloat( item.value )
 						else
 							- value = 0
 						
 						- item_total = ( item_total + value )
-						td £#{ value }
+						td £#{ value.toFixed(2) }
 						if ! multi
 							if item.owner_id
 								td: +user( item.owner_name, item.owner_id )
@@ -98,7 +98,7 @@ if items && items.length > 0
 					if edit
 						th
 					th( colspan="6" ) Total
-					th £#{ item_total }
+					th £#{ item_total.toFixed(2) }
 					th( colspan="4" )
 else
 	+messageBlock( 'warning', 'There are no items to display.' )
