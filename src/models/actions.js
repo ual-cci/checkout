@@ -23,7 +23,7 @@ class ActionModel extends BaseModel {
         properties: ['id', 'name']
       },
       operator: {
-        prefix: 'operators_',
+        prefix: 'operator_',
         table: 'users',
         alias: 'operators',
         join: ['operators.id', 'operator_id'],
