@@ -378,7 +378,8 @@ class ItemController extends BaseController {
             Print.label( {
               barcode: item.barcode,
               text: item.name,
-              type: item.label
+              type: item.label,
+              brand: item.department_brand
             }, req.user.printer_url );
             req.flash('info', `Label printed to ${req.user.printer_name}`);
           } else {
@@ -462,7 +463,8 @@ class ItemController extends BaseController {
         Print.label( {
           barcode: _item.barcode,
           text: _item.name,
-          type: _item.label
+          type: _item.label,
+          brand: _item.department_brand
         }, printer.url );
 
         req.flash( 'info', `Label printed to ${printer.name}`);
@@ -565,7 +567,8 @@ class ItemController extends BaseController {
             Print.label( {
               barcode: item.barcode,
               text: item.name,
-              type: item.label
+              type: item.label,
+              brand: item.department_brand
             }, req.user.printer_url );
             req.flash( 'info', `Label reprinted to ${req.user.printer_name}`);
           } else {

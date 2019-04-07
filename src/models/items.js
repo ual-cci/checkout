@@ -24,7 +24,7 @@ class ItemModel extends BaseModel {
       department: {
         table: 'departments',
         join: ['id', 'department_id'],
-        properties: ['id', 'name']
+        properties: ['id', 'name', 'brand']
       },
       user: {
         prefix: 'owner_',
