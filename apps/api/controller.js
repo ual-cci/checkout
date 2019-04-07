@@ -185,8 +185,8 @@ class ApiController extends BaseController {
    */
   postAudit(req, res) {
     let persist = {};
-
-    this.models.items.audit(req.params.item)
+    // this.models.items.audit(req.params.item)
+    this.models.items.getByBarcode(req.params.item)
       .then(item => {
         persist.item = item;
 
@@ -198,32 +198,89 @@ class ApiController extends BaseController {
       })
       .then(location => {
         const { item } = persist;
+        const match = req.body.location == item.location_id;
 
-        if (location) {
-          return this.models.items.update(item.id, {
-            location_id: location.id
-          });
+        if ( ! item ) {
+          return -1;
         }
 
-        return false;
+        if (location) {
+          if ( match ) {
+            // location set, but matches
+            return 1;
+          } else if ( !match && req.body.override == 'true' ) {
+            // location set, doesn't match but updated
+            this.models.items.update(item.id, {
+              location_id: location.id
+            });
+            return 2;
+          } else {
+            // location set, doesn't match - don't audit
+            return -2;
+          }
+        } else {
+          // just audit
+          return 1;
+        }
+
+        // uncaught condition.
+        return 0;
       })
       .then(result => {
         const { item } = persist;
 
-        return this.models.actions.create({
-          item_id: item.id,
-          action: ACTIONS.AUDITED,
-          operator_id: req.user.id
-        });
+        if ( result > 0 ) {
+          this.models.items.audit(item.barcode);
+          this.models.actions.create({
+            item_id: item.id,
+            action: ACTIONS.AUDITED,
+            operator_id: req.user.id
+          });
+        }
+
+        return result;
       })
-      .then(() => {
+      .then(result => {
         const { item } = persist;
 
-        res.json({
-          status: 'success',
-          message: 'Successfully audited',
-          barcode: item.barcode
-        });
+        switch (result) {
+          case 1:
+            res.json({
+              status: 'success',
+              message: 'Successfully audited',
+              barcode: item.barcode
+            });
+            break;
+          case 2:
+            res.json({
+              status: 'success',
+              message: 'Successfully audited and moved to new location',
+              barcode: item.barcode
+            });
+            break;
+          case -1:
+            res.json({
+              status: 'danger',
+              message: 'Unknown item',
+              barcode: req.params.item
+            });
+            break;
+          case -2:
+            res.json({
+              status: 'danger',
+              message: `Item is in the wrong location, should be: <strong>${item.location_name}</strong>`,
+              barcode: item.barcode
+            });
+            break;
+          default:
+          case 0:
+            res.json({
+              status: 'danger',
+              message: 'Unknown error auditing',
+              barcode: item.barcode
+            });
+            break;
+        }
       })
       .catch(err => this.displayErrorJson(req, res, err));
   }
