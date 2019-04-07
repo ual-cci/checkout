@@ -263,49 +263,57 @@ class ItemController extends BaseController {
     const items = [];
     const barcodes = [];
 
-    for (let i = start; i <= end; i++) {
-      let item = {
-        name: req.body.name.trim(),
-        barcode: req.body.prefix,
-        label: req.body.label,
-        value: req.body.value,
-        location_id: req.body.location,
-        department_id: req.body.department,
-        notes: req.body.notes,
-        status: AVAILABILITY.AVAILABLE
-      }
-
-      if ( req.body.group )
-        item.group_id = req.body.group;
-
-      const index = i.toString().padStart(2, '0');
-      if (req.body.suffix) item.name += " #" + index;
-      item.barcode += index.toString();
-      barcodes.push({
-        barcode: item.barcode,
-        text: item.name,
-        type: item.label,
-        brand: "Creative\nTechnology\nLab"
-      });
-      items.push(item);
-    }
-
-    this.models.items.create(items)
-      .then(result => {
-        req.flash( 'success', 'Items created' );
-
-        if (req.body.print) {
-          if (req.user.printer_id) {
-            console.log(req.user.printer_url);
-            Print.labels(barcodes, req.user.printer_url);
-            req.flash('info', `Labels printed to ${req.user.printer_name}`);
-          } else {
-            req.flash('warning', 'No printer configured');
+    this.models.departments.getById(req.body.department)
+      .then((department) => {
+        for (let i = start; i <= end; i++) {
+          let item = {
+            name: req.body.name.trim(),
+            barcode: req.body.prefix,
+            label: req.body.label,
+            value: req.body.value,
+            location_id: req.body.location,
+            department_id: req.body.department,
+            notes: req.body.notes,
+            status: AVAILABILITY.AVAILABLE
           }
+
+          if (!req.body.value) {
+            item.value = 0.0
+          }
+
+          if ( req.body.group )
+            item.group_id = req.body.group;
+
+          const index = i.toString().padStart(2, '0');
+          if (req.body.suffix) item.name += " #" + index;
+          item.barcode += index.toString();
+          barcodes.push({
+            barcode: item.barcode,
+            text: item.name,
+            type: item.label,
+            brand: department.name
+          });
+          items.push(item);
         }
-        res.redirect(this.getRoute());
       })
-      .catch(err => this.displayError(req, res, err, this.getRoute('/generate')));
+      .then(() => {
+        this.models.items.create(items)
+          .then(result => {
+            req.flash( 'success', 'Items created' );
+
+            if (req.body.print) {
+              if (req.user.printer_id) {
+                console.log(req.user.printer_url);
+                Print.labels(barcodes, req.user.printer_url);
+                req.flash('info', `Labels printed to ${req.user.printer_name}`);
+              } else {
+                req.flash('warning', 'No printer configured');
+              }
+            }
+            res.redirect(this.getRoute());
+          })
+          .catch(err => this.displayError(req, res, err, this.getRoute('/generate')));
+      });
   }
 
   /**
@@ -337,59 +345,66 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   postCreate(req, res) {
-    const item = {
-      name: req.body.name,
-      barcode: req.body.barcode,
-      label: req.body.label,
-      value: req.body.value,
-      location_id: req.body.location,
-      department_id: req.body.department,
-      notes: req.body.notes,
-      status: AVAILABILITY.AVAILABLE
-    }
-
-    if (req.body.group) {
-      item.group_id = req.body.group;
-    }
-
-    const checks = [
-      {
-        condition: (item.name == ''),
-        message: 'The item requires a name'
-      },
-      {
-        condition: (item.barcode == ''),
-        message: 'The item requires a unique barcode'
-      },
-      {
-        condition: (!item.location_id),
-        message: 'The item must be assigned to a location'
+    this.models.departments.getById(req.body.department)
+      .then((department) => {
+      const item = {
+        name: req.body.name,
+        barcode: req.body.barcode,
+        label: req.body.label,
+        value: req.body.value,
+        location_id: req.body.location,
+        department_id: req.body.department,
+        notes: req.body.notes,
+        status: AVAILABILITY.AVAILABLE
       }
-    ];
 
-    this._checkFields(checks, '/create', req, res);
+      if (!req.body.value) {
+        item.value = 0.0
+      }
 
-    this.models.items.create(item)
-      .then(id => {
-        req.flash('success', 'Item created');
+      if (req.body.group) {
+        item.group_id = req.body.group;
+      }
 
-        if (req.body.print) {
-          if (req.user.printer_id) {
-            Print.label( {
-              barcode: item.barcode,
-              text: item.name,
-              type: item.label,
-              brand: item.department_brand
-            }, req.user.printer_url );
-            req.flash('info', `Label printed to ${req.user.printer_name}`);
-          } else {
-            req.flash('warning', 'No printer configured');
-          }
+      const checks = [
+        {
+          condition: (item.name == ''),
+          message: 'The item requires a name'
+        },
+        {
+          condition: (item.barcode == ''),
+          message: 'The item requires a unique barcode'
+        },
+        {
+          condition: (!item.location_id),
+          message: 'The item must be assigned to a location'
         }
-        res.redirect(this.getRoute());
-      })
-      .catch(err => {
-        this.displayError(req, res, err, this.getRoute('/create'), 'Error creating item - ');
+      ];
+
+      this._checkFields(checks, '/create', req, res);
+
+      this.models.items.create(item)
+        .then(id => {
+          req.flash('success', 'Item created');
+
+          if (req.body.print) {
+            if (req.user.printer_id) {
+              Print.label( {
+                barcode: item.barcode,
+                text: item.name,
+                type: item.label,
+                brand: department.brand
+              }, req.user.printer_url );
+              req.flash('info', `Label printed to ${req.user.printer_name}`);
+            } else {
+              req.flash('warning', 'No printer configured');
+            }
+          }
+          res.redirect(this.getRoute());
+        })
+        .catch(err => {
+          this.displayError(req, res, err, this.getRoute('/create'), 'Error creating item - ');
+        });
       });
   }
 
@@ -494,7 +509,7 @@ class ItemController extends BaseController {
             barcode: item.barcode,
             text: item.name,
             type: item.label,
-            brand: "Creative\nTechnology\nLab"
+            brand: item.department_brand
           };
         });
 
@@ -550,12 +565,12 @@ class ItemController extends BaseController {
       notes: req.body.notes
     };
 
-    if (req.body.group != '') {
-      item.group_id = req.body.group;
+    if (!req.body.value) {
+      item.value = 0.0
     }
 
-    if (req.body.department != '') {
-      item.department_id = req.body.department;
+    if (req.body.group != '') {
+      item.group_id = req.body.group;
     }
 
     this.models.items.update(req.params.id, item)
