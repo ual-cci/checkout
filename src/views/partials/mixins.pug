@@ -132,5 +132,9 @@ mixin status( status )
 		span.label.label-danger Issued
 	else if status == 'audited'
 		span.label.label-default Audited
+	else if status = 'reserve'
+		span.label.label-danger Reserve
+	else if status = 'maintenance'
+		span.label.label-blue Maintenance
 	else
 		span.label.label-info=status
