@@ -102,7 +102,7 @@ class ReservationController extends BaseController {
         removeId = reservationToRemove.id;
       })
       .then(() => {
-        return this.models.groups.remove(removeId)
+        return this.models.reservations.remove(removeId)
       })
       .then(() => {
         req.flash('success', 'Reservation deleted');
