@@ -22,29 +22,6 @@ class ReservationController extends BaseController {
       });
   }
 
-  getCreate(req, res) {
-    res.render( 'create', { reservations: {} } );
-  }
-
-  postCreate(req, res) {
-    // if (req.body.name == '') {
-    //   this.displayError(req, res, '', this.getRoute('/create'), 'The reservations requires a name');
-    // }
-
-    const reservation = {
-      name: req.body.name
-    }
-
-    // if (req.body.limiter) group.limiter = req.body.limiter;
-
-    this.models.reservation.create(reservation)
-      .then(id => {
-        req.flash( 'success', 'Reservation created' );
-        res.redirect(this.getRoute());
-      })
-      .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error creating reservation - '));
-  }
-
   getEdit(req, res) {
     this.models.reservations.getById(req.params.id)
       .then(reservation => {
@@ -58,16 +35,13 @@ class ReservationController extends BaseController {
   }
 
   postEdit(req, res) {
-    // if (req.body.name == '') {
-    //   this.displayError(req, res, '', this.getRoute('/edit'), 'The reservation requires a name');
-    // }
-
     const reservation = {
-      // name: req.body.name,
-      // limiter: req.body.limiter ? req.body.limiter : null
+      start_date: req.body.start_date,
+      end_date: req.body.end_date,
+      action: req.body.action
     };
 
-    this.models.reservation.update(req.params.id, reservation)
+    this.models.reservations.update(req.params.id, reservation)
       .then(id => {
         req.flash( 'success', 'Reservation updated' );
         res.redirect(this.getRoute());

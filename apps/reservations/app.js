@@ -16,14 +16,6 @@ app.get('/', auth.isLoggedIn, function(req, res) {
   req.controller.getRoot(req, res);
 });
 
-app.get('/create', auth.isLoggedIn, function(req, res) {
-  req.controller.getCreate(req, res);
-});
-
-app.post('/create', auth.isLoggedIn, function(req, res) {
-  req.controller.postCreate(req, res);
-});
-
 app.get('/:id/edit', auth.isLoggedIn, function(req, res) {
   req.controller.getEdit(req, res);
 })

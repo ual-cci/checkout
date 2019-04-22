@@ -1,5 +1,19 @@
 form( method="post" ).form-horizontal
 	.form-group
+		label( for="start_date" ).col-md-2.control-label Start date
+		.col-md-4
+			input( name="start_date" type="datetime-local" value=moment( reservation.start_date ).format( 'YYYY-MM-DDTHH:MM' )  )#start_date.form-control
+	.form-group
+		label( for="end_date" ).col-md-2.control-label End date
+		.col-md-4
+			input( name="end_date" type="datetime-local" value=moment( reservation.end_date ).format( 'YYYY-MM-DDTHH:MM' )  )#end_date.form-control
+	.form-group
+		label( for="action" ).col-md-2.control-label Action
+		.col-md-4
+			select( name="action" )#action.form-control
+				option( value="reserve" selected=(reservation.action=='reserve') ) Reserve
+				option( value="maintenance" selected=(reservation.action=='maintenance') ) Maintenance
+	.form-group
 		.col-md-4.col-md-offset-2
 			button( type="submit" ).btn.btn-primary=action
 			|  
