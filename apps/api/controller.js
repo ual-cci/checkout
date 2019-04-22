@@ -159,7 +159,7 @@ class ApiController extends BaseController {
           });
         }
 
-        const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/item.pug'), { item } );
+        const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/item.pug'), { item, moment } );
 
         const output = {
           type: 'item',
