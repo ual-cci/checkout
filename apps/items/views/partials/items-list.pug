@@ -45,10 +45,10 @@ if items && items.length > 0
 							+sortItemHead( 'Value', 'value', sortby, direction, selected, filter_path )
 					if ! multi
 						th: +sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
-						th: small: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
-						th: small: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
-						th: small: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
-						th: small: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
 								
 					//- Manage
 					if edit
@@ -77,18 +77,18 @@ if items && items.length > 0
 						if ! multi
 							if item.owner_id
 								td: +user( item.owner_name, item.owner_id )
-								td: small: +course( item.owner_course_name, item.owner_course_id )
-								td: small: +year( item.owner_year_name, item.owner_year_id )
+								td: +course( item.owner_course_name, item.owner_course_id )
+								td: +year( item.owner_year_name, item.owner_year_id )
 							else
 								td( colspan=3 )
 									| &mdash;
 							
-							td: small
+							td
 								if item.issued
 									+fulldate( item.issued )
 								else
 									| –
-							td: small
+							td
 								if item.due
 									+relative( item.due )
 								else
