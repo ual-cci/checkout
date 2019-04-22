@@ -14,7 +14,7 @@ class ItemModel extends BaseModel {
       group: {
         table: 'groups',
         join: ['id', 'group_id'],
-        properties: ['id', 'name', 'limiter']
+        properties: ['id', 'name', 'limiter', 'duration']
       },
       location: {
         table: 'locations',
@@ -151,6 +151,8 @@ class ItemModel extends BaseModel {
             .update(item.id, {
               status: status,
               owner_id: null,
+              issued: null,
+              due: null,
               updated: new Date()
             })
             .then(id => {
@@ -171,10 +173,12 @@ class ItemModel extends BaseModel {
     return this.changeStatus(barcode, AVAILABILITY.LOST);
   }
 
-  issue(itemId, userId, operator) {
+  issue(itemId, userId, operator, dueDate) {
     return this.update(itemId, {
       status: AVAILABILITY.ON_LOAN,
       owner_id: userId,
+      due: dueDate,
+      issued: new Date(),
       updated: new Date()
     });
   }

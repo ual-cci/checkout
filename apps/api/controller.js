@@ -449,9 +449,16 @@ class ApiController extends BaseController {
           });
         }
 
+        // Create due date
+        var dueDate;
+        if ( item.group_duration ) {
+          var duration = moment.duration(item.group_duration.toISO());
+          dueDate = moment().add(duration);
+        }
+
         // Issue the item to the user and log an action
         return Promise.all([
-          this.models.items.issue(item.id, user.id, req.user),
+          this.models.items.issue(item.id, user.id, req.user, dueDate),
           this.models.actions.create({
             item_id: item.id,
             user_id: user.id,
