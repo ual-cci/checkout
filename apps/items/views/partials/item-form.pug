@@ -40,6 +40,10 @@ form( method="post" ).form-horizontal
 				span.input-group-addon &pound;
 				input( name="value" type="number" step="0.01" value=( item ? item.value : '' ) )#value.form-control
 	.form-group
+		label( for="serialnumber" ).col-md-2.control-label Serial number
+		.col-md-4
+			input( name="serialnumber" type="text" value=( item ? item.serialnumber : '' ) )#serialnumber.form-control
+	.form-group
 		label( for="notes" ).col-md-2.control-label Notes
 		.col-md-4
 			textarea( name="notes" type="text" )#notes.form-control #{ item ? item.notes : '' }

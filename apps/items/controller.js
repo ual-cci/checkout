@@ -155,8 +155,8 @@ class ItemController extends BaseController {
 
     // Checks if its a request with data
     if (req.body.fields) {
-      const keys = ['label', 'group', 'location', 'department', 'notes', 'value'];
-      const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value'];
+      const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber'];
+      const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber'];
       const item = {};
 
       keys.forEach((k, index) => {
@@ -355,6 +355,7 @@ class ItemController extends BaseController {
         location_id: req.body.location,
         department_id: req.body.department,
         notes: req.body.notes,
+        serialnumber: req.body.serialnumber,
         status: AVAILABILITY.AVAILABLE
       }
 
@@ -562,7 +563,8 @@ class ItemController extends BaseController {
       label: req.body.label,
       location_id: req.body.location,
       value: req.body.value,
-      notes: req.body.notes
+      notes: req.body.notes,
+      serialnumber: req.body.serialnumber
     };
 
     if (!req.body.value) {
