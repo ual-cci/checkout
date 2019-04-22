@@ -575,6 +575,10 @@ class ItemController extends BaseController {
       item.group_id = req.body.group;
     }
 
+    if (req.body.department != '') {
+      item.department_id = req.body.department;
+    }
+
     this.models.items.update(req.params.id, item)
       .then(result => {
         req.flash( 'success', 'Item updated' );
