@@ -1,0 +1,13 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove reservation'
+	- heading = "Are you sure you want to remove this reservation?"
+
+block contents
+	form( method="post" ).form-horizontal
+		.form-group
+			.col-md-4
+				button( type='submit' ).btn.btn-danger Yes, delete reservation
+				|  
+				a( href="/reservations" ).btn.btn-default Cancel

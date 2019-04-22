@@ -1,0 +1,15 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Reservation"
+	- heading = title
+
+block header
+	.page-header
+		h2 #{ heading }
+			a( href="/reservations/create" ).btn.btn-default.pull-right
+				span.glyphicon.glyphicon-plus
+				|  Create
+
+block contents
+	include partials/list.pug
