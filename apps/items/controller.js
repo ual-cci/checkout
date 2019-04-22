@@ -75,62 +75,48 @@ class ItemController extends BaseController {
           course: req.query.course ? req.query.course : '',
           year: req.query.year ? req.query.year : ''
         };
+        const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
+          mutator: SORTBY_MUTATIONS.ITEMS
+        });
 
-        if (Object.keys(req.query).length == 0) {
-          // If there is no query, display no items as none are matched
-          res.render('items', {
-            items: null,
-            locations,
-            departments,
-            groups,
-            courses,
-            years,
-            selected
-          });
-        } else {
-          const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
-            mutator: SORTBY_MUTATIONS.ITEMS
-          });
-
-          // Get items
-          this.models.items.query()
-            // Section of if commands to add queries into query
-            .if((req.query.status), (query) => {
-              query.where('status', req.query.status);
-            })
-            .if((req.query.course), query => {
-              query.where('courses.id', req.query.course);
-            })
-            .if((req.query.year), query => {
-              query.where('years.id', req.query.year);
-            })
-            .if((req.query.group), query => {
-              query.where('group_id', req.query.group);
-            })
-            .if((req.query.location), query => {
-              query.where('location_id', req.query.location);
-            })
-            .if((req.query.department), query => {
-              query.where('department_id', req.query.department);
-            })
-            .orderBy([
-              [ orderBy, direction ]
-            ])
-            .expose()
-            .then(items => {
-              res.render( 'items', {
-                items,
-                locations,
-                departments,
-                groups,
-                courses,
-                years,
-                selected,
-                sortby: orderBy,
-                direction
-              });
+        // Get items
+        this.models.items.query()
+          // Section of if commands to add queries into query
+          .if((req.query.status), (query) => {
+            query.where('status', req.query.status);
+          })
+          .if((req.query.course), query => {
+            query.where('courses.id', req.query.course);
+          })
+          .if((req.query.year), query => {
+            query.where('years.id', req.query.year);
+          })
+          .if((req.query.group), query => {
+            query.where('group_id', req.query.group);
+          })
+          .if((req.query.location), query => {
+            query.where('location_id', req.query.location);
+          })
+          .if((req.query.department), query => {
+            query.where('department_id', req.query.department);
+          })
+          .orderBy([
+            [ orderBy, direction ]
+          ])
+          .expose()
+          .then(items => {
+            res.render( 'items', {
+              items,
+              locations,
+              departments,
+              groups,
+              courses,
+              years,
+              selected,
+              sortby: orderBy,
+              direction
             });
-        }
+          });
       });
   }
 
