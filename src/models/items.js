@@ -52,7 +52,7 @@ class ItemModel extends BaseModel {
   }
 
   get properties() {
-    return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated', 'serialnumber'];
+    return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated', 'serialnumber', 'issued', 'due'];
   }
 
   updateLocation(oldLocationId, newLocationId) {

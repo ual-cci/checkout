@@ -47,6 +47,8 @@ if items && items.length > 0
 						th: +sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
 						th: small: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
 						th: small: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
+						th: small: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
+						th: small: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
 								
 					//- Manage
 					if edit
@@ -80,6 +82,17 @@ if items && items.length > 0
 							else
 								td( colspan=3 )
 									| &mdash;
+							
+							td: small
+								if item.issued
+									+fulldate( item.issued )
+								else
+									| –
+							td: small
+								if item.due
+									+short_relative( item.due )
+								else
+									| –
 								
 							//- Manage	
 							if edit

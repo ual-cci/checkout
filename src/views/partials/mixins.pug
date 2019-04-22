@@ -10,6 +10,9 @@ mixin fulldate( date )
 mixin relative( date )
 	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ) )=moment( date ).fromNow()
 
+mixin short_relative( date )
+	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ) )=moment( date ).fromNow(true)
+
 mixin messageBlock( status, text )
 	p( style="padding: 1em; margin-top: 1em;" class="bg-" + status )=text
 
