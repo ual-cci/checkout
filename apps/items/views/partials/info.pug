@@ -1,17 +1,26 @@
-- status = item.status
-h4: include status.pug
-dl.dl-horizontal
-	dt Barcode
-	dd: +clipboard( item.barcode )
-	dt Location
-	dd: +location( item.location_name, item.location_id )
-	dt Department
-	dd: +department( item.department_name, item.department_id )
-	dt Group
-	dd: +group( item.group_name, item.group_id )
-	if item.value
-		dt Value
-		dd £#{ item.value }
-	if item.notes
-		dt Notes
-		dd #{ item.notes }
+.row
+	.col-md-6
+		dl.dl-horizontal
+			dt Barcode
+			dd: +clipboard(item.barcode)
+			if item.serialnumber
+				dt Serial number
+				dd: +clipboard(item.serialnumber)
+			- status = item.status
+			dt Status
+			dd: include status.pug
+			if item.value
+				dt Value
+				dd £#{item.value}
+			if item.notes
+				dt Notes
+				dd=item.notes
+	.col-md-6
+		dl.dl-horizontal
+			dt Location
+			dd: +location(item.location_name, item.location_id)
+			dt Department
+			dd: +department(item.department_name, item.department_id)
+			dt Group
+			dd: +group(item.group_name, item.group_id)
+			
