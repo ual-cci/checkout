@@ -6,8 +6,7 @@ include ../partials/mixins.pug
 			span.glyphicon.glyphicon-tag
 			|  
 			a( href="/items/" + item.id )=item.name
-			- status = item.status
-			.pull-right( style="margin-top: -3px;" ): include ../../../apps/items/views/partials/status.pug
+			.pull-right( style="margin-top: -3px;" ): +status( item.status )
 	.panel-body
 		.row
 			.col-md-10

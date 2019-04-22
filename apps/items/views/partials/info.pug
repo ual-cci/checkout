@@ -6,9 +6,8 @@
 			if item.serialnumber
 				dt Serial number
 				dd: +clipboard(item.serialnumber)
-			- status = item.status
 			dt Status
-			dd: include status.pug
+			dd: +status( item.status )
 			if item.value
 				dt Value
 				dd £#{item.value}

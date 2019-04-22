@@ -57,10 +57,7 @@ if items && items.length > 0
 					tr
 						if edit
 							td: input( type="checkbox", name="edit", value=item.id, checked=multi )
-						td
-							- status = item.status
-							include status.pug
-							
+						td: status( item.status )
 						td: +clipboard( item.barcode )
 						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )

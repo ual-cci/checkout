@@ -112,3 +112,25 @@ mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
 	else
 		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
 			| #{ text }
+
+mixin status( status )
+	if status == 'available'
+		span.label.label-success Available
+	else if status == 'returned'
+		span.label.label-success Returned
+	else if status == 'found'
+		span.label.label-success Found
+	else if status == 'repaired'
+		span.label.label-success Repaired
+	else if status == 'on-loan'
+		span.label.label-danger On Loan
+	else if status == 'broken'
+		span.label.label-warning Broken
+	else if status == 'lost'
+		span.label.label-warning Lost
+	else if status == 'issued'
+		span.label.label-danger Issued
+	else if status == 'audited'
+		span.label.label-default Audited
+	else
+		span.label.label-info=status
