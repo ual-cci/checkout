@@ -18,12 +18,12 @@ class GroupController extends BaseController {
   getRoot(req, res) {
     this.models.groups.getAll()
       .then(groups => {
-        res.render('groups', { groups });
+        res.render('index', { groups });
       });
   }
 
   getCreate(req, res) {
-    res.render( 'create', { group: {} } );
+    res.render('create', { group: {} });
   }
 
   postCreate(req, res) {

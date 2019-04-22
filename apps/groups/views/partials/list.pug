@@ -2,7 +2,9 @@ if groups.length > 0
 	.table-responsive
 		table.table.table-striped.table-hover.table-condensed
 			tgroup
-				col( width="60%" )
+				col( width="20%" )
+				col( width="20%" )
+				col( width="20%" )
 				col( width="20%" )
 				col( width="20%" )
 			thead
@@ -10,12 +12,16 @@ if groups.length > 0
 					th Name
 						span.dropup
 							span.caret
+					th Limiter
+					th Duration
 					th View
 					th Manage
 			tbody
 				for group in groups
 					tr
 						td=group.name
+						td=(group.limiter?group.limiter:'–')
+						td=(group.duration?group.duration.toPostgres():'–')
 						td
 							a( href="/items/?group=" + group.id ).btn.btn-xs.btn-default
 								span.glyphicon.glyphicon-modal-window

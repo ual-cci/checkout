@@ -1,4 +1,4 @@
-const	express = require( 'express');
+const	express = require('express');
 
 const GroupController = require('./controller.js');
 const auth = require('../../src/js/authentication.js');
