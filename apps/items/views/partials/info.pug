@@ -10,7 +10,7 @@
 				dt Issued
 				dd: +fulldate( item.issued )
 				dt Due
-				dd: +relative( item.due )
+				dd: +relative( item.due, true )
 			if item.audited
 				dt Last audited
 				dd: +relative( item.audited )
