@@ -49,18 +49,18 @@ if items && items.length > 0
 						th: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
 						th: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
 						th: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
-								
-					//- Manage
-					if edit
-						th Manage
 			tbody
 				- item_total = 0
 				for item in items
 					tr
 						if edit
 							td: input( type="checkbox", name="edit", value=item.id, checked=multi )
-						td: +status( item.status )
-						td: +clipboard( item.barcode )
+						td: +statusPill( item.status )
+						td
+							+clipboard( item.barcode )
+							|  
+							a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
+								span.glyphicon.glyphicon-print.text-muted
 						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )
@@ -93,16 +93,6 @@ if items && items.length > 0
 									+relative( item.due )
 								else
 									| –
-								
-							//- Manage	
-							if edit
-								td
-									if loggedInUser.printer_id
-										+compactLabelBtn( "/items/" + item.id + "/label?printer=" + loggedInUser.printer_id )
-										+space
-									+compactEditBtn( "/items/" + item.id + '/edit' )
-									+space
-									+compactDeleteBtn( "/items/" + item.id + '/remove' )
 			tfoot
 				tr
 					if edit
