@@ -23,6 +23,12 @@ class ReservationModel extends BaseModel {
         alias: 'operators',
         join: ['operators.id', 'operator_id'],
         properties: ['id', 'name']
+      },
+      item: {
+        prefix: 'item_',
+        table: 'items',
+        join: ['id', 'item_id'],
+        properties: ['id', 'name']
       }
     };
   }
@@ -32,7 +38,7 @@ class ReservationModel extends BaseModel {
   }
 
   getAll() {
-    return this.retrieve();
+    return this.lookup(['owner','operator','item']).orderBy([['start_date']]).retrieve();
   }
 }
 
