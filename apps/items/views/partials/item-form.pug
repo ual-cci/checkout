@@ -13,13 +13,6 @@ form( method="post" ).form-horizontal
 			select( name="label" required )#label.form-control
 				option( value="12mm" selected=( '12mm' == ( item ? item.label : '' ) ) ) 12mm Tape
 	.form-group
-		label( for="group" ).col-md-2.control-label Group
-		.col-md-4
-			select( name="group" )#group.form-control
-				option( value="" selected ) Select a group
-				for group in groups
-					option( value=group.id selected=( group.id == ( item ? item.group_id : '' ) ) )=group.name
-	.form-group
 		label( for="location" ).col-md-2.control-label Location
 		.col-md-4
 			select( name="location" required )#location.form-control
@@ -27,9 +20,16 @@ form( method="post" ).form-horizontal
 				for location in locations
 					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) )=location.name
 	.form-group
+		label( for="group" ).col-md-2.control-label Group
+		.col-md-4
+			select( name="group" )#group.form-control
+				option( value="" selected ) Select a group
+				for group in groups
+					option( value=group.id selected=( group.id == ( item ? item.group_id : '' ) ) )=group.name
+	.form-group
 		label( for="department" ).col-md-2.control-label Department
 		.col-md-4
-			select( name="department" required )#department.form-control
+			select( name="department" )#department.form-control
 				option( value="" selected ) Select a department
 				for department in departments
 					option( value=department.id selected=( department.id == ( item ? item.department_id : '' ) ) )=department.name
