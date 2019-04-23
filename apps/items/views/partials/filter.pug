@@ -56,6 +56,9 @@ form( method="get" )
 				option( value="", selected ) &mdash;
 				option( value='overdue', selected=( selected.due == 'overdue' ) ) Overdue
 				option( value='future', selected=( selected.due == 'future' ) ) Future
+				option( value='today', selected=( selected.due == 'today' ) ) Today
+				option( value='thisweek', selected=( selected.due == 'thisweek' ) ) This week
+				option( value='thismonth', selected=( selected.due == 'thismonth' ) ) This month
 
 
 		.col-md-2( class='col-md-offset-' + skip )

@@ -14,6 +14,8 @@ const Print = require('../../src/js/print');
 const { getSortBy } = require('../../src/js/utils.js');
 const { AVAILABILITY, SORTBY_MUTATIONS } = require('../../src/js/common/constants');
 
+const moment = require('moment');
+
 const config = require('./config.json');
 
 class ItemController extends BaseController {
@@ -104,6 +106,9 @@ class ItemController extends BaseController {
           .if((req.query.due), (query) => {
             if (req.query.due == 'overdue') query.where('due', '<=', new Date());
             if (req.query.due == 'future') query.where('due', '>', new Date());
+            if (req.query.due == 'today') query.whereBetween('due', [moment().startOf('day').toDate(), moment().endOf('day').toDate()]);
+            if (req.query.due == 'thisweek') query.whereBetween('due', [moment().startOf('week').toDate(), moment().endOf('week').toDate()]);
+            if (req.query.due == 'thismonth') query.whereBetween('due', [moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
           })
           .orderBy([
             [ orderBy, direction ]
