@@ -73,7 +73,8 @@ class ItemController extends BaseController {
           department: req.query.department ? req.query.department : '',
           group: req.query.group ? req.query.group : '',
           course: req.query.course ? req.query.course : '',
-          year: req.query.year ? req.query.year : ''
+          year: req.query.year ? req.query.year : '',
+          due: req.query.due ? req.query.due : ''
         };
         const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
           mutator: SORTBY_MUTATIONS.ITEMS
@@ -99,6 +100,10 @@ class ItemController extends BaseController {
           })
           .if((req.query.department), query => {
             query.where('department_id', req.query.department);
+          })
+          .if((req.query.due), (query) => {
+            if (req.query.due == 'overdue') query.where('due', '<=', new Date());
+            if (req.query.due == 'future') query.where('due', '>', new Date());
           })
           .orderBy([
             [ orderBy, direction ]

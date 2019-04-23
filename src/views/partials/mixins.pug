@@ -106,34 +106,40 @@ mixin space
 
 mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 	- sort_by = sort_by.split('_')[0]
-	if ( sort_by == slug )
-		if sort_dir == 'asc'
-			- alt_dir = 'desc'
-		else
-			- alt_dir = 'asc'
-		
-		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&location=' + ( selected && selected.location ? selected.location : '' ) + '&department=' + ( selected && selected.department ? selected.department : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=' + alt_dir )
-			| #{ text }
+	if sort_dir == 'desc' || sort_by != slug
+		- alt_dir = 'asc'
+	else
+		- alt_dir = 'desc'
+
+	if selected
+		- status = (selected.status ? selected.status : '')
+		- location = (selected.location ? selected.location : '')
+		- department = (selected.department ? selected.department : '')
+		- group = (selected.group ? selected.group : '')
+		- course = (selected.course ? selected.course : '')
+		- year = (selected.year ? selected.year : '')
+		- due = (selected.due ? selected.due : '')
+	
+	a( href=`${filter_path}?status=${status}&location=${location}&department=${department}&group=${group}&course=${course}&year=${year}&due=${due}&sortby=${slug}&direction=${alt_dir}` )=text
+	if sort_by == slug
 		span( class=( sort_dir == 'asc' ? 'dropup' : 'dropdown' ) )
 			span.caret
-	else
-		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&location=' + ( selected && selected.location ? selected.location : '' ) + '&department=' + ( selected && selected.department ? selected.department : '' ) + '&group=' + ( selected && selected.group ? selected.group : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
-			| #{ text }
 
 mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
-	if ( sort_by == slug )
-		if sort_dir == 'asc'
-			- alt_dir = 'desc'
-		else
-			- alt_dir = 'asc'
-		
-		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=' + alt_dir )
-			| #{ text }
+	if sort_dir == 'desc' || sort_by != slug
+		- alt_dir = 'asc'
+	else
+		- alt_dir = 'desc'
+
+	if selected
+		- status = (selected.status ? selected.status : '')
+		- course = (selected.course ? selected.course : '')
+		- year = (selected.year ? selected.year : '')
+	
+	a( href=`${filter_path}?status=${status}&course=${course}&year=${year}&sortby=${slug}&direction=${alt_dir}` )=text
+	if sort_by == slug
 		span( class=( sort_dir == 'asc' ? 'dropup' : 'dropdown' ) )
 			span.caret
-	else
-		a( href=filter_path + '?status=' + ( selected && selected.status ? selected.status : '' ) + '&course=' + ( selected && selected.course ? selected.course : '' ) + '&year=' + ( selected && selected.year ? selected.year : '' ) + '&sortby=' + slug + '&direction=asc' )
-			| #{ text }
 
 mixin status( status )
 	if status == 'available'
