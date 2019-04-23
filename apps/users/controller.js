@@ -57,19 +57,19 @@ class UsersController extends BaseController {
 
             switch (req.query.status) {
               case STATUS.ACTIVE:
-                status = 0;
+                status = false;
                 break;
               case STATUS.DISABLED:
-                status = 1;
+                status = true;
                 break;
             }
-            query.where('disable', status);
+            query.where('users.disable', status);
           })
           .if((req.query.course), (query) => {
-            query.where('course_id', req.query.course);
+            query.where('users.course_id', req.query.course);
           })
           .if((req.query.year), (query) => {
-            query.where('year_id', req.query.year);
+            query.where('users.year_id', req.query.year);
           })
           .orderBy([
             [orderBy, direction]
