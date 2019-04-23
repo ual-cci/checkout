@@ -36,7 +36,7 @@ block contents
 					select( name="location" required )#location.form-control
 						option( value="" disabled selected ) Select a location
 						for location in locations
-							option( value=location.id )=location.name
+							option( value=location.id ) #{ location.name } [#{ location.barcode}]
 			.form-group
 				label( for="department" ).col-md-2.control-label Department
 				.col-md-4
