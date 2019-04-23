@@ -91,6 +91,7 @@ class ActionModel extends BaseModel {
 
   getByUserId(userId) {
     return this.query()
+      .lookup(['item'])
       .where([
         ['user_id', userId]
       ])
