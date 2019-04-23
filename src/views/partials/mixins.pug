@@ -119,8 +119,10 @@ mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 		- course = (selected.course ? selected.course : '')
 		- year = (selected.year ? selected.year : '')
 		- due = (selected.due ? selected.due : '')
+		- audited = (selected.audited ? selected.audited : '')
+		- scanned = (selected.scanned ? selected.scanned : '')
 	
-	a( href=`${filter_path}?status=${status}&location=${location}&department=${department}&group=${group}&course=${course}&year=${year}&due=${due}&sortby=${slug}&direction=${alt_dir}` )=text
+	a( href=`${filter_path}?status=${status}&location=${location}&department=${department}&group=${group}&course=${course}&year=${year}&due=${due}&audited=${audited}&scanned=${scanned}&sortby=${slug}&direction=${alt_dir}` )=text
 	if sort_by == slug
 		span( class=( sort_dir == 'asc' ? 'dropup' : 'dropdown' ) )
 			span.caret
