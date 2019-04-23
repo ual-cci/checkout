@@ -6,11 +6,13 @@ if history.length > 0
 					th Name
 					th Barcode
 					th When
+					th Operator
 			tbody
 				for row in history
 					tr
 						td: +item( row.item_name, row.item_id )
 						td: +clipboard( row.item_barcode )
 						td: +relative( row.datetime )
+						td: +user( row.operator_name, row.operator_id )
 else
 	+messageBlock( 'warning', 'No items have previously been loaned to this user.' )
