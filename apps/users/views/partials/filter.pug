@@ -5,7 +5,9 @@
 		.col-md-2
 			label( for="status" ) Status
 			select( name="status" )#status.form-control.input-sm
-				option( value='active', selected=( selected.status != 'disabled' ) ) Active
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='active', selected=( selected.status == 'active' ) ) Active
 				option( value='disabled', selected=( selected.status == 'disabled' ) ) Disabled
 		.col-md-2
 			label( for="course" ) Course
