@@ -14,95 +14,26 @@ block contents
 		li.return: a( href="#return" data-toggle="tab" ) Return
 			|  
 			span.badge F2
-		li.user: a( href="#user" data-toggle="tab" ) New User
+		li.reservation: a( href="#reservation" data-toggle="tab" ) New Reservation
 			|  
 			span.badge F3
-		li.print: a( href="#label" data-toggle="tab" ) Label
+		li.user: a( href="#user" data-toggle="tab" ) New User
 			|  
 			span.badge F4
-		li.audit: a( href="#audit" data-toggle="tab" ) Audit
+		li.print: a( href="#label" data-toggle="tab" ) Label
 			|  
 			span.badge F5
-		li.history: a( href="#history" data-toggle="tab" ) History
+		li.audit: a( href="#audit" data-toggle="tab" ) Audit
 			|  
 			span.badge F6
+		li.history: a( href="#history" data-toggle="tab" ) History
+			|  
+			span.badge F7
 	.tab-content.break
-		#issue.tab-pane.active
-			.row
-				.col-md-3
-					.find.panel.panel-default
-						.panel-body
-							form( role="search" )#find
-								.input-group
-									span.input-group-addon
-										span.glyphicon.glyphicon-search
-									input( type="text" ).form-control
-					#results
-						ul.nav.nav-tabs
-							li.users.active: a( href="#users" data-toggle="tab" ): span.glyphicon.glyphicon-user
-							li.items: a( href="#items" data-toggle="tab" ): span.glyphicon.glyphicon-modal-window
-						.tab-content
-							#users.tab-pane.active
-								ul.list-group.list-group-hover
-							#items.tab-pane
-								ul.list-group.list-group-hover
-				.col-md-9
-					.flash
-					#modules
-		#return.tab-pane
-			.row
-				.col-md-3
-					.panel.panel-default
-						.panel-body
-							form
-								.input-group
-									span.input-group-addon
-										span.glyphicon.glyphicon-home
-									input( type="text" ).form-control
-				.col-md-9
-					.flash
-		#user.tab-pane
-			.flash
-			- user = {}
-			- action = 'Create'
-			include ../../users/views/partials/user-form.pug
-		#audit.tab-pane
-			.panel.panel-default
-				.panel-body
-					form
-						.row
-							.col-md-3
-								.input-group
-									span.input-group-addon
-										span.glyphicon.glyphicon-barcode
-									input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
-							.col-md-2
-								.input-group
-									select#locationMode.form-control
-										option( value="1" ) Just audit
-										option( value="2" ) Check location and audit
-										option( value="3" ) Update location and audit
-										
-							.col-md-2
-								.input-group
-									select#location.form-control
-										option( value="" ) Select location
-										for location in locations
-											option( value=location.id, data-barcode=(location.barcode ? location.barcode : null)) #{ location.name } [#{location.barcode}]
-			.flash
-		#label.tab-pane
-			.row
-				.col-md-3
-					.panel.panel-default
-						.panel-body
-							form
-								.input-group
-									span.input-group-addon
-										span.glyphicon.glyphicon-print
-									input( type="text" ).form-control
-				.col-md-9
-					.flash
-		#history.tab-pane
-			.row
-				.col-md-12
-					.list-group.items
+		include partials/issue.pug
+		include partials/return.pug
+		include partials/new-reservation.pug
+		include partials/new-user.pug
+		include partials/audit.pug
+		include partials/label.pug
+		include partials/history.pug
