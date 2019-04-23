@@ -33,7 +33,8 @@ form( method="get" )
 			- skip--
 			label( for="department" ) Department
 			select( name="department" )#department.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				for department in departments
 					option( value=department.id, selected=( department.id == selected.department ) ) #{ department.name }
 		if courses
@@ -66,6 +67,25 @@ form( method="get" )
 				option( value='today', selected=( selected.due == 'today' ) ) Today
 				option( value='thisweek', selected=( selected.due == 'thisweek' ) ) This week
 				option( value='thismonth', selected=( selected.due == 'thismonth' ) ) This month
+		.col-md-1
+			- skip--
+			label( for="audited" ) Audited
+			select( name="audited" )#audited.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='auditpoint', selected=( selected.audited == 'auditpoint' ) ) Audit Point
+				option(disabled) ──────────
+				option( value='today', selected=( selected.audited == 'today' ) ) Today
+				option( value='thisweek', selected=( selected.audited == 'thisweek' ) ) This week
+				option( value='thismonth', selected=( selected.audited == 'thismonth' ) ) This month
+		.col-md-1
+			- skip--
+			label( for="scanned" ) Scanned
+			select( name="scanned" )#scanned.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='true', selected=( selected.scanned == 'true' ) ) Yes
+				option( value='false', selected=( selected.scanned == 'false' ) ) No
 
 
 		.col-md-2( class='col-md-offset-' + skip )

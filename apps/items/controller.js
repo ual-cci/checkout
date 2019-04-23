@@ -76,7 +76,9 @@ class ItemController extends BaseController {
           group: req.query.group ? req.query.group : '',
           course: req.query.course ? req.query.course : '',
           year: req.query.year ? req.query.year : '',
-          due: req.query.due ? req.query.due : ''
+          due: req.query.due ? req.query.due : '',
+          audited: req.query.audited ? req.query.audited : '',
+          scanned: req.query.scanned ? req.query.scanned : '',
         };
         const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
           mutator: SORTBY_MUTATIONS.ITEMS
@@ -109,6 +111,16 @@ class ItemController extends BaseController {
             if (req.query.due == 'today') query.whereBetween('due', [moment().startOf('day').toDate(), moment().endOf('day').toDate()]);
             if (req.query.due == 'thisweek') query.whereBetween('due', [moment().startOf('week').toDate(), moment().endOf('week').toDate()]);
             if (req.query.due == 'thismonth') query.whereBetween('due', [moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+          })
+          .if((req.query.audited), (query) => {
+            const audit_point = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
+            var direction = '>=';
+            if ( req.query.scanned == 'false' ) direction = '<';
+            if (req.query.audited == 'auditpoint') query.where('audited', direction, audit_point);
+            if (req.query.audited == 'today') query.where('audited', direction, moment().startOf('day').toDate() );
+            if (req.query.audited == 'thisweek') query.where('audited', direction, moment().startOf('week').toDate() );
+            if (req.query.audited == 'thismonth') query.where('audited', direction, moment().startOf('month').toDate() );
+            if (req.query.scanned == 'false' ) query.orWhere('audited', null);
           })
           .orderBy([
             [ orderBy, direction ]
