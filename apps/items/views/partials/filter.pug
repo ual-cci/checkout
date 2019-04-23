@@ -7,7 +7,8 @@ form( method="get" )
 			- skip--
 			label( for="status" ) Status
 			select( name="status" )#status.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				option( value='available', selected=( selected.status == 'available' ) ) Available
 				option( value='on-loan', selected=( selected.status == 'on-loan' ) ) On Loan
 				option( value='broken', selected=( selected.status == 'broken' ) ) Broken
@@ -16,14 +17,16 @@ form( method="get" )
 			- skip--
 			label( for="groups" ) Group
 			select( name="group" )#group.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				for group in groups
 					option( value=group.id, selected=( group.id == selected.group ) ) #{ group.name }
 		.col-md-1
 			- skip--
 			label( for="location" ) Location
 			select( name="location" )#location.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				for location in locations
 					option( value=location.id, selected=( location.id == selected.location ) ) #{ location.name }
 		.col-md-1
@@ -38,7 +41,8 @@ form( method="get" )
 				- skip--
 				label( for="course" ) Course
 				select( name="course" )#group.form-control.input-sm
-					option( value="", selected ) &mdash;
+					option( value="", selected )
+					option(disabled) ──────────
 					for course in courses
 						option( value=course.id, selected=( course.id == selected.course ) ) #{ course.name }
 		if years
@@ -46,16 +50,19 @@ form( method="get" )
 				- skip--
 				label( for="year" ) Year
 				select( name="year" )#year.form-control.input-sm
-					option( value="", selected ) &mdash;
+					option( value="", selected )
+					option(disabled) ──────────
 					for year in years
 						option( value=year.id, selected=( year.id == selected.year ) ) #{ year.name }
 		.col-md-1
 			- skip--
 			label( for="due" ) Due
 			select( name="due" )#due.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				option( value='overdue', selected=( selected.due == 'overdue' ) ) Overdue
 				option( value='future', selected=( selected.due == 'future' ) ) Future
+				option(disabled) ──────────
 				option( value='today', selected=( selected.due == 'today' ) ) Today
 				option( value='thisweek', selected=( selected.due == 'thisweek' ) ) This week
 				option( value='thismonth', selected=( selected.due == 'thismonth' ) ) This month
