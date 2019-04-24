@@ -20,12 +20,12 @@ if printers.length > 0
 						td=printer.name
 						td=printer.url
 						td
-							a( href=printer.url ).btn.btn-xs.btn-default
-								span.glyphicon.glyphicon-print
+							a( href=printer.url, target='_blank' ).btn.btn-sm.btn-outline-dark
+								span.fas.fa-globe
 								|  View
 						td
 							+editBtn( '/printers/' + printer.id + '/edit' )
 							+space
-							+deleteBtn( '/printers/' + printer.id + '/remove' )
+							+removeBtn( '/printers/' + printer.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no printers to display.' )
+	+messageBlock( 'warning', 'black','There are no printers to display.' )

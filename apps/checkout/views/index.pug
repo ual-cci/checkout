@@ -8,27 +8,35 @@ block header
 
 block contents
 	ul.nav.nav-tabs#mode
-		li.issue.active: a( href="#issue" data-toggle="tab" ) Issue
+		
+		li.nav-item.issue: a.nav-link.active( href="#issue" data-toggle="tab" ) Issue
 			|  
-			span.badge F1
-		li.return: a( href="#return" data-toggle="tab" ) Return
+			span.badge.badge-secondary F1
+			
+		li.nav-item.return: a.nav-link( href="#return" data-toggle="tab" ) Return
 			|  
-			span.badge F2
-		li.reservation: a( href="#reservation" data-toggle="tab" ) New Reservation
+			span.badge.badge-secondary.badge-secondary F2
+			
+		li.nav-item.reservation: a.nav-link( href="#reservation" data-toggle="tab" ) New Reservation
 			|  
-			span.badge F3
-		li.user: a( href="#user" data-toggle="tab" ) New User
+			span.badge.badge-secondary F3
+			
+		li.nav-item.new-user: a.nav-link( href="#new-user" data-toggle="tab" ) New User
 			|  
-			span.badge F4
-		li.print: a( href="#label" data-toggle="tab" ) Label
+			span.badge.badge-secondary F4
+			
+		li.nav-item.print: a.nav-link( href="#label" data-toggle="tab" ) Label
 			|  
-			span.badge F5
-		li.audit: a( href="#audit" data-toggle="tab" ) Audit
+			span.badge.badge-secondary F5
+			
+		li.nav-item.audit: a.nav-link( href="#audit" data-toggle="tab" ) Audit
 			|  
-			span.badge F6
-		li.history: a( href="#history" data-toggle="tab" ) History
+			span.badge.badge-secondary F6
+			
+		li.nav-item.history: a.nav-link( href="#history" data-toggle="tab" ) History
 			|  
-			span.badge F7
+			span.badge.badge-secondary F7
+			
 	.tab-content.break
 		include partials/issue.pug
 		include partials/return.pug

@@ -1,6 +1,12 @@
+html{
+  font-size: 15px;
+}
 body {
-	padding-top: 80px;
 	padding-bottom: 20px;
+}
+
+body > .navbar {
+  margin-bottom: 30px;
 }
 
 body.dev:before {
@@ -11,6 +17,7 @@ body.dev:before {
 	right: 0;
 	height: 3px;
 	background: url( /imgs/dev.png );
+  z-index: 1000;
 }
 
 body.dev .navbar {

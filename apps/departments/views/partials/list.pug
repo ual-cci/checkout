@@ -16,10 +16,10 @@ if departments.length > 0
 					tr
 						td=department.name
 						td
-							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?department=' + department.id )
+							+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?department=' + department.id )
 						td
 							+editBtn( '/departments/' + department.id + '/edit' )
 							+space
-							+deleteBtn( '/departments/' + department.id + '/remove' )
+							+removeBtn( '/departments/' + department.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no departments to display.' )
+	+messageBlock( 'warning', 'black','There are no departments to display.' )

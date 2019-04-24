@@ -23,12 +23,12 @@ if groups.length > 0
 						td=(group.limiter?group.limiter:'–')
 						td=(group.duration?group.duration.toPostgres():'–')
 						td
-							a( href="/items/?group=" + group.id ).btn.btn-xs.btn-default
-								span.glyphicon.glyphicon-modal-window
+							a( href="/items/?group=" + group.id ).btn.btn-sm.btn-outline-dark
+								span.fas.fa-box
 								|  Items
 						td
 							+editBtn( '/groups/' + group.id + '/edit' )
 							+space
-							+deleteBtn( '/groups/' + group.id + '/remove' )
+							+removeBtn( '/groups/' + group.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no groups to display.' )
+	+messageBlock( 'warning', 'black','There are no groups to display.' )

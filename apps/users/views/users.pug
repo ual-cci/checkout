@@ -7,10 +7,9 @@ block prepend title
 block contents
 	- filter_path = '/users/'
 	include partials/filter.pug
-	hr
 	form( action="/users/edit" method="post" )
 		- edit = true
 		include partials/user-list.pug
 		button( type="submit" ).btn.btn-sm.btn-primary
-			span.glyphicon.glyphicon-pencil
+			span.fas.fa-pencil-alt
 			|  Edit Selected

@@ -4,24 +4,29 @@ block prepend title
 	- title = user.name
 	- heading = title
 
+block header
+	h2=heading
+		if onloan.length > 0
+			.btn-group.float-right(style='margin-left:.25em;')
+				a.btn.btn-outline-dark( href="mailto:" + encodeURI( user.email ) + "?cc=" + encodeURI( user.course_contact_email ) + "&subject=" + encodeURI( "IMPORTANT: Items due back" ) + "&body=" + encodeURI( email ), title=`Email ${user.name}` )
+					span.fas.fa-envelope
+					|  Generate email
+		.btn-group.float-right
+			a( href="/users/" + user.id + "/edit", title=`Edit ${user.name}` ).btn.btn-outline-dark.btn-m
+				span.fas.fa-pencil-alt
+				|  Edit
+			a( href="/users/" + user.id + "/remove", title=`Remove ${user.name}` ).btn.btn-outline-dark.btn-m
+				span.fas.fa-times
+				|  Remove
+
 block contents
 	include partials/info.pug
-	p
-		a( href="/users/" + user.id + "/edit" ).btn.btn-default
-			span.glyphicon.glyphicon-pencil
-			|  Edit
-		|  
-		if onloan.length > 0
-			a.btn.btn-default( href="mailto:" + encodeURI( user.email ) + "?cc=" + encodeURI( user.course_contact_email ) + "&subject=" + encodeURI( "IMPORTANT: Items due back" ) + "&body=" + encodeURI( email ) )
-				span.glyphicon.glyphicon-envelope
-				|  Generate email
-	hr
-	h3 Items
+	h3.mb-3.pb-1.border-bottom Items
 	ul.nav.nav-tabs
-		li( role="presentation" ).active
-			a( href="#onloan" aria-controls="users" role="tab" data-toggle="tab" ) On Loan
-		li( role="presentation" )
-			a( href="#history" aria-controls="items" role="tab" data-toggle="tab" ) History
+		li.nav-item
+			a.nav-link.active( href="#onloan" aria-controls="users" role="tab" data-toggle="tab" ) On Loan
+		li.nav-item
+			a.nav-link( href="#history" aria-controls="items" role="tab" data-toggle="tab" ) History
 	.tab-content
 		#onloan( role="tabpanel" ).tab-pane.active
 			include partials/onloan.pug

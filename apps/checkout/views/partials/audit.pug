@@ -1,21 +1,22 @@
 #audit.tab-pane
-	.panel.panel-default
-		.panel-body
+	.card.mb-3
+		.card-body
 			form
 				.row
-					.col-md-3
+					.col-lg-3
 						.input-group
-							span.input-group-addon
-								span.glyphicon.glyphicon-barcode
+							.input-group-prepend
+								.input-group-text
+									span.fas.fa-qrcode
 							input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
-					.col-md-2
+					.col-lg-2
 						.input-group
 							select#locationMode.form-control
 								option( value="1" ) Just audit
 								option( value="2" ) Check location and audit
 								option( value="3" ) Update location and audit
 								
-					.col-md-2
+					.col-lg-2
 						.input-group
 							select#location.form-control
 								option( value="" ) Select location

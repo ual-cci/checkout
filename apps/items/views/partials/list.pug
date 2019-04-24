@@ -1,6 +1,6 @@
 if items && items.length > 0
 	.table-responsive
-		table.table.table-striped
+		table.table.table-striped.table-sm
 			thead
 				tr
 					if edit
@@ -60,7 +60,7 @@ if items && items.length > 0
 							+clipboard( item.barcode )
 							|  
 							a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
-								span.glyphicon.glyphicon-print.text-muted
+								span.fas.fa-print.text-muted
 						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )
@@ -85,7 +85,7 @@ if items && items.length > 0
 							
 							td
 								if item.issued
-									+fulldate( item.issued )
+									+date( item.issued )
 								else
 									| –
 							td
@@ -101,4 +101,4 @@ if items && items.length > 0
 					th £#{ item_total.toFixed(2) }
 					th( colspan="5" )
 else
-	+messageBlock( 'warning', 'There are no items to display.' )
+	+messageBlock( 'warning', 'black','There are no items to display.' )

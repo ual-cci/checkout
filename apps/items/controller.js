@@ -127,7 +127,7 @@ class ItemController extends BaseController {
           ])
           .expose()
           .then(items => {
-            res.render( 'items', {
+            res.render( 'index', {
               items,
               locations,
               departments,
@@ -442,7 +442,7 @@ class ItemController extends BaseController {
         return this.models.actions.getByItemId(item.id);
       })
       .then(history => {
-        res.render('item', {
+        res.render('single', {
           item: _item,
           printers: _printers,
           history

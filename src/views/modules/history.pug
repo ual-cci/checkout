@@ -4,17 +4,17 @@ if actions && actions.length > 0
 			
 			//- Icon
 			if action.action == 'issued'
-				span.icon.glyphicon.glyphicon-send
+				span.icon.fas.fa-paper-plane
 			else if action.action == 'returned'
-				span.icon.glyphicon.glyphicon-home
+				span.icon.fas.fa-home
 			else if action.action == 'broken'
-				span.icon.glyphicon.glyphicon-trash
+				span.icon.fas.fa-trash
 			else if action.action == 'lost'
-				span.icon.glyphicon.glyphicon-search
+				span.icon.fas.fa-search
 			else if action.action == 'repaired'
-				span.icon.glyphicon.glyphicon-heart
+				span.icon.fas.fa-heart
 			else if action.action == 'found'
-				span.icon.glyphicon.glyphicon-ok
+				span.icon.fas.fa-check
 
 			//- Who
 			if action.owner_name

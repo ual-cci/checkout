@@ -1,46 +1,52 @@
 include ../partials/mixins.pug
 
-.panel.panel-primary( data-barcode=item.barcode, data-type='item' )
-	.panel-heading
-		h3.panel-title
-			span.glyphicon.glyphicon-tag
+.card( data-barcode=item.barcode, data-type='item' )
+	.card-header.bg-dark
+		.card-title.mb-0
+			span.fas.fa-box.text-white
 			|  
-			a( href="/items/" + item.id )=item.name
-			.pull-right( style="margin-top: -3px;" ): +status( item.status )
-	.panel-body
+			a( href="/items/" + item.id ).text-white.font-weight-strong=item.name
+			.float-right( style="margin-top: -3px;" ): +status( item.status )
+	.card-body
 		.row
 			.col-md-5
-				dl.dl-horizontal
-					dt Barcode
-					dd: +clipboard(item.barcode)
-					if item.serialnumber
-						dt Serial number
-						dd: +clipboard(item.serialnumber)
-					if item.owner_id
-						dt Owner
-						dd: +user( item.owner_name, item.owner_id )
-					if item.status == 'on-loan'
-						dt Issued
-						dd: +fulldate( item.issued )
-						dt Due
-						dd: +relative( item.due, true )
-			.col-md-6
-				dl.dl-horizontal
-					dt Location
-					dd: +location(item.location_name, item.location_id)
-					if item.department_id
-						dt Department
-						dd: +department(item.department_name, item.department_id)
-					if item.group_id
-						dt Group
-						dd: +group(item.group_name, item.group_id)
-					if item.notes
-						dt Notes
-						dd=item.notes
-			.col-md-1.buttons
+				.row
+					.col-md-5.font-weight-bold Barcode
+					.col-md-7: +clipboard(item.barcode)
+				if item.serialnumber
+					.row
+						.col-md-5.font-weight-bold Serial number
+						.col-md-7: +clipboard(item.serialnumber)
+				if item.owner_id
+					.row
+						.col-md-5.font-weight-bold Owner
+						.col-md-7: +user( item.owner_name, item.owner_id )
+				if item.status == 'on-loan'
+					.row
+						.col-md-5.font-weight-bold Issued
+						.col-md-7: +fulldate( item.issued )
+					.row						.col-md-5.font-weight-bold  Due
+						.col-md-7: +relative( item.due, true )
+			.col-md-5
+				.row
+					.col-md-5.font-weight-bold Location
+					.col-md-7: +location(item.location_name, item.location_id)
+				if item.department_id
+					.row
+						.col-md-5.font-weight-bold Department
+						.col-md-7: +department(item.department_name, item.department_id)
+				if item.group_id
+					.row
+						.col-md-5.font-weight-bold Group
+						.col-md-7: +group(item.group_name, item.group_id)
+				if item.notes
+					.row
+						.col-md-5.font-weight-bold Notes
+						.col-md-7=item.notes
+			.col-md-2.buttons
 				if item.status == 'available'
-					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost
-					button.btn.btn-default.pull-right Broken
+					button.btn.btn-outline-dark.float-right( style='margin-bottom: .25em;' ) Lost
+					button.btn.btn-outline-dark.float-right Broken
 				else
-					button.btn.btn-default.pull-right Return
+					button.btn.btn-outline-dark.float-right Return
 					
