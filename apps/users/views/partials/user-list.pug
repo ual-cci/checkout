@@ -1,6 +1,6 @@
 if users && users.length > 0
 	.table-responsive
-		table.table.table-striped
+		table.table.table-striped.table-sm
 			thead
 				tr
 					if edit
@@ -30,8 +30,6 @@ if users && users.length > 0
 							+sortUserHead( 'Barcode', 'barcode', sortby, direction, selected )
 					th
 						| Email
-					th
-						| Manage
 			tbody
 				for user in users
 					tr
@@ -42,9 +40,5 @@ if users && users.length > 0
 						td: +year( user.year_name, user.year_id )
 						td: +clipboard( user.barcode )
 						td: +email( user.email )
-						td
-							+editBtn( "/users/" + user.id + '/edit' )
-							+space
-							+deleteBtn( "/users/" + user.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no users to display.' )
+	+messageBlock( 'warning', 'black','There are no users to display.' )

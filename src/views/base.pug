@@ -3,7 +3,7 @@ doctype html
 html
 	head
 		meta( charset="utf-8" )
-		meta( name="viewport", content="initial-scale=1.0, width=device-width" )
+		meta( name="viewport", content="initial-scale=1.0, width=device-width, shrink-to-fit=no" )
 		link( rel="shortcut icon" href="/imgs/favicon.ico" )
 		block title
 			if title
@@ -14,27 +14,32 @@ html
 			block css
 				link( rel="stylesheet", href="/css/bootstrap.min.css" )
 				link( rel="stylesheet", href="/css/style.css" )
+				link( rel="stylesheet", href="/css/solid.min.css" )
+				link( rel="stylesheet", href="/css/all.min.css" )
 			block js
 				script( src="/js/jquery.js" )
-				script( src="/js/bootstrap.js" )
+				script( src="/js/bootstrap.min.js" )
 				script( src="/js/clipboard.min.js" )
 				script( src="/js/script.js" )
 	body( class=( dev ? 'dev' : '' ) )
 		block navbar
 			include partials/navbar.pug
-		.container
+		div( class=(wide?"container-fluid":"container"))
 			.row
-				block header
-					.page-header
-						h2 #{ heading }
-				include partials/flash.pug
-				block contents
+				.col-12
+					block header
+						h2=heading
+				block flash
+					.col-12
+						include partials/flash.pug
+				.col-12
+					block contents
 				block footer
-					.row
-						.col-md-12
-							hr
-							small.text-muted Checkout &mdash;
-								|  
-								a( href="https://github.com/creativetechnologylab/checkout", target="_blank" ) Contribute on GitHub
-							small.text-muted.pull-right
-								| #{ git }
+					.col-12
+						hr
+					.col-9
+						small.text-muted Checkout &mdash;
+							|  
+							a.text-muted( href="https://github.com/creativetechnologylab/checkout", target="_blank" ) Contribute on GitHub
+					.col-3
+						p.text-right: small: a.text-muted( href=`https://github.com/creativetechnologylab/checkout/commit/${git}`, target="_blank" )=git

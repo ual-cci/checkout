@@ -1,9 +1,9 @@
 if loggedInUser.printer_id
-	a( href="/items/" + item.id + "/label?printer=" + loggedInUser.printer_id ).btn.btn-default.btn-m
-		span.glyphicon.glyphicon-print
+	a( href="/items/" + item.id + "/label?printer=" + loggedInUser.printer_id title=`Print label for ${item.name} to ${loggedInUser.printer_name}` ).btn.btn-outline-dark.btn-m
+		span.fas.fa-print
 		|  Print Label to #{ loggedInUser.printer_name }
 	if printers.length > 1
-		button.btn.btn-default.btn-m.dropdown-toggle( type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" )
+		button.btn.btn-outline-dark.btn-m.dropdown-toggle( type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" )
 			span.caret
 			span.sr-only Toggle Dropdown
 		ul.dropdown-menu
@@ -13,8 +13,8 @@ if loggedInUser.printer_id
 					li: a( href="/items/" + item.id + "/label?printer=" + printer.id ) #{ printer.name }
 else
 	if printers.length > 0
-		button.btn.btn-default.btn-m.dropdown-toggle( data-toggle="dropdown" )
-			span.glyphicon.glyphicon-print
+		button.btn.btn-outline-dark.btn-m.dropdown-toggle( data-toggle="dropdown" )
+			span.fas.fa-print
 			|  Print Label  
 			span.caret
 		ul.dropdown-menu

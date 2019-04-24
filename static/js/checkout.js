@@ -23,8 +23,8 @@ jQuery( document ).ready( function() {
 	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
 	jQuery( '#audit' ).bind( 'submit', handleAuditSubmit );
 	jQuery( '#label' ).bind( 'submit', handleLabelSubmit );
-	jQuery( '#user form' ).bind( 'submit', handleUserSubmit );
-	jQuery( document ).delegate( '#modules .panel-title', 'click', handlePanelClick );
+	jQuery( '#new-user form' ).bind( 'submit', handleUserSubmit );
+	jQuery( document ).delegate( '#modules .card-title', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
 	jQuery( document ).delegate( '#issue .flash .override', 'click', handleOverride );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
@@ -100,7 +100,7 @@ function handleItemIssue( data ) {
 }
 
 function flash( data ) {
-	var activeTab = '#' + jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) + ' .flash';
+	var activeTab = '#' + jQuery( '#mode li a.active' ).attr( 'href' ).substr( 1 ) + ' .flash';
 
 	jQuery( activeTab ).children().slice( 10 ).remove();
 
@@ -130,7 +130,7 @@ function addModule( data ) {
 
 	if ( data.type == 'user' ) {
 		current = data;
-		jQuery( '.find' ).addClass( 'panel-primary' ).removeClass( 'panel-default' );
+		jQuery( '.find' ).addClass( 'card-primary' ).removeClass( 'card-default' );
 		jQuery( '#results .items a' ).tab( 'show' );
 	} else {
 		current = null;
@@ -148,19 +148,19 @@ function addResult( result, type ) {
 	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
 	switch ( result.status ) {
 		case 'available':
-			html += ' <span class="label label-success">&nbsp;</span>';
+			html += ' <span class="badge badge-success">&nbsp;</span>';
 			break;
 		case 'on-loan':
-			html += ' <span class="label label-danger">&nbsp;</span>';
+			html += ' <span class="badge badge-danger">&nbsp;</span>';
 			break;
 		case 'lost':
 		case 'broken':
-			html += ' <span class="label label-warning">&nbsp;</span>';
+			html += ' <span class="badge badge-warning">&nbsp;</span>';
 			break;
 		case undefined:
 			break;
 		default:
-			html += ' <span class="label label-default">&nbsp;</span>';
+			html += ' <span class="badge badge-default">&nbsp;</span>';
 			break;
 	}
 	html += ' <strong>' + result.name + '</strong>';
@@ -263,7 +263,7 @@ function handleKeyPress( e ) {
 			jQuery( '.reservation a' ).tab( 'show' );
 			break;
 		case 115: // F4
-			jQuery( '.user a' ).tab( 'show' );
+			jQuery( '.new-user a' ).tab( 'show' );
 			break;
 		case 116: // F5
 			jQuery( '.print a' ).tab( 'show' );
@@ -322,7 +322,7 @@ function handleReturnSubmit( e ) {
 }
 
 function focus() {
-	switch( jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) ) {
+	switch( jQuery( '#mode li a.active' ).attr( 'href' ).substr( 1 ) ) {
 		case 'return':
 			jQuery( '#return input' ).focus();
 			break;
@@ -336,7 +336,7 @@ function focus() {
 			jQuery( '#label input' ).focus();
 			break;
 		case 'user':
-			jQuery( '#user input[name="barcode"]' ).focus();
+			jQuery( '#new-user input[name="barcode"]' ).focus();
 			break;
 		case 'history':
 			getHistory();
@@ -460,11 +460,11 @@ function handleLabelSubmit( e ) {
 function handleUserSubmit( e ) {
 	e.preventDefault();
 
-	var name = jQuery( '#user form [name="name"]' ).val();
-	var barcode = jQuery( '#user form [name="barcode"]' ).val();
-	var email = jQuery( '#user form [name="email"]' ).val();
-	var course = jQuery( '#user form [name="course"]' ).val();
-	var year = jQuery( '#user form [name="year"]' ).val();
+	var name = jQuery( '#new-user form [name="name"]' ).val();
+	var barcode = jQuery( '#new-user form [name="barcode"]' ).val();
+	var email = jQuery( '#new-user form [name="email"]' ).val();
+	var course = jQuery( '#new-user form [name="course"]' ).val();
+	var year = jQuery( '#new-user form [name="year"]' ).val();
 
 	newUser( name, barcode, email, course, year, function( data ) {
 		if ( data.status == 'success' ) {
@@ -477,11 +477,11 @@ function handleUserSubmit( e ) {
 }
 
 function clearUserForm() {
-	jQuery( '#user form [name="name"]' ).val('');
-	jQuery( '#user form [name="barcode"]' ).val('');
-	jQuery( '#user form [name="email"]' ).val('');
-	jQuery( '#user form [name="course"]' ).val('');
-	jQuery( '#user form [name="year"]' ).val('');
+	jQuery( '#new-user form [name="name"]' ).val('');
+	jQuery( '#new-user form [name="barcode"]' ).val('');
+	jQuery( '#new-user form [name="email"]' ).val('');
+	jQuery( '#new-user form [name="course"]' ).val('');
+	jQuery( '#new-user form [name="year"]' ).val('');
 }
 
 function refreshHistory() {
@@ -489,4 +489,4 @@ function refreshHistory() {
 		getHistory();
 	}
 }
-setInterval( refreshHistory, 10000 );
+// setInterval( refreshHistory, 10000 );

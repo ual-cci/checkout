@@ -18,13 +18,13 @@ if locations.length > 0
 						td=location.name
 						td: +clipboard( location.barcode )
 						td
-							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?location=' + location.id )
+							+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?location=' + location.id )
 						td
 							if location.barcode
 								+labelBtn( '/locations/' + location.id + '/label' )
 							+space
 							+editBtn( '/locations/' + location.id + '/edit' )
 							+space
-							+deleteBtn( '/locations/' + location.id + '/remove' )
+							+removeBtn( '/locations/' + location.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no locations to display.' )
+	+messageBlock( 'warning', 'black','There are no locations to display.' )

@@ -1,30 +1,38 @@
-dl.dl-horizontal
-	dt Barcode
-	dd: +clipboard( user.barcode )
-	dt Course
-	dd: +course( user.course_name, user.course_id )
-	dt Year
-	dd: +year( user.year_name, user.year_id )
-	if user.course_contact_id
-		dt Staff Contact
-		dd: +user( user.course_contact_name, user.course_contact_id )
-	dt Email
-	dd: +email( user.email )
-	dt Status
-	dd
-		if user.disable
-			| Disabled
-		else
-			| Active
-	dt Type
-	dd
-		if user.type == 'admin'
-			| Admin
-		else
-			| User
-	if user.pw_attempts > 0
-		dt Password Attempts 
-		dd=user.pw_attempts
-			if user.pw_attempts >= config.pw_tries
-				|  (Locked Out) – 
-				a( href=`/users/${user.id}/reset` ) Reset
+hr
+.row
+	.col-md-4
+		.row
+			.col-md-5.font-weight-bold.text-md-right Status
+			.col-md-7
+				if user.disable
+					| Disabled
+				else
+					| Active
+			.col-md-5.font-weight-bold.text-md-right Type
+			.col-md-7
+				if user.type == 'admin'
+					| Admin
+				else
+					| User
+			if user.pw_attempts > 0
+				.col-md-5.font-weight-bold.text-md-right Password Attempts 
+				.col-md-7=user.pw_attempts
+					if user.pw_attempts >= config.pw_tries
+						|  (Locked Out) – 
+						a( href=`/users/${user.id}/reset` ) Reset
+	.col-md-4
+		.row
+			.col-md-5.font-weight-bold.text-md-right Barcode
+			.col-md-7: +clipboard( user.barcode )
+			if user.course_contact_id
+				.col-md-5.font-weight-bold.text-md-right Staff Contact
+				.col-md-7: +user( user.course_contact_name, user.course_contact_id )
+			.col-md-5.font-weight-bold.text-md-right Email
+			.col-md-7: +email( user.email )
+			
+	.col-md-4
+		.row
+			.col-md-5.font-weight-bold.text-md-right Course
+			.col-md-7: +course( user.course_name, user.course_id )
+			.col-md-5.font-weight-bold.text-md-right Year
+			.col-md-7: +year( user.year_name, user.year_id )

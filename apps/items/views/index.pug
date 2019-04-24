@@ -1,0 +1,30 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- wide = true
+	- title = "Items"
+	- heading = title
+
+block header
+	h2=heading
+		a( href="/items/generate" ).btn.btn-outline-success.btn-m.float-right
+			span.fas.fa-asterisk
+			|  Generate Items
+		a( href="/items/create", style="margin-right: 1em;" ).btn.btn-outline-success.btn-m.float-right
+			span.fas.fa-plus
+			|  Create Item
+
+block contents
+	- filter_path = '/items/'
+	include partials/filter.pug
+	form#items-form( action="/items/edit", method="post" )
+		- edit = true
+		include partials/list.pug
+		if items && items.length > 0
+			button( type="submit" ).btn.btn-sm.btn-primary
+				span.fas.fa-pencil-alt
+				|  Edit Selected
+			|  
+			button#multi-print(disabled type="button" ).btn.btn-sm.btn-outline-dark
+				span.fas.fa-print
+				|  Print Selected Labels

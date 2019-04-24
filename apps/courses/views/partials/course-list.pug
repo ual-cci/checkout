@@ -20,12 +20,12 @@ if courses.length > 0
 						td=course.name
 						td: +user( course.contact_name, course.contact_id )
 						td
-							+btn( 'xs', 'default', 'user', 'Users', '/users/?course=' + course.id )
+							+btn( 'sm', 'outline-dark', 'user', 'Users', '/users/?course=' + course.id )
 							+space
-							+btn( 'xs', 'default', 'modal-window', 'Items', '/items/?course=' + course.id )
+							+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?course=' + course.id )
 						td
 							+editBtn( '/courses/' + course.id + '/edit' )
 							+space
-							+deleteBtn( '/courses/' + course.id + '/remove' )
+							+removeBtn( '/courses/' + course.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no courses to display.' )
+	+messageBlock( 'warning', 'black','There are no courses to display.' )

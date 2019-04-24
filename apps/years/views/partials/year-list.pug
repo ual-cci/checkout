@@ -17,6 +17,6 @@ if years.length > 0
 						td
 							+editBtn( '/years/' + year.id + '/edit' )
 							+space
-							+deleteBtn( '/years/' + year.id + '/remove' )
+							+removeBtn( '/years/' + year.id + '/remove' )
 else
-	+messageBlock( 'warning', 'There are no years to display.' )
+	+messageBlock( 'warning', 'black','There are no years to display.' )

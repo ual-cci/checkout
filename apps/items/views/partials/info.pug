@@ -1,39 +1,39 @@
 .row
 	.col-md-4
-		dl.dl-horizontal
-			dt Status
-			dd: +status( item.status )
+		.row
+			.col-md-5.font-weight-bold.text-md-right Status
+			.col-md-7: +status( item.status )
 			if item.owner_id
-				dt Owner
-				dd: +user( item.owner_name, item.owner_id )
+				.col-md-5.font-weight-bold.text-md-right Owner
+				.col-md-7: +user( item.owner_name, item.owner_id )
 			if item.status == 'on-loan'
-				dt Issued
-				dd: +fulldate( item.issued )
-				dt Due
-				dd: +relative( item.due, true )
+				.col-md-5.font-weight-bold.text-md-right Issued
+				.col-md-7: +fulldate( item.issued )
+				.col-md-5.font-weight-bold.text-md-right Due
+				.col-md-7: +relative( item.due, true )
 			if item.audited
-				dt Last audited
-				dd: +relative( item.audited )
+				.col-md-5.font-weight-bold.text-md-right Last audited
+				.col-md-7: +relative( item.audited )
 	.col-md-4
-		dl.dl-horizontal
-			dt Barcode
-			dd: +clipboard(item.barcode)
+		.row
+			.col-md-5.font-weight-bold.text-md-right Barcode
+			.col-md-7: +clipboard(item.barcode)
 			if item.serialnumber
-				dt Serial number
-				dd: +clipboard(item.serialnumber)
+				.col-md-5.font-weight-bold.text-md-right Serial number
+				.col-md-7: +clipboard(item.serialnumber)
 			if item.value
-				dt Value
-				dd £#{item.value}
+				.col-md-5.font-weight-bold.text-md-right Value
+				.col-md-7 £#{item.value}
 			if item.notes
-				dt Notes
-				dd=item.notes
+				.col-md-5.font-weight-bold.text-md-right Notes
+				.col-md-7=item.notes
 	.col-md-4
-		dl.dl-horizontal
-			dt Location
-			dd: +location(item.location_name, item.location_id)
+		.row
+			.col-md-5.font-weight-bold.text-md-right Location
+			.col-md-7: +location(item.location_name, item.location_id)
 			if item.group_id
-				dt Group
-				dd: +group(item.group_name, item.group_id)
+				.col-md-5.font-weight-bold.text-md-right Group
+				.col-md-7: +group(item.group_name, item.group_id)
 			if item.department_id
-				dt Department
-				dd: +department(item.department_name, item.department_id)
+				.col-md-5.font-weight-bold.text-md-right Department
+				.col-md-7: +department(item.department_name, item.department_id)
