@@ -144,12 +144,17 @@ class UsersController extends BaseController {
             courses
           };
 
-          return this.models.users.query()
-            .lookup(['course', 'year'])
+          var query = this.models.users.query()
+            .getMultipleByIds(req.body.edit)
+
+          var q2 = this.models.users.rewrap(query);
+          // q2._queryObj = query;
+          q2.lookup(['course', 'year'])
             .orderBy([
               ['barcode', 'asc']
             ])
-            .getMultipleByIds(req.body.edit)
+
+          return q2.retrieve()
         })
         .then(users => {
           const { years, courses } = persist;
