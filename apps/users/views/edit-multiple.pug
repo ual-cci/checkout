@@ -14,8 +14,9 @@ block contents
 						option( value="" disabled selected ) &mdash;
 						option( value="active" ) Active
 						option( value="disabled" ) Disabled
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="status" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="status" )
 		.form-group.row
 			label( for="course" ).col-lg-2.col-form-label Course
 			.col-lg-4
@@ -24,8 +25,9 @@ block contents
 						option( value="" disabled selected ) Select a course
 						for course in courses
 							option( value=course.id )=course.name
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="course" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="course" )
 		.form-group.row
 			label( for="year" ).col-lg-2.col-form-label Year
 			.col-lg-4
@@ -34,8 +36,9 @@ block contents
 						option( value="" disabled selected ) Select a year
 						for year in years
 							option( value=year.id )=year.name
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="year" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="year" )
 		.form-group.row
 			.col-lg-4.offset-lg-2
 				button( type="submit" ).btn.btn-primary Update
