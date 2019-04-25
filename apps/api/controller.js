@@ -188,6 +188,13 @@ class ApiController extends BaseController {
     // this.models.items.audit(req.params.item)
     this.models.items.getByBarcode(req.params.item)
       .then(item => {
+        if (!item) {
+          throw ({
+            message: 'Unknown item',
+            barcode: req.params.item
+          });
+        }
+
         persist.item = item;
 
         if (req.body.location) {
@@ -200,10 +207,6 @@ class ApiController extends BaseController {
         const { item } = persist;
         const match = req.body.location == item.location_id;
 
-        if ( ! item ) {
-          return -1;
-        }
-
         if (location) {
           if ( match ) {
             // location set, but matches
@@ -215,16 +218,15 @@ class ApiController extends BaseController {
             });
             return 2;
           } else {
-            // location set, doesn't match - don't audit
-            return -2;
+            throw ({
+              message: `Item is in the wrong location, should be: <strong>${item.location_name}</strong>`,
+              barcode: item.barcode
+            });
           }
         } else {
           // just audit
           return 1;
         }
-
-        // uncaught condition.
-        return 0;
       })
       .then(result => {
         const { item } = persist;
@@ -255,28 +257,6 @@ class ApiController extends BaseController {
             res.json({
               status: 'success',
               message: 'Successfully audited and moved to new location',
-              barcode: item.barcode
-            });
-            break;
-          case -1:
-            res.json({
-              status: 'danger',
-              message: 'Unknown item',
-              barcode: req.params.item
-            });
-            break;
-          case -2:
-            res.json({
-              status: 'danger',
-              message: `Item is in the wrong location, should be: <strong>${item.location_name}</strong>`,
-              barcode: item.barcode
-            });
-            break;
-          default:
-          case 0:
-            res.json({
-              status: 'danger',
-              message: 'Unknown error auditing',
               barcode: item.barcode
             });
             break;
