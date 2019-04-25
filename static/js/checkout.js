@@ -260,21 +260,24 @@ function handleKeyPress( e ) {
 			jQuery( '.return a' ).tab( 'show' );
 			break;
 		case 114: // F3
-			jQuery( '.user a' ).tab( 'show' );
+			jQuery( '.reservation a' ).tab( 'show' );
 			break;
 		case 115: // F4
-			jQuery( '.print a' ).tab( 'show' );
+			jQuery( '.user a' ).tab( 'show' );
 			break;
 		case 116: // F5
-			jQuery( '.audit a' ).tab( 'show' );
+			jQuery( '.print a' ).tab( 'show' );
 			break;
 		case 117: // F6
-			jQuery( '.history a' ).tab( 'show' );
+			jQuery( '.audit a' ).tab( 'show' );
 			break;
 		case 118: // F7
+			jQuery( '.history a' ).tab( 'show' );
+			break;
+		case 119: // F8
 			jQuery( '.users a' ).tab( 'show' );
 			break;
-		case 119: // F9
+		case 120: // F9
 			jQuery( '.items a' ).tab( 'show' );
 			break;
 		default:

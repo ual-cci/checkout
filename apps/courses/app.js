@@ -39,4 +39,4 @@ app.post( '/:id/remove', auth.isLoggedIn, (req, res) => {
   req.controller.postRemove(req, res);
 });
 
-module.exports = function( config ) { return app; };
+module.exports = config => app;

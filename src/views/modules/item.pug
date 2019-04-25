@@ -6,26 +6,38 @@ include ../partials/mixins.pug
 			span.glyphicon.glyphicon-tag
 			|  
 			a( href="/items/" + item.id )=item.name
-			- status = item.status
-			.pull-right( style="margin-top: -3px;" ): include ../../../apps/items/views/partials/status.pug
+			.pull-right( style="margin-top: -3px;" ): +status( item.status )
 	.panel-body
 		.row
-			.col-md-10
+			.col-md-5
 				dl.dl-horizontal
 					dt Barcode
-					dd
-						span.glyphicon.glyphicon-print
-						|  
-						+clipboard( item.barcode )
+					dd: +clipboard(item.barcode)
+					if item.serialnumber
+						dt Serial number
+						dd: +clipboard(item.serialnumber)
+					if item.owner_id
+						dt Owner
+						dd: +user( item.owner_name, item.owner_id )
+					if item.status == 'on-loan'
+						dt Issued
+						dd: +fulldate( item.issued )
+						dt Due
+						dd: +relative( item.due, true )
+			.col-md-6
+				dl.dl-horizontal
+					dt Location
+					dd: +location(item.location_name, item.location_id)
+					if item.department_id
+						dt Department
+						dd: +department(item.department_name, item.department_id)
 					if item.group_id
 						dt Group
-						dd: +group( item.group_name, item.group_id )
-						dt Location
-						dd: +location( item.location_name, item.location_id )
-					if item.owner_id
-						dt Owner:
-						dd: +user( item.owner_name, item.owner_id )
-			.col-md-2.buttons
+						dd: +group(item.group_name, item.group_id)
+					if item.notes
+						dt Notes
+						dd=item.notes
+			.col-md-1.buttons
 				if item.status == 'available'
 					button.btn.btn-default.pull-right( style='margin-bottom: .25em;' ) Lost
 					button.btn.btn-default.pull-right Broken

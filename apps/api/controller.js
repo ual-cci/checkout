@@ -159,7 +159,7 @@ class ApiController extends BaseController {
           });
         }
 
-        const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/item.pug'), { item } );
+        const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/item.pug'), { item, moment } );
 
         const output = {
           type: 'item',
@@ -185,9 +185,16 @@ class ApiController extends BaseController {
    */
   postAudit(req, res) {
     let persist = {};
-
-    this.models.items.audit(req.params.item)
+    // this.models.items.audit(req.params.item)
+    this.models.items.getByBarcode(req.params.item)
       .then(item => {
+        if (!item) {
+          throw ({
+            message: 'Unknown item',
+            barcode: req.params.item
+          });
+        }
+
         persist.item = item;
 
         if (req.body.location) {
@@ -198,32 +205,62 @@ class ApiController extends BaseController {
       })
       .then(location => {
         const { item } = persist;
+        const match = req.body.location == item.location_id;
 
         if (location) {
-          return this.models.items.update(item.id, {
-            location_id: location.id
-          });
+          if ( match ) {
+            // location set, but matches
+            return 1;
+          } else if ( !match && req.body.override == 'true' ) {
+            // location set, doesn't match but updated
+            this.models.items.update(item.id, {
+              location_id: location.id
+            });
+            return 2;
+          } else {
+            throw ({
+              message: `Item is in the wrong location, should be: <strong>${item.location_name}</strong>`,
+              barcode: item.barcode
+            });
+          }
+        } else {
+          // just audit
+          return 1;
         }
-
-        return false;
       })
       .then(result => {
         const { item } = persist;
 
-        return this.models.actions.create({
-          item_id: item.id,
-          action: ACTIONS.AUDITED,
-          operator_id: req.user.id
-        });
+        if ( result > 0 ) {
+          this.models.items.audit(item.barcode);
+          this.models.actions.create({
+            item_id: item.id,
+            action: ACTIONS.AUDITED,
+            operator_id: req.user.id
+          });
+        }
+
+        return result;
       })
-      .then(() => {
+      .then(result => {
         const { item } = persist;
 
-        res.json({
-          status: 'success',
-          message: 'Successfully audited',
-          barcode: item.barcode
-        });
+        switch (result) {
+          case 1:
+            res.json({
+              status: 'success',
+              message: 'Successfully audited',
+              barcode: item.barcode
+            });
+            break;
+          case 2:
+            res.json({
+              status: 'success',
+              message: 'Successfully audited and moved to new location',
+              barcode: item.barcode
+            });
+            break;
+        }
       })
       .catch(err => this.displayErrorJson(req, res, err));
   }
@@ -392,9 +429,16 @@ class ApiController extends BaseController {
           });
         }
 
+        // Create due date
+        var dueDate;
+        if ( item.group_duration ) {
+          var duration = moment.duration(item.group_duration.toISO());
+          dueDate = moment().add(duration);
+        }
+
         // Issue the item to the user and log an action
         return Promise.all([
-          this.models.items.issue(item.id, user.id, req.user),
+          this.models.items.issue(item.id, user.id, req.user, dueDate),
           this.models.actions.create({
             item_id: item.id,
             user_id: user.id,
@@ -438,7 +482,8 @@ class ApiController extends BaseController {
         Print.label( {
           barcode: item.barcode,
           text: item.name,
-          type: item.label
+          type: item.label,
+          brand: item.department_brand
         }, req.user.printer_url );
 
         return res.json({

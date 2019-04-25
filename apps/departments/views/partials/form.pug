@@ -1,0 +1,14 @@
+form( method="post" ).form-horizontal
+	.form-group
+		label( for="name" ).col-md-2.control-label Name
+		.col-md-4
+			input( name="name", type="text", value=department.name, required )#name.form-control
+	.form-group
+		label( for="brand" ).col-md-2.control-label Label Brand
+		.col-md-4
+			textarea( name="brand", rows="3", type="text", required )#brand.form-control=department.brand
+	.form-group
+		.col-md-4.col-md-offset-2
+			button( type="submit" ).btn.btn-primary=action
+			|  
+			a( href="/departments" ).btn.btn-default Cancel

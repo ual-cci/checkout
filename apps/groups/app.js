@@ -1,4 +1,4 @@
-const	express = require( 'express');
+const	express = require('express');
 
 const GroupController = require('./controller.js');
 const auth = require('../../src/js/authentication.js');
@@ -40,4 +40,4 @@ app.post('/:id/remove', auth.isLoggedIn, function(req, res) {
   req.controller.postRemove(req, res);
 });
 
-module.exports = function(config) { return app; };
+module.exports = config => app;

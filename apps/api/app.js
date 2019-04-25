@@ -60,4 +60,4 @@ app.get('/history', auth.isLoggedIn, (req, res) => {
   req.controller.getHistory(req, res);
 });
 
-module.exports = function( config ) { return app; };
+module.exports = config => app;

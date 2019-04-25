@@ -9,8 +9,7 @@ if history.length > 0
 		tbody
 			for row in history
 				tr
-					- status = row.action
-					td: include status.pug
+					td: +status( row.action )
 					td: +user( row.user_name, row.user_id )
 					td: +relative( row.datetime )
 					td: +user( row.operator_name, row.operator_id )

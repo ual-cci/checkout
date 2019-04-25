@@ -33,6 +33,11 @@ if items && items.length > 0
 							| Location
 						else
 							+sortItemHead( 'Location', 'location', sortby, direction, selected, filter_path )
+					th 
+						if multi
+							| Department
+						else
+							+sortItemHead( 'Department', 'department', sortby, direction, selected, filter_path )
 					th
 						if multi
 							| Value
@@ -40,59 +45,60 @@ if items && items.length > 0
 							+sortItemHead( 'Value', 'value', sortby, direction, selected, filter_path )
 					if ! multi
 						th: +sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
-						th: small: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
-						th: small: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
-								
-					//- Manage
-					if edit
-						th Manage
+						th: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
+						th: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
 			tbody
 				- item_total = 0
 				for item in items
 					tr
 						if edit
 							td: input( type="checkbox", name="edit", value=item.id, checked=multi )
+						td: +statusPill( item.status )
 						td
-							- status = item.status
-							include status.pug
-							
-						td: +clipboard( item.barcode )
+							+clipboard( item.barcode )
+							|  
+							a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
+								span.glyphicon.glyphicon-print.text-muted
 						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )
+						td: +department( item.department_name, item.department_id )
 						
 						//- Value
-						if parseInt( item.value ) > 0
-							- value = parseInt( item.value )
+						if parseFloat( item.value ) > 0
+							- value = parseFloat( item.value )
 						else
 							- value = 0
 						
 						- item_total = ( item_total + value )
-						td £#{ value }
+						td £#{ value.toFixed(2) }
 						if ! multi
 							if item.owner_id
 								td: +user( item.owner_name, item.owner_id )
-								td: small: +course( item.owner_course_name, item.owner_course_id )
-								td: small: +year( item.owner_year_name, item.owner_year_id )
+								td: +course( item.owner_course_name, item.owner_course_id )
+								td: +year( item.owner_year_name, item.owner_year_id )
 							else
 								td( colspan=3 )
 									| &mdash;
-								
-							//- Manage	
-							if edit
-								td
-									if loggedInUser.printer_id
-										+compactLabelBtn( "/items/" + item.id + "/label?printer=" + loggedInUser.printer_id )
-										+space
-									+compactEditBtn( "/items/" + item.id + '/edit' )
-									+space
-									+compactDeleteBtn( "/items/" + item.id + '/remove' )
+							
+							td
+								if item.issued
+									+fulldate( item.issued )
+								else
+									| –
+							td
+								if item.due
+									+relative( item.due, true )
+								else
+									| –
 			tfoot
 				tr
 					if edit
 						th
-					th( colspan="5" ) Total
-					th £#{ item_total }
-					th( colspan="4" )
+					th( colspan="6" ) Total
+					th £#{ item_total.toFixed(2) }
+					th( colspan="5" )
 else
 	+messageBlock( 'warning', 'There are no items to display.' )

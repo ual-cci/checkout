@@ -1,15 +1,39 @@
-- status = item.status
-h4: include status.pug
-dl.dl-horizontal
-	dt Barcode
-	dd: +clipboard( item.barcode )
-	dt Location
-	dd: +location( item.location_name, item.location_id )
-	dt Group
-	dd: +group( item.group_name, item.group_id )
-	if item.value
-		dt Value
-		dd £#{ item.value }
-	if item.notes
-		dt Notes
-		dd #{ item.notes }
+.row
+	.col-md-4
+		dl.dl-horizontal
+			dt Status
+			dd: +status( item.status )
+			if item.owner_id
+				dt Owner
+				dd: +user( item.owner_name, item.owner_id )
+			if item.status == 'on-loan'
+				dt Issued
+				dd: +fulldate( item.issued )
+				dt Due
+				dd: +relative( item.due, true )
+			if item.audited
+				dt Last audited
+				dd: +relative( item.audited )
+	.col-md-4
+		dl.dl-horizontal
+			dt Barcode
+			dd: +clipboard(item.barcode)
+			if item.serialnumber
+				dt Serial number
+				dd: +clipboard(item.serialnumber)
+			if item.value
+				dt Value
+				dd £#{item.value}
+			if item.notes
+				dt Notes
+				dd=item.notes
+	.col-md-4
+		dl.dl-horizontal
+			dt Location
+			dd: +location(item.location_name, item.location_id)
+			if item.group_id
+				dt Group
+				dd: +group(item.group_name, item.group_id)
+			if item.department_id
+				dt Department
+				dd: +department(item.department_name, item.department_id)

@@ -4,37 +4,21 @@ block prepend title
 	- title = item.name
 	- heading = title
 
+block header
+	.page-header
+		h2=heading
+			.btn-group.pull-right(style='margin-left:.25em;')
+				include partials/print-btn.pug
+			.btn-group.pull-right
+				a( href="/items/" + item.id + "/edit", title="Edit" ).btn.btn-default.btn-m
+					span.glyphicon.glyphicon-pencil
+					|  Edit
+				a( href="/items/" + item.id + "/delete", title="Delete" ).btn.btn-default.btn-m
+					span.glyphicon.glyphicon-remove
+					|  Delete
+
 block contents
 	include partials/info.pug
-	a( href="/items/" + item.id + "/edit", title="Edit" ).btn.btn-default
-		span.glyphicon.glyphicon-pencil
-		|  Edit
-	|  
-	.btn-group
-		if loggedInUser.printer_id
-			a( href="/items/" + item.id + "/label?printer=" + loggedInUser.printer_id ).btn.btn-default
-				span.glyphicon.glyphicon-print
-				|  Print Label to #{ loggedInUser.printer_name }
-			if printers.length > 1
-				button.btn.btn-default.dropdown-toggle( type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" )
-					span.caret
-					span.sr-only Toggle Dropdown
-				ul.dropdown-menu
-					li.dropdown-header Other Printers
-					for printer in printers
-						if printer_id != loggedInUser.printer_id
-							li: a( href="/items/" + item.id + "/label?printer=" + printer.id ) #{ printer.name }
-		else
-			if printers.length > 0
-				button.btn.btn-default.dropdown-toggle( data-toggle="dropdown" )
-					span.glyphicon.glyphicon-print
-					|  Print Label  
-					span.caret
-				ul.dropdown-menu
-					li.dropdown-header Other Printers
-					for printer in printers
-						if printer_id != loggedInUser.printer_id
-							li: a( href="/items/" + item.id + "/label?printer=" + printer.id ) #{ printer.name }
 	hr
 	block history
 		include partials/history.pug

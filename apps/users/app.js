@@ -48,4 +48,4 @@ app.get( '/:id/reset', auth.isLoggedIn, (req, res) => {
   req.controller.getReset(req, res);
 });
 
-module.exports = function( config ) { return app; };
+module.exports = config => app;

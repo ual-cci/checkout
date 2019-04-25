@@ -13,6 +13,13 @@ form( method="post" ).form-horizontal
 			select( name="label" required )#label.form-control
 				option( value="12mm" selected=( '12mm' == ( item ? item.label : '' ) ) ) 12mm Tape
 	.form-group
+		label( for="location" ).col-md-2.control-label Location
+		.col-md-4
+			select( name="location" required )#location.form-control
+				option( value="" disabled selected ) Select a location
+				for location in locations
+					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) ) #{ location.name } [#{ location.barcode}]
+	.form-group
 		label( for="group" ).col-md-2.control-label Group
 		.col-md-4
 			select( name="group" )#group.form-control
@@ -20,18 +27,22 @@ form( method="post" ).form-horizontal
 				for group in groups
 					option( value=group.id selected=( group.id == ( item ? item.group_id : '' ) ) )=group.name
 	.form-group
-		label( for="location" ).col-md-2.control-label Location
+		label( for="department" ).col-md-2.control-label Department
 		.col-md-4
-			select( name="location" required )#location.form-control
-				option( value="" disabled selected ) Select a location
-				for location in locations
-					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) )=location.name
+			select( name="department" )#department.form-control
+				option( value="" selected ) Select a department
+				for department in departments
+					option( value=department.id selected=( department.id == ( item ? item.department_id : '' ) ) )=department.name
 	.form-group
 		label( for="value" ).col-md-2.control-label Value
 		.col-md-4
 			.input-group
 				span.input-group-addon &pound;
-				input( name="value" type="number" value=( item ? item.value : '' ) )#value.form-control
+				input( name="value" type="number" step="0.01" value=( item ? item.value : '' ) )#value.form-control
+	.form-group
+		label( for="serialnumber" ).col-md-2.control-label Serial number
+		.col-md-4
+			input( name="serialnumber" type="text" value=( item ? item.serialnumber : '' ) )#serialnumber.form-control
 	.form-group
 		label( for="notes" ).col-md-2.control-label Notes
 		.col-md-4

@@ -1,48 +1,94 @@
-- skip = 0
-.row
-	form( method="get" )
+- skip = 10
+form( method="get" )
+	.row
 		input( type="hidden", name="sortby", value=sortby )
 		input( type="hidden", name="direction", value=direction )
-		.col-md-2
+		.col-md-1
+			- skip--
 			label( for="status" ) Status
 			select( name="status" )#status.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				option( value='available', selected=( selected.status == 'available' ) ) Available
 				option( value='on-loan', selected=( selected.status == 'on-loan' ) ) On Loan
 				option( value='broken', selected=( selected.status == 'broken' ) ) Broken
 				option( value='lost', selected=( selected.status == 'lost' ) ) Lost
-		if courses
-			.col-md-2
-				label( for="course" ) Course
-				select( name="course" )#group.form-control.input-sm
-					option( value="", selected ) &mdash;
-					for course in courses
-						option( value=course.id, selected=( course.id == selected.course ) ) #{ course.name }
-		else
-			- skip++
-		if years
-			.col-md-2
-				label( for="year" ) Year
-				select( name="year" )#year.form-control.input-sm
-					option( value="", selected ) &mdash;
-					for year in years
-						option( value=year.id, selected=( year.id == selected.year ) ) #{ year.name }
-		else
-			- skip++
-		.col-md-2
+		.col-md-1
+			- skip--
 			label( for="groups" ) Group
 			select( name="group" )#group.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				for group in groups
 					option( value=group.id, selected=( group.id == selected.group ) ) #{ group.name }
-		.col-md-2
+		.col-md-1
+			- skip--
 			label( for="location" ) Location
 			select( name="location" )#location.form-control.input-sm
-				option( value="", selected ) &mdash;
+				option( value="", selected )
+				option(disabled) ──────────
 				for location in locations
 					option( value=location.id, selected=( location.id == selected.location ) ) #{ location.name }
-		
-		.col-md-2( class='col-md-offset-' + ( skip * 2 ) )
+		.col-md-1
+			- skip--
+			label( for="department" ) Department
+			select( name="department" )#department.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				for department in departments
+					option( value=department.id, selected=( department.id == selected.department ) ) #{ department.name }
+		if courses
+			.col-md-1
+				- skip--
+				label( for="course" ) Course
+				select( name="course" )#group.form-control.input-sm
+					option( value="", selected )
+					option(disabled) ──────────
+					for course in courses
+						option( value=course.id, selected=( course.id == selected.course ) ) #{ course.name }
+		if years
+			.col-md-1
+				- skip--
+				label( for="year" ) Year
+				select( name="year" )#year.form-control.input-sm
+					option( value="", selected )
+					option(disabled) ──────────
+					for year in years
+						option( value=year.id, selected=( year.id == selected.year ) ) #{ year.name }
+		.col-md-1
+			- skip--
+			label( for="due" ) Due
+			select( name="due" )#due.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='overdue', selected=( selected.due == 'overdue' ) ) Overdue
+				option( value='future', selected=( selected.due == 'future' ) ) Future
+				option(disabled) ──────────
+				option( value='today', selected=( selected.due == 'today' ) ) Today
+				option( value='thisweek', selected=( selected.due == 'thisweek' ) ) This week
+				option( value='thismonth', selected=( selected.due == 'thismonth' ) ) This month
+		.col-md-1
+			- skip--
+			label( for="audited" ) Audited
+			select( name="audited" )#audited.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='auditpoint', selected=( selected.audited == 'auditpoint' ) ) Audit Point
+				option(disabled) ──────────
+				option( value='today', selected=( selected.audited == 'today' ) ) Today
+				option( value='thisweek', selected=( selected.audited == 'thisweek' ) ) This week
+				option( value='thismonth', selected=( selected.audited == 'thismonth' ) ) This month
+		.col-md-1
+			- skip--
+			label( for="scanned" ) Scanned
+			select( name="scanned" )#scanned.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='true', selected=( selected.scanned == 'true' ) ) Yes
+				option( value='false', selected=( selected.scanned == 'false' ) ) No
+
+
+		.col-md-2( class='col-md-offset-' + skip )
 			div( style="padding-top: 1.8em;" )
 				a( href=filter_path + "?clear=" ).btn.btn-default.btn-sm.pull-right
 					span.glyphicon.glyphicon-remove

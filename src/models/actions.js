@@ -18,12 +18,13 @@ class ActionModel extends BaseModel {
         properties: ['id', 'name', 'barcode']
       },
       user: {
+        prefix: 'owner_',
         table: 'users',
         join: ['id', 'user_id'],
         properties: ['id', 'name']
       },
       operator: {
-        prefix: 'operators_',
+        prefix: 'operator_',
         table: 'users',
         alias: 'operators',
         join: ['operators.id', 'operator_id'],
@@ -90,6 +91,7 @@ class ActionModel extends BaseModel {
 
   getByUserId(userId) {
     return this.query()
+      .lookup(['item'])
       .where([
         ['user_id', userId]
       ])

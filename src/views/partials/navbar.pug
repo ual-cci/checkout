@@ -13,6 +13,7 @@
 				if loggedInUser
 					li: a( href="/items" ) Items
 					li: a( href="/users" ) Users
+					li: a( href="/reservations" ) Reservations
 			ul.nav.navbar-nav.navbar-right
 				if loggedInUser
 					li.dropdown
@@ -23,6 +24,7 @@
 							ul.dropdown-menu
 								li: a( href="/groups" ) Groups
 								li: a( href="/locations" ) Locations
+								li: a( href="/departments" ) Departments
 								li( role="separator" ).divider
 								li: a( href="/courses" ) Courses
 								li: a( href="/years" ) Years
@@ -32,8 +34,8 @@
 								li.dropdown-header
 									span.glyphicon.glyphicon-barcode
 									|  Audit
-								li: a( href="/audit/scanned" ) Scanned
-								li: a( href="/audit/missing" ) Missing
+								li: a( href="/items/?audited=auditpoint&scanned=true" ) Scanned
+								li: a( href="/items/?audited=auditpoint&scanned=false" ) Missing
 					li.dropdown
 						a( href="#", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false" ).dropdown-toggle #{ loggedInUser.name }
 							|  

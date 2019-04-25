@@ -21,7 +21,7 @@ const Print = {
 				default:
 				case '12mm':
 					size = "Custom.12x18mm";
-					barcodes.push( Print.add12mmTape( doc, code.barcode, code.text ) )
+					barcodes.push( Print.add12mmTape( doc, code.barcode, code.text, code.brand ) )
 					break;
 				case '36mm':
 					size = "Custom.36x36mm";
@@ -40,7 +40,7 @@ const Print = {
 			Print.send( buffer, printer, size );
 		} );
 	},
-	add12mmTape: function( doc, barcode, text ) {
+	add12mmTape: function( doc, barcode, text, brand ) {
 		return new Promise( function( resolve, reject ) {
 			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
 				var page = doc.addPage( {
@@ -51,7 +51,7 @@ const Print = {
 				page.fontSize( 4.5 );
 				page.font('Helvetica-Bold')
 
-				page.text( "Creative\nTechnology\nLab", pt(1), pt(1), {
+				page.text( brand, pt(1), pt(1), {
 					width: pt(10),
 					align: 'left',
 					weight: 'bold',

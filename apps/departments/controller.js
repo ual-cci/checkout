@@ -1,7 +1,7 @@
 const BaseController = require('../../src/js/common/BaseController.js');
 
-const NewDepartments = require('../../src/models/new/departments.js');
-const NewItems = require('../../src/models/new/items.js');
+const NewDepartments = require('../../src/models/departments.js');
+const NewItems = require('../../src/models/items.js');
 
 const config = require('./config.json');
 
@@ -18,7 +18,7 @@ class DepartmentController extends BaseController {
   getHome(req, res) {
     this.models.departments.getAll()
       .then(departments => {
-        res.render('departments', { departments });
+        res.render('index', { departments });
       });
   }
 
@@ -31,7 +31,10 @@ class DepartmentController extends BaseController {
       this.displayError(req, res, 'The department requires a name', this.getRoute('/create'), 'Error creating - ');
     }
 
-    this.models.departments.create({ name: req.body.name })
+    var brand = req.body.brand;
+    brand = brand.replace(/\r\n|\r/g, '\n');
+
+    this.models.departments.create({ name: req.body.name, brand: brand })
       .then(result => {
         req.flash( 'success', 'Department created' );
         res.redirect(this.mountPath);
@@ -56,7 +59,10 @@ class DepartmentController extends BaseController {
       this.displayError(req, res, 'The department requires a name', this.getRoute([`/${req.params.id}`, '/edit']), 'Error editing - ');
     }
 
-    this.models.departments.update(req.params.id, { name: req.body.name })
+    var brand = req.body.brand;
+    brand = brand.replace(/\r\n|\r/g, '\n');
+
+    this.models.departments.update(req.params.id, { name: req.body.name, brand: brand })
       .then(() => {
         req.flash( 'success', 'Department updated' );
         res.redirect(this.mountPath);

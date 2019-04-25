@@ -1,0 +1,22 @@
+#issue.tab-pane.active
+	.row
+		.col-md-3
+			.find.panel.panel-default
+				.panel-body
+					form( role="search" )#find
+						.input-group
+							span.input-group-addon
+								span.glyphicon.glyphicon-search
+							input( type="text" ).form-control
+			#results
+				ul.nav.nav-tabs
+					li.users.active: a( href="#users" data-toggle="tab" ): span.glyphicon.glyphicon-user
+					li.items: a( href="#items" data-toggle="tab" ): span.glyphicon.glyphicon-modal-window
+				.tab-content
+					#users.tab-pane.active
+						ul.list-group.list-group-hover
+					#items.tab-pane
+						ul.list-group.list-group-hover
+		.col-md-9
+			.flash
+			#modules

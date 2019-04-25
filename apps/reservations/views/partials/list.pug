@@ -1,0 +1,28 @@
+if reservations && reservations.length > 0
+	.table-responsive
+		table.table.table-striped
+			thead
+				tr
+					th Start
+						span.dropup: span.caret
+					th End
+					th Item
+					th Action
+					th Owner
+					th Operator
+					th Manage
+			tbody
+				for reservation in reservations
+					tr
+						td: +fulldate( reservation.start_date )
+						td: +fulldate( reservation.end_date )
+						td: +item( reservation.item_name, reservation.item_id )
+						td: +status( reservation.action )
+						td: +user( reservation.owner_name, reservation.owner_id )
+						td: +user( reservation.operator_name, reservation.operator_id )
+						td
+							+editBtn( '/reservations/' + reservation.id + '/edit' )
+							+space
+							+deleteBtn( '/reservations/' + reservation.id + '/remove' )
+else
+	+messageBlock( 'warning', 'There are no reservations to display.' )

@@ -3,6 +3,7 @@ const BaseController = require('../../src/js/common/BaseController.js');
 const Items = require('../../src/models/items.js');
 const Groups = require('../../src/models/groups.js');
 const Locations = require('../../src/models/locations.js');
+const Departments = require('../../src/models/departments.js');
 const Courses = require('../../src/models/courses.js');
 const Years = require('../../src/models/years.js');
 const Printers = require('../../src/models/printers.js');
@@ -12,6 +13,8 @@ const Actions = require('../../src/models/actions.js');
 const Print = require('../../src/js/print');
 const { getSortBy } = require('../../src/js/utils.js');
 const { AVAILABILITY, SORTBY_MUTATIONS } = require('../../src/js/common/constants');
+
+const moment = require('moment');
 
 const config = require('./config.json');
 
@@ -23,6 +26,7 @@ class ItemController extends BaseController {
       items: new Items(),
       groups: new Groups(),
       locations: new Locations(),
+      departments: new Departments(),
       courses: new Courses(),
       years: new Years(),
       printers: new Printers(),
@@ -60,68 +64,81 @@ class ItemController extends BaseController {
     Promise.all([
       this.models.groups.getAll(),
       this.models.locations.getAll(),
+      this.models.departments.getAll(),
       this.models.courses.getAll(),
       this.models.years.getAll()
     ])
-      .then(([groups, locations, courses, years]) => {
+      .then(([groups, locations, departments, courses, years]) => {
         const selected = {
           status: req.query.status ? req.query.status : '',
           location: req.query.location ? req.query.location : '',
+          department: req.query.department ? req.query.department : '',
           group: req.query.group ? req.query.group : '',
           course: req.query.course ? req.query.course : '',
-          year: req.query.year ? req.query.year : ''
+          year: req.query.year ? req.query.year : '',
+          due: req.query.due ? req.query.due : '',
+          audited: req.query.audited ? req.query.audited : '',
+          scanned: req.query.scanned ? req.query.scanned : '',
         };
+        const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
+          mutator: SORTBY_MUTATIONS.ITEMS
+        });
 
-        if (Object.keys(req.query).length == 0) {
-          // If there is no query, display no items as none are matched
-          res.render('items', {
-            items: null,
-            locations,
-            groups,
-            courses,
-            years,
-            selected
-          });
-        } else {
-          const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
-            mutator: SORTBY_MUTATIONS.ITEMS
-          });
-
-          // Get items
-          this.models.items.query()
-            // Section of if commands to add queries into query
-            .if((req.query.status), (query) => {
-              query.where('status', req.query.status);
-            })
-            .if((req.query.course), query => {
-              query.where('courses.id', req.query.course);
-            })
-            .if((req.query.year), query => {
-              query.where('years.id', req.query.year);
-            })
-            .if((req.query.group), query => {
-              query.where('group_id', req.query.group);
-            })
-            .if((req.query.location), query => {
-              query.where('location_id', req.query.location);
-            })
-            .orderBy([
-              [ orderBy, direction ]
-            ])
-            .expose()
-            .then(items => {
-              res.render( 'items', {
-                items,
-                locations,
-                groups,
-                courses,
-                years,
-                selected,
-                sortby: orderBy,
-                direction
-              });
+        // Get items
+        this.models.items.query()
+          // Section of if commands to add queries into query
+          .if((req.query.status), (query) => {
+            query.where('status', req.query.status);
+          })
+          .if((req.query.course), query => {
+            query.where('courses.id', req.query.course);
+          })
+          .if((req.query.year), query => {
+            query.where('years.id', req.query.year);
+          })
+          .if((req.query.group), query => {
+            query.where('group_id', req.query.group);
+          })
+          .if((req.query.location), query => {
+            query.where('location_id', req.query.location);
+          })
+          .if((req.query.department), query => {
+            query.where('department_id', req.query.department);
+          })
+          .if((req.query.due), (query) => {
+            if (req.query.due == 'overdue') query.where('due', '<=', new Date());
+            if (req.query.due == 'future') query.where('due', '>', new Date());
+            if (req.query.due == 'today') query.whereBetween('due', [moment().startOf('day').toDate(), moment().endOf('day').toDate()]);
+            if (req.query.due == 'thisweek') query.whereBetween('due', [moment().startOf('week').toDate(), moment().endOf('week').toDate()]);
+            if (req.query.due == 'thismonth') query.whereBetween('due', [moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+          })
+          .if((req.query.audited), (query) => {
+            const audit_point = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
+            var direction = '>=';
+            if ( req.query.scanned == 'false' ) direction = '<';
+            if (req.query.audited == 'auditpoint') query.where('audited', direction, audit_point);
+            if (req.query.audited == 'today') query.where('audited', direction, moment().startOf('day').toDate() );
+            if (req.query.audited == 'thisweek') query.where('audited', direction, moment().startOf('week').toDate() );
+            if (req.query.audited == 'thismonth') query.where('audited', direction, moment().startOf('month').toDate() );
+            if (req.query.scanned == 'false' ) query.orWhere('audited', null);
+          })
+          .orderBy([
+            [ orderBy, direction ]
+          ])
+          .expose()
+          .then(items => {
+            res.render( 'items', {
+              items,
+              locations,
+              departments,
+              groups,
+              courses,
+              years,
+              selected,
+              sortby: orderBy,
+              direction
             });
-        }
+          });
       });
   }
 
@@ -146,8 +163,8 @@ class ItemController extends BaseController {
 
     // Checks if its a request with data
     if (req.body.fields) {
-      const keys = ['label', 'group', 'location', 'notes', 'value'];
-      const values = ['label', 'group_id', 'location_id', 'notes', 'value'];
+      const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber'];
+      const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber'];
       const item = {};
 
       keys.forEach((k, index) => {
@@ -166,9 +183,10 @@ class ItemController extends BaseController {
     } else {
       Promise.all([
         this.models.groups.getAll(),
-        this.models.locations.getAll()
+        this.models.locations.getAll(),
+        this.models.department.getAll()
       ])
-        .then(([groups, locations]) => {
+        .then(([groups, locations, departments]) => {
 
           this.models.items.query()
             .orderBy([
@@ -180,7 +198,8 @@ class ItemController extends BaseController {
               res.render('edit-multiple', {
                 items,
                 groups,
-                locations
+                locations,
+                departments
               });
             });
         });
@@ -196,12 +215,13 @@ class ItemController extends BaseController {
   getGenerate(req, res) {
     Promise.all([
       this.models.locations.getAll(),
+      this.models.departments.getAll(),
       this.models.groups.getAll()
     ])
-      .then(([locations, groups]) => {
+      .then(([locations, departments, groups]) => {
         if (locations.length > 0) {
           req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
-          res.render( 'generate', { locations: locations, groups: groups, item: {} } );
+          res.render( 'generate', { locations: locations, departments: departments, groups: groups, item: {} } );
         } else {
           req.flash( 'warning', 'Create at least one location before creating items' )
           res.redirect(this.getRoute());
@@ -251,47 +271,56 @@ class ItemController extends BaseController {
     const items = [];
     const barcodes = [];
 
-    for (let i = start; i <= end; i++) {
-      let item = {
-        name: req.body.name.trim(),
-        barcode: req.body.prefix,
-        label: req.body.label,
-        value: req.body.value,
-        location_id: req.body.location,
-        notes: req.body.notes,
-        status: AVAILABILITY.AVAILABLE
-      }
-
-      if ( req.body.group )
-        item.group_id = req.body.group;
-
-      const index = i.toString().padStart(2, '0');
-      if (req.body.suffix) item.name += " #" + index;
-      item.barcode += index.toString();
-      barcodes.push({
-        barcode: item.barcode,
-        text: item.name,
-        type: item.label
-      });
-      items.push(item);
-    }
-
-    this.models.items.create(items)
-      .then(result => {
-        req.flash( 'success', 'Items created' );
-
-        if (req.body.print) {
-          if (req.user.printer_id) {
-            console.log(req.user.printer_url);
-            Print.labels(barcodes, req.user.printer_url);
-            req.flash('info', `Labels printed to ${req.user.printer_name}`);
-          } else {
-            req.flash('warning', 'No printer configured');
+    this.models.departments.getById(req.body.department)
+      .then((department) => {
+        for (let i = start; i <= end; i++) {
+          let item = {
+            name: req.body.name.trim(),
+            barcode: req.body.prefix,
+            label: req.body.label,
+            value: req.body.value,
+            location_id: req.body.location,
+            department_id: req.body.department,
+            notes: req.body.notes,
+            status: AVAILABILITY.AVAILABLE
           }
+
+          if (!req.body.value) {
+            item.value = 0.0
+          }
+
+          if ( req.body.group )
+            item.group_id = req.body.group;
+
+          const index = i.toString().padStart(2, '0');
+          if (req.body.suffix) item.name += " #" + index;
+          item.barcode += index.toString();
+          barcodes.push({
+            barcode: item.barcode,
+            text: item.name,
+            type: item.label,
+            brand: department.name
+          });
+          items.push(item);
         }
-        res.redirect(this.getRoute());
       })
-      .catch(err => this.displayError(req, res, err, this.getRoute('/generate')));
+      .then(() => {
+        this.models.items.create(items)
+          .then(result => {
+            req.flash( 'success', 'Items created' );
+
+            if (req.body.print) {
+              if (req.user.printer_id) {
+                Print.labels(barcodes, req.user.printer_url);
+                req.flash('info', `Labels printed to ${req.user.printer_name}`);
+              } else {
+                req.flash('warning', 'No printer configured');
+              }
+            }
+            res.redirect(this.getRoute());
+          })
+          .catch(err => this.displayError(req, res, err, this.getRoute('/generate')));
+      });
   }
 
   /**
@@ -303,11 +332,12 @@ class ItemController extends BaseController {
   getCreate(req, res) {
     Promise.all([
       this.models.locations.getAll(),
+      this.models.departments.getAll(),
       this.models.groups.getAll()
     ])
-      .then(([locations, groups]) => {
+      .then(([locations, departments, groups]) => {
         if (locations.length > 0) {
-          res.render( 'create', { item: null, locations, groups } );
+          res.render( 'create', { item: null, locations, departments, groups } );
         } else {
           req.flash( 'warning', 'Create at least one location before creating items' )
           res.redirect(this.getRoute());
@@ -322,57 +352,67 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   postCreate(req, res) {
-    const item = {
-      name: req.body.name,
-      barcode: req.body.barcode,
-      label: req.body.label,
-      value: req.body.value,
-      location_id: req.body.location,
-      notes: req.body.notes,
-      status: AVAILABILITY.AVAILABLE
-    }
-
-    if (req.body.group) {
-      item.group_id = req.body.group;
-    }
-
-    const checks = [
-      {
-        condition: (item.name == ''),
-        message: 'The item requires a name'
-      },
-      {
-        condition: (item.barcode == ''),
-        message: 'The item requires a unique barcode'
-      },
-      {
-        condition: (!item.location_id),
-        message: 'The item must be assigned to a location'
+    this.models.departments.getById(req.body.department)
+      .then((department) => {
+      const item = {
+        name: req.body.name,
+        barcode: req.body.barcode,
+        label: req.body.label,
+        value: req.body.value,
+        location_id: req.body.location,
+        department_id: req.body.department,
+        notes: req.body.notes,
+        serialnumber: req.body.serialnumber,
+        status: AVAILABILITY.AVAILABLE
       }
-    ];
 
-    this._checkFields(checks, '/create', req, res);
+      if (!req.body.value) {
+        item.value = 0.0
+      }
 
-    this.models.items.create(item)
-      .then(id => {
-        req.flash('success', 'Item created');
+      if (req.body.group) {
+        item.group_id = req.body.group;
+      }
 
-        if (req.body.print) {
-          if (req.user.printer_id) {
-            Print.label( {
-              barcode: item.barcode,
-              text: item.name,
-              type: item.label
-            }, req.user.printer_url );
-            req.flash('info', `Label printed to ${req.user.printer_name}`);
-          } else {
-            req.flash('warning', 'No printer configured');
-          }
+      const checks = [
+        {
+          condition: (item.name == ''),
+          message: 'The item requires a name'
+        },
+        {
+          condition: (item.barcode == ''),
+          message: 'The item requires a unique barcode'
+        },
+        {
+          condition: (!item.location_id),
+          message: 'The item must be assigned to a location'
         }
-        res.redirect(this.getRoute());
-      })
-      .catch(err => {
-        this.displayError(req, res, err, this.getRoute('/create'), 'Error creating item - ');
+      ];
+
+      this._checkFields(checks, '/create', req, res);
+
+      this.models.items.create(item)
+        .then(id => {
+          req.flash('success', 'Item created');
+
+          if (req.body.print) {
+            if (req.user.printer_id) {
+              Print.label( {
+                barcode: item.barcode,
+                text: item.name,
+                type: item.label,
+                brand: department.brand
+              }, req.user.printer_url );
+              req.flash('info', `Label printed to ${req.user.printer_name}`);
+            } else {
+              req.flash('warning', 'No printer configured');
+            }
+          }
+          res.redirect(this.getRoute());
+        })
+        .catch(err => {
+          this.displayError(req, res, err, this.getRoute('/create'), 'Error creating item - ');
+        });
       });
   }
 
@@ -446,7 +486,8 @@ class ItemController extends BaseController {
         Print.label( {
           barcode: _item.barcode,
           text: _item.name,
-          type: _item.label
+          type: _item.label,
+          brand: _item.department_brand
         }, printer.url );
 
         req.flash( 'info', `Label printed to ${printer.name}`);
@@ -468,13 +509,14 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   getMulti(req, res) {
-    this.models.getMultipleById(req.body.ids.split(','))
+    this.models.items.getMultipleById(req.body.ids.split(','))
       .then(items => {
         const barcodes = items.map(item => {
           return {
             barcode: item.barcode,
             text: item.name,
-            type: item.label
+            type: item.label,
+            brand: item.department_brand
           };
         });
 
@@ -496,9 +538,10 @@ class ItemController extends BaseController {
     Promise.all([
       this.models.items.getById(req.params.id),
       this.models.groups.getAll(),
-      this.models.locations.getAll()
+      this.models.locations.getAll(),
+      this.models.departments.getAll()
     ])
-      .then(([item, groups, locations]) => {
+      .then(([item, groups, locations, departments]) => {
         if (!item) {
           throw new Error('Item not found');
         }
@@ -506,7 +549,8 @@ class ItemController extends BaseController {
         res.render('edit', {
           item,
           groups,
-          locations
+          locations,
+          departments
         });
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
@@ -525,11 +569,20 @@ class ItemController extends BaseController {
       label: req.body.label,
       location_id: req.body.location,
       value: req.body.value,
-      notes: req.body.notes
+      notes: req.body.notes,
+      serialnumber: req.body.serialnumber
     };
+
+    if (!req.body.value) {
+      item.value = 0.0
+    }
 
     if (req.body.group != '') {
       item.group_id = req.body.group;
+    }
+
+    if (req.body.department != '') {
+      item.department_id = req.body.department;
     }
 
     this.models.items.update(req.params.id, item)
@@ -541,7 +594,8 @@ class ItemController extends BaseController {
             Print.label( {
               barcode: item.barcode,
               text: item.name,
-              type: item.label
+              type: item.label,
+              brand: item.department_brand
             }, req.user.printer_url );
             req.flash( 'info', `Label reprinted to ${req.user.printer_name}`);
           } else {

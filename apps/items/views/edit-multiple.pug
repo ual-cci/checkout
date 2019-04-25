@@ -37,6 +37,16 @@ block contents
 					span.input-group-addon
 						input( type="checkbox" name="fields[]" value="location" )
 		.form-group
+			label( for="department" ).col-md-2.control-label Department
+			.col-md-4
+				.input-group
+					select( name="department" )#location.form-control
+						option( value="" selected ) Select a department
+						for department in departments
+							option( value=department.id )=department.name
+					span.input-group-addon
+						input( type="checkbox" name="fields[]" value="department" )
+		.form-group
 			label( for="value" ).col-md-2.control-label Value
 			.col-md-4
 				.input-group

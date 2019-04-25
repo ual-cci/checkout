@@ -12,6 +12,18 @@ block contents
 				.col-md-4
 					input( name="name" type="text" required )#name.form-control
 			.form-group
+				label( for="value" ).col-md-2.control-label Value
+				.col-md-4
+					.input-group
+						span.input-group-addon £
+						input( name="value" type="number" step="0.01" )#value.form-control
+			.form-group
+				label( for="notes" ).col-md-2.control-label Notes
+				.col-md-4
+					input( name="notes" type="text" )#notes.form-control
+			.page-header
+				h3 Categories
+			.form-group
 				label( for="group" ).col-md-2.control-label Group
 				.col-md-4
 					select( name="group" )#group.form-control
@@ -24,35 +36,28 @@ block contents
 					select( name="location" required )#location.form-control
 						option( value="" disabled selected ) Select a location
 						for location in locations
-							option( value=location.id )=location.name
+							option( value=location.id ) #{ location.name } [#{ location.barcode}]
 			.form-group
-				label( for="value" ).col-md-2.control-label Value
+				label( for="department" ).col-md-2.control-label Department
 				.col-md-4
-					.input-group
-						span.input-group-addon £
-						input( name="value" type="number" )#value.form-control
-					span.help-block Value in whole pounds.
-			.form-group
-				label( for="notes" ).col-md-2.control-label Notes
-				.col-md-4
-					input( name="notes" type="text" )#notes.form-control
+					select( name="department" required )#department.form-control
+						option( value="" selected ) Select a department
+						for department in departments
+							option( value=department.id )=department.name
 			.page-header
 				h3 Barcode
 			.form-group
 				label( for="prefix" ).col-md-2.control-label Prefix
 				.col-md-4
 					input( name="prefix" type="text" autocomplete="off" required )#prefix.form-control
-					span.help-block You may wish to add a space XXX(space).
 			.form-group
 				label( for="start" ).col-md-2.control-label Start
 				.col-md-4
 					input( name="start" type="number" min="1" max="98" autocomplete="off" required )#start.form-control
-					span.help-block The number of the first item.
 			.form-group
 				label( for="qty" ).col-md-2.control-label Quantity
 				.col-md-4
 					input( name="qty" type="number" min="2" max="99" autocomplete="off" required )#qty.form-control
-					span.help-block How many items would you like to generate?
 			.form-group
 				label( for="label" ).col-md-2.control-label Label
 				.col-md-4
