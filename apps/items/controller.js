@@ -509,7 +509,7 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   getMulti(req, res) {
-    this.models.items.getMultipleById(req.body.ids.split(','))
+    this.models.items.getMultipleByIds(req.body.ids.split(','))
       .then(items => {
         const barcodes = items.map(item => {
           return {
