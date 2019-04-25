@@ -8,27 +8,52 @@ nav.navbar.navbar-dark.bg-dark.navbar-expand-lg
 		.navbar-nav.mr-auto
 			if loggedInUser
 				a(href="/items").nav-item.nav-link Items
-				a(href="/users").nav-item.nav-link Users
 				a(href="/reservations").nav-item.nav-link Reservations
+				.nav-item.dropdown
+					a(href="#" id="reports" data-toggle="dropdown").dropdown-toggle.nav-link Reports
+					.dropdown-menu(aria-labelledby="reports").dropdown-menu-left
+						h6.dropdown-header
+							span.fas.fa-exclamation-triangle
+							|  Due
+						a( href="/items/?due=overdue" ).dropdown-item Overdue
+						a( href="/items/?due=today" ).dropdown-item Today
+						.dropdown-divider
+						h6.dropdown-header
+							span.fas.fa-info
+							|  Status
+						a( href="/items/?status=available" ).dropdown-item Available
+						a( href="/items/?status=on-loan" ).dropdown-item On Loan
+						a( href="/items/?status=broken" ).dropdown-item Broken
+						a( href="/items/?status=lost" ).dropdown-item Lost
+						.dropdown-divider
+						h6.dropdown-header
+							span.fas.fa-qrcode
+							|  Audit
+						a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
+						a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
+			a(href="/users").nav-item.nav-link Users
 		.navbar-nav.ml-auto
 			if loggedInUser
 				.nav-item.dropdown
 					a(href="#" id="admin" data-toggle="dropdown").dropdown-toggle.nav-link Admin
 					.dropdown-menu( aria-labelledby="admin" ).dropdown-menu-right
+						h6.dropdown-header
+							span.fas.fa-box
+							|  Items
 						a( href="/groups" ).dropdown-item Groups
 						a( href="/locations" ).dropdown-item Locations
 						a( href="/departments" ).dropdown-item Departments
 						.dropdown-divider
+						h6.dropdown-header
+							span.fas.fa-user
+							|  Users
 						a( href="/courses" ).dropdown-item Courses
 						a( href="/years" ).dropdown-item Years
 						.dropdown-divider
+						h6.dropdown-header
+							span.fas.fa-cog
+							|  Configuration
 						a( href="/printers" ).dropdown-item Printers
-						.dropdown-divider
-						.dropdown-header
-							span.fas.fa-barcode
-							|  Audit
-						a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
-						a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right
