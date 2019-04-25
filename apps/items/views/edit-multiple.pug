@@ -11,9 +11,7 @@ block contents
 			.col-lg-4
 				.input-group
 					select( name="label" required )#label.form-control
-						option( value="1d_reg" ) Regular 1D 
-						option( value="2d_flag" ) Flag 2D
-						option( value="2d_compact" ) Compact 2D
+						option( value="12mm" ) 12mm Tape
 					.input-group-append
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="label" )
@@ -54,7 +52,8 @@ block contents
 			label( for="value" ).col-lg-2.col-form-label Value
 			.col-lg-4
 				.input-group
-					span.input-group-addon &pound;
+					.input-group-prepend
+						.input-group-text &pound;
 					input( name="value" type="number" )#value.form-control
 					.input-group-append
 						.input-group-text
