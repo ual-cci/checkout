@@ -21,7 +21,7 @@ app.post('/multi', auth.isLoggedIn, (req, res) => {
 });
 
 app.post('/edit', auth.isLoggedIn, (req, res) => {
-  req.controller.postEdit(req, res);
+  req.controller.postMultiEdit(req, res);
 });
 
 // Generate items
