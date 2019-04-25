@@ -1,7 +1,7 @@
 include ../partials/mixins.pug
 
-.card( data-barcode=item.barcode, data-type='item' )
-	.card-header.bg-dark
+.card( data-barcode=item.barcode, data-type='item' ).mb-3
+	.card-header.bg-primary
 		.card-title.mb-0
 			span.fas.fa-box.text-white
 			|  
@@ -25,7 +25,7 @@ include ../partials/mixins.pug
 					.row
 						.col-md-5.font-weight-bold Issued
 						.col-md-7: +fulldate( item.issued )
-					.row						.col-md-5.font-weight-bold  Due
+					.row.col-md-5.font-weight-bold  Due
 						.col-md-7: +relative( item.due, true )
 			.col-md-5
 				.row

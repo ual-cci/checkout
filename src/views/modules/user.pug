@@ -1,37 +1,36 @@
 include ../partials/mixins.pug
 
-.card.card-primary( data-barcode=user.barcode, data-type='user' )
-	.card-header.bg-dark
+.card.card-primary( data-barcode=user.barcode, data-type='user' ).mb-3
+	.card-header.bg-primary
 		.card-title.mb-0
 			span.fas.fa-user.text-white
 			|  
 			a( href="/users/" + user.id ).text-white.font-weight-strong=user.name
 	.card-body
 		.row
-			.col-md-5.font-weight-bold Barcode
+			.col-md-5.font-weight-bold.text-md-right Barcode
 			.col-md-7: +clipboard( user.barcode )
-			.col-md-5.font-weight-bold Email
+			.col-md-5.font-weight-bold.text-md-right Email
 			.col-md-7: +email( user.email )
-			.col-md-5.font-weight-bold Course
+			.col-md-5.font-weight-bold.text-md-right Course
 			.col-md-7: +course( user.course_name, user.course_id )
-			.col-md-5.font-weight-bold Year
+			.col-md-5.font-weight-bold.text-md-right Year
 			.col-md-7: +year( user.year_name, user.year_id )
 			if user.disable
-				.col-md-5.font-weight-bold Account disabled
+				.col-md-5.font-weight-bold.text-md-right Account disabled
 				.col-md-7 Yes
-		if onloan.length > 0
-			h3 On Loan
-
 	if onloan.length > 0
 		table.table.table-striped
 			thead
 				tr
 					th Name
 					th Barcode
-					th When
+					th Issued
+					th Due
 			tbody
 				for item in onloan
 					tr
 						td: +item( item.name, item.id )
 						td: +clipboard( item.barcode )
-						td: +fulldate( item.updated )
+						td: +date( item.issued )
+						td: +relative( item.due, true )

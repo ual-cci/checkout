@@ -24,7 +24,7 @@ jQuery( document ).ready( function() {
 	jQuery( '#audit' ).bind( 'submit', handleAuditSubmit );
 	jQuery( '#label' ).bind( 'submit', handleLabelSubmit );
 	jQuery( '#new-user form' ).bind( 'submit', handleUserSubmit );
-	jQuery( document ).delegate( '#modules .card-title', 'click', handlePanelClick );
+	jQuery( document ).delegate( '#modules .card-header', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
 	jQuery( document ).delegate( '#issue .flash .override', 'click', handleOverride );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
@@ -130,7 +130,7 @@ function addModule( data ) {
 
 	if ( data.type == 'user' ) {
 		current = data;
-		jQuery( '.find' ).addClass( 'card-primary' ).removeClass( 'card-default' );
+		jQuery( '.find' ).addClass( 'bg-primary' );
 		jQuery( '#results .items a' ).tab( 'show' );
 	} else {
 		current = null;
@@ -140,7 +140,7 @@ function addModule( data ) {
 	jQuery( '#modules' ).prepend( module );
 	setTimeout( function() {
 		jQuery( module ).remove();
-		if ( jQuery( '#modules .panel-primary' ).length == 0 ) clearActive();
+		if ( jQuery( '#modules .bg-primary' ).length == 0 ) clearActive();
 	}, 60000 );
 
 }
@@ -242,9 +242,9 @@ function empty( clear ) {
 function clearActive() {
 	empty( true );
 	current = {};
-	jQuery( '.find' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
+	jQuery( '.find' ).removeClass( 'bg-primary' );
 	jQuery( '#results .users a' ).tab( 'show' );
-	jQuery( '#modules .panel-primary' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
+	jQuery( '#modules .bg-primary' ).addClass( 'bg-dark' ).removeClass( 'bg-primary' );
 }
 
 function handleKeyPress( e ) {
