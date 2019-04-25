@@ -311,7 +311,6 @@ class ItemController extends BaseController {
 
             if (req.body.print) {
               if (req.user.printer_id) {
-                console.log(req.user.printer_url);
                 Print.labels(barcodes, req.user.printer_url);
                 req.flash('info', `Labels printed to ${req.user.printer_name}`);
               } else {
@@ -512,7 +511,6 @@ class ItemController extends BaseController {
   getMulti(req, res) {
     this.models.items.getMultipleById(req.body.ids.split(','))
       .then(items => {
-        console.log(items);
         const barcodes = items.map(item => {
           return {
             barcode: item.barcode,
