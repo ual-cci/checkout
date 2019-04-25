@@ -14,8 +14,9 @@ block contents
 						option( value="1d_reg" ) Regular 1D 
 						option( value="2d_flag" ) Flag 2D
 						option( value="2d_compact" ) Compact 2D
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="label" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="label" )
 		.form-group.row
 			label( for="group" ).col-lg-2.col-form-label Group
 			.col-lg-4
@@ -24,8 +25,9 @@ block contents
 						option( value="" selected ) Select a group
 						for group in groups
 							option( value=group.id )=group.name
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="group" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="group" )
 		.form-group.row
 			label( for="location" ).col-lg-2.col-form-label Location
 			.col-lg-4
@@ -34,8 +36,9 @@ block contents
 						option( value="" disabled selected ) Select a location
 						for location in locations
 							option( value=location.id )=location.name
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="location" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="location" )
 		.form-group.row
 			label( for="department" ).col-lg-2.col-form-label Department
 			.col-lg-4
@@ -44,23 +47,26 @@ block contents
 						option( value="" selected ) Select a department
 						for department in departments
 							option( value=department.id )=department.name
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="department" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="department" )
 		.form-group.row
 			label( for="value" ).col-lg-2.col-form-label Value
 			.col-lg-4
 				.input-group
 					span.input-group-addon &pound;
 					input( name="value" type="number" )#value.form-control
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="value" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="value" )
 		.form-group.row
 			label( for="notes" ).col-lg-2.col-form-label Notes
 			.col-lg-4
 				.input-group
 					input( name="notes" type="text" )#notes.form-control
-					span.input-group-addon
-						input( type="checkbox" name="fields[]" value="notes" )
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="notes" )
 		.form-group.row
 			.col-lg-4.offset-lg-2
 				button( type="submit" ).btn.btn-outline-dark Update
