@@ -148,7 +148,6 @@ class UsersController extends BaseController {
             .getMultipleByIds(req.body.edit)
 
           var q2 = this.models.users.rewrap(query);
-          // q2._queryObj = query;
           q2.lookup(['course', 'year'])
             .orderBy([
               ['barcode', 'asc']
