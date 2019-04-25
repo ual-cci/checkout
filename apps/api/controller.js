@@ -103,7 +103,8 @@ class ApiController extends BaseController {
 
     this.models.users.query()
       .lookup(['course', 'year'])
-      .getByBarcode(req.params.barcode)
+      .where([['barcode', req.params.barcode]])
+      .retrieveSingle()
       .then(user => {
         if (!user) {
           throw ({
