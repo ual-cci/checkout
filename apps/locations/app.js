@@ -45,4 +45,4 @@ app.get( '/:id/label', auth.isLoggedIn, (req, res) => {
   req.controller.getLabel(req, res);
 });
 
-module.exports = function( config ) { return app; };
+module.exports = config => app;

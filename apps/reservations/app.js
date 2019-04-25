@@ -12,24 +12,24 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', auth.isLoggedIn, function(req, res) {
+app.get('/', auth.isLoggedIn, (req, res) => {
   req.controller.getRoot(req, res);
 });
 
-app.get('/:id/edit', auth.isLoggedIn, function(req, res) {
+app.get('/:id/edit', auth.isLoggedIn, (req, res) => {
   req.controller.getEdit(req, res);
 })
 
-app.post('/:id/edit', auth.isLoggedIn, function(req, res) {
+app.post('/:id/edit', auth.isLoggedIn, (req, res) => {
   req.controller.postEdit(req, res);
 });
 
-app.get('/:id/remove', auth.isLoggedIn, function(req, res) {
+app.get('/:id/remove', auth.isLoggedIn, (req, res) => {
   req.controller.getRemove(req, res);
 });
 
-app.post('/:id/remove', auth.isLoggedIn, function(req, res) {
+app.post('/:id/remove', auth.isLoggedIn, (req, res) => {
   req.controller.postRemove(req, res);
 });
 
-module.exports = function(config) { return app; };
+module.exports = config => app;

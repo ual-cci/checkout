@@ -18,10 +18,10 @@ const seedFunction = function(knex, Promise) {
       name: 'N/A'
     }).first('id'),
   ])
-    .then(results => {
-      const printerId = results[0].id;
-      const courseId = results[1].id;
-      const yearId = results[2].id;
+    .then(([printer, course, year]) => {
+      const printerId = printer.id;
+      const courseId = course.id;
+      const yearId = year.id;
 
       Authentication.generatePassword('password', function({salt, hash, iterations}) {
         knex('users').del()

@@ -7,4 +7,4 @@ app.get('/', auth.isLoggedIn, (req, res) => {
 	res.redirect('/checkout');
 });
 
-module.exports = function( config ) { return app; };
+module.exports = config => app;
