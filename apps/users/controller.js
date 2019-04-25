@@ -101,7 +101,7 @@ class UsersController extends BaseController {
           req,
           res,
           'Only one user was selected for group editing, use the single edit form',
-          this.getRoute([`/${req.body.edit}`, '/edit'])
+          this.getRoute([`/${edit}`, '/edit'])
         );
       }
     }
