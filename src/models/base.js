@@ -184,6 +184,14 @@ class BaseModel {
   }
 
   /**
+   * Rewraps a knex query
+   */
+  rewrap(q) {
+    this._queryObj = q
+    return this;
+  }
+
+  /**
    * Allows querying on the base knex object
    * withouting ejecting it
    *

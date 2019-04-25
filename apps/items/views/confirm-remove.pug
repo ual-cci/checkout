@@ -5,10 +5,9 @@ block prepend title
 	- heading = "Are you sure you want to remove " + selected.name + "?"
 
 block contents
-	form( method="post" ).form-horizontal
-		+messageBlock( 'info', 'Removing this item will also delete it the historical data about actions performed against this item.' )
-		.form-group
-			.col-md-4
-				button( type='submit' ).btn.btn-danger Yes, delete item
-				|  
-				a( href="/items" ).btn.btn-default Cancel
+	form( method="post" )
+		+messageBlock( 'dark', 'white', 'Removing this item will also delete it the historical data about actions performed against this item.', 'white' )
+		.form-group.row
+			button( type='submit' ).btn.btn-danger Yes, remove item
+			|  
+			a( href="/items" ).btn.btn-outline-dark Cancel

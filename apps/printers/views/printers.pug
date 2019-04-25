@@ -5,11 +5,10 @@ block prepend title
 	- heading = title
 
 block header
-	.page-header
-		h2 #{ heading }
-			a( href="/printers/create" ).btn.btn-default.pull-right
-				span.glyphicon.glyphicon-plus
-				|  Create
+	h2=heading
+		a( href="/printers/create" ).btn.btn-outline-success.btn-m.float-right
+			span.fas.fa-plus
+			|  Create
 
 block contents
 	include partials/printer-list.pug

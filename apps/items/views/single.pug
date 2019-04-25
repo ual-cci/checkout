@@ -1,0 +1,23 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = item.name
+	- heading = title
+
+block header
+	h2=heading
+		.btn-group.float-right(style='margin-left:.25em;')
+			include partials/print-btn.pug
+		.btn-group.float-right
+			a( href="/items/" + item.id + "/edit", title=`Edit ${item.name}` ).btn.btn-outline-dark.btn-m
+				span.fas.fa-pencil-alt
+				|  Edit
+			a( href="/items/" + item.id + "/remove", title=`Remove ${item.name}` ).btn.btn-outline-dark.btn-m
+				span.fas.fa-times
+				|  Remove
+	hr
+
+block contents
+	include partials/info.pug
+	block history
+		include partials/history.pug

@@ -1,14 +1,14 @@
-form( method="post" ).form-horizontal
-	.form-group
-		label( for="name" ).col-md-2.control-label Name
-		.col-md-3
+form( method="post" )
+	.form-group.row
+		label( for="name" ).col-lg-2.col-form-label Name
+		.col-lg-4
 			input( name="name" type="text" value=printer.name required autocomplete="off" )#name.form-control
-	.form-group
-		label( for="url" ).col-md-2.control-label URL
-		.col-md-3
+	.form-group.row
+		label( for="url" ).col-lg-2.col-form-label URL
+		.col-lg-4
 			input( name="url" type="text" value=printer.url required autocomplete="off" )#url.form-control
-	.form-group
-		.col-md-3.col-md-offset-2
+	.form-group.row
+		.col-lg-4.offset-lg-2
 			input( type="submit" value=action ).btn.btn-primary
 			|  
-			a( href="/printers" ).btn.btn-default Cancel
+			a( href="/printers" ).btn.btn-outline-dark Cancel

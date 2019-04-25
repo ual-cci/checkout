@@ -23,13 +23,13 @@ jQuery( document ).ready( function() {
 	jQuery( '#return' ).bind( 'submit', handleReturnSubmit );
 	jQuery( '#audit' ).bind( 'submit', handleAuditSubmit );
 	jQuery( '#label' ).bind( 'submit', handleLabelSubmit );
-	jQuery( '#user form' ).bind( 'submit', handleUserSubmit );
-	jQuery( document ).delegate( '#modules .panel-title', 'click', handlePanelClick );
+	jQuery( '#new-user form' ).bind( 'submit', handleUserSubmit );
+	jQuery( document ).delegate( '#modules .card-header', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
 	jQuery( document ).delegate( '#issue .flash .override', 'click', handleOverride );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
 	jQuery( document ).delegate( '#results .list-group-item', 'click', handleResultClick );
-	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) { focus(); } );
+	jQuery( '#mode .nav-link' ).on( 'shown.bs.tab', function( a ) { focus(); } );
 } );
 
 
@@ -100,7 +100,7 @@ function handleItemIssue( data ) {
 }
 
 function flash( data ) {
-	var activeTab = '#' + jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) + ' .flash';
+	var activeTab = '#' + jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) + ' .flash';
 
 	jQuery( activeTab ).children().slice( 10 ).remove();
 
@@ -130,7 +130,7 @@ function addModule( data ) {
 
 	if ( data.type == 'user' ) {
 		current = data;
-		jQuery( '.find' ).addClass( 'panel-primary' ).removeClass( 'panel-default' );
+		jQuery( '.find' ).addClass( 'bg-primary' );
 		jQuery( '#results .items a' ).tab( 'show' );
 	} else {
 		current = null;
@@ -140,7 +140,7 @@ function addModule( data ) {
 	jQuery( '#modules' ).prepend( module );
 	setTimeout( function() {
 		jQuery( module ).remove();
-		if ( jQuery( '#modules .panel-primary' ).length == 0 ) clearActive();
+		if ( jQuery( '#modules .bg-primary' ).length == 0 ) clearActive();
 	}, 60000 );
 
 }
@@ -148,19 +148,19 @@ function addResult( result, type ) {
 	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
 	switch ( result.status ) {
 		case 'available':
-			html += ' <span class="label label-success">&nbsp;</span>';
+			html += ' <span class="badge badge-success">&nbsp;</span>';
 			break;
 		case 'on-loan':
-			html += ' <span class="label label-danger">&nbsp;</span>';
+			html += ' <span class="badge badge-danger">&nbsp;</span>';
 			break;
 		case 'lost':
 		case 'broken':
-			html += ' <span class="label label-warning">&nbsp;</span>';
+			html += ' <span class="badge badge-warning">&nbsp;</span>';
 			break;
 		case undefined:
 			break;
 		default:
-			html += ' <span class="label label-default">&nbsp;</span>';
+			html += ' <span class="badge badge-default">&nbsp;</span>';
 			break;
 	}
 	html += ' <strong>' + result.name + '</strong>';
@@ -242,9 +242,9 @@ function empty( clear ) {
 function clearActive() {
 	empty( true );
 	current = {};
-	jQuery( '.find' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
+	jQuery( '.find' ).removeClass( 'bg-primary' );
 	jQuery( '#results .users a' ).tab( 'show' );
-	jQuery( '#modules .panel-primary' ).addClass( 'panel-default' ).removeClass( 'panel-primary' );
+	jQuery( '#modules .bg-primary' ).addClass( 'bg-dark' ).removeClass( 'bg-primary' );
 }
 
 function handleKeyPress( e ) {
@@ -254,31 +254,31 @@ function handleKeyPress( e ) {
 			focus();
 			break;
 		case 112: // F1
-			jQuery( '.issue a' ).tab( 'show' );
+			jQuery( '.issue.nav-link' ).tab( 'show' );
 			break;
 		case 113: // F2
-			jQuery( '.return a' ).tab( 'show' );
+			jQuery( '.return.nav-link' ).tab( 'show' );
 			break;
 		case 114: // F3
-			jQuery( '.reservation a' ).tab( 'show' );
+			jQuery( '.reservation.nav-link' ).tab( 'show' );
 			break;
 		case 115: // F4
-			jQuery( '.user a' ).tab( 'show' );
+			jQuery( '.new-user.nav-link' ).tab( 'show' );
 			break;
 		case 116: // F5
-			jQuery( '.print a' ).tab( 'show' );
+			jQuery( '.print.nav-link' ).tab( 'show' );
 			break;
 		case 117: // F6
-			jQuery( '.audit a' ).tab( 'show' );
+			jQuery( '.audit.nav-link' ).tab( 'show' );
 			break;
 		case 118: // F7
-			jQuery( '.history a' ).tab( 'show' );
+			jQuery( '.history.nav-link' ).tab( 'show' );
 			break;
 		case 119: // F8
-			jQuery( '.users a' ).tab( 'show' );
+			jQuery( '.users.nav-link' ).tab( 'show' );
 			break;
 		case 120: // F9
-			jQuery( '.items a' ).tab( 'show' );
+			jQuery( '.items.nav-link' ).tab( 'show' );
 			break;
 		default:
 			break;
@@ -322,7 +322,7 @@ function handleReturnSubmit( e ) {
 }
 
 function focus() {
-	switch( jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) ) {
+	switch( jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) ) {
 		case 'return':
 			jQuery( '#return input' ).focus();
 			break;
@@ -336,7 +336,7 @@ function focus() {
 			jQuery( '#label input' ).focus();
 			break;
 		case 'user':
-			jQuery( '#user input[name="barcode"]' ).focus();
+			jQuery( '#new-user input[name="barcode"]' ).focus();
 			break;
 		case 'history':
 			getHistory();
@@ -379,7 +379,7 @@ function handleOverride() {
 }
 
 function handlePrintButton() {
-	var clicked = jQuery( this ).closest( '.panel' );
+	var clicked = jQuery( this ).closest( '.card' );
 	var type = jQuery( clicked ).data( 'type' );
 	var barcode = jQuery( clicked ).data( 'barcode' );
 
@@ -397,7 +397,7 @@ function handleResultClick() {
 }
 
 function handlePanelClick() {
-	var clicked = jQuery( this ).closest( '.panel' );
+	var clicked = jQuery( this ).closest( '.card' );
 	select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
 }
 
@@ -460,11 +460,11 @@ function handleLabelSubmit( e ) {
 function handleUserSubmit( e ) {
 	e.preventDefault();
 
-	var name = jQuery( '#user form [name="name"]' ).val();
-	var barcode = jQuery( '#user form [name="barcode"]' ).val();
-	var email = jQuery( '#user form [name="email"]' ).val();
-	var course = jQuery( '#user form [name="course"]' ).val();
-	var year = jQuery( '#user form [name="year"]' ).val();
+	var name = jQuery( '#new-user form [name="name"]' ).val();
+	var barcode = jQuery( '#new-user form [name="barcode"]' ).val();
+	var email = jQuery( '#new-user form [name="email"]' ).val();
+	var course = jQuery( '#new-user form [name="course"]' ).val();
+	var year = jQuery( '#new-user form [name="year"]' ).val();
 
 	newUser( name, barcode, email, course, year, function( data ) {
 		if ( data.status == 'success' ) {
@@ -477,15 +477,15 @@ function handleUserSubmit( e ) {
 }
 
 function clearUserForm() {
-	jQuery( '#user form [name="name"]' ).val('');
-	jQuery( '#user form [name="barcode"]' ).val('');
-	jQuery( '#user form [name="email"]' ).val('');
-	jQuery( '#user form [name="course"]' ).val('');
-	jQuery( '#user form [name="year"]' ).val('');
+	jQuery( '#new-user form [name="name"]' ).val('');
+	jQuery( '#new-user form [name="barcode"]' ).val('');
+	jQuery( '#new-user form [name="email"]' ).val('');
+	jQuery( '#new-user form [name="course"]' ).val('');
+	jQuery( '#new-user form [name="year"]' ).val('');
 }
 
 function refreshHistory() {
-	if ( jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) == 'history' ) {
+	if ( jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) == 'history' ) {
 		getHistory();
 	}
 }
