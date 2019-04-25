@@ -29,7 +29,7 @@ jQuery( document ).ready( function() {
 	jQuery( document ).delegate( '#issue .flash .override', 'click', handleOverride );
 	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
 	jQuery( document ).delegate( '#results .list-group-item', 'click', handleResultClick );
-	jQuery( '#mode li a' ).on( 'shown.bs.tab', function( a ) { focus(); } );
+	jQuery( '#mode .nav-link' ).on( 'shown.bs.tab', function( a ) { focus(); } );
 } );
 
 
@@ -100,7 +100,7 @@ function handleItemIssue( data ) {
 }
 
 function flash( data ) {
-	var activeTab = '#' + jQuery( '#mode li a.active' ).attr( 'href' ).substr( 1 ) + ' .flash';
+	var activeTab = '#' + jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) + ' .flash';
 
 	jQuery( activeTab ).children().slice( 10 ).remove();
 
@@ -254,31 +254,31 @@ function handleKeyPress( e ) {
 			focus();
 			break;
 		case 112: // F1
-			jQuery( '.issue a' ).tab( 'show' );
+			jQuery( '.issue.nav-link' ).tab( 'show' );
 			break;
 		case 113: // F2
-			jQuery( '.return a' ).tab( 'show' );
+			jQuery( '.return.nav-link' ).tab( 'show' );
 			break;
 		case 114: // F3
-			jQuery( '.reservation a' ).tab( 'show' );
+			jQuery( '.reservation.nav-link' ).tab( 'show' );
 			break;
 		case 115: // F4
-			jQuery( '.new-user a' ).tab( 'show' );
+			jQuery( '.new-user.nav-link' ).tab( 'show' );
 			break;
 		case 116: // F5
-			jQuery( '.print a' ).tab( 'show' );
+			jQuery( '.print.nav-link' ).tab( 'show' );
 			break;
 		case 117: // F6
-			jQuery( '.audit a' ).tab( 'show' );
+			jQuery( '.audit.nav-link' ).tab( 'show' );
 			break;
 		case 118: // F7
-			jQuery( '.history a' ).tab( 'show' );
+			jQuery( '.history.nav-link' ).tab( 'show' );
 			break;
 		case 119: // F8
-			jQuery( '.users a' ).tab( 'show' );
+			jQuery( '.users.nav-link' ).tab( 'show' );
 			break;
 		case 120: // F9
-			jQuery( '.items a' ).tab( 'show' );
+			jQuery( '.items.nav-link' ).tab( 'show' );
 			break;
 		default:
 			break;
@@ -322,7 +322,7 @@ function handleReturnSubmit( e ) {
 }
 
 function focus() {
-	switch( jQuery( '#mode li a.active' ).attr( 'href' ).substr( 1 ) ) {
+	switch( jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) ) {
 		case 'return':
 			jQuery( '#return input' ).focus();
 			break;
@@ -379,7 +379,7 @@ function handleOverride() {
 }
 
 function handlePrintButton() {
-	var clicked = jQuery( this ).closest( '.panel' );
+	var clicked = jQuery( this ).closest( '.card' );
 	var type = jQuery( clicked ).data( 'type' );
 	var barcode = jQuery( clicked ).data( 'barcode' );
 
@@ -397,7 +397,7 @@ function handleResultClick() {
 }
 
 function handlePanelClick() {
-	var clicked = jQuery( this ).closest( '.panel' );
+	var clicked = jQuery( this ).closest( '.card' );
 	select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
 }
 
@@ -485,8 +485,8 @@ function clearUserForm() {
 }
 
 function refreshHistory() {
-	if ( jQuery( '#mode li.active a' ).attr( 'href' ).substr( 1 ) == 'history' ) {
+	if ( jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) == 'history' ) {
 		getHistory();
 	}
 }
-// setInterval( refreshHistory, 10000 );
+setInterval( refreshHistory, 10000 );
