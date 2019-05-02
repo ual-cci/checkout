@@ -345,7 +345,7 @@ function focus() {
 }
 
 function handleItemButtons() {
-	var clicked = jQuery( this ).closest( '.panel' );
+	var clicked = jQuery( this ).closest( '.card' );
 	var type = jQuery( clicked ).data( 'type' );
 	var barcode = jQuery( clicked ).data( 'barcode' );
 
