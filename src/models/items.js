@@ -120,7 +120,8 @@ class ItemModel extends BaseModel {
   }
 
   getByBarcode(barcode) {
-    return this.query().where([['barcode', barcode]]).retrieveSingle();
+    this._safeguard();
+    return this.where([['barcode', barcode]]).retrieveSingle();
   }
 
   audit(barcode) {
