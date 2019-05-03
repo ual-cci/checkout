@@ -53,7 +53,7 @@ const Authentication = {
               }
             } else {
               persist.successful = false;
-              persist.pw_attempts = persist.pw_attempts++;
+              persist.pw_attempts++;
               persist.flash = {
                 message: 'Invalid login'
               };
