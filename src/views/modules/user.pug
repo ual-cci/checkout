@@ -32,5 +32,13 @@ include ../partials/mixins.pug
 					tr
 						td: +item( item.name, item.id )
 						td: +clipboard( item.barcode )
-						td: +date( item.issued )
-						td: +relative( item.due, true )
+						td
+							if item.issued
+								+date( item.issued )
+							else
+								| –
+						td
+							if item.due
+								+relative( item.due, true )
+							else
+								| –
