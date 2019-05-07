@@ -36,6 +36,7 @@ class GroupController extends BaseController {
     }
 
     if (req.body.limiter) group.limiter = req.body.limiter;
+    if (req.body.duration) group.duration = req.body.duration;
 
     this.models.groups.create(group)
       .then(id => {
@@ -64,7 +65,8 @@ class GroupController extends BaseController {
 
     const group = {
       name: req.body.name,
-      limiter: req.body.limiter ? req.body.limiter : null
+      limiter: req.body.limiter ? req.body.limiter : null,
+      duration: req.body.duration ? req.body.duration : null
     };
 
     this.models.groups.update(req.params.id, group)
