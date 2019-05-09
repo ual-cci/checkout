@@ -110,7 +110,7 @@ function flash( data ) {
 	var html = '<div class="alert">';
 		if ( data.barcode ) html += '<strong>' + data.barcode + '</strong>: ';
 		html += data.message;
-		if ( data.override ) html += '<button style="margin-top:-.3em" class="override btn btn-sm pull-right">Override</button>'
+		if ( data.override ) html += `<button style="margin-top:-.25em;margin-right:-.75em;" class="override btn btn-sm btn-outline-${data.status} float-right">Override</button>`
 		if ( data.override ) jQuery( '#issue .flash button.override' ).remove();
 	html += '</div>';
 	var alert = jQuery( html ).addClass( 'alert-' + data.status );
