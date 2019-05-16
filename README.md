@@ -1,5 +1,9 @@
+<img src="https://github.com/creativetechnologylab/checkout/raw/master/_assets/icon.png" height="150px" />
+
 # Checkout
-Checkout is a bespoke software system for managing items within the Creative Technology Lab.
+Checkout is a software system for tracking assets within a higher education environment, originally created for use within the Creative Technology Lab at London College of Communication.
+
+Checkout is built on Node.js with Express, PostegreSQL via Knex.js and label printing using PDFKit into CUPS via IPP.
 
 # Running it
 You can run Checkout with `npm run start` if you are developing use `npm run dev`.
