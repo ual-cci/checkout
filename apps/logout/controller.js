@@ -9,7 +9,10 @@ class LogoutController extends BaseController {
 
   getRoot(req, res) {
     req.logout();
-    res.redirect('/login');
+    req.session.save( function(err) {
+      if ( err ) throw new Error(err);
+      res.redirect('/login');
+    } )
   }
 }
 

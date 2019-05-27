@@ -1,5 +1,5 @@
-const passport = require( 'passport' );
-const LocalStrategy = require( 'passport-local' ).Strategy;
+const passport = require( '@passport-next/passport' );
+const LocalStrategy = require( '@passport-next/passport-local' ).Strategy;
 const crypto = require( 'crypto' );
 
 const UsersModel = require('../models/users');

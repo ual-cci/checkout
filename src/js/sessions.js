@@ -1,6 +1,6 @@
 const session = require( 'express-session' );
 const cookie = require('cookie-parser');
-const passport = require( 'passport' );
+const passport = require( '@passport-next/passport' );
 
 var PostgreSqlStore = require( 'connect-pg-simple' )( session );
 

@@ -7,6 +7,8 @@
     "db:seed": "knex seed:run"
   },
   "dependencies": {
+    "@passport-next/passport": "^2.1.1",
+    "@passport-next/passport-local": "^1.2.0",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-middleware": "^0.8.0",
@@ -23,8 +25,6 @@
     "knex": "^0.16.0",
     "moment": "^2.24.0",
     "nodemon": "^1.19.1",
-    "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
     "pdfkit": "^0.9.1",
     "pg": "^7.11.0",
     "pug": "^2.0.3"
