@@ -16,7 +16,7 @@ module.exports =  function( app, io ) {
 		cookie: {
       maxAge: 31*24*60*60*1000
     },
-		// store: store,
+		store: store,
 		name: 'checkout_session',
 		secret: process.env.APP_SECRET,
 		resave: false,
