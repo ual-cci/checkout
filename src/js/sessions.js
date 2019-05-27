@@ -1,9 +1,7 @@
 const session = require( 'express-session' );
 const cookie = require('cookie-parser');
-// const passport = require( '@passport-next/passport' );
 
 var PostgreSqlStore = require( 'connect-pg-simple' )( session );
-
 const { constructTarget } = require('../js/utils.js');
 
 module.exports =  function( app, io ) {
@@ -24,8 +22,4 @@ module.exports =  function( app, io ) {
 		rolling: false,
 		unset: 'destroy'
 	} ) );
-
-	// app.use( passport.initialize() );
-	// app.use( passport.session() );
-
 };
