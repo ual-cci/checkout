@@ -13,15 +13,19 @@ module.exports =  function( app, io ) {
 
 	app.use( cookie() );
 	app.use( session( {
+		cookie: {
+      maxAge: 31*24*60*60*1000
+    },
+		// store: store,
 		name: 'checkout_session',
 		secret: process.env.APP_SECRET,
-		cookie: { maxAge: 31*24*60*60*1000 },
-		saveUninitialized: false,
-		store: store,
 		resave: false,
-		rolling: true
+		saveUninitialized: false,
+		rolling: false,
+    unset: 'destroy'
 	} ) );
 
 	app.use( passport.initialize() );
 	app.use( passport.session() );
+
 };
