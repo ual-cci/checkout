@@ -62,7 +62,7 @@ class CoursesController extends BaseController {
     this.models.courses.create(course)
       .then(ids => {
         req.flash('success', 'Course created');
-        res.redirect(this.mountPath);
+        req.saveSessionAndRedirect(this.mountPath);
       })
       .catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Unable to create course – '));
   }
@@ -115,7 +115,7 @@ class CoursesController extends BaseController {
     this.models.courses.update(req.params.id, course)
       .then(ids => {
         req.flash('success', 'Course updated');
-        res.redirect(this.mountPath);
+        req.saveSessionAndRedirect(this.mountPath);
       })
       .catch(err => this.displayError(req, res, err, this.getCreate(), 'Unable to update course – '));
   }
@@ -185,7 +185,7 @@ class CoursesController extends BaseController {
         return this.models.courses.remove(removeId)
           .then(() => {
             req.flash('success', 'Course deleted and users transferred');
-            res.redirect(this.getRoute());
+            req.saveSessionAndRedirect(this.getRoute());
           });
       })
       .catch(err => {

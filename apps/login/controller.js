@@ -9,14 +9,14 @@ class LoginController extends BaseController {
 
   getRoot(req, res) {
     if (req.isAuthenticated()) {
-      res.redirect('/');
+      req.saveSessionAndRedirect('/');
     } else {
       res.render('login');
     }
   }
 
   postRoot(req, res) {
-    res.redirect('/checkout');
+    req.saveSessionAndRedirect('/checkout');
   }
 }
 

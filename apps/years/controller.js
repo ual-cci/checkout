@@ -38,7 +38,7 @@ class YearsController extends BaseController {
     this.models.years.create(year)
       .then(id => {
         req.flash( 'success', 'Year created' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error creating year - '));
   }
@@ -67,7 +67,7 @@ class YearsController extends BaseController {
     this.models.years.update(req.params.id, year)
       .then(id => {
         req.flash( 'success', 'year updated' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => {
         this.displayError(
@@ -136,7 +136,7 @@ class YearsController extends BaseController {
       })
       .then(() => {
         req.flash('success', 'Year deleted and items transferred');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error removing - '));
   }

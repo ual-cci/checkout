@@ -41,7 +41,7 @@ class GroupController extends BaseController {
     this.models.groups.create(group)
       .then(id => {
         req.flash( 'success', 'Group created' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error creating group - '));
   }
@@ -72,7 +72,7 @@ class GroupController extends BaseController {
     this.models.groups.update(req.params.id, group)
       .then(id => {
         req.flash( 'success', 'Group updated' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => {
         this.displayError(
@@ -147,7 +147,7 @@ class GroupController extends BaseController {
       })
       .then(() => {
         req.flash('success', 'Group deleted and items transferred');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error removing - '));
   }

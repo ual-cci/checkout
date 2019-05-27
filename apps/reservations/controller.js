@@ -44,7 +44,7 @@ class ReservationController extends BaseController {
     this.models.reservations.update(req.params.id, reservation)
       .then(id => {
         req.flash( 'success', 'Reservation updated' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => {
         this.displayError(
@@ -106,7 +106,7 @@ class ReservationController extends BaseController {
       })
       .then(() => {
         req.flash('success', 'Reservation deleted');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error removing - '));
   }

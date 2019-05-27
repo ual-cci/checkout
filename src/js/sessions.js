@@ -22,4 +22,20 @@ module.exports =  function( app, io ) {
 		rolling: false,
 		unset: 'destroy'
 	} ) );
+
+
+
+  app.use(function( req, res, next ) {
+    req.saveSessionAndRedirect = function (a, b) {
+      req.session.save( function(err) {
+        if ( err ) throw new Error(err);
+        if ( b ) {
+          res.redirect( a, b );
+        } else {
+          res.redirect( a );
+        }
+      } )
+    }
+    return next();
+  });
 };

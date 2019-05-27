@@ -43,7 +43,7 @@ class PrintersController extends BaseController {
     this.models.printers.create(values)
       .then(id => {
         req.flash('success', 'Printer created');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error creating printer - '));
   }
@@ -75,7 +75,7 @@ class PrintersController extends BaseController {
     this.models.printers.update(req.params.id, values)
       .then(id => {
         req.flash('success', 'Printer updated');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
@@ -135,7 +135,7 @@ class PrintersController extends BaseController {
       })
       .then(() => {
         req.flash('success', 'Printer deleted and items transferred');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(), 'Error removing - '));
   }

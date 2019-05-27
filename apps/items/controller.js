@@ -179,7 +179,7 @@ class ItemController extends BaseController {
       this.models.items.updateMultiple(req.body.edit, item)
         .then(result => {
           req.flash('success', 'Items updated');
-          res.redirect(this.getRoute());
+          req.saveSessionAndRedirect(this.getRoute());
         })
         .catch(err => {
           this.displayError(req, res, err, this.getRoute());
@@ -228,7 +228,7 @@ class ItemController extends BaseController {
           res.render( 'generate', { locations: locations, departments: departments, groups: groups, item: {} } );
         } else {
           req.flash( 'warning', 'Create at least one location before creating items' )
-          res.redirect(this.getRoute());
+          req.saveSessionAndRedirect(this.getRoute());
         }
       });
   }
@@ -321,7 +321,7 @@ class ItemController extends BaseController {
                 req.flash('warning', 'No printer configured');
               }
             }
-            res.redirect(this.getRoute());
+            req.saveSessionAndRedirect(this.getRoute());
           })
           .catch(err => this.displayError(req, res, err, this.getRoute('/generate')));
       });
@@ -344,7 +344,7 @@ class ItemController extends BaseController {
           res.render( 'create', { item: null, locations, departments, groups } );
         } else {
           req.flash( 'warning', 'Create at least one location before creating items' )
-          res.redirect(this.getRoute());
+          req.saveSessionAndRedirect(this.getRoute());
         }
       });
   }
@@ -412,7 +412,7 @@ class ItemController extends BaseController {
               req.flash('warning', 'No printer configured');
             }
           }
-          res.redirect(this.getRoute());
+          req.saveSessionAndRedirect(this.getRoute());
         })
         .catch(err => {
           this.displayError(req, res, err, this.getRoute('/create'), 'Error creating item - ');
@@ -496,9 +496,9 @@ class ItemController extends BaseController {
 
         req.flash( 'info', `Label printed to ${printer.name}`);
         if (req.get('referer') && req.get('referer').indexOf(`items/${req.params.id}`) < 0) {
-          res.redirect(this.getRoute());
+          req.saveSessionAndRedirect(this.getRoute());
         } else {
-          res.redirect(this.getRoute(`/${_item.id.toString()}`));
+          req.saveSessionAndRedirect(this.getRoute(`/${_item.id.toString()}`));
         }
       })
       .catch(err => {
@@ -527,7 +527,7 @@ class ItemController extends BaseController {
         Print.labels(barcodes, req.user.printer_url);
 
         req.flash( 'success', "Printed those labels" );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
@@ -607,7 +607,7 @@ class ItemController extends BaseController {
           }
         }
 
-        res.redirect(this.getRoute(`/${req.params.id}`));
+        req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`));
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(`/${req.params.id}`)));
   }
@@ -655,7 +655,7 @@ class ItemController extends BaseController {
       })
       .then(() => {
         req.flash( 'success', "Item and it's history removed" );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }

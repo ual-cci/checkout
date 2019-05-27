@@ -37,7 +37,7 @@ class DepartmentController extends BaseController {
     this.models.departments.create({ name: req.body.name, brand: brand })
       .then(result => {
         req.flash( 'success', 'Department created' );
-        res.redirect(this.mountPath);
+        req.saveSessionAndRedirect(this.mountPath);
       })
       .catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Department not created - '));
   }
@@ -65,7 +65,7 @@ class DepartmentController extends BaseController {
     this.models.departments.update(req.params.id, { name: req.body.name, brand: brand })
       .then(() => {
         req.flash( 'success', 'Department updated' );
-        res.redirect(this.mountPath);
+        req.saveSessionAndRedirect(this.mountPath);
       })
       .catch(err => this.displayError(req, res, err, this.getRoute([`/${req.params.id}`, '/edit']), 'Department not updated - '));
   }
@@ -120,7 +120,7 @@ class DepartmentController extends BaseController {
       })
       .then(() => {
         req.flash( 'success', 'Department deleted and items transferred' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => {
         this.displayError(req, res, err, this.getRoute(), 'Error removing post - ');

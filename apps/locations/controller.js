@@ -36,7 +36,7 @@ class LocationController extends BaseController {
     this.models.locations.create({ name: req.body.name })
       .then(result => {
         req.flash( 'success', 'Location created' );
-        res.redirect(this.mountPath);
+        req.saveSessionAndRedirect(this.mountPath);
       })
       .catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Location not created - '));
   }
@@ -61,7 +61,7 @@ class LocationController extends BaseController {
     this.models.locations.update(req.params.id, { name: req.body.name })
       .then(() => {
         req.flash( 'success', 'Location updated' );
-        res.redirect(this.mountPath);
+        req.saveSessionAndRedirect(this.mountPath);
       })
       .catch(err => this.displayError(req, res, err, this.getRoute([`/${req.params.id}`, '/edit']), 'Location not updated - '));
   }
@@ -123,7 +123,7 @@ class LocationController extends BaseController {
       })
       .then(() => {
         req.flash( 'success', 'Location deleted and items transferred' );
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => {
         this.displayError(req, res, err, this.getRoute(), 'Error removing post - ');
@@ -160,7 +160,7 @@ class LocationController extends BaseController {
         }, printer.url );
 
         req.flash('info', `Label printed to ${printer.name}`);
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }

@@ -125,7 +125,7 @@ class UsersController extends BaseController {
       this.models.users.updateMultiple(req.body.edit, user)
         .then(() => {
           req.flash('success', 'User updated');
-          res.redirect(this.getRoute());
+          req.saveSessionAndRedirect(this.getRoute());
         })
         .catch(err => this.displayError(req, res, err, this.getRoute()));
     } else {
@@ -264,7 +264,7 @@ class UsersController extends BaseController {
       this.models.users.update(req.params.id, user)
         .then(id => {
           req.flash('success', 'User updated');
-          res.redirect(this.getRoute(`/${req.params.id}`));
+          req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`));
         })
         .catch(err => this.displayError(req, res, err, this.getRoute(`/${req.params.id}`)));
     } );
@@ -340,7 +340,7 @@ class UsersController extends BaseController {
       })
       .then(results => {
         req.flash('success', 'User and their history removed');
-        res.redirect(this.getRoute());
+        req.saveSessionAndRedirect(this.getRoute());
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
   }
@@ -353,7 +353,7 @@ class UsersController extends BaseController {
     this.models.users.update(req.params.id, user)
       .then(id => {
         req.flash('success', 'Password attempts reset to zero');
-        res.redirect(this.getRoute(`/${req.params.id}`));
+        req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`));
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(`/${req.params.id}`)));
   }

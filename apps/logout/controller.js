@@ -11,7 +11,7 @@ class LogoutController extends BaseController {
     req.logout();
     req.session.save( function(err) {
       if ( err ) throw new Error(err);
-      res.redirect('/login');
+      req.saveSessionAndRedirect('/login');
     } )
   }
 }
