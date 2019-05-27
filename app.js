@@ -14,13 +14,13 @@ const app = express()
 const server = http.Server(app)
 
 app.use(helmet())
-auth(app)
-app.use(express.static('./static'))
 sessions(app)
+auth(app)
 app.use(flash())
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
+
+app.use(express.static('./static'))
 
 // Use PUG to render pages
 app.set('views', './src/views')
