@@ -469,7 +469,7 @@ function handleUserSubmit( e ) {
 	newUser( name, barcode, email, course, year, function( data ) {
 		if ( data.status == 'success' ) {
 			select( data.redirect.type, data.redirect.barcode );
-			jQuery( '.issue a' ).tab( 'show' );
+			jQuery( 'a.issue' ).tab( 'show' );
 			clearUserForm();
 		}
 		flash( data );
