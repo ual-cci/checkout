@@ -335,7 +335,7 @@ function focus() {
 		case 'label':
 			jQuery( '#label input' ).focus();
 			break;
-		case 'user':
+		case 'new-user':
 			jQuery( '#new-user input[name="barcode"]' ).focus();
 			break;
 		case 'history':
