@@ -1,6 +1,6 @@
 const session = require( 'express-session' );
 const cookie = require('cookie-parser');
-const passport = require( '@passport-next/passport' );
+// const passport = require( '@passport-next/passport' );
 
 var PostgreSqlStore = require( 'connect-pg-simple' )( session );
 
@@ -14,18 +14,18 @@ module.exports =  function( app, io ) {
 	app.use( cookie() );
 	app.use( session( {
 		cookie: {
-      maxAge: 31*24*60*60*1000
-    },
+				maxAge: 31*24*60*60*1000
+		},
 		store: store,
 		name: 'checkout_session',
 		secret: process.env.APP_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		rolling: false,
-    unset: 'destroy'
+		unset: 'destroy'
 	} ) );
 
-	app.use( passport.initialize() );
-	app.use( passport.session() );
+	// app.use( passport.initialize() );
+	// app.use( passport.session() );
 
 };
