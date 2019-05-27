@@ -16,13 +16,7 @@ class LoginController extends BaseController {
   }
 
   postRoot(req, res) {
-    if (req.session.requested != undefined) {
-      const requested = req.session.requested;
-      delete req.session.requested;
-      res.redirect(requested);
-    } else {
-      res.redirect('/checkout');
-    }
+    res.redirect('/checkout');
   }
 }
 

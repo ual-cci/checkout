@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 
 const passportAuth = passport.authenticate('local', {
 	failureRedirect: '/login',
+	successRedirect: '/checkout',
 	failureFlash: true,
 	successFlash: true
 });
