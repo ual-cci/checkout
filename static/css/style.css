@@ -16,7 +16,8 @@ body.dev:before {
 	left: 0;
 	right: 0;
 	height: 3px;
-	background: url( /imgs/dev.png );
+	background-image: url( /imgs/dev.svg );
+  background-size: 20px 10px;
   z-index: 1000;
 }
 
