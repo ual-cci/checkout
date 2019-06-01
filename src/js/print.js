@@ -1,143 +1,198 @@
-const PDFDocument = require( 'pdfkit' );
-const bwipjs = require( 'bwip-js' );
-const ipp = require( 'ipp' );
+const PDFDocument = require('pdfkit');
+const bwipjs = require('bwip-js');
+const ipp = require('ipp');
 
 const Print = {
-	label: function( code, printer ) {
-		Print.labels( [ code ], printer );
-	},
-	labels: function( codes, printer ) {
-		var buffer = [];
+  label: function(code, printer) {
+    Print.labels([code], printer);
+  },
+  labels: function(codes, printer) {
+    var buffer = [];
 
-		var doc = new PDFDocument( {
-			autoFirstPage: false
-		} );
+    var doc = new PDFDocument({
+      autoFirstPage: false
+    });
 
-		var docSize = '';
-		var barcodes = [];
-		for ( c in codes ) {
-			var code = codes[c];
-			switch( code.type ) {
-				default:
-				case '12mm':
-					size = "Custom.12x18mm";
-					barcodes.push( Print.add12mmTape( doc, code.barcode, code.text, code.brand ) )
-					break;
-				case '36mm':
-					size = "Custom.36x36mm";
-					barcodes.push( Print.add36mmTape( doc, code.barcode, code.text ) )
-					break;
-			}
-		}
+    var docSize = '';
+    var barcodes = [];
+    for (c in codes) {
+      var code = codes[c];
+      switch(code.type) {
+        default:
+        case '12mm':
+          size = "Custom.12x18mm";
+          barcodes.push(Print.add12mmLabel(doc, code.barcode, code.text, code.brand))
+          break;
 
-		Promise.all( barcodes ).then( function() {
-			doc.end();
-		} );
+        case '12mm_flag':
+          size = "Custom.12x18mm";
+          barcodes.push(Print.add12mmFlag(doc, code.barcode, code.text, code.brand))
+          break;
 
-		doc.on( 'data', buffer.push.bind( buffer ) );
+        case '36mm':
+          size = "Custom.36x36mm";
+          barcodes.push(Print.add36mmLabel(doc, code.barcode, code.text))
+          break;
+      }
+    }
 
-		doc.on( 'end', function() {
-			Print.send( buffer, printer, size );
-		} );
-	},
-	add12mmTape: function( doc, barcode, text, brand ) {
-		return new Promise( function( resolve, reject ) {
-			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage( {
-					size: [ pt(18), pt(12) ],
-					layout: 'landscape',
-					margin: 0
-				} );
-				page.fontSize( 4.5 );
-				page.font('Helvetica-Bold')
+    Promise.all(barcodes).then(function() {
+      doc.end();
+    });
 
-				page.text( brand, pt(1), pt(1), {
-					width: pt(10),
-					align: 'left',
-					weight: 'bold',
-					lineGap: -1.5
-				} );
+    doc.on('data', buffer.push.bind(buffer));
 
-				page.image( png,  pt(1), pt(6), {
-					width: pt(9),
-					height: pt(9)
-				} );
+    doc.on('end', function() {
+      Print.send(buffer, printer, size);
+    });
+  },
+  add12mmLabel: function(doc, barcode, text, brand) {
+    return new Promise(function(resolve, reject) {
+      Print.generate2DBarcodeImage(barcode).then(function(png) {
+        var page = doc.addPage({
+          size: [pt(18), pt(12)],
+          layout: 'landscape',
+          margin: 0
+        } );
+        page.fontSize(4.5);
+        page.font('Helvetica-Bold')
 
-				page.fontSize( 4 );
-				page.font('Helvetica')
-				page.text( barcode, pt(1), pt(16), {
-					width: pt(9),
-					align: 'left'
-				} );
+        page.text(brand, pt(1), pt(1), {
+          width: pt(10),
+          align: 'left',
+          weight: 'bold',
+          lineGap: -1.5
+        });
 
-				resolve( page );
-			} )
-		} );
-	},
-	add36mmTape: function( doc, barcode, text ) {
-		return new Promise( function( resolve, reject ) {
-			Print.generate2DBarcodeImage( barcode ).then( function( png ) {
-				var page = doc.addPage( {
-					size: [ pt(36), pt(36) ],
-					layout: 'landscape',
-					margin: 0
-				} );
-				page.image( png,  pt(5.5), pt(2), {
-					width: pt(25),
-					height: pt(25)
-				} );
+        page.image(png, pt(1), pt(6), {
+          width: pt(9),
+          height: pt(9)
+        });
 
-				page.fontSize( 15 );
-				page.font('Helvetica-Bold')
+        page.fontSize(4);
+        page.font('Helvetica')
+        page.text(barcode, pt(1), pt(16), {
+          width: pt(9),
+          align: 'left'
+        });
 
-				page.text( text, pt(0), pt(29), {
-					width: pt(36),
-					align: 'center'
-				} );
+        resolve(page);
+      })
+    });
+  },
+  add12mmFlag: function( doc, barcode, text, brand ) {
+    return new Promise( function(resolve, reject) {
+      Print.generate2DBarcodeImage(barcode).then(function(png) {
+        var page = doc.addPage({
+          size: [pt(40), pt(12)],
+          layout: 'landscape',
+          margin: 0
+        });
+        for (var i = 0; i < 2; i++) {
+          if (i==1) {
+            doc.save();
+            doc.rotate(180,{origin:[pt(6),pt(20)]});
+          }
 
-				resolve( page );
-			} )
-		} );
-	},
-	generate2DBarcodeImage: function( barcode ) {
-		return new Promise( function ( resolve, reject ) {
-			bwipjs.toBuffer( {
-				bcid: 'azteccode',
-				scale: 20,
-				text: barcode,
-				height: 10,
-				width: 10,
-				rotate: 'N',
-				monochrome: true
-			}, function( err, png ) {
-				if ( err ) return reject( err );
-				return resolve( png );
-			} );
-		} );
-	},
-	send: function( buffer, printer, size ) {
-		var file = {
-			"job-attributes-tag": {
-				"media": [ size ]
-			},
-			"operation-attributes-tag": {
-				"requesting-user-name": process.env.APP_NAME,
-				"job-name": "Labels",
-				"requesting-user-name": "Checkout",
-				"document-format": "application/pdf",
-			},
-			data: Buffer.concat( buffer )
-		};
+          page.fontSize(4.5);
+          page.font('Helvetica-Bold')
 
-		var printer = ipp.Printer( printer );
-		printer.execute( "Print-Job", file, function ( err, res ) {
-			delete buffer;
-		});
-	},
+          page.text(brand, pt(1), pt(1), {
+            width: pt(10),
+            align: 'left',
+            weight: 'bold',
+            lineGap: -1.5
+          });
+
+          page.image(png,  pt(1), pt(6), {
+            width: pt(9),
+            height: pt(9)
+          });
+
+          page.fontSize(4);
+          page.font('Helvetica')
+          page.text(barcode, pt(1), pt(16), {
+            width: pt(9),
+            align: 'left'
+          });
+        }
+
+        doc.restore();
+        page.moveTo(pt(0), pt(20))
+          .lineTo(pt(12),pt(20))
+          .lineWidth(pt(0.25))
+          .lineCap('round')
+          .dash(pt(0.25), {space:pt(1)})
+          .stroke();
+
+        resolve(page);
+      })
+    });
+  },
+  add36mmLabel: function(doc, barcode, text) {
+    return new Promise(function(resolve, reject) {
+      Print.generate2DBarcodeImage(barcode).then(function(png) {
+        var page = doc.addPage({
+          size: [pt(36), pt(36)],
+          layout: 'landscape',
+          margin: 0
+        });
+        page.image(png,  pt(5.5), pt(2), {
+          width: pt(25),
+          height: pt(25)
+        } );
+
+        page.fontSize(15);
+        page.font('Helvetica-Bold')
+
+        page.text(text, pt(0), pt(29), {
+          width: pt(36),
+          align: 'center'
+        });
+
+        resolve(page);
+      })
+    });
+  },
+  generate2DBarcodeImage: function(barcode) {
+    return new Promise(function(resolve, reject) {
+      bwipjs.toBuffer({
+        bcid: 'azteccode',
+        scale: 20,
+        text: barcode,
+        height: 10,
+        width: 10,
+        rotate: 'N',
+        monochrome: true
+      }, function(err, png) {
+        if (err) return reject(err);
+          return resolve(png);
+      } );
+    } );
+  },
+  send: function(buffer, printer, size) {
+    var file = {
+      "job-attributes-tag": {
+        "media": [size]
+      },
+      "operation-attributes-tag": {
+        "requesting-user-name": process.env.APP_NAME,
+        "job-name": "Labels",
+        "requesting-user-name": "Checkout",
+        "document-format": "application/pdf",
+      },
+      data: Buffer.concat(buffer)
+    };
+
+    var printer = ipp.Printer( printer );
+    printer.execute( "Print-Job", file, function ( err, res ) {
+      delete buffer;
+    });
+  },
 };
 
-function pt( mm ) {
-	return mm * 2.834645669291;
+function pt(mm) {
+  return mm * 2.834645669291;
 }
 
 module.exports = Print;

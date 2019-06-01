@@ -11,7 +11,8 @@ form( method="post" )
 		label( for="label" ).col-lg-2.col-form-label Label
 		.col-lg-4
 			select( name="label" required )#label.form-control
-				option( value="12mm" selected=( '12mm' == ( item ? item.label : '' ) ) ) 12mm Tape
+				option( value="12mm" selected=( '12mm' == ( item ? item.label : '' ) ) ) 12mm Label
+				option( value="12mm_flag" selected=( '12mm_flag' == ( item ? item.label : '' ) ) ) 12mm Flag
 	.form-group.row
 		label( for="location" ).col-lg-2.col-form-label Location
 		.col-lg-4
