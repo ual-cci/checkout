@@ -11,6 +11,13 @@ form( method="get" )
 				option( value='active', selected=( selected.status == 'active' ) ) Active
 				option( value='disabled', selected=( selected.status == 'disabled' ) ) Disabled
 		.form-group.col-lg-2
+			label( for="role" ) Role
+			select( name="role" )#group.form-control.input-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				for role in roles
+					option( value=role.id, selected=( role.id == selected.role ) ) #{ role.name }
+		.form-group.col-lg-2
 			label( for="course" ) Course
 			select( name="course" )#group.form-control.input-sm
 				option( value="", selected )
@@ -24,7 +31,7 @@ form( method="get" )
 				option(disabled) ──────────
 				for year in years
 					option( value=year.id, selected=( year.id == selected.year ) ) #{ year.name }
-		.col-lg-2.offset-lg-4
+		.col-lg-2.offset-lg-2
 			div( style="padding-top: 1.8em;" )
 				a( href="/users?clear=" ).btn.btn-outline-dark.btn-sm.float-right
 					span.fas.fa-times

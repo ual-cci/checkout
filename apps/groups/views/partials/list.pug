@@ -14,21 +14,27 @@ if groups.length > 0
 							span.caret
 					th Limiter
 					th Duration
-					th View
-					th Manage
+					if currentUserCan('items_read')
+						th View
+					if currentUserCan({or:['groups_edit','groups_remove']})
+						th Manage
 			tbody
 				for group in groups
 					tr
 						td=group.name
 						td=(group.limiter?group.limiter:'–')
 						td=(group.duration?group.duration.toPostgres():'–')
-						td
-							a( href="/items/?group=" + group.id ).btn.btn-sm.btn-outline-dark
-								span.fas.fa-box
-								|  Items
-						td
-							+editBtn( '/groups/' + group.id + '/edit' )
-							+space
-							+removeBtn( '/groups/' + group.id + '/remove' )
+						if currentUserCan('items_read')
+							td
+								a( href="/items/?group=" + group.id ).btn.btn-sm.btn-outline-dark
+									span.fas.fa-box
+									|  Items
+						if currentUserCan({or:['groups_edit','groups_remove']})
+							td
+								if currentUserCan('groups_edit')
+									+editBtn( '/groups/' + group.id + '/edit' )
+									+space
+								if currentUserCan('groups_remove')
+									+removeBtn( '/groups/' + group.id + '/remove' )
 else
 	+messageBlock( 'warning', 'black','There are no groups to display.' )

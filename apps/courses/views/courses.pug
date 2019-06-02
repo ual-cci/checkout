@@ -6,9 +6,10 @@ block prepend title
 
 block header
 	h2=heading
-		a( href="/courses/create" ).btn.btn-outline-success.btn-m.float-right
-			span.fas.fa-plus
-			|  Create
+		if currentUserCan('courses_create')
+			a( href="/courses/create" ).btn.btn-outline-success.btn-m.float-right
+				span.fas.fa-plus
+				|  Create
 
 block contents
 	include partials/course-list.pug

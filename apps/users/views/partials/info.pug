@@ -8,18 +8,17 @@ hr
 					| Disabled
 				else
 					| Active
-			.col-md-5.font-weight-bold.text-md-right Type
-			.col-md-7
-				if user.type == 'admin'
-					| Admin
-				else
-					| User
+			.col-md-5.font-weight-bold.text-md-right Role
+			.col-md-7: +role( user.role_name, user.role_id )
+				
 			if user.pw_attempts > 0
 				.col-md-5.font-weight-bold.text-md-right Password Attempts 
 				.col-md-7=user.pw_attempts
 					if user.pw_attempts >= config.pw_tries
-						|  (Locked Out) – 
-						a( href=`/users/${user.id}/reset` ) Reset
+						|  (Locked Out)
+						if currentUserCan('users_reset_password_attempts')
+							|  – 
+							a( href=`/users/${user.id}/reset` ) Reset
 	.col-md-4
 		.row
 			.col-md-5.font-weight-bold.text-md-right Barcode

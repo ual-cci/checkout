@@ -1,0 +1,39 @@
+if roles.length > 0
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col( width="60%" )
+				if currentUserCan('users_read')
+					col( width="10%" )
+				col( width="30%" )
+					
+			thead
+				tr
+					th Name
+						span.dropup
+							span.caret
+					if currentUserCan('users_read')
+						th View
+					if currentUserCan({or:['roles_edit','roles_remove','roles_set_permissions']})
+						th Manage
+			tbody
+				for role in roles
+					tr
+						td=role.name
+						if currentUserCan('users_read')
+							td
+								a( href="/users/?role=" + role.id ).btn.btn-sm.btn-outline-dark
+									span.fas.fa-user
+									|  Users
+						if currentUserCan({or:['roles_edit','roles_remove','roles_set_permissions']})
+							td
+								if currentUserCan('roles_edit')
+									+editBtn( '/roles/' + role.id + '/edit' )
+									+space
+								if currentUserCan('roles_set_permissions')
+									+btn( 'sm', 'outline-primary', 'user-lock', 'Set Permissions', '/roles/' + role.id + '/permissions' )
+									+space
+								if currentUserCan('roles_remove')
+									+removeBtn( '/roles/' + role.id + '/remove' )
+else
+	+messageBlock( 'warning', 'black','There are no roles to display.' )

@@ -1,0 +1,21 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove: ' + selected.name
+	- heading = "Are you sure you want to remove " + selected.name + "?"
+
+block contents
+	form( method="post" )
+		+messageBlock( 'dark', 'white', 'Users do not have to be associated with a role by not selecting a new role the users will be removed from the role being deleted.' )
+		.form-group.row
+			label( for="role" ).col-lg-2.col-form-label Transfer users to
+			.col-lg-4
+				select( name="role" )#role.form-control
+					option( value="" disabled selected ) Select a role
+					for role in roles
+						option( value=role.id, disabled=role.disabled )=role.name
+		.form-group.row
+			.col-lg-4.offset-lg-2
+				button( type='submit' ).btn.btn-danger Yes, remove role
+				|  
+				a( href="/roles" ).btn.btn-outline-dark Cancel

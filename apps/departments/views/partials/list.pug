@@ -9,17 +9,23 @@ if departments.length > 0
 					th Name
 						span.dropup
 							span.caret
-					th View
-					th Manage
+					if currentUserCan('items_read')
+						th View
+					if currentUserCan({or:['departments_edit','departments_remove']})
+						th Manage
 			tbody
 				for department in departments
 					tr
 						td=department.name
-						td
-							+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?department=' + department.id )
-						td
-							+editBtn( '/departments/' + department.id + '/edit' )
-							+space
-							+removeBtn( '/departments/' + department.id + '/remove' )
+						if currentUserCan('items_read')
+							td
+								+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?department=' + department.id )
+						if currentUserCan({or:['departments_edit','departments_remove']})
+							td
+								if currentUserCan('departments_edit')
+									+editBtn( '/departments/' + department.id + '/edit' )
+									+space
+								if currentUserCan('departments_remove')
+									+removeBtn( '/departments/' + department.id + '/remove' )
 else
 	+messageBlock( 'warning', 'black','There are no departments to display.' )

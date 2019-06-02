@@ -13,7 +13,8 @@ if printers.length > 0
 							span.caret
 					th URL
 					th View
-					th Manage
+					if currentUserCan({or:['printers_edit','printer_remove']})
+						th Manage
 			tbody
 				for printer in printers
 					tr
@@ -23,9 +24,12 @@ if printers.length > 0
 							a( href=printer.url, target='_blank' ).btn.btn-sm.btn-outline-dark
 								span.fas.fa-globe
 								|  View
-						td
-							+editBtn( '/printers/' + printer.id + '/edit' )
-							+space
-							+removeBtn( '/printers/' + printer.id + '/remove' )
+						if currentUserCan({or:['printers_edit','printer_remove']})
+							td
+								if currentUserCan('printers_edit')
+									+editBtn( '/printers/' + printer.id + '/edit' )
+									+space
+								if currentUserCan('printers_remove')
+									+removeBtn( '/printers/' + printer.id + '/remove' )
 else
 	+messageBlock( 'warning', 'black','There are no printers to display.' )

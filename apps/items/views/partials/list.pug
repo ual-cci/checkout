@@ -58,9 +58,10 @@ if items && items.length > 0
 						td: +statusPill( item.status )
 						td
 							+clipboard( item.barcode )
-							|  
-							a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
-								span.fas.fa-print.text-muted
+							if currentUserCan('print')
+								|  
+								a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
+									span.fas.fa-print.text-muted
 						td: +item( item.name, item.id )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )

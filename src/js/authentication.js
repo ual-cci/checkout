@@ -3,13 +3,16 @@ const LocalStrategy = require( '@passport-next/passport-local' ).Strategy;
 const crypto = require( 'crypto' );
 
 const UsersModel = require('../models/users');
+const PermissionsModel = require('../models/permissions');
 
 const Authentication = {
 	auth: function( app ) {
-    // Add support for local authentication
     const users = new UsersModel();
-		passport.use(
-			new LocalStrategy( function( email, password, done ) {
+    const permissions = new PermissionsModel();
+
+    // Add support for local authentication
+    passport.use(
+      new LocalStrategy( function( email, password, done ) {
         users.getByEmail(email)
           .then(user => {
             if (!user) {
@@ -20,7 +23,7 @@ const Authentication = {
               throw new Error('Account locked out');
             }
 
-            if (user.type !== 'admin' || user.disable || !user.pw_salt) {
+            if (!user.pw_salt) {
               throw new Error('Invalid login');
             }
 
@@ -85,12 +88,24 @@ const Authentication = {
 		} );
 
 		passport.deserializeUser( function( data, done ) {
+      var id;
+      if (data.impersonateId) {
+        id = data.impersonateId;
+      } else {
+        id = data.id;
+      }
       users.query()
         .lookup(['printer'])
-        .getById(data.id)
+        .getById(id)
         .then(user => {
           if (user) {
-            return done( null, user );
+            return permissions.getByRoleId(user.role_id).then(perms => {
+              perms = perms.map(p => {
+                return p.permission
+              })
+              user.permissions = perms;
+              return done( null, user );
+            })
           } else {
             return done( null, false );
           }
@@ -132,7 +147,7 @@ const Authentication = {
 	},
 	loggedIn: function( req ) {
 		// Is the user logged in?
-		if ( req.isAuthenticated() && req.user != undefined && req.user.type == 'admin' ) {
+		if ( req.isAuthenticated() && req.user != undefined ) {
 			return true;
 		} else {
 			return false;
@@ -149,7 +164,53 @@ const Authentication = {
 				res.redirect( '/login' );
 				return;
 		}
-	}
+	},
+  userCan: function(user, permission) {
+    if (typeof permission == 'object') {
+      if (permission.or) {
+        return permission.or.some(p => user.permissions.includes(p));
+      } else if (permission.and) {
+        return permission.and.every(p => user.permissions.includes(p));
+      }
+    } else {
+      return user.permissions.includes(permission);
+    }
+  },
+  currentUserCan: function(permission) {
+    return function( req, res, next ) {
+      var status = Authentication.loggedIn( req );
+      if (status) {
+        var authorised = Authentication.userCan(req.user, permission);
+        if (authorised) {
+          return next();
+        } else {
+          res.status(403);
+          res.render(__dirname + '/../views/403', {
+            permission:permission,
+            user_permissions: req.user.permissions
+          });
+        }
+      } else {
+        req.flash( 'error', "Please login" );
+        res.redirect( '/login' );
+      }
+    }
+  },
+  APIuserCan: function(permission) {
+    return function( req, res, next ) {
+      var status = Authentication.loggedIn( req );
+      if (status) {
+        var authorised = Authentication.userCan(req.user, permission);
+        if (authorised) {
+          return next();
+        } else {
+          res.json({status:'danger', message: 'Permission denied'})
+        }
+      } else {
+        res.json({status:'danger', message: 'Please login'})
+      }
+    }
+  }
 }
 
 module.exports = Authentication;

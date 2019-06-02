@@ -8,33 +8,55 @@ block header
 
 block contents
 	nav.nav.nav-tabs.flex-column.flex-lg-row#mode
-		a.issue.nav-item.nav-link.active( href="#issue" data-toggle="tab" ) Issue
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F1
+		- set_active = null;
+		if currentUserCan('checkout_issue')
+			if ! set_active
+				- set_active = 'issue';
+			a.issue.nav-item.nav-link( href="#issue" data-toggle="tab" class=(set_active=='issue'?'active':null) ) Issue
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F1
+				
+		if currentUserCan('checkout_return')
+			if ! set_active
+				- set_active = 'return';
+			a.return.nav-item.nav-link( href="#return" data-toggle="tab" class=(set_active=='return'?'active':null) ) Return
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F2
 			
-		a.return.nav-item.nav-link( href="#return" data-toggle="tab" ) Return
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F2
+		if currentUserCan('reservations_create')
+			if ! set_active
+				- set_active = 'new_reservation';
+			a.reservation.nav-item.nav-link( href="#reservation" data-toggle="tab" class=(set_active=='new_reservation'?'active':null) ) New Reservation
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F3
 			
-		a.reservation.nav-item.nav-link( href="#reservation" data-toggle="tab" ) New Reservation
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F3
+		if currentUserCan('users_create')
+			if ! set_active
+				- set_active = 'new_user';
+			a.new-user.nav-item.nav-link( href="#new-user" data-toggle="tab" class=(set_active=='new_user'?'active':null) ) New User
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F4
 			
-		a.new-user.nav-item.nav-link( href="#new-user" data-toggle="tab" ) New User
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F4
+		if currentUserCan('print')
+			if ! set_active
+				- set_active = 'label';
+			a.print.nav-item.nav-link( href="#label" data-toggle="tab" class=(set_active=='label'?'active':null) ) Label
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F5
 			
-		a.print.nav-item.nav-link( href="#label" data-toggle="tab" ) Label
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F5
+		if currentUserCan('checkout_audit')
+			if ! set_active
+				- set_active = 'audit';
+			a.audit.nav-item.nav-link( href="#audit" data-toggle="tab" class=(set_active=='audit'?'active':null) ) Audit
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F6
 			
-		a.audit.nav-item.nav-link( href="#audit" data-toggle="tab" ) Audit
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F6
-			
-		a.history.nav-item.nav-link( href="#history" data-toggle="tab" ) History
-			|  
-			span.badge.badge-secondary.d-none.d-lg-inline F7
+		if currentUserCan('checkout_history')
+			if ! set_active
+				- set_active = 'history';
+			a.history.nav-item.nav-link( href="#history" data-toggle="tab" class=(set_active=='history'?'active':null)) History
+				|  
+				span.badge.badge-secondary.d-none.d-lg-inline F7
 			
 	.tab-content.break
 		include partials/issue.pug

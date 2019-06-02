@@ -12,20 +12,28 @@ if courses.length > 0
 						span.dropup
 							span.caret
 					th Contact
-					th View
-					th Manage
+					if currentUserCan({or:['users_read','items_read']})
+						th View
+					if currentUserCan({or:['courses_edit','courses_remove']})
+						th Manage
 			tbody
 				for course in courses
 					tr
 						td=course.name
 						td: +user( course.contact_name, course.contact_id )
-						td
-							+btn( 'sm', 'outline-dark', 'user', 'Users', '/users/?course=' + course.id )
-							+space
-							+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?course=' + course.id )
-						td
-							+editBtn( '/courses/' + course.id + '/edit' )
-							+space
-							+removeBtn( '/courses/' + course.id + '/remove' )
+						if currentUserCan({or: ['users_read','items_read']})
+							td
+								if currentUserCan('users_read')
+									+btn( 'sm', 'outline-dark', 'user', 'Users', '/users/?course=' + course.id )
+									+space
+								if currentUserCan('items_read')
+									+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?course=' + course.id )
+						if currentUserCan({or:['courses_edit','courses_remove']})
+							td
+								if currentUserCan('courses_edit')
+									+editBtn( '/courses/' + course.id + '/edit' )
+									+space
+								if currentUserCan('courses_remove')
+									+removeBtn( '/courses/' + course.id + '/remove' )
 else
 	+messageBlock( 'warning', 'black','There are no courses to display.' )

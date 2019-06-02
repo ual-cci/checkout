@@ -224,7 +224,6 @@ class ItemController extends BaseController {
     ])
       .then(([locations, departments, groups]) => {
         if (locations.length > 0) {
-          req.flash( 'warning', 'Generating items cannot be undone, and can cause intense server load and result in generating large numbers of items that have invalid information' )
           res.render( 'generate', { locations: locations, departments: departments, groups: groups, item: {} } );
         } else {
           req.flash( 'warning', 'Create at least one location before creating items' )

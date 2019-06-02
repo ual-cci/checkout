@@ -5,6 +5,7 @@ const pug = require('pug');
 
 const BaseController = require('../../src/js/common/BaseController.js');
 const { AVAILABILITY, ACTIONS } = require('../../src/js/common/constants');
+const auth = require('../../src/js/authentication');
 const config = require('./config.json');
 
 const Items = require('../../src/models/items.js');
@@ -123,6 +124,9 @@ class ApiController extends BaseController {
 
         const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/user.pug'), {
           user,
+          currentUserCan: function(perm) {
+            return auth.userCan(req.user, perm);
+          },
           onloan: items,
           moment: moment
         });
@@ -159,7 +163,13 @@ class ApiController extends BaseController {
           });
         }
 
-        const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/item.pug'), { item, moment } );
+        const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/item.pug'), {
+          item,
+          moment,
+          currentUserCan: function(perm) {
+            return auth.userCan(req.user, perm);
+          }
+        } );
 
         const output = {
           type: 'item',
@@ -413,6 +423,12 @@ class ApiController extends BaseController {
                 result.count = count;
               }
 
+              if (req.query.override && ! auth.userCan(req.user, 'groups_override')) {
+                throw ({
+                  message: 'You are not authorised to override the group item limit.',
+                });
+              }
+
               return result;
             });
         } else {
@@ -424,7 +440,7 @@ class ApiController extends BaseController {
         if (count) {
           throw ({
             message: `User already has ${ count } of this type of item out`,
-            override: true,
+            override: auth.userCan(req.user, 'groups_override'),
             barcode: item.barcode
           });
         }
@@ -586,7 +602,10 @@ class ApiController extends BaseController {
       .then(actions => {
         const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/history.pug'), {
           actions,
-          moment: moment
+          moment,
+          currentUserCan: function(perm) {
+            return auth.userCan(req.user, perm);
+          },
         });
 
         res.json({

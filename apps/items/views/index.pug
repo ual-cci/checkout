@@ -7,12 +7,14 @@ block prepend title
 
 block header
 	h2=heading
-		a( href="/items/generate" ).btn.btn-outline-success.btn-m.float-right
-			span.fas.fa-asterisk
-			|  Generate Items
-		a( href="/items/create", style="margin-right: 1em;" ).btn.btn-outline-success.btn-m.float-right
-			span.fas.fa-plus
-			|  Create Item
+		if currentUserCan('items_generate')
+			a( href="/items/generate" ).btn.btn-outline-success.btn-m.float-right
+				span.fas.fa-asterisk
+				|  Generate Items
+		if currentUserCan('items_create')
+			a( href="/items/create", style="margin-right: 1em;" ).btn.btn-outline-success.btn-m.float-right
+				span.fas.fa-plus
+				|  Create Item
 
 block contents
 	- filter_path = '/items/'
@@ -21,10 +23,12 @@ block contents
 		- edit = true
 		include partials/list.pug
 		if items && items.length > 0
-			button( type="submit" ).btn.btn-sm.btn-primary
-				span.fas.fa-pencil-alt
-				|  Edit Selected
-			|  
-			button#multi-print(disabled type="button" ).btn.btn-sm.btn-outline-dark
-				span.fas.fa-print
-				|  Print Selected Labels
+			if currentUserCan('items_multi_edit')
+				button( type="submit" ).btn.btn-sm.btn-primary
+					span.fas.fa-pencil-alt
+					|  Edit Selected
+				|  
+			if currentUserCan('print')
+				button#multi-print(disabled type="button" ).btn.btn-sm.btn-outline-dark
+					span.fas.fa-print
+					|  Print Selected Labels

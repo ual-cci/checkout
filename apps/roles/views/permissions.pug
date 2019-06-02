@@ -1,0 +1,30 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Permissions: ' + role.name
+	- heading = title
+
+block contents
+	form( method="post" )
+		.table-responsive
+			table.table.table-striped.table-sm
+				tgroup
+					col( width='5%' )
+					col( width='15%' )
+					col( width='80%' )
+				thead
+					tr
+							th
+							th Key
+							th Description
+				tbody
+					for desc, key in all_permissions
+						tr
+							td
+								input(name='permissions' type='checkbox' checked=(selected_perms.includes(key)?true:false) value=key id=key)
+							td: label(for=key).mb-0=key
+							td=desc
+		.form-group
+			button( type="submit" ).btn.btn-primary Set
+			|  
+			a( href="/roles" ).btn.btn-outline-dark Cancel

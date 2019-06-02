@@ -10,21 +10,27 @@ if locations.length > 0
 					th Barcode
 						span.dropup
 							span.caret
-					th View
-					th Manage
+					if currentUserCan('items_read')
+						th View
+					if currentUserCan({or:['locations_edit','locations_remove','print']})
+						th Manage
 			tbody
 				for location in locations
 					tr
 						td=location.name
 						td: +clipboard( location.barcode )
-						td
-							+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?location=' + location.id )
-						td
-							if location.barcode
-								+labelBtn( '/locations/' + location.id + '/label' )
-							+space
-							+editBtn( '/locations/' + location.id + '/edit' )
-							+space
-							+removeBtn( '/locations/' + location.id + '/remove' )
+						if currentUserCan('items_read')
+							td
+								+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?location=' + location.id )
+						if currentUserCan({or:['locations_edit','locations_remove','print']})
+							td
+								if location.barcode && currentUserCan('print')
+									+labelBtn( '/locations/' + location.id + '/label' )
+									+space
+								if currentUserCan('locations_edit')
+									+editBtn( '/locations/' + location.id + '/edit' )
+									+space
+								if currentUserCan('locations_remove')
+									+removeBtn( '/locations/' + location.id + '/remove' )
 else
 	+messageBlock( 'warning', 'black','There are no locations to display.' )

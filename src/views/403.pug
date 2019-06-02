@@ -1,0 +1,18 @@
+extends base.pug
+
+block prepend title
+	- title = "Error 403"
+	- heading = "403: Unauthorised"
+
+block contents
+	p.lead You are not authorised to access this page or resource.
+	if dev
+		h4.pb-2.mt-4.mb-2.border-bottom Debug
+		.bg-warning.p-3.rounded
+			pre
+				strong Requested permission: 
+				| #{permission}
+			pre
+				strong Actual permissions of current user:
+				| 
+				| #{user_permissions?user_permissions.join("\n"):'none'}

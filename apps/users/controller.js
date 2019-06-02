@@ -10,6 +10,7 @@ const Years = require('../../src/models/years');
 const Items = require('../../src/models/items');
 const Actions = require('../../src/models/actions');
 const Printers = require('../../src/models/printers');
+const Roles = require('../../src/models/roles');
 
 const { getSortBy } = require('../../src/js/utils.js');
 const { STATUS, SORTBY_MUTATIONS } = require('../../src/js/common/constants');
@@ -25,6 +26,7 @@ class UsersController extends BaseController {
       items: new Items(),
       actions: new Actions(),
       printers: new Printers(),
+      roles: new Roles(),
     };
   }
 
@@ -32,18 +34,20 @@ class UsersController extends BaseController {
     let persist = {};
 
     Promise.all([
+      this.models.roles.getAll(),
       this.models.courses.getAll(),
       this.models.years.getAll()
     ])
-      .then(([courses, years]) => {
+      .then(([roles, courses, years]) => {
         const { orderBy, direction} = getSortBy(req.query.sortby, req.query.direction, {
-          validSorts: ['name', 'course', 'year', 'barcode'],
+          validSorts: ['name', 'role', 'course', 'year', 'barcode'],
           defaultSortby: 'name',
           mutator: SORTBY_MUTATIONS.USERS
         });
 
         persist = {
           ...persist,
+          roles,
           courses,
           years,
           orderBy,
@@ -51,7 +55,7 @@ class UsersController extends BaseController {
         };
 
         return this.models.users.query()
-          .lookup(['year', 'course', 'contact', 'printer'])
+          .lookup(['year', 'role', 'course', 'contact', 'printer'])
           .if((req.query.status), (query) => {
             let status;
 
@@ -65,6 +69,9 @@ class UsersController extends BaseController {
             }
             query.where('users.disable', status);
           })
+          .if((req.query.role), (query) => {
+            query.where('users.role_id', req.query.role);
+          })
           .if((req.query.course), (query) => {
             query.where('users.course_id', req.query.course);
           })
@@ -77,15 +84,17 @@ class UsersController extends BaseController {
           .expose();
       })
       .then(users => {
-        const { courses, years, orderBy, direction } = persist;
+        const { roles, courses, years, orderBy, direction } = persist;
 
         res.render( 'users', {
           users,
           courses,
           years,
+          roles,
           selected: {
             status: req.query.status ? req.query.status : '',
             course: req.query.course ? req.query.course : '',
+            role: req.query.role ? req.query.role : '',
             year: req.query.year ? req.query.year : ''
           },
           sortby: req.query.sortby,
@@ -171,7 +180,7 @@ class UsersController extends BaseController {
   getUser(req, res) {
     let persist = {};
     this.models.users.query()
-      .lookup(['printer', 'course', 'year', 'contact'])
+      .lookup(['printer', 'role', 'course', 'year', 'contact'])
       .getById(req.params.id)
       .then(user => {
         if (!user) {
@@ -220,17 +229,19 @@ class UsersController extends BaseController {
         return Promise.all([
           this.models.printers.getAll(),
           this.models.years.getAll(),
-          this.models.courses.getAll()
+          this.models.courses.getAll(),
+          this.models.roles.getAll()
         ]);
       })
-      .then(([printers, years, courses]) => {
+      .then(([printers, years, courses, roles]) => {
         const { user } = persist;
 
         res.render('edit', {
           courses,
           years,
           user,
-          printers
+          printers,
+          roles
         });
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
@@ -244,7 +255,6 @@ class UsersController extends BaseController {
       course_id: req.body.course,
       year_id: req.body.year,
       printer_id: req.body.printer ? req.body.printer : null,
-      type: req.body.type,
       disable: req.body.disable ? true : false
     };
 
@@ -254,11 +264,23 @@ class UsersController extends BaseController {
       user.audit_point = null;
     }
 
+    if (req.body.role) {
+      if (auth.userCan(req.user, 'users_change_role')) {
+        user.role_id = req.body.role;
+      } else {
+        req.flash('warning', 'You do not have permission to change another role.');
+      }
+    }
+
     auth.generatePassword(req.body.password, password => {
       if (req.body.password) {
-        user.pw_hash = password.hash;
-        user.pw_salt = password.salt;
-        user.pw_iterations = password.iterations;
+        if (auth.userCan(req.user, 'users_change_password')) {
+          user.pw_hash = password.hash;
+          user.pw_salt = password.salt;
+          user.pw_iterations = password.iterations;
+        } else {
+          req.flash('warning', 'You do not have permission to change another users password.');
+        }
       }
 
       this.models.users.update(req.params.id, user)

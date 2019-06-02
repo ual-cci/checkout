@@ -6,9 +6,10 @@ block prepend title
 
 block header
 	h2=heading
-		a( href="/printers/create" ).btn.btn-outline-success.btn-m.float-right
-			span.fas.fa-plus
-			|  Create
+		if currentUserCan('printers_create')
+			a( href="/printers/create" ).btn.btn-outline-success.btn-m.float-right
+				span.fas.fa-plus
+				|  Create
 
 block contents
 	include partials/printer-list.pug

@@ -6,9 +6,10 @@ block prepend title
 
 block header
 	h2=heading
-		a( href="/departments/create" ).btn.btn-outline-success.btn-m.float-right
-			span.fas.fa-plus
-			|  Create
+		if currentUserCan('departments_create')
+			a( href="/departments/create" ).btn.btn-outline-success.btn-m.float-right
+				span.fas.fa-plus
+				|  Create
 
 block contents
 	include partials/list.pug

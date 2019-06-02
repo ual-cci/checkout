@@ -9,7 +9,7 @@ module.exports = {
     ACTIVE: 'active',
     DISABLED: 'disabled'
   },
-  DEFAULT_SORTS: [ 'status', 'barcode', 'name', 'owner', 'course', 'year', 'group', 'location', 'department', 'value', 'issued', 'due' ],
+  DEFAULT_SORTS: [ 'status', 'barcode', 'name', 'owner', 'role', 'course', 'year', 'group', 'location', 'department', 'value', 'issued', 'due' ],
   DEFAULT_DIRECTIONS: [ 'asc', 'desc' ],
   ACTIONS: {
     AUDITED: 'audited',
@@ -47,6 +47,8 @@ module.exports = {
     },
     USERS: (sortBy) => {
       switch(sortBy) {
+        case 'role':
+          return 'role_name';
         case 'course':
           return 'course_name';
         case 'year':

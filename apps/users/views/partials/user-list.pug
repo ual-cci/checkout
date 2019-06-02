@@ -12,6 +12,11 @@ if users && users.length > 0
 						th
 							+sortUserHead( 'Name', 'name', sortby, direction, selected )
 					if multi
+						th Role
+					else
+						th
+							+sortUserHead( 'Role', 'role', sortby, direction, selected )
+					if multi
 						th Course
 					else
 						th
@@ -36,6 +41,7 @@ if users && users.length > 0
 						if edit
 							td: input( type="checkbox", name="edit", value=user.id, checked=multi )
 						td: +user( user.name, user.id )
+						td: +role( user.role_name, user.role_id )
 						td: +course( user.course_name, user.course_id )
 						td: +year( user.year_name, user.year_id )
 						td: +clipboard( user.barcode )

@@ -27,26 +27,50 @@ mixin messageBlock( bg, fg, text )
 
 mixin item( name, id )
 	if name
-		a( href=`/items/${id}` title=`View item: ${name}`  )=name
-		|  
-		small: a( href=`/items/${id}/edit` title=`Edit item: ${name}` ).text-muted
-			span.fas.fa-pencil-alt
+		if currentUserCan('items_read')
+			a( href=`/items/${id}` title=`View item: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('items_edit')
+			|  
+			small: a( href=`/items/${id}/edit` title=`Edit item: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
 	else
 		| &mdash;
 
 mixin user( name, id )
 	if name
-		a( href=`/users/${id}` title=`View user: ${name}`  )=name
-		|  
-		small: a( href=`/users/${id}/edit` title=`Edit user: ${name}` ).text-muted
-			span.fas.fa-pencil-alt
+		if currentUserCan('users_read')
+			a( href=`/users/${id}` title=`View user: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('users_edit')
+			|  
+			small: a( href=`/users/${id}/edit` title=`Edit user: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
+	else
+		| &mdash;
+
+mixin role( name, id )
+	if name
+		if currentUserCan('users_read')
+			a( href=`/users/?role=${id}` title=`View users in role: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('roles_edit')
+			|  
+			small: a( href=`/roles/${id}/edit` title=`Edit role: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
 	else
 		| &mdash;
 
 mixin course( name, id )
 	if name
-		
+		if currentUserCan('users_read')
 			a( href=`/users/?course=${id}` title=`View users in course: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('courses_edit')
 			|  
 			small: a( href=`/courses/${id}/edit` title=`Edit course: ${name}` ).text-muted
 				span.fas.fa-pencil-alt
@@ -55,37 +79,53 @@ mixin course( name, id )
 
 mixin year( name, id )
 	if name
-		a( href=`/users/?year=${id}` title=`View users in year: ${name}`  )=name
-		|  
-		small: a( href=`/years/${id}/edit` title=`Edit year: ${name}` ).text-muted
-			span.fas.fa-pencil-alt
+		if currentUserCan('users_read')
+			a( href=`/users/?year=${id}` title=`View users in year: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('years_edit')
+			|  
+			small: a( href=`/years/${id}/edit` title=`Edit year: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
 	else
 		| &mdash;
 
 mixin location( name, id )
 	if name
-		a( href=`/items/?location=${id}` title=`View items in location: ${name}`  )=name
-		|  
-		small: a( href=`/locations/${id}/edit` title=`Edit location: ${name}` ).text-muted
-			span.fas.fa-pencil-alt
+		if currentUserCan('items_read')
+			a( href=`/items/?location=${id}` title=`View items in location: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('locations_edit')
+			|  
+			small: a( href=`/locations/${id}/edit` title=`Edit location: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
 	else
 		| &mdash;
 		
 mixin department( name, id )
 	if name
-		a( href=`/items/?department=${id}` title=`View items in department: ${name}`  )=name
-		|  
-		small: a( href=`/departments/${id}/edit` title=`Edit department: ${name}` ).text-muted
-			span.fas.fa-pencil-alt
+		if currentUserCan('items_read')
+			a( href=`/items/?department=${id}` title=`View items in department: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('departments_edit')
+			|  
+			small: a( href=`/departments/${id}/edit` title=`Edit department: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
 	else
 		| &mdash;
 		
 mixin group( name, id )
 	if name
-		a( href=`/items/?group=${id}` title=`View items in group: ${name}`  )=name
-		|  
-		small: a( href=`/groups/${id}/edit` title=`Edit group: ${name}` ).text-muted
-			span.fas.fa-pencil-alt
+		if currentUserCan('items_read')
+			a( href=`/items/?group=${id}` title=`View items in group: ${name}`  )=name
+		else
+			| #{name}
+		if currentUserCan('groups_edit')
+			|  
+			small: a( href=`/groups/${id}/edit` title=`Edit group: ${name}` ).text-muted
+				span.fas.fa-pencil-alt
 	else
 		| &mdash;
 
@@ -147,10 +187,11 @@ mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
 
 	if selected
 		- status = (selected.status ? selected.status : '')
+		- role = (selected.role ? selected.role : '')
 		- course = (selected.course ? selected.course : '')
 		- year = (selected.year ? selected.year : '')
 	
-	a( href=`${filter_path}?status=${status}&course=${course}&year=${year}&sortby=${slug}&direction=${alt_dir}` )=text
+	a( href=`${filter_path}?status=${status}&role=${role}&course=${course}&year=${year}&sortby=${slug}&direction=${alt_dir}` )=text
 	if sort_by == slug
 		|  
 		span.fas( class=( sort_dir == 'asc' ? 'fa-angle-up' : 'fa-angle-down' ) ).text-muted

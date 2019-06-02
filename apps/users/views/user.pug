@@ -12,24 +12,28 @@ block header
 					span.fas.fa-envelope
 					|  Generate email
 		.btn-group.float-right
-			a( href="/users/" + user.id + "/edit", title=`Edit ${user.name}` ).btn.btn-outline-dark.btn-m
-				span.fas.fa-pencil-alt
-				|  Edit
-			a( href="/users/" + user.id + "/remove", title=`Remove ${user.name}` ).btn.btn-outline-dark.btn-m
-				span.fas.fa-times
-				|  Remove
+			if currentUserCan('users_edit')
+				a( href="/users/" + user.id + "/edit", title=`Edit ${user.name}` ).btn.btn-outline-dark.btn-m
+					span.fas.fa-pencil-alt
+					|  Edit
+			if currentUserCan('users_remove')
+				a( href="/users/" + user.id + "/remove", title=`Remove ${user.name}` ).btn.btn-outline-dark.btn-m
+					span.fas.fa-times
+					|  Remove
 
 block contents
 	include partials/info.pug
-	h3.mb-3.pb-1.border-bottom Items
+	h3.mt-3.mb-3.pb-1.border-bottom Items
 	ul.nav.nav-tabs
 		li.nav-item
 			a.nav-link.active( href="#onloan" aria-controls="users" role="tab" data-toggle="tab" ) On Loan
-		li.nav-item
-			a.nav-link( href="#history" aria-controls="items" role="tab" data-toggle="tab" ) History
+		if currentUserCan('users_history')
+			li.nav-item
+				a.nav-link( href="#history" aria-controls="items" role="tab" data-toggle="tab" ) History
 	.tab-content
 		#onloan( role="tabpanel" ).tab-pane.active
 			include partials/onloan.pug
+		if currentUserCan('users_history')
 		#history( role="tabpanel" ).tab-pane
 			include partials/history.pug
 	

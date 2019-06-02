@@ -11,31 +11,31 @@ app.use((req, res, next) => {
 });
 
 app.set( 'views', __dirname + '/views' );
-app.get( '/', auth.isLoggedIn, (req, res ) => {
+app.get( '/', auth.currentUserCan('courses_read'), (req, res ) => {
   req.controller.getRoot(req, res);
 });
 
-app.get( '/create', auth.isLoggedIn, (req, res ) => {
+app.get( '/create', auth.currentUserCan('courses_create'), (req, res ) => {
   req.controller.getCreate(req, res);
 });
 
-app.post( '/create', auth.isLoggedIn, (req, res) => {
+app.post( '/create', auth.currentUserCan('courses_create'), (req, res) => {
   req.controller.postCreate(req, res);
 });
 
-app.get( '/:id/edit', auth.isLoggedIn, (req, res) => {
+app.get( '/:id/edit', auth.currentUserCan('courses_edit'), (req, res) => {
   req.controller.getEdit(req, res);
 });
 
-app.post( '/:id/edit', auth.isLoggedIn, (req, res) => {
+app.post( '/:id/edit', auth.currentUserCan('courses_edit'), (req, res) => {
   req.controller.postEdit(req, res);
 });
 
-app.get( '/:id/remove', auth.isLoggedIn, (req, res) => {
+app.get( '/:id/remove', auth.currentUserCan('courses_remove'), (req, res) => {
   req.controller.getRemove(req, res);
 });
 
-app.post( '/:id/remove', auth.isLoggedIn, (req, res) => {
+app.post( '/:id/remove', auth.currentUserCan('courses_remove'), (req, res) => {
   req.controller.postRemove(req, res);
 });
 

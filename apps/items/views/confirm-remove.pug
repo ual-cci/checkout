@@ -7,7 +7,7 @@ block prepend title
 block contents
 	form( method="post" )
 		+messageBlock( 'dark', 'white', 'Removing this item will also delete it the historical data about actions performed against this item.', 'white' )
-		.form-group.row
+		.form-group
 			button( type='submit' ).btn.btn-danger Yes, remove item
 			|  
 			a( href="/items" ).btn.btn-outline-dark Cancel

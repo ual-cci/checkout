@@ -12,31 +12,31 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', auth.isLoggedIn, function(req, res) {
+app.get('/', auth.currentUserCan('groups_read'), function(req, res) {
   req.controller.getRoot(req, res);
 });
 
-app.get('/create', auth.isLoggedIn, function(req, res) {
+app.get('/create', auth.currentUserCan('groups_create'), function(req, res) {
   req.controller.getCreate(req, res);
 });
 
-app.post('/create', auth.isLoggedIn, function(req, res) {
+app.post('/create', auth.currentUserCan('groups_create'), function(req, res) {
   req.controller.postCreate(req, res);
 });
 
-app.get('/:id/edit', auth.isLoggedIn, function(req, res) {
+app.get('/:id/edit', auth.currentUserCan('groups_edit'), function(req, res) {
   req.controller.getEdit(req, res);
 })
 
-app.post('/:id/edit', auth.isLoggedIn, function(req, res) {
+app.post('/:id/edit', auth.currentUserCan('groups_edit'), function(req, res) {
   req.controller.postEdit(req, res);
 });
 
-app.get('/:id/remove', auth.isLoggedIn, function(req, res) {
+app.get('/:id/remove', auth.currentUserCan('groups_remove'), function(req, res) {
   req.controller.getRemove(req, res);
 });
 
-app.post('/:id/remove', auth.isLoggedIn, function(req, res) {
+app.post('/:id/remove', auth.currentUserCan('groups_remove'), function(req, res) {
   req.controller.postRemove(req, res);
 });
 

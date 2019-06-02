@@ -7,60 +7,80 @@ nav.navbar.navbar-dark.bg-dark.navbar-expand-lg
 	.collapse.navbar-collapse#menu
 		.navbar-nav.mr-auto
 			if loggedInUser
-				a(href="/items").nav-item.nav-link Items
-				a(href="/reservations").nav-item.nav-link Reservations
-				.nav-item.dropdown
-					a(href="#" id="reports" data-toggle="dropdown").dropdown-toggle.nav-link Reports
-					.dropdown-menu(aria-labelledby="reports").dropdown-menu-left
-						h6.dropdown-header
-							span.fas.fa-exclamation-triangle
-							|  Due
-						a( href="/items/?due=overdue" ).dropdown-item Overdue
-						a( href="/items/?due=today" ).dropdown-item Today
-						.dropdown-divider
-						h6.dropdown-header
-							span.fas.fa-info
-							|  Status
-						a( href="/items/?status=available" ).dropdown-item Available
-						a( href="/items/?status=on-loan" ).dropdown-item On Loan
-						a( href="/items/?status=broken" ).dropdown-item Broken
-						a( href="/items/?status=lost" ).dropdown-item Lost
-						.dropdown-divider
-						h6.dropdown-header
-							span.fas.fa-qrcode
-							|  Audit
-						a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
-						a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
-				a(href="/users").nav-item.nav-link Users
+				if currentUserCan('items_read')
+					a(href="/items").nav-item.nav-link Items
+				if currentUserCan('reservations_read')
+					a(href="/reservations").nav-item.nav-link Reservations
+				if currentUserCan('view_reports')
+					.nav-item.dropdown
+						a(href="#" id="reports" data-toggle="dropdown").dropdown-toggle.nav-link Reports
+						.dropdown-menu(aria-labelledby="reports").dropdown-menu-left
+							h6.dropdown-header
+								span.fas.fa-exclamation-triangle
+								|  Due
+							a( href="/items/?due=overdue" ).dropdown-item Overdue
+							a( href="/items/?due=today" ).dropdown-item Today
+							.dropdown-divider
+							h6.dropdown-header
+								span.fas.fa-info
+								|  Status
+							a( href="/items/?status=available" ).dropdown-item Available
+							a( href="/items/?status=on-loan" ).dropdown-item On Loan
+							a( href="/items/?status=broken" ).dropdown-item Broken
+							a( href="/items/?status=lost" ).dropdown-item Lost
+							.dropdown-divider
+							h6.dropdown-header
+								span.fas.fa-qrcode
+								|  Audit
+							a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
+							a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
+				if currentUserCan('users_read')
+					a(href="/users").nav-item.nav-link Users
 		.navbar-nav.ml-auto
 			if loggedInUser
-				.nav-item.dropdown
-					a(href="#" id="admin" data-toggle="dropdown").dropdown-toggle.nav-link Admin
-					.dropdown-menu( aria-labelledby="admin" ).dropdown-menu-right
-						h6.dropdown-header
-							span.fas.fa-box
-							|  Items
-						a( href="/groups" ).dropdown-item Groups
-						a( href="/locations" ).dropdown-item Locations
-						a( href="/departments" ).dropdown-item Departments
-						.dropdown-divider
-						h6.dropdown-header
-							span.fas.fa-user
-							|  Users
-						a( href="/courses" ).dropdown-item Courses
-						a( href="/years" ).dropdown-item Years
-						.dropdown-divider
-						h6.dropdown-header
-							span.fas.fa-cog
-							|  Configuration
-						a( href="/printers" ).dropdown-item Printers
+				if currentUserCan({or:['groups_read','locations_read','departments_read','courses_read','years_read','roles_read','printers_read']})
+					.nav-item.dropdown
+						a(href="#" id="admin" data-toggle="dropdown").dropdown-toggle.nav-link Admin
+						.dropdown-menu( aria-labelledby="admin" ).dropdown-menu-right
+							if currentUserCan({or:['groups_read','locations_read','departments_read']})
+								- divider = true
+								h6.dropdown-header
+									span.fas.fa-box
+									|  Items
+								if currentUserCan('groups_read')
+									a( href="/groups" ).dropdown-item Groups
+								if currentUserCan('locations_read')
+									a( href="/locations" ).dropdown-item Locations
+								if currentUserCan('departments_read')
+									a( href="/departments" ).dropdown-item Departments
+							if currentUserCan({or:['courses_read','years_read','roles_read','permissions_read']})
+								if divider
+									.dropdown-divider
+								- divider = true
+								h6.dropdown-header
+									span.fas.fa-user
+									|  Users
+								if currentUserCan('courses_read')
+									a( href="/courses" ).dropdown-item Courses
+								if currentUserCan('years_read')
+									a( href="/years" ).dropdown-item Years
+								if currentUserCan('roles_read')
+									a( href="/roles" ).dropdown-item Roles
+							if currentUserCan('printers_read')
+								if divider
+									.dropdown-divider
+								h6.dropdown-header
+									span.fas.fa-cog
+									|  Configuration
+								a( href="/printers" ).dropdown-item Printers
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right
-						a( href='/users/' + loggedInUser.id + '/edit' ).dropdown-item
-							span.fas.fa-pencil-alt
-							|  Edit Profile
-						.dropdown-divider
+						if currentUserCan('edit_profile')
+							a( href='/profile' ).dropdown-item
+								span.fas.fa-pencil-alt
+								|  Edit Profile
+							.dropdown-divider
 						a( href="/logout").dropdown-item
 							span.fas.fa-sign-out-alt
 							|  Logout

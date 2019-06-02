@@ -10,6 +10,11 @@ class UserModel extends BaseModel {
 
   get joins() {
     return {
+      role: {
+        table: 'roles',
+        join: ['id', 'role_id'],
+        properties: ['id', 'name']
+      },
       course: {
         table: 'courses',
         join: ['id', 'course_id'],
@@ -31,12 +36,12 @@ class UserModel extends BaseModel {
         table: 'printers',
         join: ['id', 'printer_id'],
         properties: ['id', 'name', 'url']
-      },
+      }
     };
   }
 
   get properties() {
-    return ['id', 'name', 'email', 'barcode', 'disable', 'type', 'pw_hash', 'pw_salt', 'pw_attempts', 'pw_iterations', 'audit_point', 'printer_id'];
+    return ['id', 'name', 'email', 'barcode', 'disable', 'type', 'pw_hash', 'pw_salt', 'pw_attempts', 'pw_iterations', 'audit_point', 'printer_id', 'role_id'];
   }
 
   getAll() {
@@ -49,23 +54,6 @@ class UserModel extends BaseModel {
 
   getByEmail(email) {
     return this.query().where([['email', email]]).retrieveSingle();
-  }
-
-  updateCourse(oldCourseId, newCourseId) {
-    return new Promise((resolve, reject) => {
-      this.query()
-        .expose()
-        .where('course_id', oldCourseId)
-        .update({
-          'course_id': newCourseId
-        })
-        .then(() => {
-          resolve(newCourseId);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
   }
 
   updateCourse(oldCourseId, newCourseId) {
@@ -112,6 +100,23 @@ class UserModel extends BaseModel {
         })
         .then(() => {
           resolve(newYearId);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  updateRole(oldRoleId, newRoleId) {
+    return new Promise((resolve, reject) => {
+      this.query()
+        .expose()
+        .where('role_id', oldRoleId)
+        .update({
+          'role_id': newRoleId
+        })
+        .then(() => {
+          resolve(newRoleId);
         })
         .catch(err => {
           reject(err);

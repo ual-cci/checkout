@@ -13,34 +13,34 @@ app.use((req, res, next) => {
 });
 
 // View
-app.get('/', auth.isLoggedIn, (req, res) => {
+app.get('/', auth.currentUserCan('printers_read'), (req, res) => {
   req.controller.getRoot(req, res);
 });
 
 // Create
-app.get('/create', auth.isLoggedIn, (req, res) => {
+app.get('/create', auth.currentUserCan('printers_create'), (req, res) => {
   req.controller.getCreate(req, res);
 });
 
-app.post( '/create', auth.isLoggedIn, (req, res) => {
+app.post( '/create', auth.currentUserCan('printers_create'), (req, res) => {
   req.controller.postCreate(req, res);
 });
 
 // Edit
-app.get('/:id/edit', auth.isLoggedIn, (req, res) => {
+app.get('/:id/edit', auth.currentUserCan('printers_edit'), (req, res) => {
   req.controller.getEdit(req, res);
 });
 
-app.post('/:id/edit', auth.isLoggedIn, (req, res) => {
+app.post('/:id/edit', auth.currentUserCan('printers_edit'), (req, res) => {
   req.controller.postEdit(req, res);
 });
 
 // Remove
-app.get( '/:id/remove', auth.isLoggedIn, (req, res) => {
+app.get( '/:id/remove', auth.currentUserCan('printers_remove'), (req, res) => {
   req.controller.getRemove(req, res);
 });
 
-app.post( '/:id/remove', auth.isLoggedIn, (req, res) => {
+app.post( '/:id/remove', auth.currentUserCan('printers_remove'), (req, res) => {
   req.controller.postRemove(req, res);
 });
 

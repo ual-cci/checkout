@@ -12,61 +12,61 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get( '/', auth.isLoggedIn, (req, res) => {
+app.get( '/', auth.currentUserCan('items_read'), (req, res) => {
   req.controller.getRoot(req, res);
 });
 
-app.post('/multi', auth.isLoggedIn, (req, res) => {
+app.post('/multi', auth.currentUserCan('print'), (req, res) => {
   req.controller.getMulti(req, res);
 });
 
-app.post('/edit', auth.isLoggedIn, (req, res) => {
+app.post('/edit', auth.currentUserCan('items_multi_edit'), (req, res) => {
   req.controller.postMultiEdit(req, res);
 });
 
 // Generate items
-app.get('/generate', auth.isLoggedIn, (req, res) => {
+app.get('/generate', auth.currentUserCan('items_generate'), (req, res) => {
   req.controller.getGenerate(req, res);
 });
 
-app.post('/generate', auth.isLoggedIn, (req, res) => {
+app.post('/generate', auth.currentUserCan('items_generate'), (req, res) => {
   req.controller.postGenerate(req, res);
 })
 
 // Create item
-app.get( '/create', auth.isLoggedIn, (req, res) => {
+app.get( '/create', auth.currentUserCan('items_create'), (req, res) => {
   req.controller.getCreate(req, res);
 });
 
-app.post( '/create', auth.isLoggedIn, (req, res) => {
+app.post( '/create', auth.currentUserCan('items_create'), (req, res) => {
   req.controller.postCreate(req, res);
 });
 
 // List an item
-app.get( '/:id', auth.isLoggedIn, (req, res) => {
+app.get( '/:id', auth.currentUserCan('items_read'), (req, res) => {
   req.controller.getItem(req, res);
 });
 
 // Reprint an item
-app.get( '/:id/label', auth.isLoggedIn, (req, res) => {
+app.get( '/:id/label', auth.currentUserCan('print'), (req, res) => {
   req.controller.getLabel(req, res);
 });
 
 // Edit item form
-app.get( '/:id/edit', auth.isLoggedIn, (req, res) => {
+app.get( '/:id/edit', auth.currentUserCan('items_edit'), (req, res) => {
   req.controller.getEdit(req, res);
 });
 
 // Edit item handler
-app.post( '/:id/edit', auth.isLoggedIn, (req, res) => {
+app.post( '/:id/edit', auth.currentUserCan('items_edit'), (req, res) => {
   req.controller.postEdit(req, res);
 });
 
-app.get('/:id/remove', auth.isLoggedIn, (req, res) => {
+app.get('/:id/remove', auth.currentUserCan('items_remove'), (req, res) => {
   req.controller.getRemove(req, res);
 });
 
-app.post( '/:id/remove', auth.isLoggedIn, (req, res) => {
+app.post( '/:id/remove', auth.currentUserCan('items_remove'), (req, res) => {
   req.controller.postRemove(req, res);
 });
 
