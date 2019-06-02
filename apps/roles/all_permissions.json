@@ -2,6 +2,7 @@
   "edit_profile": "User can edit their own profile.",
   "print": "User can print labels.",
   "view_reports": "User can view reports (requires items_read).",
+  "generate_insurance_report": "User can generate a downloadable insurance report",
   "activate_kiosk_mode": "User can put the session into kiosk mode.",
   "checkout_issue": "User can issue items and mark them lost or broken.",
   "checkout_return": "User can return items from Checkout desk.",

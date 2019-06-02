@@ -11,29 +11,38 @@ nav.navbar.navbar-dark.bg-dark.navbar-expand-lg
 					a(href="/items").nav-item.nav-link Items
 				if currentUserCan('reservations_read')
 					a(href="/reservations").nav-item.nav-link Reservations
-				if currentUserCan('view_reports')
+				if currentUserCan({or:['view_reports','generate_insurance_report']})
 					.nav-item.dropdown
 						a(href="#" id="reports" data-toggle="dropdown").dropdown-toggle.nav-link Reports
 						.dropdown-menu(aria-labelledby="reports").dropdown-menu-left
-							h6.dropdown-header
-								span.fas.fa-exclamation-triangle
-								|  Due
-							a( href="/items/?due=overdue" ).dropdown-item Overdue
-							a( href="/items/?due=today" ).dropdown-item Today
-							.dropdown-divider
-							h6.dropdown-header
-								span.fas.fa-info
-								|  Status
-							a( href="/items/?status=available" ).dropdown-item Available
-							a( href="/items/?status=on-loan" ).dropdown-item On Loan
-							a( href="/items/?status=broken" ).dropdown-item Broken
-							a( href="/items/?status=lost" ).dropdown-item Lost
-							.dropdown-divider
-							h6.dropdown-header
-								span.fas.fa-qrcode
-								|  Audit
-							a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
-							a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
+							if currentUserCan('view_reports')
+								h6.dropdown-header
+									span.fas.fa-exclamation-triangle
+									|  Due
+								a( href="/items/?due=overdue" ).dropdown-item Overdue
+								a( href="/items/?due=today" ).dropdown-item Today
+								.dropdown-divider
+								h6.dropdown-header
+									span.fas.fa-thermometer-half
+									|  Status
+								a( href="/items/?status=available" ).dropdown-item Available
+								a( href="/items/?status=on-loan" ).dropdown-item On Loan
+								a( href="/items/?status=broken" ).dropdown-item Broken
+								a( href="/items/?status=lost" ).dropdown-item Lost
+								.dropdown-divider
+								h6.dropdown-header
+									span.fas.fa-calculator
+									|  Audit
+								a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
+								a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
+							if currentUserCan({and:['view_reports','generate_insurance_report']})
+								.dropdown-divider
+							if currentUserCan('generate_insurance_report')
+								h6.dropdown-header
+									span.fas.fa-house-damage
+									|  Insurance
+								a( href="/reports/insurance" ).dropdown-item Generate Report
+								
 				if currentUserCan('users_read')
 					a(href="/users").nav-item.nav-link Users
 		.navbar-nav.ml-auto
@@ -76,14 +85,17 @@ nav.navbar.navbar-dark.bg-dark.navbar-expand-lg
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right
-						if currentUserCan('activate_kiosk_mode')
-							a( href='/kiosk/enable' ).dropdown-item
-								span.fas.fa-cash-register
-								|  Kiosk Mode
 						if currentUserCan('edit_profile')
 							a( href='/profile' ).dropdown-item
 								span.fas.fa-pencil-alt
 								|  Edit Profile
+						if currentUserCan({and:['activate_kiosk_mode','edit_profile']})
+							.dropdown-divider
+						if currentUserCan('activate_kiosk_mode')
+							a( href='/kiosk/enable' ).dropdown-item
+								span.fas.fa-cash-register
+								|  Kiosk Mode
+						if currentUserCan({or:['activate_kiosk_mode','edit_profile']})
 							.dropdown-divider
 						if kioskMode
 							a( href="/kiosk/logout").dropdown-item
