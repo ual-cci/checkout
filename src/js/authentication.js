@@ -89,11 +89,7 @@ const Authentication = {
 
 		passport.deserializeUser( function( data, done ) {
       var id;
-      if (data.impersonateId) {
-        id = data.impersonateId;
-      } else {
-        id = data.id;
-      }
+      id = data.id;
       users.query()
         .lookup(['printer'])
         .getById(id)
