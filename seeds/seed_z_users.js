@@ -11,6 +11,9 @@ const seedFunction = function(knex, Promise) {
 
   Promise.all([
     knex('printers').first('id'),
+    knex('roles').where({
+      name: 'Super Admin'
+    }).first('id'),
     knex('courses').where({
       name: 'Technicians'
     }).first('id'),
@@ -18,7 +21,8 @@ const seedFunction = function(knex, Promise) {
       name: 'N/A'
     }).first('id'),
   ])
-    .then(([printer, course, year]) => {
+    .then(([role, printer, course, year]) => {
+      const roleId = role.id;
       const printerId = printer.id;
       const courseId = course.id;
       const yearId = year.id;
@@ -32,28 +36,28 @@ const seedFunction = function(knex, Promise) {
                 'name': 'Jonny Appleseed',
                 'pw_salt': salt,
                 'pw_hash': hash,
-                'type': 'admin',
                 'audit_point': '2000-01-01 00:00:00',
                 'disable': false,
                 'printer_id': printerId,
                 'course_id': courseId,
                 'year_id': yearId,
                 'barcode': 'JAPPLESEED123',
-                'pw_iterations': iterations
+                'pw_iterations': iterations,
+                'role_id': role_id
               },
               {
                 'email': 'a.smith@example.com',
                 'name': 'Amanda Smith',
                 'pw_salt': salt,
                 'pw_hash': hash,
-                'type': 'admin',
                 'audit_point': '2000-01-01 00:00:00',
                 'disable': false,
                 'printer_id': printerId,
                 'course_id': courseId,
                 'year_id': yearId,
                 'barcode': 'ASMITH456',
-                'pw_iterations': iterations
+                'pw_iterations': iterations,
+                'role_id': role_id
               }
             ]));
           });
