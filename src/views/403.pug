@@ -10,8 +10,9 @@ block contents
 		h4.pb-2.mt-4.mb-2.border-bottom Debug
 		.bg-warning.p-3.rounded
 			pre
-				strong Requested permission: 
-				| #{permission}
+				strong Requested permission:
+				br
+				| #{typeof permission == 'object' ? JSON.stringify(permission) : permission}
 			pre
 				strong Actual permissions of current user:
 				| 
