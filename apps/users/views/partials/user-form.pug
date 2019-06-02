@@ -41,7 +41,7 @@ form( method="post" )
 					label( for="role" ).col-lg-2.col-form-label Role
 					.col-lg-4
 						select( name="role" )#role.form-control
-							option( value="" disabled selected ) Select a role
+							option( value="" selected ) Select a role
 							for role in roles
 								option( value=role.id selected=( role.id == user.role_id ) )=role.name
 				
