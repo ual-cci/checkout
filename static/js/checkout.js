@@ -27,7 +27,6 @@ jQuery( document ).ready( function() {
 	jQuery( document ).delegate( '#modules .card-header', 'click', handlePanelClick );
 	jQuery( document ).delegate( '#modules .buttons button', 'click', handleItemButtons );
 	jQuery( document ).delegate( '#issue .flash .override', 'click', handleOverride );
-	jQuery( document ).delegate( '#modules .glyphicon-print', 'click', handlePrintButton );
 	jQuery( document ).delegate( '#results .list-group-item', 'click', handleResultClick );
 	jQuery( '#mode .nav-link' ).on( 'shown.bs.tab', function( a ) { focus(); } );
 } );
@@ -95,6 +94,7 @@ function select( type, barcode ) {
 }
 
 function handleItemIssue( data ) {
+  lazyResetKioskTimer()
 	if ( data.status ) flash( data );
 	updateCurrent();
 }
@@ -248,6 +248,7 @@ function clearActive() {
 }
 
 function handleKeyPress( e ) {
+  lazyResetKioskTimer()
 	switch( e.keyCode ) {
 		case 27: // Escape
 			clearActive();
@@ -275,17 +276,22 @@ function handleKeyPress( e ) {
 			jQuery( '.history.nav-link' ).tab( 'show' );
 			break;
 		case 119: // F8
-			jQuery( '.users.nav-link' ).tab( 'show' );
+			if (typeof kioskLogout == 'function') kioskLogout();
 			break;
 		case 120: // F9
+			jQuery( '.users.nav-link' ).tab( 'show' );
+			break;
+		case 121: // F10
 			jQuery( '.items.nav-link' ).tab( 'show' );
 			break;
 		default:
+      console.log(e.keyCode);
 			break;
 	}
 }
 
 function handleIssueSubmit( e ) {
+  lazyResetKioskTimer()
 	e.preventDefault();
 	clearTimeout( typeTimeout );
 
@@ -307,6 +313,7 @@ function handleIssueSubmit( e ) {
 }
 
 function handleReturnSubmit( e ) {
+  lazyResetKioskTimer()
 	e.preventDefault();
 
 	var term = jQuery( '#return input' ).val();
@@ -322,6 +329,7 @@ function handleReturnSubmit( e ) {
 }
 
 function focus() {
+  lazyResetKioskTimer()
 	switch( jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) ) {
 		case 'return':
 			jQuery( '#return input' ).focus();
@@ -345,6 +353,7 @@ function focus() {
 }
 
 function handleItemButtons() {
+  lazyResetKioskTimer()
 	var clicked = jQuery( this ).closest( '.card' );
 	var type = jQuery( clicked ).data( 'type' );
 	var barcode = jQuery( clicked ).data( 'barcode' );
@@ -372,23 +381,15 @@ function handleItemButtons() {
 }
 
 function handleOverride() {
+  lazyResetKioskTimer()
 	if ( last_item ) {
 		issue( last_item.item, last_item.user, true, handleItemIssue );
 		jQuery( this ).parent().remove()
 	}
 }
 
-function handlePrintButton() {
-	var clicked = jQuery( this ).closest( '.card' );
-	var type = jQuery( clicked ).data( 'type' );
-	var barcode = jQuery( clicked ).data( 'barcode' );
-
-	label( barcode, function ( data ) {
-		flash( data );
-	} );
-}
-
 function handleResultClick() {
+  lazyResetKioskTimer()
 	var type = jQuery( this ).data( 'type' );
 	var barcode = jQuery( this ).data( 'barcode' );
 	if ( jQuery( this ).hasClass( 'disabled' ) ) return flash( { status: 'warning', message: 'Cannot select a disabled user account' } );
@@ -397,11 +398,13 @@ function handleResultClick() {
 }
 
 function handlePanelClick() {
+  lazyResetKioskTimer()
 	var clicked = jQuery( this ).closest( '.card' );
 	select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
 }
 
 function handleSearchInput( e ) {
+  lazyResetKioskTimer()
 	if ( jQuery( '#find input' ).val() == '' ) empty();
 	clearTimeout( typeTimeout );
 	typeTimeout = setTimeout( searchTimer, 100 );
@@ -448,6 +451,7 @@ function handleAuditSubmit( e ) {
 
 function handleLabelSubmit( e ) {
 	e.preventDefault();
+  lazyResetKioskTimer()
 
 	var term = jQuery( '#label input' ).val();
 	jQuery( '#label input' ).val('');
@@ -459,6 +463,7 @@ function handleLabelSubmit( e ) {
 
 function handleUserSubmit( e ) {
 	e.preventDefault();
+  lazyResetKioskTimer()
 
 	var name = jQuery( '#new-user form [name="name"]' ).val();
 	var barcode = jQuery( '#new-user form [name="barcode"]' ).val();
@@ -490,3 +495,12 @@ function refreshHistory() {
 	}
 }
 setInterval( refreshHistory, 10000 );
+
+
+
+function lazyResetKioskTimer() {
+  if (typeof resetKioskTimer == 'function') {
+    console.log('resetKioskTimer')
+    resetKioskTimer();
+  }
+}

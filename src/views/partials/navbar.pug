@@ -76,11 +76,20 @@ nav.navbar.navbar-dark.bg-dark.navbar-expand-lg
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right
+						if currentUserCan('activate_kiosk_mode')
+							a( href='/kiosk/enable' ).dropdown-item
+								span.fas.fa-cash-register
+								|  Kiosk Mode
 						if currentUserCan('edit_profile')
 							a( href='/profile' ).dropdown-item
 								span.fas.fa-pencil-alt
 								|  Edit Profile
 							.dropdown-divider
-						a( href="/logout").dropdown-item
-							span.fas.fa-sign-out-alt
-							|  Logout
+						if kioskMode
+							a( href="/kiosk/logout").dropdown-item
+								span.fas.fa-sign-out-alt
+								|  Logout
+						else
+							a( href="/logout").dropdown-item
+								span.fas.fa-sign-out-alt
+								|  Logout

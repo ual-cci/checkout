@@ -1,0 +1,27 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Login"
+
+block navbar
+
+block header
+
+block footer
+	
+block flash
+
+block append css
+	link(rel="stylesheet", type="text/css", href="/css/login.css")
+
+block contents
+	.col-12.text-center
+		form( method="post", action="/kiosk" ).form-signin
+			img( src="/imgs/logo.svg" width="128" height="128" ).mb-2
+			h1.mb-0 Checkout
+			h5.mb-3.text-danger Kiosk Mode
+			include ../../../src/views/partials/flash.pug
+			label(for="barcode").sr-only barcode
+			input(type="barcode" name="barcode" placeholder="Barcode" autofocus required)#barcode.form-control.mb-3
+			button(type="submit").btn.btn-lg.btn-outline-dark.btn-block Login
+			a(href="/kiosk/exit").btn.btn-sm.btn-outline-danger.btn-block Exit Kiosk Mode

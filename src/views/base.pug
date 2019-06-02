@@ -21,7 +21,9 @@ html
 				script( src="/js/bootstrap.min.js" )
 				script( src="/js/clipboard.min.js" )
 				script( src="/js/script.js" )
-	body( class=( dev ? 'dev' : '' ) )
+				if kioskMode
+					script( src="/js/kiosk.js" )
+	body( class=( dev ? 'dev' : '' ) class=( kioskMode ? 'kiosk' : '' ) )
 		block navbar
 			include partials/navbar.pug
 		div( class=(wide?"container-fluid":"container"))

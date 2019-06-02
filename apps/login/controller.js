@@ -11,7 +11,11 @@ class LoginController extends BaseController {
     if (req.isAuthenticated()) {
       req.saveSessionAndRedirect('/');
     } else {
-      res.render('login');
+      if (req.session.kioskMode > 0) {
+        res.render('kiosk');
+      } else {
+        res.render('login');
+      }
     }
   }
 

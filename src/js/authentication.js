@@ -33,7 +33,6 @@ const Authentication = {
                 resolve({ hash, user });
               });
             });
-
             // return done(null, false, { message: 'Incorrect username.' });
           })
           .then(({ hash, user }) => {
@@ -43,7 +42,6 @@ const Authentication = {
               flash: {},
               user
             };
-
             if ( hash == user.pw_hash ) {
               if (user.pw_attempts > 0) {
                 persist.flash = {
@@ -58,7 +56,6 @@ const Authentication = {
                 message: 'Invalid login'
               };
             }
-
             return users.update(user.id, {
               pw_attempts: persist.pw_attempts
             })
@@ -99,6 +96,16 @@ const Authentication = {
               perms = perms.map(p => {
                 return p.permission
               })
+              if (data.km) {
+                perms = perms.filter(p => {
+                  if (p == 'checkout_issue') return true;
+                  if (p == 'checkout_return') return true;
+                  if (p == 'checkout_history') return true;
+                  if (p == 'groups_override') return true;
+                  if (p == 'print') return true;
+                  return false;
+                })
+              }
               user.permissions = perms;
               return done( null, user );
             })
@@ -173,8 +180,8 @@ const Authentication = {
     }
   },
   currentUserCan: function(permission) {
-    return function( req, res, next ) {
-      var status = Authentication.loggedIn( req );
+    return function(req, res, next) {
+      var status = Authentication.loggedIn(req);
       if (status) {
         var authorised = Authentication.userCan(req.user, permission);
         if (authorised) {

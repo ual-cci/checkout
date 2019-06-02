@@ -25,6 +25,25 @@ body.dev .navbar {
 	top: 3px;
 }
 
+body.kiosk:after {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: #dc3545;
+  z-index: 1000;
+}
+
+body.dev.kiosk:before {
+  top: 3px;
+}
+
+body.kiosk .navbar {
+	top: 3px;
+}
+
 .clipboard {
 	cursor: ne-resize;
 	background: rgb(251, 255, 170);

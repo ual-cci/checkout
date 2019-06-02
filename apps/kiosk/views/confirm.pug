@@ -1,0 +1,14 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Switch to kiosk mode'
+	- heading = "Are you sure you want to switch to kiosk mode?"
+
+block contents
+	form( method="post" )
+		+messageBlock( 'dark', 'white', 'Switching to kiosk mode means this computer is trusted to use barcode only authentication.' )
+		.form-group.row
+			.col-lg-4
+				button( type='submit' ).btn.btn-success Activate kiosk mode
+				|  
+				a( href="/" ).btn.btn-outline-dark Cancel
