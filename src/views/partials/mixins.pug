@@ -5,13 +5,22 @@ mixin email( address )
 	a( href="mailto:" + address )=address
 
 mixin fulldate( date )
-	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ) )=moment( date ).format( 'DD/MM/YYYY HH:mm' )
+	if date
+		time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ) )=moment( date ).format( 'DD/MM/YYYY HH:mm' )
+	else
+		| –
 
 mixin date( date )
-	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY' ) )=moment( date ).format( 'DD/MM/YYYY' )
+	if date
+		time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY' ) )=moment( date ).format( 'DD/MM/YYYY' )
+	else
+		| –
 
 mixin relative( date, alert )
-	time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ), class=(moment(date).isBefore()&&alert?'text-danger':null) )=moment( date ).fromNow()
+	if date
+		time( datetime=moment( date ).toISOString(), title=moment( date ).format( 'DD/MM/YYYY HH:mm:ss ZZ' ), class=(moment(date).isBefore()&&alert?'text-danger':null) )=moment( date ).fromNow()
+	else
+		| –
 
 mixin messageBlock( bg, fg, text )
 	p( style="padding: 1em; margin-top: 1em;" class=`bg-${bg}` class=`text-${fg}` )=text
