@@ -264,15 +264,20 @@ class UsersController extends BaseController {
       user.audit_point = null;
     }
 
-    if (req.body.role) {
+    if (req.body.role != undefined) {
       if (auth.userCan(req.user, 'users_change_role')) {
-        user.role_id = req.body.role;
+        if (req.body.role) {
+          user.role_id = req.body.role;
+        } else {
+          user.role_id = null;
+        }
+
       } else {
         req.flash('warning', 'You do not have permission to change another role.');
       }
     }
 
-    auth.generatePassword(req.body.password, password => {
+    auth.generatePassword(req.body.password?req.body.password:'', password => {
       if (req.body.password) {
         if (auth.userCan(req.user, 'users_change_password')) {
           user.pw_hash = password.hash;
