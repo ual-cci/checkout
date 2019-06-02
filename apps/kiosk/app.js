@@ -1,5 +1,4 @@
 const express = require( 'express' );
-const passport = require('passport');
 
 const KioskController = require('./controller');
 const auth = require('../../src/js/authentication.js');
