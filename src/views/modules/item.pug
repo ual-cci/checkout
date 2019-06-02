@@ -26,7 +26,8 @@ include ../partials/mixins.pug
 						.col-md-5.font-weight-bold Issued
 						.col-md-7: +fulldate( item.issued )
 					if item.due
-						.row.col-md-5.font-weight-bold  Due
+						.row
+							.col-md-5.font-weight-bold  Due
 							.col-md-7: +relative( item.due, true )
 			.col-md-5
 				.row
