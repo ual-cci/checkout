@@ -271,7 +271,6 @@ class UsersController extends BaseController {
         } else {
           user.role_id = null;
         }
-
       } else {
         req.flash('warning', 'You do not have permission to change another role.');
       }

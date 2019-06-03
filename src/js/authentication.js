@@ -102,6 +102,7 @@ const Authentication = {
                   if (p == 'checkout_return') return true;
                   if (p == 'checkout_history') return true;
                   if (p == 'groups_override') return true;
+                  if (p == 'users_new') return true;
                   if (p == 'print') return true;
                   return false;
                 })
