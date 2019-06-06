@@ -8,7 +8,7 @@ block header
 	h2=heading
 		if onloan.length > 0
 			.btn-group.float-right(style='margin-left:.25em;')
-				a.btn.btn-outline-dark( href="mailto:" + encodeURI( user.email ) + "?cc=" + encodeURI( user.course_contact_email ) + "&subject=" + encodeURI( "IMPORTANT: Items due back" ) + "&body=" + encodeURI( email ), title=`Email ${user.name}` )
+				a( href="/users/" + user.id + "/email", title=`Email ${user.name}` ).btn.btn-outline-dark.btn-m
 					span.fas.fa-envelope
 					|  Generate email
 		.btn-group.float-right

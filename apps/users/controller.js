@@ -199,12 +199,10 @@ class UsersController extends BaseController {
       })
       .then(([items, actions]) => {
         const { user } = persist;
-        const email = pug.renderFile(__dirname + '/views/email.pug', { name: user.name, items });
         res.render( 'user', {
           user,
           onloan: items,
-          history: actions,
-          email
+          history: actions
         });
       })
       .catch(err => this.displayError(req, res, err, this.getRoute()));
@@ -383,6 +381,40 @@ class UsersController extends BaseController {
       })
       .catch(err => this.displayError(req, res, err, this.getRoute(`/${req.params.id}`)));
   }
+
+  getEmail(req, res) {
+    let persist = {};
+    this.models.users.query()
+      .getById(req.params.id)
+      .then(user => {
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        persist = {
+          ...persist,
+          user
+        };
+
+        return this.models.items.getOnLoanByUserId(req.params.id);
+      })
+      .then((items) => {
+        if (items.length < 1) {
+          req.flash('warning', 'This user has no items on loan to email about');
+          req.saveSessionAndRedirect(this.getRoute());
+          return;
+        }
+        const { user } = persist;
+        const email = pug.renderFile(__dirname + '/views/email-body.pug', { name: user.name, items });
+        res.render( 'send-email', {
+          user,
+          email
+        });
+      })
+      .catch(err => this.displayError(req, res, err, this.getRoute()));
+  }
+
+
 }
 
 module.exports = UsersController;

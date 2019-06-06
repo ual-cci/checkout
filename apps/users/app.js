@@ -36,6 +36,7 @@ app.post( '/:id/edit', auth.currentUserCan('users_edit'), (req, res) => {
   req.controller.postUserEdit(req, res);
 });
 
+// Remove user
 app.get( '/:id/remove', auth.currentUserCan('users_remove'), (req, res) => {
   req.controller.getUserRemove(req, res);
 });
@@ -44,6 +45,12 @@ app.post( '/:id/remove', auth.currentUserCan('users_remove'), (req, res) => {
   req.controller.postUserRemove(req, res);
 });
 
+// Reset password attempts for user
+app.get( '/:id/email', auth.currentUserCan('users_read'), (req, res) => {
+  req.controller.getEmail(req, res);
+});
+
+// Reset password attempts for user
 app.get( '/:id/reset', auth.currentUserCan('users_reset_password_attempts'), (req, res) => {
   req.controller.getReset(req, res);
 });
