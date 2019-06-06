@@ -304,7 +304,10 @@ function handleIssueSubmit( e ) {
 
 	identify( term, function( data ) {
 		if ( data.kind == 'unknown' ) {
+			jQuery( '.new-user.nav-link' ).tab( 'show' );
+			jQuery( '#new-user #barcode' ).val( term )
 			flash( { status: 'warning', message: 'Unknown barcode', barcode: term } );
+			jQuery( '#new-user [name=name]' ).focus()
 		} else {
 			select( data.kind, data.barcode );
 			empty( true );
