@@ -94,7 +94,7 @@ function select( type, barcode ) {
 }
 
 function handleItemIssue( data ) {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	if ( data.status ) flash( data );
 	updateCurrent();
 }
@@ -248,7 +248,7 @@ function clearActive() {
 }
 
 function handleKeyPress( e ) {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	switch( e.keyCode ) {
 		case 27: // Escape
 			clearActive();
@@ -285,13 +285,13 @@ function handleKeyPress( e ) {
 			jQuery( '.items.nav-link' ).tab( 'show' );
 			break;
 		default:
-      console.log(e.keyCode);
+			// console.log(e.keyCode);
 			break;
 	}
 }
 
 function handleIssueSubmit( e ) {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	e.preventDefault();
 	clearTimeout( typeTimeout );
 
@@ -316,7 +316,7 @@ function handleIssueSubmit( e ) {
 }
 
 function handleReturnSubmit( e ) {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	e.preventDefault();
 
 	var term = jQuery( '#return input' ).val();
@@ -332,7 +332,7 @@ function handleReturnSubmit( e ) {
 }
 
 function focus() {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	switch( jQuery( '#mode .nav-link.active' ).attr( 'href' ).substr( 1 ) ) {
 		case 'return':
 			jQuery( '#return input' ).focus();
@@ -356,7 +356,7 @@ function focus() {
 }
 
 function handleItemButtons() {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	var clicked = jQuery( this ).closest( '.card' );
 	var type = jQuery( clicked ).data( 'type' );
 	var barcode = jQuery( clicked ).data( 'barcode' );
@@ -384,7 +384,7 @@ function handleItemButtons() {
 }
 
 function handleOverride() {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	if ( last_item ) {
 		issue( last_item.item, last_item.user, true, handleItemIssue );
 		jQuery( this ).parent().remove()
@@ -392,7 +392,7 @@ function handleOverride() {
 }
 
 function handleResultClick() {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	var type = jQuery( this ).data( 'type' );
 	var barcode = jQuery( this ).data( 'barcode' );
 	if ( jQuery( this ).hasClass( 'disabled' ) ) return flash( { status: 'warning', message: 'Cannot select a disabled user account' } );
@@ -401,13 +401,13 @@ function handleResultClick() {
 }
 
 function handlePanelClick() {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	var clicked = jQuery( this ).closest( '.card' );
 	select( clicked.data( 'type' ), clicked.data( 'barcode' ) );
 }
 
 function handleSearchInput( e ) {
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 	if ( jQuery( '#find input' ).val() == '' ) empty();
 	clearTimeout( typeTimeout );
 	typeTimeout = setTimeout( searchTimer, 100 );
@@ -454,7 +454,7 @@ function handleAuditSubmit( e ) {
 
 function handleLabelSubmit( e ) {
 	e.preventDefault();
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 
 	var term = jQuery( '#label input' ).val();
 	jQuery( '#label input' ).val('');
@@ -466,7 +466,7 @@ function handleLabelSubmit( e ) {
 
 function handleUserSubmit( e ) {
 	e.preventDefault();
-  lazyResetKioskTimer()
+	lazyResetKioskTimer()
 
 	var name = jQuery( '#new-user form [name="name"]' ).val();
 	var barcode = jQuery( '#new-user form [name="barcode"]' ).val();
