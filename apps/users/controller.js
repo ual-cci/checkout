@@ -385,6 +385,7 @@ class UsersController extends BaseController {
   getEmail(req, res) {
     let persist = {};
     this.models.users.query()
+      .lookup(['course','contact'])
       .getById(req.params.id)
       .then(user => {
         if (!user) {
@@ -405,8 +406,12 @@ class UsersController extends BaseController {
           return;
         }
         const { user } = persist;
-        const email = pug.renderFile(__dirname + '/views/email-body.pug', { name: user.name, items });
-        res.render( 'send-email', {
+        var email = `Hello ${user.name},\n\nYou currently have the following item${items.length > 1 ? 's' : null} on loan which ${items.length > 1 ? 'are' : 'is'} due back:\n\n`;
+        for (var i in items) {
+          var item = items[i];
+          email += ` ∙ ${item.name} (${item.barcode})\n`;
+        }
+        res.render( 'email', {
           user,
           email
         });

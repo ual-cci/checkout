@@ -1,0 +1,13 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = user.name
+	- heading = title
+
+block prepend header
+	- mailto = `0;url=mailto:${user.name} <${user.email}>?subject=IMPORTANT: Items on loan due for return${user.course_contact_email ? `&cc=${user.course_contact_name} <${user.course_contact_email}>` : null}&body=${email}`
+	meta( http-equiv='refresh' content=encodeURI(mailto) )
+	script setTimeout(() => { history.go(-1);}, 150);
+	
+block contents
+	+messageBlock( 'dark', 'white', 'Generating email' )
