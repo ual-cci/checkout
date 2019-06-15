@@ -23,6 +23,9 @@ class CoursesController extends BaseController {
   getRoot(req, res) {
     this.models.courses
       .lookup(['contact'])
+      .orderBy([
+        ['name', 'asc']
+      ])
       .expose()
       .then(courses => {
         res.render( 'courses', { courses } );
@@ -36,7 +39,7 @@ class CoursesController extends BaseController {
    * @param {Object} res Express response object
    */
   getCreate(req, res) {
-    this.models.users.getAll()
+    this.models.users.orderBy([['name', 'asc']]).getAll()
       .then(users => {
         res.render( 'create', { course: {}, users } );
       });
@@ -77,7 +80,7 @@ class CoursesController extends BaseController {
    */
   getEdit(req, res) {
     Promise.all([
-      this.models.users.getAll(),
+      this.models.users.orderBy([['name', 'asc']]).getAll(),
       this.models.courses.lookup(['user']).getById(req.params.id)
     ])
       .then(([users , course]) => {
