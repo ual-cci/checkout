@@ -10,7 +10,7 @@ class CourseModel extends BaseModel {
 
   get joins() {
     return {
-      user: {
+      contact: {
         table: 'users',
         join: ['id', 'contact_id'],
         properties: ['id', 'name', 'email']

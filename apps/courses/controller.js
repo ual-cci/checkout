@@ -21,7 +21,9 @@ class CoursesController extends BaseController {
    * @param {Object} res Express response object
    */
   getRoot(req, res) {
-    this.models.courses.getAll()
+    this.models.courses
+      .lookup(['contact'])
+      .expose()
       .then(courses => {
         res.render( 'courses', { courses } );
       });
