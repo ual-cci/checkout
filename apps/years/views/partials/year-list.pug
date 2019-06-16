@@ -7,8 +7,8 @@ if years.length > 0
 			thead
 				tr
 					th Name
-						span.dropup
-							span.caret
+						| 
+						span.fas.fa-angle-up.text-muted
 					if currentUserCan({or:['years_edit','years_remove']})
 						th Manage
 			tbody

@@ -7,8 +7,8 @@ if departments.length > 0
 			thead
 				tr
 					th Name
-						span.dropup
-							span.caret
+						| 
+						span.fas.fa-angle-up.text-muted
 					if currentUserCan('items_read')
 						th View
 					if currentUserCan({or:['departments_edit','departments_remove']})

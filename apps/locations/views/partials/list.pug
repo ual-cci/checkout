@@ -7,9 +7,9 @@ if locations.length > 0
 			thead
 				tr
 					th Name
+						| 
+						span.fas.fa-angle-up.text-muted
 					th Barcode
-						span.dropup
-							span.caret
 					if currentUserCan('items_read')
 						th View
 					if currentUserCan({or:['locations_edit','locations_remove','print']})

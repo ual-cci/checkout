@@ -9,8 +9,8 @@ if printers.length > 0
 			thead
 				tr
 					th Name
-						span.dropup
-							span.caret
+						| 
+						span.fas.fa-angle-up.text-muted
 					th URL
 					th View
 					if currentUserCan({or:['printers_edit','printer_remove']})

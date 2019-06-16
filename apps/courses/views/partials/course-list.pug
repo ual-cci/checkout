@@ -9,8 +9,8 @@ if courses.length > 0
 			thead
 				tr
 					th Name
-						span.dropup
-							span.caret
+						| 
+						span.fas.fa-angle-up.text-muted
 					th Contact
 					if currentUserCan({or:['users_read','items_read']})
 						th View

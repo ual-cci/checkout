@@ -10,8 +10,8 @@ if roles.length > 0
 			thead
 				tr
 					th Name
-						span.dropup
-							span.caret
+						| 
+						span.fas.fa-angle-up.text-muted
 					if currentUserCan('users_read')
 						th View
 					if currentUserCan({or:['roles_edit','roles_remove','roles_set_permissions']})
