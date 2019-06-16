@@ -97,8 +97,8 @@ class UsersController extends BaseController {
             role: req.query.role ? req.query.role : '',
             year: req.query.year ? req.query.year : ''
           },
-          sortby: req.query.sortby,
-          direction: req.query.direction
+          sortby: req.query.sortby ? req.query.sortby : 'name',
+          direction: req.query.direction ? req.query.direction : 'asc'
         } );
       });
   }
