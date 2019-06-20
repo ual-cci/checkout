@@ -406,7 +406,7 @@ class UsersController extends BaseController {
           return;
         }
         const { user } = persist;
-        var email = `Hello ${user.name},\n\nYou currently have the following item${items.length > 1 ? 's' : null} on loan which ${items.length > 1 ? 'are' : 'is'} due back:\n\n`;
+        var email = `Hello ${user.name},\n\nYou currently have the following item${items.length > 1 ? 's' : ''} on loan which ${items.length > 1 ? 'are' : 'is'} due back:\n\n`;
         for (var i in items) {
           var item = items[i];
           email += ` ∙ ${item.name} (${item.barcode})\n`;
