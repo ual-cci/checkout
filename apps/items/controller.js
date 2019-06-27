@@ -120,7 +120,7 @@ class ItemController extends BaseController {
             if (req.query.audited == 'today') query.where('audited', direction, moment().startOf('day').toDate() );
             if (req.query.audited == 'thisweek') query.where('audited', direction, moment().startOf('week').toDate() );
             if (req.query.audited == 'thismonth') query.where('audited', direction, moment().startOf('month').toDate() );
-            if (req.query.scanned == 'false' ) query.orWhere('audited', null);
+            if (req.query.scanned == 'false' ) query.Where('audited', null);
           })
           .orderBy([
             [ orderBy, direction ]
