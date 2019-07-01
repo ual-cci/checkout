@@ -52,6 +52,23 @@ class ItemController extends BaseController {
     }
   }
 
+  _getAuditPoint(audited, userAuditPoint = false) {
+    switch(audited) {
+      case 'auditpoint':
+        return userAuditPoint ? moment(userAuditPoint) : moment().startOf('day');
+        break;
+      case 'today':
+        return moment().startOf('day').toDate();
+        break;
+      case 'thisweek':
+        return moment().startOf('week').toDate();
+        break;
+      case 'thismonth':
+        return moment().startOf('month').toDate();
+        break;
+    }
+  }
+
   /**
    * Builds the data necessary for the home page
    * with the relevant ordering inferred by the query
@@ -112,15 +129,24 @@ class ItemController extends BaseController {
             if (req.query.due == 'thisweek') query.whereBetween('due', [moment().startOf('week').toDate(), moment().endOf('week').toDate()]);
             if (req.query.due == 'thismonth') query.whereBetween('due', [moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
           })
-          .if((req.query.audited), (query) => {
-            const audit_point = req.user.audit_point ? moment(req.user.audit_point) : moment().startOf('day');
-            var direction = '>=';
-            if ( req.query.scanned == 'false' ) direction = '<';
-            if (req.query.audited == 'auditpoint') query.where('audited', direction, audit_point);
-            if (req.query.audited == 'today') query.where('audited', direction, moment().startOf('day').toDate() );
-            if (req.query.audited == 'thisweek') query.where('audited', direction, moment().startOf('week').toDate() );
-            if (req.query.audited == 'thismonth') query.where('audited', direction, moment().startOf('month').toDate() );
-            if (req.query.scanned == 'false' ) query.where('audited', null);
+          .if((selected.scanned !== '' || selected.audited !== ''), (query) => {
+            if (selected.audited !== '') {
+              const audit_point = this._getAuditPoint(req.query.audited, req.user.audit_point);
+              let direction = '>=';
+
+              if (selected.scanned == 'false') direction = '<';
+
+              query.where(builder => {
+                if (selected.scanned == 'false') {
+                  builder.where('audited', direction, audit_point).orWhere('audited', null);
+                } else {
+                  builder.where('audited', direction, audit_point).whereNot('audited', null);
+                }
+              })
+            } else {
+              if (req.query.scanned == 'false' ) query.where('audited', null);
+              if (req.query.scanned == 'true' ) query.whereNot('audited', null);
+            }
           })
           .orderBy([
             [ orderBy, direction ]
