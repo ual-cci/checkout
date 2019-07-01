@@ -1,4 +1,5 @@
 const db = require('../js/database.js');
+const logs = require('../../logging/index');
 
 class BaseModel {
   constructor({ table, debug = false }) {
@@ -35,11 +36,9 @@ class BaseModel {
    */
   create(values) {
     return new Promise((resolve, reject) => {
-      const query = db(this.options.table).insert(values, 'id')
+      const query = db(this.options.table).insert(values, 'id');
 
-      if (this.options.debug) {
-        console.log(query.toString());
-      }
+      this.logQuery(query, 'create');
 
       query.then(ids => {
           resolve(ids);
@@ -63,9 +62,7 @@ class BaseModel {
     return new Promise((resolve, reject) => {
       const query = this.query().where([['id', id]]).expose().update(values);
 
-      if (this.options.debug) {
-        console.log(query.toString());
-      }
+      this.logQuery(query, 'update');
 
       query.then(ids => {
           resolve(ids);
@@ -89,9 +86,7 @@ class BaseModel {
     return new Promise((resolve, reject) => {
       const query = this.query().getMultipleByIds(ids).update(values);
 
-      if (this.options.debug) {
-        console.log(query.toString());
-      }
+      this.logQuery(query, 'updateMultiple');
 
       query.then(ids => {
           resolve(ids);
@@ -116,9 +111,7 @@ class BaseModel {
         .where( 'id', id )
         .delete();
 
-      if (this.options.debug) {
-        console.log(query.toString());
-      }
+      this.logQuery(query, 'remove');
 
       query.then(() => {
           resolve(id);
@@ -335,8 +328,11 @@ class BaseModel {
    */
   retrieveSingle() {
     return new Promise((resolve, reject) => {
-      this.expose()
-        .then(results => {
+      const query = this.expose();
+
+      this.logQuery(query, 'retreiveSingle');
+
+      query.then(results => {
           resolve(results.length ? results[0] : false);
         })
         .catch(err => {
@@ -361,7 +357,9 @@ class BaseModel {
    * @param {Array} ids
    */
   getMultipleByIds(ids) {
-    return this.query().expose().whereIn(`${this.options.table}.id`, ids);
+    const query = this.query().expose();
+    this.logQuery(query, 'getMultipleByIds');
+    return query.whereIn(`${this.options.table}.id`, ids);
   }
 
   /**
@@ -372,7 +370,7 @@ class BaseModel {
    * @param {Array} orderBy Column to order by
    */
   search(term, columns = ['name'], orderBy = ['name', 'asc']) {
-    return this.query()
+    const query = this.query()
       .raw(query => {
         columns.forEach((col, index) => {
           const method = index === 0 ? 'where' : 'orWhere';
@@ -382,6 +380,18 @@ class BaseModel {
       })
       .orderBy([ orderBy ])
       .expose();
+
+    this.logQuery(query, 'search');
+
+    return query;
+  }
+
+  logQuery(query, action) {
+    logs.queries.info({
+      table: this.options.table,
+      query: query.toString(),
+      action
+    });
   }
 }
 

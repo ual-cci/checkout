@@ -1,5 +1,5 @@
 # Logs
-logs
+/logs
 *.log
 npm-debug.log*
 
@@ -39,3 +39,5 @@ config/config.json
 
 snippets
 tests
+
+logging/logs/*.log
