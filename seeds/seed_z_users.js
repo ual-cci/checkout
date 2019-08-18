@@ -1,6 +1,6 @@
 const Authentication = require('../src/js/authentication.js');
 
-const seedFunction = function(knex, Promise) {
+const seedFunction = function(knex) {
   let res;
   let rej;
 
@@ -42,20 +42,6 @@ const seedFunction = function(knex, Promise) {
                 'course_id': courseId,
                 'year_id': yearId,
                 'barcode': 'JAPPLESEED123',
-                'pw_iterations': iterations,
-                'role_id': roleId
-              },
-              {
-                'email': 'a.smith@example.com',
-                'name': 'Amanda Smith',
-                'pw_salt': salt,
-                'pw_hash': hash,
-                'audit_point': '2000-01-01 00:00:00',
-                'disable': false,
-                'printer_id': printerId,
-                'course_id': courseId,
-                'year_id': yearId,
-                'barcode': 'ASMITH456',
                 'pw_iterations': iterations,
                 'role_id': roleId
               }

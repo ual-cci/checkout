@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.createTable('reservations', table => {
     table.increments();
     table.integer('item_id').notNullable();
@@ -11,6 +11,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.dropTable('reservations');
 };

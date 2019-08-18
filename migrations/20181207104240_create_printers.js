@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.createTable('printers', table => {
     table.increments();
     table.string('name').notNullable().unique().comment('The display name of the printer.');
@@ -7,6 +7,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.dropTable('printers');
 };
