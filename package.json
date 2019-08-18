@@ -7,30 +7,30 @@
     "db:seed": "knex seed:run"
   },
   "dependencies": {
-    "@passport-next/passport": "^2.1.1",
+    "@passport-next/passport": "^3.0.0",
     "@passport-next/passport-local": "^1.2.0",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
-    "bunyan-middleware": "^0.8.0",
+    "bunyan-middleware": "^1.0.0",
     "bwip-js": "^1.7.3",
-    "connect-pg-simple": "^5.0.0",
+    "connect-pg-simple": "^6.0.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-flash": "github:creativetechnologylab/express-flash#master",
-    "express-session": "^1.16.1",
+    "express-session": "^1.16.2",
     "git-rev": "^0.2.1",
-    "helmet": "^3.18.0",
+    "helmet": "^3.20.0",
     "ipp": "^2.0.1",
-    "knex": "^0.16.0",
+    "knex": "^0.19.0",
     "moment": "^2.24.0",
     "nodemon": "^1.19.1",
-    "pdfkit": "^0.9.1",
-    "pg": "^7.11.0",
-    "pug": "^2.0.3"
+    "pdfkit": "^0.10.0",
+    "pg": "^7.12.1",
+    "pug": "^2.0.4"
   },
   "devDependencies": {
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.1.0",
     "jsonfile": "^5.0.0",
     "winston": "^3.2.1"
   }
