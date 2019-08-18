@@ -43,7 +43,7 @@ const seedFunction = function(knex, Promise) {
                 'year_id': yearId,
                 'barcode': 'JAPPLESEED123',
                 'pw_iterations': iterations,
-                'role_id': role_id
+                'role_id': roleId
               },
               {
                 'email': 'a.smith@example.com',
@@ -57,7 +57,7 @@ const seedFunction = function(knex, Promise) {
                 'year_id': yearId,
                 'barcode': 'ASMITH456',
                 'pw_iterations': iterations,
-                'role_id': role_id
+                'role_id': roleId
               }
             ]));
           });
