@@ -1,7 +1,7 @@
 <img src="https://github.com/creativetechnologylab/checkout/raw/master/_assets/icon.png" height="150px" />
 
 # Checkout
-Checkout is a software system for tracking assets within a higher education environment, originally created for use within the Creative Technology Lab at London College of Communication.
+Checkout is a software system for tracking assets within a higher education environment, originally created for use within the Creative Technology Lab at London College of Communication it is now also used at the Creative Computing Institute.
 
 Checkout is built on Node.js with Express, PostegreSQL via Knex.js and label printing using PDFKit into CUPS via IPP.
 
