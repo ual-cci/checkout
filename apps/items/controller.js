@@ -328,7 +328,7 @@ class ItemController extends BaseController {
             barcode: item.barcode,
             text: item.name,
             type: item.label,
-            brand: department.name
+            brand: department.brand
           });
           items.push(item);
         }
