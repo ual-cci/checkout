@@ -30,7 +30,7 @@ class BaseController {
     // TODO add error logging
     console.log(err);
     req.flash('danger', [message, err].join(''));
-    return res.redirect(route);
+    return req.saveSessionAndRedirect(route);
   }
 
 
