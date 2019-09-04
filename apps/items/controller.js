@@ -265,7 +265,7 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   postGenerate(req, res) {
-    const start = parseInt( req.body.start );
+    const start = parseInt(req.body.start);
     const end = (start + parseInt(req.body.qty)) - 1;
 
     const checks = [
