@@ -6,7 +6,7 @@ form( method="post" )
 	.form-group.row
 		label( for="barcode" ).col-lg-2.col-form-label Barcode
 		.col-lg-4
-			input( name="barcode", type="text", value=location.barcode, required )#barcode.form-control
+			input( name="barcode", type="text", value=location.barcode )#barcode.form-control
 	.form-group.row
 		.col-lg-4.offset-lg-2
 			button( type="submit" ).btn.btn-primary=action
