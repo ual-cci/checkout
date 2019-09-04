@@ -4,6 +4,8 @@ const Locations = require('../../src/models/locations.js');
 const Items = require('../../src/models/items.js');
 const Printers = require('../../src/models/printers.js');
 
+const Print = require('../../src/js/print');
+
 const config = require('./config.json');
 
 class LocationController extends BaseController {
@@ -150,6 +152,7 @@ class LocationController extends BaseController {
           throw new Error('Location not found');
         }
 
+        persist.location = location;
         persist.printerId = req.query.printer || req.user.printer_id;
 
         if (!persist.printerId) {
@@ -159,6 +162,8 @@ class LocationController extends BaseController {
         return this.models.printers.getById(persist.printerId);
       })
       .then(printer => {
+        const { location } = persist;
+
         if (!printer) {
           throw new Error('Invalid printer');
         }
