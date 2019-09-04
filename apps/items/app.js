@@ -33,6 +33,19 @@ app.post('/generate', auth.currentUserCan('items_generate'), (req, res) => {
   req.controller.postGenerate(req, res);
 })
 
+// Import items
+app.get('/import', auth.currentUserCan('items_import'), (req, res) => {
+  req.controller.getImport(req, res);
+});
+
+app.post('/process', auth.currentUserCan('items_import'), (req, res) => {
+  req.controller.postImportProcess(req, res);
+})
+
+app.post('/import', auth.currentUserCan('items_import'), (req, res) => {
+  req.controller.postImportData(req, res);
+})
+
 // Create item
 app.get( '/create', auth.currentUserCan('items_create'), (req, res) => {
   req.controller.getCreate(req, res);

@@ -1,0 +1,20 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Import items"
+	- heading = title
+
+block contents
+	p Data must include a header row.
+	form(method="post" action="/items/process")
+		.form-group
+			label(for="format").col-form-label Format
+			.col-md-1.row
+				select(name="format")#format.form-control
+					option(value='tsv') TSV
+					option(value='csv') CSV
+		.form-group
+			label( for="data" ).col-form-label Data
+			textarea( name="data" type="text" rows="20" required )#data.form-control
+		.form-group
+				input( type="submit" value="Next" ).btn.btn-primary

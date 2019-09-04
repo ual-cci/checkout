@@ -353,6 +353,143 @@ class ItemController extends BaseController {
   }
 
   /**
+   * Get import page with necessary data
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
+  getImport(req, res) {
+    res.render('import');
+  }
+
+  /**
+   * Endpoint for processing the import of items
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
+  postImportProcess(req, res) {
+    var data;
+    var format;
+    if (req.body.format == 'tsv') format = "\t";
+    if (req.body.format == 'csv') format = ',';
+
+    if (req.body.data) {
+      data = req.body.data.trim().split('\r\n')
+      data = data.map(d => d.split(format))
+    } else {
+      req.flash('danger', 'No data provided')
+      req.saveSessionAndRedirect(this.getRoute());
+      return;
+    }
+
+    Promise.all([
+      this.models.locations.getAll(),
+      this.models.departments.getAll(),
+      this.models.groups.getAll()
+    ])
+    .then(([locations, departments, groups]) => {
+      if (locations.length > 0) {
+        res.render( 'process', { locations: locations, departments: departments, groups: groups, data: data } );
+      } else {
+        req.flash( 'warning', 'Create at least one location before creating items' )
+        req.saveSessionAndRedirect(this.getRoute());
+      }
+    });
+  }
+
+  /**
+   * Endpoint for importing processed item data
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
+  postImportData(req, res) {
+    // Check for location and department
+    const checks = [
+      {
+        condition: (req.body.location == ''),
+        message: 'The items must be assigned to a location'
+      },
+      {
+        condition: (req.body.department == ''),
+        message: 'The items must be assigned to a department'
+      }
+    ];
+    this._checkFields(checks, '/generate', req, res);
+
+    var items = [];
+    var barcodes = [];
+
+    var location_id = req.body.location;
+    var group_id = req.body.group;
+
+    // Test if there are duplicate column headings.
+    if (new Set(req.body.cols).size !== req.body.cols.length) {
+      req.flash('danger', 'Each heading may only be used once.');
+      req.saveSessionAndRedirect(this.getRoute());
+      return;
+    }
+
+    this.models.departments.getById(req.body.department)
+      .then((department) => {
+        // Map heading order
+        const expectedHeadings = ['name','value','label','barcode','serialnumber','notes'];
+        var headingMap = {};
+        expectedHeadings.forEach(head => {
+          headingMap[head] = req.body.cols.indexOf(head);
+        })
+
+        // Process data into item objects.
+        req.body.items.forEach(data => {
+          var item = {
+            name: data[headingMap.name],
+            barcode: data[headingMap.barcode],
+            label: data[headingMap.label],
+            value: parseFloat(data[headingMap.value]),
+            location_id: location_id,
+            department_id: department.id,
+            serialnumber: data[headingMap.serialnumber],
+            notes: data[headingMap.notes],
+            status: AVAILABILITY.AVAILABLE
+          }
+
+          if (!item.value) {
+            item.value = 0.0
+          }
+
+          if ( group_id ) {
+            item.group_id = group_id;
+          }
+          items.push(item);
+          barcodes.push({
+            barcode: item.barcode,
+            text: item.name,
+            type: item.label,
+            brand: department.brand
+          });
+        })
+      })
+      .then(() => {
+        this.models.items.create(items)
+          .then(result => {
+            console.log(items)
+            req.flash('success', 'Items imported');
+            if (req.body.print) {
+              if (req.user.printer_id) {
+                Print.labels(barcodes, req.user.printer_url);
+                req.flash('info', `Labels printed to ${req.user.printer_name}`);
+              } else {
+                req.flash('warning', 'No printer configured');
+              }
+            }
+            req.saveSessionAndRedirect(this.getRoute());
+          })
+          .catch(err => this.displayError(req, res, err, this.getRoute('/import')));
+      });
+  }
+
+  /**
    * Gets the data for a create page
    *
    * @param {Object} req Express request object

@@ -12,6 +12,7 @@
   "items_history": "User can view item loaning history.",
   "items_create": "User can create items.",
   "items_generate": "User can generate multiple items.",
+  "items_import": "User can import multiple items.",
   "items_edit": "User can edit items.",
   "items_multi_edit": "User can edit mutliple items.",
   "items_remove": "User can remove items.",
