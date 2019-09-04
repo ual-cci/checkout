@@ -33,7 +33,12 @@ class LocationController extends BaseController {
       this.displayError(req, res, 'The location requires a name', this.getRoute('/create'), 'Error creating - ');
     }
 
-    this.models.locations.create({ name: req.body.name })
+    var location = {
+      name: req.body.name,
+      barcode: req.body.barcode
+    }
+
+    this.models.locations.create(location)
       .then(result => {
         req.flash( 'success', 'Location created' );
         req.saveSessionAndRedirect(this.mountPath);
