@@ -9,7 +9,7 @@ module.exports = {
     ACTIVE: 'active',
     DISABLED: 'disabled'
   },
-  DEFAULT_SORTS: [ 'status', 'barcode', 'name', 'owner', 'role', 'course', 'year', 'group', 'location', 'department', 'value', 'issued', 'due' ],
+  DEFAULT_SORTS: [ 'status', 'barcode', 'name', 'owner', 'role', 'course', 'year', 'group', 'location', 'department', 'value', 'issued', 'due', 'loanable' ],
   DEFAULT_DIRECTIONS: [ 'asc', 'desc' ],
   ACTIONS: {
     AUDITED: 'audited',

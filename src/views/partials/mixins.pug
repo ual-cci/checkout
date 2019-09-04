@@ -219,6 +219,8 @@ mixin status( status )
 		span.badge.badge-danger Reserve
 	else if status == 'maintenance'
 		span.badge.badge-primary Maintenance
+	else if status == 'unavailable'
+		span.badge.badge-secondary Unavailable
 	else
 		span.badge.badge-info=status
 
@@ -245,5 +247,7 @@ mixin statusPill( status )
 		span.badge.badge-danger(title='Reserve') &nbsp;
 	else if status == 'maintenance'
 		span.badge.badge-primary(title='Maintenance') &nbsp;
+	else if status == 'unavailable'
+		span.badge.badge-secondary(title='Unavailable') &nbsp;
 	else
-		span.badge.badge-info(title='status') &nbsp;
+		span.badge.badge-info(title=status) &nbsp;

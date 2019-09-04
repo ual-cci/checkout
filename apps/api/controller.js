@@ -392,6 +392,10 @@ class ApiController extends BaseController {
           throw ({ message: 'Unknown item', barcode: req.params.item });
         }
 
+        if (!item.loanable) {
+          throw ({ message: 'Item is not loanable', barcode: req.params.item });
+        }
+
         switch ( item.status ) {
           case AVAILABILITY.ON_LOAN:
             throw ({ message: 'Item already on loan', barcode: item.barcode });

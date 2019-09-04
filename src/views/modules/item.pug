@@ -6,7 +6,7 @@ include ../partials/mixins.pug
 			span.fas.fa-box.text-white
 			|  
 			a( href="/items/" + item.id ).text-white.font-weight-strong=item.name
-			.float-right( style="margin-top: -3px;" ): +status( item.status )
+			.float-right( style="margin-top: -3px;" ): +status( item.loanable ? item.status : 'unavailable' )
 	.card-body
 		.row
 			.col-md-5

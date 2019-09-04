@@ -42,13 +42,23 @@ block contents
 			label( for="department" ).col-lg-2.col-form-label Department
 			.col-lg-4
 				.input-group
-					select( name="department" )#location.form-control
+					select( name="department" )#department.form-control
 						option( value="" selected ) Select a department
 						for department in departments
 							option( value=department.id )=department.name
 					.input-group-append
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="department" )
+		.form-group.row
+			label( for="loanable" ).col-lg-2.col-form-label Loanable
+			.col-lg-4
+				.input-group
+					select( name="loanable" )#loanable.form-control
+						option( value="true" selected ) Item is loanable
+						option( value="false" ) Item not loanable
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="loanable" )
 		.form-group.row
 			label( for="value" ).col-lg-2.col-form-label Value
 			.col-lg-4
@@ -63,7 +73,7 @@ block contents
 			label( for="notes" ).col-lg-2.col-form-label Notes
 			.col-lg-4
 				.input-group
-					input( name="notes" type="text" )#notes.form-control
+					textarea( name="notes" )#notes.form-control
 					.input-group-append
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="notes" )

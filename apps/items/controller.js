@@ -96,6 +96,7 @@ class ItemController extends BaseController {
           due: req.query.due ? req.query.due : '',
           audited: req.query.audited ? req.query.audited : '',
           scanned: req.query.scanned ? req.query.scanned : '',
+          loanable: req.query.loanable ? req.query.loanable : ''
         };
         const { orderBy, direction } = getSortBy(req.query.sortby, req.query.direction, {
           mutator: SORTBY_MUTATIONS.ITEMS
@@ -106,6 +107,9 @@ class ItemController extends BaseController {
           // Section of if commands to add queries into query
           .if((req.query.status), (query) => {
             query.where('status', req.query.status);
+          })
+          .if((req.query.loanable), (query) => {
+            query.where('loanable', (req.query.loanable == 'true' ? true : (req.query.loanable == 'false' ? false : null) ));
           })
           .if((req.query.course), query => {
             query.where('courses.id', req.query.course);
@@ -193,8 +197,8 @@ class ItemController extends BaseController {
     if (req.body.fields) {
       singleItemCheck(req.body.edit);
 
-      const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber'];
-      const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber'];
+      const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable'];
+      const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable'];
       const item = {};
 
       keys.forEach((k, index) => {
@@ -311,7 +315,8 @@ class ItemController extends BaseController {
             location_id: req.body.location,
             department_id: req.body.department,
             notes: req.body.notes,
-            status: AVAILABILITY.AVAILABLE
+            status: AVAILABILITY.AVAILABLE,
+            loanable: (req.body.loanable == 'true' ? true : false)
           }
 
           if (!req.body.value) {
@@ -529,7 +534,8 @@ class ItemController extends BaseController {
         department_id: req.body.department,
         notes: req.body.notes,
         serialnumber: req.body.serialnumber,
-        status: AVAILABILITY.AVAILABLE
+        status: AVAILABILITY.AVAILABLE,
+        loanable: (req.body.loanable == 'true' ? true : false)
       }
 
       if (!req.body.value) {
@@ -736,7 +742,8 @@ class ItemController extends BaseController {
       location_id: req.body.location,
       value: req.body.value,
       notes: req.body.notes,
-      serialnumber: req.body.serialnumber
+      serialnumber: req.body.serialnumber,
+      loanable: (req.body.loanable == 'true' ? true : false)
     };
 
     if (!req.body.value) {

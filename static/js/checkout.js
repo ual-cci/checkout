@@ -146,22 +146,29 @@ function addModule( data ) {
 }
 function addResult( result, type ) {
 	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>';
-	switch ( result.status ) {
-		case 'available':
-			html += ' <span class="badge badge-success">&nbsp;</span>';
-			break;
-		case 'on-loan':
-			html += ' <span class="badge badge-danger">&nbsp;</span>';
-			break;
-		case 'lost':
-		case 'broken':
-			html += ' <span class="badge badge-warning">&nbsp;</span>';
-			break;
-		case undefined:
-			break;
-		default:
-			html += ' <span class="badge badge-default">&nbsp;</span>';
-			break;
+	if (result.loanable) {
+		switch ( result.status ) {
+			case 'unavailable':
+				html += ' <span class="badge badge-success">&nbsp;</span>';
+				break;
+			case 'available':
+				html += ' <span class="badge badge-success">&nbsp;</span>';
+				break;
+			case 'on-loan':
+				html += ' <span class="badge badge-danger">&nbsp;</span>';
+				break;
+			case 'lost':
+			case 'broken':
+				html += ' <span class="badge badge-warning">&nbsp;</span>';
+				break;
+			case undefined:
+				break;
+			default:
+				html += ' <span class="badge badge-default">&nbsp;</span>';
+				break;
+		}
+	} else {
+		html += ' <span class="badge badge-secondary">&nbsp;</span>';
 	}
 	html += ' <strong>' + result.name + '</strong>';
 	html += '<br />';
