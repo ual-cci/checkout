@@ -32,6 +32,7 @@
   "users_read": "User can view other users.",
   "users_create": "User can create other users.",
   "users_edit": "User can edit another users.",
+  "users_import": "User can import multiple users.",
   "users_reset_password_attempts": "User can reset another users password login attempts.",
   "users_change_password": "User can change another users password (requires user_edit).",
   "users_change_role": "User can change another users role (requires user_edit).",

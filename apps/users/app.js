@@ -22,6 +22,19 @@ app.post('/edit', auth.currentUserCan('users_multi_edit'), (req, res) => {
   req.controller.postEdit(req, res);
 });
 
+// Import users
+app.get('/import', auth.currentUserCan('users_import'), (req, res) => {
+  req.controller.getImport(req, res);
+});
+
+app.post('/process', auth.currentUserCan('users_import'), (req, res) => {
+  req.controller.postImportProcess(req, res);
+})
+
+app.post('/import', auth.currentUserCan('users_import'), (req, res) => {
+  req.controller.postImportData(req, res);
+})
+
 // View user
 app.get('/:id', auth.currentUserCan('users_read'), (req, res) => {
   req.controller.getUser(req, res);
