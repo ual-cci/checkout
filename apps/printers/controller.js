@@ -18,7 +18,7 @@ class PrintersController extends BaseController {
   getRoot(req, res) {
     this.models.printers.getAll()
       .then(printers => {
-        res.render( 'printers', { printers } );
+        res.render( 'index', { printers } );
       });
   }
 
