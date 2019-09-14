@@ -18,7 +18,7 @@ class YearsController extends BaseController {
   getRoot(req, res) {
     this.models.years.getAll()
       .then(years => {
-        res.render('years', { years });
+        res.render('index', { years });
       });
   }
 
