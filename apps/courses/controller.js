@@ -28,7 +28,7 @@ class CoursesController extends BaseController {
       ])
       .expose()
       .then(courses => {
-        res.render( 'courses', { courses } );
+        res.render( 'index', { courses } );
       });
   }
 

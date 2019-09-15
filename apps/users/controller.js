@@ -86,7 +86,7 @@ class UsersController extends BaseController {
       .then(users => {
         const { roles, courses, years, orderBy, direction } = persist;
 
-        res.render( 'users', {
+        res.render( 'index', {
           users,
           courses,
           years,
@@ -199,7 +199,7 @@ class UsersController extends BaseController {
       })
       .then(([items, actions]) => {
         const { user } = persist;
-        res.render( 'user', {
+        res.render( 'single', {
           user,
           onloan: items,
           history: actions

@@ -9,7 +9,7 @@ block contents
 	include partials/filter.pug
 	form( action="/users/edit" method="post" )
 		- edit = true
-		include partials/user-list.pug
+		include partials/list.pug
 		if currentUserCan('users_multi_edit')
 			button( type="submit" ).btn.btn-sm.btn-primary
 				span.fas.fa-pencil-alt
