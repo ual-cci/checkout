@@ -12,7 +12,8 @@ class LoginController extends BaseController {
       req.saveSessionAndRedirect('/');
     } else {
       if (req.session.kioskMode > 0) {
-        res.render('kiosk');
+        req.flash('secondary', 'You must exit kiosk mode to login.')
+        req.saveSessionAndRedirect('/kiosk');
       } else {
         res.render('login');
       }
