@@ -7,9 +7,9 @@ html
 		link( rel="shortcut icon" href="/imgs/favicon.ico" )
 		block title
 			if title
-				title #{ title } &mdash; Checkout
+				title #{ title } &mdash; #{config.app_name}
 			else
-				title Checkout
+				title=config.app_name
 		block head
 			block css
 				link( rel="stylesheet", href="/css/bootstrap.min.css" )
@@ -40,7 +40,9 @@ html
 					.col-12
 						hr
 					.col-9
-						small.text-muted Checkout &mdash;
+						small.text-muted #{config.app_name} &mdash;
+							if config.org_name
+								|  #{config.org_name} &mdash;
 							|  
 							a.text-muted( href="https://github.com/creativetechnologylab/checkout", target="_blank" ) Contribute on GitHub
 					.col-3

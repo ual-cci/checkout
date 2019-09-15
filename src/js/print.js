@@ -176,9 +176,9 @@ const Print = {
         "media": [size]
       },
       "operation-attributes-tag": {
-        "requesting-user-name": process.env.APP_NAME,
+        "requesting-user-name": process.env.ORG_NAME ? process.env.ORG_NAME : process.env.APP_NAME,
         "job-name": "Labels",
-        "requesting-user-name": "Checkout",
+        "requesting-user-name": process.env.APP_NAME,
         "document-format": "application/pdf",
       },
       data: Buffer.concat(buffer)
