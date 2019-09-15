@@ -311,7 +311,6 @@ class UsersController extends BaseController {
    * @param {Object} res Express response object
    */
   postImportProcess(req, res) {
-    return;
     var data;
     var format;
     if (req.body.format == 'tsv') format = "\t";
@@ -327,17 +326,12 @@ class UsersController extends BaseController {
     }
 
     Promise.all([
-      this.models.locations.getAll(),
-      this.models.departments.getAll(),
-      this.models.groups.getAll()
+      this.models.courses.getAll(),
+      this.models.years.getAll(),
+      this.models.roles.getAll()
     ])
-    .then(([locations, departments, groups]) => {
-      if (locations.length > 0) {
-        res.render( 'process', { locations: locations, departments: departments, groups: groups, data: data } );
-      } else {
-        req.flash( 'warning', 'Create at least one location before creating items' )
-        req.saveSessionAndRedirect(this.getRoute());
-      }
+    .then(([courses, years, roles]) => {
+      res.render( 'process', { courses: courses, years: years, roles: roles, data: data } );
     });
   }
 
@@ -348,26 +342,6 @@ class UsersController extends BaseController {
    * @param {Object} res Express response object
    */
   postImportData(req, res) {
-    return;
-    // Check for location and department
-    const checks = [
-      {
-        condition: (req.body.location == ''),
-        message: 'The items must be assigned to a location'
-      },
-      {
-        condition: (req.body.department == ''),
-        message: 'The items must be assigned to a department'
-      }
-    ];
-    this._checkFields(checks, '/generate', req, res);
-
-    var items = [];
-    var barcodes = [];
-
-    var location_id = req.body.location;
-    var group_id = req.body.group;
-
     // Test if there are duplicate column headings.
     if (new Set(req.body.cols).size !== req.body.cols.length) {
       req.flash('danger', 'Each heading may only be used once.');
@@ -375,62 +349,80 @@ class UsersController extends BaseController {
       return;
     }
 
-    this.models.departments.getById(req.body.department)
-      .then((department) => {
-        // Map heading order
-        const expectedHeadings = ['name','value','label','barcode','serialnumber','notes'];
-        var headingMap = {};
-        expectedHeadings.forEach(head => {
-          headingMap[head] = req.body.cols.indexOf(head);
-        })
+    // Map heading order
+    const expectedHeadings = ['name','barcode','email','course','year','role','password'];
+    var headingMap = {};
+    expectedHeadings.forEach(head => {
+      headingMap[head] = req.body.cols.indexOf(head);
+    })
 
-        // Process data into item objects.
-        req.body.items.forEach(data => {
-          var item = {
-            name: data[headingMap.name],
-            barcode: data[headingMap.barcode],
-            label: data[headingMap.label],
-            value: parseFloat(data[headingMap.value]),
-            location_id: location_id,
-            department_id: department.id,
-            serialnumber: data[headingMap.serialnumber],
-            notes: data[headingMap.notes],
-            status: AVAILABILITY.AVAILABLE
-          }
+    var promises = [];
+    var _self = this;
+    function generateUser(data) {
+      return new Promise((resolve, reject) => {
+        var user = {
+          name: data[headingMap.name],
+          barcode: data[headingMap.barcode],
+          email: data[headingMap.email]
+        }
 
-          if (!item.value) {
-            item.value = 0.0
-          }
+        if (headingMap.role > 0) {
+          user.role_id = parseInt(data[headingMap.role]);
+        } else if (req.body.role) {
+          user.role_id = parseInt(req.body.role);
+        }
 
-          if ( group_id ) {
-            item.group_id = group_id;
-          }
-          items.push(item);
-          barcodes.push({
-            barcode: item.barcode,
-            text: item.name,
-            type: item.label,
-            brand: department.brand
-          });
-        })
+        if (headingMap.course > 0) {
+          user.course_id = parseInt(data[headingMap.course]);
+        } else if (req.body.course) {
+          user.course_id = parseInt(req.body.course);
+        } else {
+          req.flash('danger', 'No default course was specified and one of more rows were missing a course');
+          req.saveSessionAndRedirect(this.getRoute());
+          return;
+        }
+
+        if (headingMap.year > 0) {
+          user.year_id = parseInt(data[headingMap.year]);
+        } else if (req.body.year) {
+          user.year_id = parseInt(req.body.year);
+        } else {
+          req.flash('danger', 'No default year was specified and one of more rows were missing a year');
+          req.saveSessionAndRedirect(this.getRoute());
+          return;
+        }
+
+        if (headingMap.password > 0) {
+          auth.generatePassword(data[headingMap.password], function(password) {
+            user.pw_salt = password.salt,
+            user.pw_hash = password.hash,
+            user.pw_iterations = password.iterations
+            resolve(user)
+          })
+        } else {
+          resolve(user)
+        }
       })
-      .then(() => {
-        this.models.items.create(items)
+    }
+
+    // Process data into item objects.
+    req.body.users.forEach(data => {
+      promises.push(generateUser(data))
+    })
+
+    Promise.all(promises)
+      .then(users => {
+
+        console.log("\n\n\n\n USERS:")
+        console.log(users);
+
+        this.models.users.create(users)
           .then(result => {
-            console.log(items)
-            req.flash('success', 'Items imported');
-            if (req.body.print) {
-              if (req.user.printer_id) {
-                Print.labels(barcodes, req.user.printer_url);
-                req.flash('info', `Labels printed to ${req.user.printer_name}`);
-              } else {
-                req.flash('warning', 'No printer configured');
-              }
-            }
+            req.flash('success', 'Users imported');
             req.saveSessionAndRedirect(this.getRoute());
           })
           .catch(err => this.displayError(req, res, err, this.getRoute('/import')));
-      });
+      })
   }
 
   getUserRemove(req, res) {

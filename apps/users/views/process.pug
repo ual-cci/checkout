@@ -4,10 +4,10 @@ block prepend title
 	- title = "Process items"
 	- heading = title
 
-block contents
+block contents	
 	p Please check or match up the column headings with the data, you must provide a name and unique barcode for each line.
 	
-	form(method="post" action="/items/import")
+	form(method="post" action="/users/import")
 		h4 Data
 		.table-responsive
 			table.table.table-striped.table-sm
@@ -23,44 +23,68 @@ block contents
 											option(disabled) ──────────
 											option(value='name' selected=(col=='name'?true:false)) Name
 											option(value='barcode' selected=(col=='barcode'?true:false)) Barcode
-											option(value='label' selected=(col=='label'?true:false)) Label
-											option(value='value' selected=(col=='value'?true:false)) Value
-											option(value='serialnumber' selected=(col=='serial'?true:false)) Serial Number
-											option(value='notes' selected=(col=='notes'?true:false)) Notes
+											option(value='email' selected=(col=='email'?true:false)) Email
+											option(value='password' selected=(col=='password'?true:false)) Password
+											if col == 'course'
+												- course_index = x
+												option(value='course' selected=true) Course
+											if col == 'year'
+												- year_index = x
+												option(value='year' selected=true) Year
+											if col == 'role'
+												- role_index = x
+												option(value='role' selected=true) Role
 					else
 						tr
 							for col, x in row
-								td=col
-									input(type='hidden' name=`items[${y}][]` value=col)
+								td
+									- displayed = false
+									if x == course_index
+										- displayed = true
+										select(name=`users[${y}][]`).form-control
+											- col = col.toLowerCase()
+											option(value="") Unknown
+											for course in courses
+												option(value=course.id selected=(col==course.name.toLowerCase()?true:false))=course.name
+									if x == year_index
+										- displayed = true
+										select(name=`users[${y}][]`).form-control
+											- col = col.toLowerCase()
+											option(value="") Unknown
+											for year in years
+												option(value=year.id selected=(col==year.name.toLowerCase()?true:false))=year.name
+									if x == role_index
+										- displayed = true
+										select(name=`users[${y}][]`).form-control
+											- col = col.toLowerCase()
+											option(value="") Unknown
+											for role in roles
+												option(value=role.id selected=(col==role.name.toLowerCase()?true:false))=role.name
+									if ! displayed
+										| #{col}
+										input(type='hidden' name=`users[${y}][]` value=col)
 										
 		h4.mb-3.pb-1.border-bottom Categories
 		.form-group.row
-			label( for="group" ).col-sm-2.col-form-label Group
+			label( for="course" ).col-sm-2.col-form-label Course
 			.col-lg-4
-				select( name="group" )#group.form-control
-					option( value="" selected ) Select a group
-					for group in groups
-						option( value=group.id )=group.name
+				select(name="course")#course.form-control
+					option(value="" selected) Select a course
+					for course in courses
+						option( value=course.id )=course.name
 		.form-group.row
-			label( for="location" ).col-sm-2.col-form-label Location
+			label(for="years").col-sm-2.col-form-label Years
 			.col-lg-4
-				select( name="location" required )#location.form-control
-					option( value="" disabled selected ) Select a location
-					for location in locations
-						option( value=location.id ) #{ location.name } [#{ location.barcode}]
+				select(name="year")#year.form-control
+					option(value="" disabled selected) Select a year
+					for year in years
+						option(value=year.id)=year.name
 		.form-group.row
-			label( for="department" ).col-sm-2.col-form-label Department
+			label(for="role").col-sm-2.col-form-label Role
 			.col-lg-4
-				select( name="department" required )#department.form-control
-					option( value="" selected ) Select a department
-					for department in departments
-						option( value=department.id )=department.name
-		h3.mb-3.pb-1.border-bottom Options
-		.form-group.row
-			.col-lg-4.offset-lg-2
-				.checkbox
-					label( for="print" )
-						input( name="print" type="checkbox" checked )#print
-						|  Print Barcode Labels
+				select(name="role")#role.form-control
+					option(value="" selected) Select a role
+					for role in roles
+						option(value=role.id)=role.name
 		.form-group.offset-lg-2
 				input( type="submit" value="Import" ).btn.btn-primary
