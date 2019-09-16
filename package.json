@@ -13,7 +13,7 @@
     "bunyan": "^1.8.12",
     "bunyan-middleware": "^1.0.0",
     "bwip-js": "^1.7.3",
-    "connect-pg-simple": "^6.0.0",
+    "connect-pg-simple": "^6.0.1",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
