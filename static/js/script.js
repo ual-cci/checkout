@@ -1,12 +1,5 @@
 jQuery( document ).ready( function() {
-	var clipboard = new Clipboard( '.clipboard' );
-	clipboard.on( 'success', function( e ) {
-		console.log( e );
-	} );
-	clipboard.on( 'error', function( e ) {
-		console.log( e );
-	} );
-
+	var clipboard = new ClipboardJS( '.clipboard' );
 	jQuery( 'input[type=checkbox].checkall' ).bind( 'click', function( ) {
 		if ( jQuery( '.tab-pane' ).length > 0 ) {
 			if ( jQuery( this ).prop( 'checked' ) ) {
