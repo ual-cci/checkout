@@ -53,7 +53,7 @@ form( method="post" )
 		.col-lg-4.offset-lg-2
 			.checkbox
 				label( for="loanable" )
-						input( name="loanable" type="checkbox" value='true' checked=(item ? item.loanable : false) )#loanable
+						input( name="loanable" type="checkbox" value='true' checked=(item ? item.loanable : true) )#loanable
 						|  Item is loanable
 	.form-group.row
 		.col-lg-4.offset-lg-2
