@@ -466,32 +466,24 @@ class UsersController extends BaseController {
       return
     }
 
-    let persist = {};
+    let _user;
 
     this.models.users.getById(req.params.id)
       .then(user => {
         if (!user) {
           throw new Error('User not found');
         }
-
-        persist = {
-          ...persist,
-          user
-        };
-
+        _user = user;
         return this.models.items.getOnLoanByUserId(user.id);
       })
       .then(items => {
         if (items.length) {
           throw new Error('Users cannot be deleted if they have items on loan to them');
         }
-
-        const { user } = persist;
-
-        return Promise.all([
-          this.models.actions.removeByUserId(user.id),
-          this.models.users.remove(user.id)
-        ]);
+        return this.models.actions.removeByUserId(_user.id);
+      })
+      .then(() => {
+        return this.models.users.remove(_user.id);
       })
       .then(results => {
         req.flash('success', 'User and their history removed');
