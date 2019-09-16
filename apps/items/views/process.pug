@@ -55,6 +55,8 @@ block contents
 											option(value="") Unknown
 											for location in locations
 												option(value=location.id selected=(col==location.name.toLowerCase()?true:false))=location.name
+													if location.barcode
+														|  [#{location.barcode}]
 									if x == department_index
 										- displayed = true
 										select(name=`items[${y}][]`).form-control
@@ -80,7 +82,9 @@ block contents
 				select( name="location")#location.form-control
 					option( value="" disabled selected ) Select a location
 					for location in locations
-						option( value=location.id ) #{ location.name } [#{ location.barcode}]
+						option( value=location.id ) #{ location.name }
+							if location.barcode
+								|  [#{location.barcode}]
 		.form-group.row
 			label( for="department" ).col-sm-2.col-form-label Department
 			.col-lg-4
