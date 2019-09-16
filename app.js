@@ -21,6 +21,11 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(express.static('./static'))
+app.use('/bootstrap', express.static('./node_modules/bootstrap/dist'))
+app.use('/buzz', express.static('./node_modules/buzz/dist'))
+app.use('/clipboard', express.static('./node_modules/clipboard/dist'))
+app.use('/jquery', express.static('./node_modules/jquery/dist'))
+app.use('/fontawesome', express.static('./node_modules/@fortawesome/fontawesome-free'))
 
 // Use PUG to render pages
 app.set('views', './src/views')
