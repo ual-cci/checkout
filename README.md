@@ -18,4 +18,5 @@ The database is Postgres and it uses knex.js for its migrations and subsequent O
 little helper aliases:
 
 - `npm run db:migrate` Runs the current migrations
+- `npm run db:seed` Seeds the database with basic data to allow first login.
 - `npm run db:rollback` Rolls back the latest batch of migrations
