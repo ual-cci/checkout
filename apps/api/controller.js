@@ -561,7 +561,6 @@ class ApiController extends BaseController {
 
         const user = {
           name: req.body.name,
-          type: 'student',
           barcode: req.body.barcode,
           email: req.body.email,
           course_id: course.id,
