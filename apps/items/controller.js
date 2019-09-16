@@ -677,23 +677,28 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   getMulti(req, res) {
-    this.models.items.getMultipleByIds(req.body.ids.split(','))
-      .then(items => {
-        const barcodes = items.map(item => {
-          return {
-            barcode: item.barcode,
-            text: item.name,
-            type: item.label,
-            brand: item.department_brand
-          };
-        });
+    if (req.user.printer_id) {
+      this.models.items.getMultipleByIds(req.body.ids.split(','))
+        .then(items => {
+          const barcodes = items.map(item => {
+            return {
+              barcode: item.barcode,
+              text: item.name,
+              type: item.label,
+              brand: item.department_brand
+            };
+          });
 
-        Print.labels(barcodes, req.user.printer_url);
+          Print.labels(barcodes, req.user.printer_url);
 
-        req.flash( 'success', "Printed those labels" );
-        req.saveSessionAndRedirect(this.getRoute());
-      })
-      .catch(err => this.displayError(req, res, err, this.getRoute()));
+          req.flash( 'success', `Printed those labels to ${req.user.printer_name}` );
+          req.saveSessionAndRedirect(this.getRoute());
+        })
+        .catch(err => this.displayError(req, res, err, this.getRoute()));
+    } else {
+      req.flash( 'warning', 'No printer configured' );
+      req.saveSessionAndRedirect(this.getRoute());
+    }
   }
 
   /**
