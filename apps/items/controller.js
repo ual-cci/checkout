@@ -410,25 +410,6 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   postImportData(req, res) {
-    // Check for location and department
-    const checks = [
-      {
-        condition: (req.body.location == ''),
-        message: 'The items must be assigned to a location'
-      },
-      {
-        condition: (req.body.department == ''),
-        message: 'The items must be assigned to a department'
-      }
-    ];
-    this._checkFields(checks, '/generate', req, res);
-
-    var items = [];
-    var barcodes = [];
-
-    var location_id = req.body.location;
-    var group_id = req.body.group;
-
     // Test if there are duplicate column headings.
     if (new Set(req.body.cols).size !== req.body.cols.length) {
       req.flash('danger', 'Each heading may only be used once.');
@@ -436,62 +417,77 @@ class ItemController extends BaseController {
       return;
     }
 
-    this.models.departments.getById(req.body.department)
-      .then((department) => {
-        // Map heading order
-        const expectedHeadings = ['name','value','label','barcode','serialnumber','notes'];
-        var headingMap = {};
-        expectedHeadings.forEach(head => {
-          headingMap[head] = req.body.cols.indexOf(head);
-        })
+    // Map heading order
+    const expectedHeadings = ['name','value','label','barcode','serialnumber','notes','group','location','department'];
+    var headingMap = {};
+    expectedHeadings.forEach(head => {
+      headingMap[head] = req.body.cols.indexOf(head);
+    })
 
-        // Process data into item objects.
-        req.body.items.forEach(data => {
-          var item = {
-            name: data[headingMap.name],
-            barcode: data[headingMap.barcode],
-            label: data[headingMap.label],
-            value: parseFloat(data[headingMap.value]),
-            location_id: location_id,
-            department_id: department.id,
-            serialnumber: data[headingMap.serialnumber],
-            notes: data[headingMap.notes],
-            status: AVAILABILITY.AVAILABLE
-          }
+    var promises = [];
+    var _self = this;
+    function generateItem(data) {
+      return new Promise((resolve, reject) => {
+        var item = {
+          name: data[headingMap.name],
+          barcode: data[headingMap.barcode],
+          value: parseFloat(data[headingMap.value]),
+          notes: data[headingMap.notes],
+          serialnumber: data[headingMap.serialnumber],
+          status: AVAILABILITY.AVAILABLE
+        }
 
-          if (!item.value) {
-            item.value = 0.0
-          }
+        if (headingMap.label > 0) {
+          item.label = data[headingMap.label];
+        } else {
+          item.label = '12mm'
+        }
 
-          if ( group_id ) {
-            item.group_id = group_id;
-          }
-          items.push(item);
-          barcodes.push({
-            barcode: item.barcode,
-            text: item.name,
-            type: item.label,
-            brand: department.brand
-          });
-        })
+        if (!item.value) {
+          item.value = 0.0
+        }
+
+        if (headingMap.group > 0) {
+          item.group_id = data[headingMap.group];
+        } else if (req.body.group) {
+          item.group_id = req.body.group
+        }
+
+        if (headingMap.department > 0) {
+          item.department_id = data[headingMap.department];
+        } else if (req.body.department) {
+          item.department_id = req.body.department
+        } else {
+          throw new Error('No default department was specified and one of more rows were missing a department');
+        }
+
+        if (headingMap.location > 0) {
+          item.location_id = data[headingMap.location];
+        } else if (req.body.location) {
+          item.location_id = req.body.location
+        } else {
+          throw new Error('No default location was specified and one of more rows were missing a location');
+        }
+
+        resolve(item);
       })
-      .then(() => {
+    }
+
+    // Process data into item objects.
+    req.body.items.forEach(data => {
+      promises.push(generateItem(data))
+    })
+
+    Promise.all(promises)
+      .then(items => {
         this.models.items.create(items)
           .then(result => {
-            console.log(items)
             req.flash('success', 'Items imported');
-            if (req.body.print) {
-              if (req.user.printer_id) {
-                Print.labels(barcodes, req.user.printer_url);
-                req.flash('info', `Labels printed to ${req.user.printer_name}`);
-              } else {
-                req.flash('warning', 'No printer configured');
-              }
-            }
             req.saveSessionAndRedirect(this.getRoute());
           })
           .catch(err => this.displayError(req, res, err, this.getRoute('/import')));
-      });
+      })
+      .catch(err => this.displayError(req, res, err, this.getRoute('/import')));
   }
 
   /**

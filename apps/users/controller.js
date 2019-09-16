@@ -294,6 +294,137 @@ class UsersController extends BaseController {
     } );
   }
 
+  /**
+   * Get import page with necessary data
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
+  getImport(req, res) {
+    res.render('import');
+  }
+
+  /**
+   * Endpoint for processing the import of users
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
+  postImportProcess(req, res) {
+    var data;
+    var format;
+    if (req.body.format == 'tsv') format = "\t";
+    if (req.body.format == 'csv') format = ',';
+
+    if (req.body.data) {
+      data = req.body.data.trim().split('\r\n')
+      data = data.map(d => d.split(format))
+    } else {
+      req.flash('danger', 'No data provided')
+      req.saveSessionAndRedirect(this.getRoute());
+      return;
+    }
+
+    Promise.all([
+      this.models.courses.getAll(),
+      this.models.years.getAll(),
+      this.models.roles.getAll()
+    ])
+    .then(([courses, years, roles]) => {
+      res.render( 'process', { courses: courses, years: years, roles: roles, data: data } );
+    });
+  }
+
+  /**
+   * Endpoint for importing processed user data
+   *
+   * @param {Object} req Express request object
+   * @param {Object} res Express response object
+   */
+  postImportData(req, res) {
+    // Test if there are duplicate column headings.
+    if (new Set(req.body.cols).size !== req.body.cols.length) {
+      req.flash('danger', 'Each heading may only be used once.');
+      req.saveSessionAndRedirect(this.getRoute());
+      return;
+    }
+
+    // Map heading order
+    const expectedHeadings = ['name','barcode','email','course','year','role','password'];
+    var headingMap = {};
+    expectedHeadings.forEach(head => {
+      headingMap[head] = req.body.cols.indexOf(head);
+    })
+
+    var promises = [];
+    var _self = this;
+    function generateUser(data) {
+      return new Promise((resolve, reject) => {
+        var user = {
+          name: data[headingMap.name],
+          barcode: data[headingMap.barcode],
+          email: data[headingMap.email]
+        }
+
+        if (headingMap.role > 0) {
+          user.role_id = parseInt(data[headingMap.role]);
+        } else if (req.body.role) {
+          user.role_id = parseInt(req.body.role);
+        }
+
+        if (headingMap.course > 0) {
+          user.course_id = parseInt(data[headingMap.course]);
+        } else if (req.body.course) {
+          user.course_id = parseInt(req.body.course);
+        } else {
+          req.flash('danger', 'No default course was specified and one of more rows were missing a course');
+          req.saveSessionAndRedirect(this.getRoute());
+          return;
+        }
+
+        if (headingMap.year > 0) {
+          user.year_id = parseInt(data[headingMap.year]);
+        } else if (req.body.year) {
+          user.year_id = parseInt(req.body.year);
+        } else {
+          req.flash('danger', 'No default year was specified and one of more rows were missing a year');
+          req.saveSessionAndRedirect(this.getRoute());
+          return;
+        }
+
+        if (headingMap.password > 0) {
+          auth.generatePassword(data[headingMap.password], function(password) {
+            user.pw_salt = password.salt,
+            user.pw_hash = password.hash,
+            user.pw_iterations = password.iterations
+            resolve(user)
+          })
+        } else {
+          resolve(user)
+        }
+      })
+    }
+
+    // Process data into item objects.
+    req.body.users.forEach(data => {
+      promises.push(generateUser(data))
+    })
+
+    Promise.all(promises)
+      .then(users => {
+
+        console.log("\n\n\n\n USERS:")
+        console.log(users);
+
+        this.models.users.create(users)
+          .then(result => {
+            req.flash('success', 'Users imported');
+            req.saveSessionAndRedirect(this.getRoute());
+          })
+          .catch(err => this.displayError(req, res, err, this.getRoute('/import')));
+      })
+  }
+
   getUserRemove(req, res) {
     if (req.params.id == req.user.id) {
       this.displayError(req, res, 'You cannot delete the logged in user.', this.getRoute());
