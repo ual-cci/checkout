@@ -19,7 +19,9 @@ form( method="post" )
 			select( name="location" required )#location.form-control
 				option( value="" disabled selected ) Select a location
 				for location in locations
-					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) ) #{ location.name } [#{ location.barcode}]
+					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) ) #{ location.name }
+						if location.barcode
+							|  [#{location.barcode}]
 	.form-group.row
 		label( for="group" ).col-lg-2.col-form-label Group
 		.col-lg-4
