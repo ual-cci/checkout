@@ -31,6 +31,18 @@ class ItemController extends BaseController {
    * @param {Object} res Express response object
    */
   postInsurance(req, res) {
+    var delimiter;
+    var format = 'txt'
+    if (req.body.format == 'csv') {
+      delimiter = ",";
+      format = 'csv';
+    }
+
+    if (req.body.format == 'tsv') {
+      delimiter = "\t";
+      format = 'tsv';
+    }
+
     this.models.items.query()
       .where([['value', '>=', req.body.min_value]])
       .orderBy([
@@ -38,18 +50,24 @@ class ItemController extends BaseController {
       ])
       .expose()
       .then(items => {
-        var data = [
-          ['Name,Serial Number,Value,Department,Location,Group']
-        ];
+        var data = [];
+        data.push(['Name','Serial Number','Value','Department','Location','Group'].join(delimiter))
 
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
-          data.push(`${this._default(item.name)},${this._default(item.serialnumber)},${this._default(item.value)},${this._default(item.department_name)},${this._default(item.location_name)},${this._default(item.group_name)}`)
+          var row = [];
+          row.push(this._default(item.name))
+          row.push(this._default(item.serialnumber))
+          row.push(this._default(item.value))
+          row.push(this._default(item.department_name))
+          row.push(this._default(item.location_name))
+          row.push(this._default(item.group_name))
+          data.push(row.join(delimiter));
         }
         data = data.join("\n");
 
-        res.set('Content-Disposition', 'inline;filename=insurance-report.csv');
-        res.set('Content-Type', 'text/csv');
+        res.set('Content-Disposition', `inline;filename=insurance-report.${format}`);
+        res.set('Content-Type', `text/${format}`);
         res.send(data);
       });
   }
