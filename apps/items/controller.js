@@ -765,13 +765,16 @@ class ItemController extends BaseController {
 
         if (req.body.print) {
           if (req.user.printer_id) {
-            Print.label( {
-              barcode: item.barcode,
-              text: item.name,
-              type: item.label,
-              brand: item.department_brand
-            }, req.user.printer_url );
-            req.flash( 'info', `Label reprinted to ${req.user.printer_name}`);
+            this.models.items.getById(req.params.id)
+              .then(item => {
+                Print.label( {
+                  barcode: item.barcode,
+                  text: item.name,
+                  type: item.label,
+                  brand: item.department_brand
+                }, req.user.printer_url );
+                req.flash( 'info', `Label reprinted to ${req.user.printer_name}`);
+              })
           } else {
             req.flash( 'warning', 'No printer configured' );
           }
