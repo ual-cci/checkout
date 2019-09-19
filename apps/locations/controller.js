@@ -36,8 +36,13 @@ class LocationController extends BaseController {
     }
 
     var location = {
-      name: req.body.name,
-      barcode: req.body.barcode
+      name: req.body.name
+    }
+
+    if (req.body.barcode) {
+      location.barcode = req.body.barcode;
+    } else {
+      location.barcode = null;
     }
 
     this.models.locations.create(location)
@@ -66,8 +71,13 @@ class LocationController extends BaseController {
     }
 
     var location = {
-      name: req.body.name,
-      barcode: req.body.barcode
+      name: req.body.name
+    }
+
+    if (req.body.barcode) {
+      location.barcode = req.body.barcode;
+    } else {
+      location.barcode = null;
     }
 
     this.models.locations.update(req.params.id, location )
