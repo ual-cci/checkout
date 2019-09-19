@@ -25,7 +25,7 @@ const Print = {
           break;
 
         case '12mm_flag':
-          size = "Custom.12x18mm";
+          size = "Custom.12x50mm";
           barcodes.push(Print.add12mmFlag(doc, code.barcode, code.text, code.brand))
           break;
 
@@ -82,16 +82,18 @@ const Print = {
   },
   add12mmFlag: function( doc, barcode, text, brand ) {
     return new Promise( function(resolve, reject) {
+      var w = 12;
+      var h = 50;
       Print.generate2DBarcodeImage(barcode).then(function(png) {
         var page = doc.addPage({
-          size: [pt(40), pt(12)],
+          size: [pt(h), pt(w)],
           layout: 'landscape',
           margin: 0
         });
         for (var i = 0; i < 2; i++) {
           if (i==1) {
             doc.save();
-            doc.rotate(180,{origin:[pt(6),pt(20)]});
+            doc.rotate(180,{origin:[pt(w/2),pt(h/2)]});
           }
 
           page.fontSize(4.5);
@@ -118,8 +120,8 @@ const Print = {
         }
 
         doc.restore();
-        page.moveTo(pt(0), pt(20))
-          .lineTo(pt(12),pt(20))
+        page.moveTo(pt(0), pt(h/2))
+          .lineTo(pt(w),pt(h/2))
           .lineWidth(pt(0.25))
           .lineCap('round')
           .dash(pt(0.25), {space:pt(1)})
