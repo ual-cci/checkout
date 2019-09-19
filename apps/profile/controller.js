@@ -37,13 +37,13 @@ class ProfileController extends BaseController {
    */
   postRoot(req, res) {
     var passwordValidation = auth.passwordRequirements(req.body.password);
-    if (passwordValidation !== true) {
+    if (req.body.password && passwordValidation !== true) {
       req.flash('danger', passwordValidation);
       req.saveSessionAndRedirect(this.getRoute());
       return;
     }
 
-    if (req.body.password != req.body.verify) {
+    if (req.body.password && req.body.password != req.body.verify) {
       req.flash('danger', 'Passwords must match');
       req.saveSessionAndRedirect(this.getRoute());
       return;
