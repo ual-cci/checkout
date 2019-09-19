@@ -36,6 +36,19 @@ class ProfileController extends BaseController {
    * @param {Object} res Express response object
    */
   postRoot(req, res) {
+    var passwordValidation = auth.passwordRequirements(req.body.password);
+    if (passwordValidation !== true) {
+      req.flash('danger', passwordValidation);
+      req.saveSessionAndRedirect(this.getRoute());
+      return;
+    }
+
+    if (req.body.password != req.body.verify) {
+      req.flash('danger', 'Passwords must match');
+      req.saveSessionAndRedirect(this.getRoute());
+      return;
+    }
+
     const user = {
       name: req.body.name,
       email: req.body.email,

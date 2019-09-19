@@ -1,5 +1,11 @@
 extends ../../../src/views/base.pug
 
+block append css
+	link(rel="stylesheet" href="/css/password-requirements.css")
+
+block append js
+	script(type="text/javascript" src="/js/password-requirements.js")
+
 block prepend title
 	- title = "Profile"
 	- heading = title
@@ -33,8 +39,11 @@ block contents
 			.form-group.row
 				label( for="password" ).col-lg-2.col-form-label Password
 				.col-lg-4
-					input( name="password" type="password" )#password.form-control
-					small.form-text.text-muted Password will only be changed if the field is modified.
+					input( name="password" type="password" )#password.form-control.pw-req
+			.form-group.row
+				label( for="password" ).col-lg-2.col-form-label Verify
+				.col-lg-4
+					input(name="verify" type="password")#verify.form-control.pw-mat
 			.form-group.row
 				.col-lg-4.offset-lg-2
 					button( type="submit" ).btn.btn-primary Update

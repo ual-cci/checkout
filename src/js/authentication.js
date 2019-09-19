@@ -149,6 +149,26 @@ const Authentication = {
 			} );
 		} );
 	},
+	// Checks password meets requirements
+	passwordRequirements: function(password) {
+		if ( ! password )
+			return 'No password entered';
+
+		if ( password.length < 8 )
+			return 'Password is less than 8 characters';
+
+		if ( password.match( /\d/g ) === null )
+			return 'Password does not contain any numbers';
+
+		if ( password.match( /[A-Z]/g ) === null )
+			return 'Password does not contain any uppercase characters';
+
+		if ( password.match( /[a-z]/g ) === null )
+			return 'Password does not contain any lowercase characters';
+
+		return true;
+	},
+
 	loggedIn: function( req ) {
 		// Is the user logged in?
 		if ( req.isAuthenticated() && req.user != undefined ) {
