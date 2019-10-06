@@ -1,14 +1,13 @@
 
 exports.seed = function(knex) {
-  // Deletes ALL existing entries
-  return knex('printers').del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('printers').insert([
-        {
-          name: 'Brother Tape',
-          url: 'http://localhost:631/printers/Brother_PT_P900W'
-        },
-      ]);
-    });
-};
+	// Deletes ALL existing entries
+	return knex('printers').del()
+		.then(function () {
+			// Inserts seed entries
+			return knex('printers').insert([{
+				name: 'Brother Tape',
+				url: 'http://localhost:631/printers/Brother_PT_P900W'
+			},
+			])
+	})
+}
