@@ -1,12 +1,12 @@
 html{
-  font-size: 15px;
+	font-size: 15px;
 }
 body {
 	padding-bottom: 20px;
 }
 
 body > .navbar {
-  margin-bottom: 30px;
+	margin-bottom: 30px;
 }
 
 body.dev:before {
@@ -16,9 +16,9 @@ body.dev:before {
 	left: 0;
 	right: 0;
 	height: 3px;
-	background-image: url( /imgs/dev.svg );
-  background-size: 20px 10px;
-  z-index: 1000;
+	background-image: url(/imgs/dev.svg);
+	background-size: 20px 10px;
+	z-index: 1000;
 }
 
 body.dev .navbar {
@@ -33,11 +33,11 @@ body.kiosk:after {
 	right: 0;
 	height: 3px;
 	background: #dc3545;
-  z-index: 1000;
+	z-index: 1000;
 }
 
 body.dev.kiosk:before {
-  top: 3px;
+	top: 3px;
 }
 
 body.kiosk .navbar {
@@ -93,20 +93,6 @@ td.flex {
 
 .break {
 	margin-top: 1em;
-}
-
-/* unused styles? */
-
-.panel.panel-primary h3 {
-	/* position: relative; */
-}
-
-.panel-primary .panel-heading h3:after {
-	/* position: absolute;
-	right: 0;
-	font-weight: normal;
-	font-size: small;
-	top: 3px; */
 }
 
 .action .icon {
