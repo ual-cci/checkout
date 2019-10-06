@@ -1,5 +1,5 @@
 const BaseModel = require('./base.js')
-const { AVAILABILITY } = require('../js/common/constants')
+const {AVAILABILITY} = require('../js/common/constants')
 
 class ItemModel extends BaseModel {
 	constructor(opts = {}) {

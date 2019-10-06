@@ -53,7 +53,7 @@ const Print = {
 				size: [pt(18), pt(12)],
 				layout: 'landscape',
 				margin: 0
-			} )
+			})
 			page.fontSize(4.5)
 			page.font('Helvetica-Bold')
 
@@ -80,8 +80,8 @@ const Print = {
 			})
 		})
 	},
-	add12mmFlag: function( doc, barcode, text, brand ) {
-		return new Promise( function(resolve, reject) {
+	add12mmFlag: function(doc, barcode, text, brand) {
+		return new Promise(function(resolve, reject) {
 			var w = 12
 			var h = 50
 			Print.generate2DBarcodeImage(barcode).then(function(png) {
@@ -144,7 +144,7 @@ const Print = {
 				page.image(png,	pt(5.5), pt(2), {
 					width: pt(25),
 					height: pt(25)
-				} )
+				})
 
 				page.fontSize(15)
 				page.font('Helvetica-Bold')
@@ -171,8 +171,8 @@ const Print = {
 			}, function(err, png) {
 				if (err) return reject(err)
 					return resolve(png)
-			} )
-		} )
+			})
+		})
 	},
 	send: function(buffer, printer, size) {
 		var file = {
@@ -188,8 +188,8 @@ const Print = {
 			data: Buffer.concat(buffer)
 		}
 
-		var printer = ipp.Printer( printer )
-		printer.execute( "Print-Job", file, function ( err, res ) {
+		var printer = ipp.Printer(printer)
+		printer.execute("Print-Job", file, function (err, res) {
 			delete buffer
 		})
 	},

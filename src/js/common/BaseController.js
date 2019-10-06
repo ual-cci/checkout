@@ -1,4 +1,4 @@
-const { createRoutePath } = require('../utils.js')
+const {createRoutePath} = require('../utils.js')
 
 class BaseController {
 	constructor({path}) {

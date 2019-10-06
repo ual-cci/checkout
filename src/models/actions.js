@@ -1,6 +1,6 @@
 const BaseModel = require('./base.js')
 
-const { ACTIONS } = require('../js/common/constants')
+const {ACTIONS} = require('../js/common/constants')
 
 class ActionModel extends BaseModel {
 	constructor(opts = {}) {

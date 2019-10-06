@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
 	jQuery(document).delegate('#modules .buttons button', 'click', handleItemButtons)
 	jQuery(document).delegate('#issue .flash .override', 'click', handleOverride)
 	jQuery(document).delegate('#results .list-group-item', 'click', handleResultClick)
-	jQuery('#mode .nav-link').on('shown.bs.tab', function(a) { focus() })
+	jQuery('#mode .nav-link').on('shown.bs.tab', function(a) {focus()})
 })
 
 
@@ -116,7 +116,7 @@ function flash(data) {
 	var alert = jQuery(html).addClass('alert-' + data.status)
 
 	jQuery(activeTab).prepend(alert)
-	setTimeout(function() { jQuery(alert).remove() }, 5000)
+	setTimeout(function() {jQuery(alert).remove()}, 5000)
 }
 
 function addModule(data) {
@@ -210,7 +210,7 @@ function label(item, cb) {
 	})
 }
 function audit(item, location, override, cb) {
-	jQuery.post('/api/audit/' + item, { location: location, override: override }, function(data, status) {
+	jQuery.post('/api/audit/' + item, {location: location, override: override}, function(data, status) {
 		cb(data)
 	})
 }
@@ -225,10 +225,10 @@ function newUser(name, barcode, email, course, year, cb) {
 		cb(data)
 	})
 }
-function search(barcode, cb) { barcode ? apiGET('search', barcode, cb) : null }
-function getItem(barcode, cb) { apiGET('item', barcode, cb) }
-function getUser(barcode, cb) { apiGET('user', barcode, cb) }
-function identify(barcode, cb) { apiGET('identify', barcode, cb) }
+function search(barcode, cb) {barcode ? apiGET('search', barcode, cb) : null}
+function getItem(barcode, cb) {apiGET('item', barcode, cb)}
+function getUser(barcode, cb) {apiGET('user', barcode, cb)}
+function identify(barcode, cb) {apiGET('identify', barcode, cb)}
 function apiGET(method, barcode, cb) {
 	jQuery.get('/api/' + method + '/' + barcode, function(data, status) {
 		cb(data)
@@ -313,7 +313,7 @@ function handleIssueSubmit(e) {
 		if (data.kind == 'unknown') {
 			jQuery('.new-user.nav-link').tab('show')
 			jQuery('#new-user #barcode').val(term)
-			flash({ status: 'warning', message: 'Unknown barcode', barcode: term })
+			flash({status: 'warning', message: 'Unknown barcode', barcode: term})
 			jQuery('#new-user [name=name]').focus()
 		} else {
 			select(data.kind, data.barcode)
@@ -333,7 +333,7 @@ function handleReturnSubmit(e) {
 		if (data) {
 			flash(data)
 		} else {
-			flash({ status: 'danger', message: 'Unknown item', barcode: term })
+			flash({status: 'danger', message: 'Unknown item', barcode: term})
 		}
 	})
 }
@@ -402,7 +402,7 @@ function handleResultClick() {
 	lazyResetKioskTimer()
 	var type = jQuery(this).data('type')
 	var barcode = jQuery(this).data('barcode')
-	if (jQuery(this).hasClass('disabled')) return flash({ status: 'warning', message: 'Cannot select a disabled user account' })
+	if (jQuery(this).hasClass('disabled')) return flash({status: 'warning', message: 'Cannot select a disabled user account'})
 	select(type, barcode)
 	empty(true)
 }
@@ -512,5 +512,5 @@ function lazyResetKioskTimer() {
   if (typeof resetKioskTimer == 'function') {
     console.log('resetKioskTimer')
     resetKioskTimer()
-  }
+ }
 }

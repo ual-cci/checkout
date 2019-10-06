@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
 
 	// MultiPrint button shim
 	const multiPrint = document.getElementById('multi-print')
-	if (multiPrint) { // must be the items page
+	if (multiPrint) {// must be the items page
 		const itemsForm = document.getElementById('items-form')
 
 		itemsForm.addEventListener('change', (e) => {

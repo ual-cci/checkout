@@ -2,7 +2,7 @@ const db = require('../js/database.js')
 const logs = require('../../logging/index')
 
 class BaseModel {
-	constructor({ table, debug = false }) {
+	constructor({table, debug = false}) {
 		this.options = {
 			table: table,
 			debug
@@ -108,7 +108,7 @@ class BaseModel {
 	remove(id) {
 		return new Promise((resolve, reject) => {
 			const query = this.query().expose()
-				.where( 'id', id )
+				.where('id', id)
 				.delete()
 
 			this.logQuery(query, 'remove')
@@ -157,7 +157,7 @@ class BaseModel {
 	}
 
 	_getColumn(name, table = false) {
-		return name.indexOf('.') >= 0 ? name : `${ table ? table : this.options.table }.${ name }`
+		return name.indexOf('.') >= 0 ? name : `${table ? table : this.options.table}.${name}`
 	}
 
 	/**
@@ -271,7 +271,7 @@ class BaseModel {
 
 		keys.forEach(k => {
 			if (k in joins) {
-				const { table, join, properties, prefix, alias } = joins[k]
+				const {table, join, properties, prefix, alias} = joins[k]
 
 				// If the key is absolute (with .) use it, if not create it
 				const foreignJoinKey = this._getColumn(join[0], table)
@@ -375,7 +375,7 @@ class BaseModel {
 				columns.forEach((col, index) => {
 					const method = index === 0 ? 'where' : 'orWhere'
 					const _col = this._getColumn(col)
-					query[method](_col, 'ilike', `%${ term }%`)
+					query[method](_col, 'ilike', `%${term}%`)
 				})
 			})
 			.orderBy([ orderBy ])
