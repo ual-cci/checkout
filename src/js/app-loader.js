@@ -1,95 +1,95 @@
-const fs = require( 'fs' );
-const path = require('path');
-const helmet = require( 'helmet' );
+const fs = require('fs')
+const path = require('path')
+const helmet = require('helmet')
 
-const templateLocals = require('../js/template-locals.js');
+const templateLocals = require('../js/template-locals.js')
 
-const ROOT = path.join(__dirname, '..', '..');
-const APP_ROOT = path.join(ROOT, 'apps');
+const ROOT = path.join(__dirname, '..', '..')
+const APP_ROOT = path.join(ROOT, 'apps')
 
 function loadApp(file) {
-  if ( fs.statSync(file).isDirectory() ) {
-    var config_file = path.join(file, '/config.json');
+	if (fs.statSync(file).isDirectory()) {
+		var config_file = path.join(file, '/config.json')
 
-    if ( fs.existsSync( config_file ) ) {
-      // Parse the config into apps array
-      var output = JSON.parse( fs.readFileSync( config_file ) );
-      output.uid = file;
-      if ( ! output.priority ) output.priority = 100;
-      output.app = path.join(file, 'app.js');
+		if (fs.existsSync(config_file)) {
+			// Parse the config into apps array
+			var output = JSON.parse(fs.readFileSync(config_file))
+			output.uid = file
+			if (!output.priority) output.priority = 100
+			output.app = path.join(file, 'app.js')
 
-      output.subapps = [];
+			output.subapps = []
 
-      // Check for sub apps directory
-      var subapp_path = path.join(file, 'apps');
-      if ( fs.existsSync( subapp_path ) ) {
-        output.subapps = loadApps(subapp_path);
-      }
+			// Check for sub apps directory
+			var subapp_path = path.join(file, 'apps')
+			if (fs.existsSync(subapp_path)) {
+				output.subapps = loadApps(subapp_path)
+			}
 
-      output.subapps.sort(byPriority);
+			output.subapps.sort(byPriority)
 
-      return output;
-    }
-  } else {
-    return false;
-  }
+			return output
+		}
+	} else {
+		return false
+	}
 }
 
-function byPriority( a, b ) {
-  return a.priority < b.priority;
-};
+function byPriority(a, b) {
+	return a.priority < b.priority
+}
 
 function loadApps(root) {
-  var files = fs.readdirSync(root);
+	const files = fs.readdirSync(root)
 
-  const apps = files.map(f => {
-    return loadApp(path.join(root, f));
-  }).filter(f => f);
+	const apps = files.map(f => {
+		return loadApp(path.join(root, f))
+	}).filter(f => f)
 
-  apps.sort(byPriority);
+	apps.sort(byPriority)
 
-  return apps;
+	return apps
 }
 
 function setupAppRoute(mainApp, childApp) {
-  var new_app = require( childApp.app )(childApp);
-  new_app.use( helmet() );
-  mainApp.use( '/' + childApp.path, new_app );
-  new_app.locals.basedir = ROOT;
+	var new_app = require(childApp.app)(childApp)
+	new_app.use(helmet())
+	mainApp.use(`/${childApp.path}`, new_app)
+	new_app.locals.basedir = ROOT
 
-  if ( childApp.subapps.length > 0 ) {
-    childApp.subapps.forEach(subApp => {
-      setupAppRoute(mainApp, subApp);
-    });
-  }
+	if (childApp.subapps.length > 0) {
+		childApp.subapps.forEach(subApp => {
+			setupAppRoute(mainApp, subApp)
+		})
+	}
 }
 
 function routeApps(app, apps) {
-  apps.forEach(childApp => {
-    setupAppRoute(app, childApp);
-  });
+	apps.forEach(childApp => {
+		setupAppRoute(app, childApp);
+	})
 }
 
 module.exports = function(app) {
 	// Loop through main app director contents
-	const apps = loadApps(APP_ROOT);
+	const apps = loadApps(APP_ROOT)
 
 	// Load template locals;
-	app.use(templateLocals(apps));
+	app.use(templateLocals(apps))
 
 	// Route apps
-	routeApps(app, apps);
+	routeApps(app, apps)
 
 	// Error 404
-	app.use( function ( req, res, next ) {
-		res.status( 404 );
-		res.render( '404' );
-	} );
+	app.use(function (req, res, next) {
+		res.status(404)
+		res.render('404')
+	})
 
 	// Error 500
-	app.use( function ( err, req, res, next ) {
-    console.log(err);
-		res.status( 500 );
-		res.render( '500', { error: ( res.locals.dev ? err.stack : undefined ) } );
-	} );
-};
+	app.use(function (err, req, res, next) {
+		console.log(err)
+		res.status(500);
+		res.render('500', {error: (res.locals.dev ? err.stack : undefined)})
+	})
+}
