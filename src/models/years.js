@@ -1,16 +1,16 @@
-const BaseModel = require('./base.js');
+const BaseModel = require('./base.js')
 
 class YearModel extends BaseModel {
-  constructor(opts = {}) {
-    super({
-      ...opts,
-      table: 'years'
-    });
-  }
+	constructor(opts = {}) {
+		super({
+			...opts,
+			table: 'years'
+		})
+	}
 
-  getAll() {
-    return this.orderBy([['name']]).retrieve();
-  }
+	getAll() {
+		return this.orderBy([['name']]).retrieve()
+	}
 }
 
-module.exports = YearModel;
+module.exports = YearModel

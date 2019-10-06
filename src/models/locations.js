@@ -1,16 +1,16 @@
-const BaseModel = require('./base.js');
+const BaseModel = require('./base.js')
 
 class LocationModel extends BaseModel {
-  constructor(opts = {}) {
-    super({
-      ...opts,
-      table: 'locations'
-    });
-  }
+	constructor(opts = {}) {
+		super({
+			...opts,
+			table: 'locations'
+		})
+	}
 
-  getAll() {
-    return this.orderBy([['name']]).retrieve();
-  }
+	getAll() {
+		return this.orderBy([['name']]).retrieve()
+	}
 }
 
-module.exports = LocationModel;
+module.exports = LocationModel
