@@ -44,7 +44,7 @@ class ItemController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	_checkFields(checks, redirect, req, res) {
-		for (let i = 0 i < checks.length i++) {
+		for (let i = 0; i < checks.length; i++) {
 			if (checks[i].condition) {
 				this.displayError(req, res, checks[i].message, this.getRoute(redirect))
 				break
@@ -306,7 +306,7 @@ class ItemController extends BaseController {
 
 		this.models.departments.getById(req.body.department)
 		.then((department) => {
-			for (let i = start i <= end i++) {
+			for (let i = start; i <= end; i++) {
 				let item = {
 					name: req.body.name.trim(),
 					barcode: req.body.prefix,
