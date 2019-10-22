@@ -21,7 +21,7 @@ const seedFunction = function(knex, Promise) {
       name: 'N/A'
     }).first('id'),
   ])
-    .then(([role, printer, course, year]) => {
+    .then(([printer, role, course, year]) => {
       const roleId = role.id;
       const printerId = printer.id;
       const courseId = course.id;
@@ -43,7 +43,7 @@ const seedFunction = function(knex, Promise) {
                 'year_id': yearId,
                 'barcode': 'JAPPLESEED123',
                 'pw_iterations': iterations,
-                'role_id': role_id
+                'role_id': roleId
               },
               {
                 'email': 'a.smith@example.com',
@@ -57,7 +57,7 @@ const seedFunction = function(knex, Promise) {
                 'year_id': yearId,
                 'barcode': 'ASMITH456',
                 'pw_iterations': iterations,
-                'role_id': role_id
+                'role_id': roleId
               }
             ]));
           });

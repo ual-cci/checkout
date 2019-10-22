@@ -1,7 +1,7 @@
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex('permissions').del()
+  return knex('permissions').truncate()
     .then(function() {
       return knex('roles').where({
         name: 'Super Admin'
