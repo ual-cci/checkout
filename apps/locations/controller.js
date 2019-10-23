@@ -33,7 +33,7 @@ class LocationController extends BaseController {
       this.displayError(req, res, 'The location requires a name', this.getRoute('/create'), 'Error creating - ');
     }
 
-    this.models.locations.create({ name: req.body.name })
+    this.models.locations.create({ name: req.body.name, barcode: req.body.barcode })
       .then(result => {
         req.flash( 'success', 'Location created' );
         req.saveSessionAndRedirect(this.mountPath);
@@ -58,7 +58,7 @@ class LocationController extends BaseController {
       this.displayError(req, res, 'The location requires a name', this.getRoute([`/${req.params.id}`, '/edit']), 'Error editing - ');
     }
 
-    this.models.locations.update(req.params.id, { name: req.body.name })
+    this.models.locations.update(req.params.id, { name: req.body.name, barcode: req.body.barcode })
       .then(() => {
         req.flash( 'success', 'Location updated' );
         req.saveSessionAndRedirect(this.mountPath);
