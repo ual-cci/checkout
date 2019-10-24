@@ -8,7 +8,7 @@ exports.up = function(knex) {
 		knex.schema.createTable('permissions', table => {
 			table.increments();
 			table.integer('role_id')
-			table.foreign('role_id').references('roles.id')
+			table.foreign('role_id').references('roles.id').onDelete('CASCADE')
 			table.string('permission')
 		}),
 		knex.schema.table('users', table => {

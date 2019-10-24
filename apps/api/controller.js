@@ -1,4 +1,4 @@
-
+//
 const path = require('path')
 const moment = require('moment')
 const pug = require('pug')
@@ -567,8 +567,8 @@ class ApiController extends BaseController {
 
 			return this.models.users.create(user)
 				.catch(err => {
-					throw new ({
-						message: err,
+					throw ({
+						message: err.message,
 						redirect: {
 							type: 'user',
 							barcode: req.body.barcode

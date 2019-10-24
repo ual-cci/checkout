@@ -7,7 +7,7 @@ const seedFunction = function(knex) {
 	const p = new Promise((resolve, reject) => {
 		res = resolve
 		rej = reject
- })
+	})
 
 	Promise.all([
 		knex('printers').first('id'),
