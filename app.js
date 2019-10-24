@@ -37,5 +37,5 @@ appLoader(app)
 
 // Start server
 const listener = server.listen(process.env.APP_PORT ,process.env.APP_HOST, function () {
-  console.log('Server started')
+	console.log('Server started')
 })
