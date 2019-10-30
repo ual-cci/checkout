@@ -30,6 +30,7 @@
     "pug": "^2.0.3"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "fs-extra": "^7.0.1",
     "jsonfile": "^5.0.0",
     "winston": "^3.2.1"
