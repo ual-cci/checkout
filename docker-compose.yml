@@ -1,0 +1,32 @@
+version: "3"
+services:
+  web:
+    build:
+      context: "./"
+    ports:
+      - "3000:3000"
+    networks:
+      - checkout
+    depends_on:
+      - db
+    restart: unless-stopped
+    env_file: ./docker.env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - APP_HOST=
+      - APP_PORT=3000
+      - APP_COOKIE=checkout_session
+      - USER_PW_ITERATIONS=50000
+      - USER_PW_TRIES=5
+      - LOG_PATH=./logs
+      - LOG_STDOUT=true
+  db:
+    image: "postgres:9.6"
+    networks:
+      - checkout
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    env_file: ./docker.env
+networks:
+  checkout:
