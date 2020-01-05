@@ -36,6 +36,7 @@ config/config.json
 .DS_Store
 
 .env
+*.env
 
 snippets
 tests

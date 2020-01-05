@@ -2,8 +2,8 @@ const {DEFAULT_DIRECTIONS, DEFAULT_SORTS, SORTBY_MUTATIONS} = require('./common/
 
 module.exports = {
 	constructTarget: () => {
-		const {DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME} = process.env
-		return `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
+		const {POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB} = process.env
+		return `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
 	},
 	createRoutePath: (path) => {
 		return ['/', path].join('')
