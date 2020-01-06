@@ -8,6 +8,10 @@ class LocationModel extends BaseModel {
 		})
 	}
 
+	get properties() {
+		return ['id', 'name', 'barcode']
+	}
+
 	getAll() {
 		return this.orderBy([['name']]).retrieve()
 	}
