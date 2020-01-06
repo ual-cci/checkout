@@ -1,6 +1,7 @@
-# Build from node v10 alpine with gyp + git for npm
+# Build from node v10 alpine with gyp + pm2
 FROM node:10-alpine
 RUN apk add --no-cache g++ make python
+RUN npm install pm2 -g
 
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 WORKDIR /home/node/app
@@ -18,4 +19,4 @@ COPY --chown=node:node . .
 
 # Run app and open port
 EXPOSE 3000
-CMD ["node", "app.js"]
+CMD ["pm2-runtime", "ecosystem.config.js"]
