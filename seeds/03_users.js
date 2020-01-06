@@ -16,7 +16,6 @@ function createUsers(knex, printerId, courseId, yearId, roleId, password) {
 				name: [faker.name.firstName(), faker.name.lastName()].join(' '),
 				pw_hash: password.hash,
 				pw_salt: password.salt,
-				type: 'admin',
 				printer_id: printerId,
 				course_id: courseId,
 				year_id: yearId,
