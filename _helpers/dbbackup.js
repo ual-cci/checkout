@@ -4,9 +4,9 @@ const homedir = require('os').homedir();
 const path = require('path');
 const moment = require('moment');
 
-require('dotenv').config();
+require('dotenv-safe').config({allowEmptyValues: true});
 
-const { DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
+const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB } = process.env;
 const BACKUP_LIMIT = 30;
 
 const backupFileDir = path.join(homedir, 'checkout_backups');
@@ -43,7 +43,7 @@ function trimBackups() {
 }
 
 function runBackup() {
-	exec(`pg_dump -h ${ DB_HOST } -U ${ DB_USER } -F c -b -v -f "${ path.join(backupFileDir, backupFileName) }" -d ${ DB_NAME }`);
+	exec(`pg_dump -h ${ POSTGRES_HOST } -U ${ POSTGRES_USER } -F c -b -v -f "${ path.join(backupFileDir, backupFileName) }" -d ${ POSTGRES_DB }`);
 
 	console.log(`Saved ${ path.join(backupFileDir, backupFileName) }`);
 }

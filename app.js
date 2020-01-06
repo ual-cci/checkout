@@ -1,8 +1,8 @@
-require('dotenv').config()
+require('dotenv-safe').config({allowEmptyValues: true});
 
 const express = require('express')
 const http = require('http')
-const flash = require('express-flash')
+const flash = require('express-flash-plus')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 
