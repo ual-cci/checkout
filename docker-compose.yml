@@ -1,5 +1,12 @@
 version: "3"
 services:
+  db:
+    image: "postgres:9.6"
+    networks:
+      - checkout
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    env_file: ./docker.env
   web:
     build:
       context: "./"
@@ -21,12 +28,5 @@ services:
       - USER_PW_TRIES=5
       - LOG_PATH=./logs
       - LOG_STDOUT=true
-  db:
-    image: "postgres:9.6"
-    networks:
-      - checkout
-    volumes:
-      - ./database:/var/lib/postgresql/data
-    env_file: ./docker.env
 networks:
   checkout:
