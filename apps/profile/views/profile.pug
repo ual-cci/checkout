@@ -33,7 +33,11 @@ block contents
 			.form-group.row
 				label( for="audit_point" ).col-lg-2.col-form-label Audit Point
 				.col-lg-4
-					input( name="audit_point" type="datetime-local" value=moment( loggedInUser.audit_point ).format( 'YYYY-MM-DDTHH:MM' )  )#audit_point.form-control
+					.input-group
+						input(name="audit_point" type="text" value=(loggedInUser.audit_point?moment(loggedInUser.audit_point).format('HH:mm DD/MM/YYYY'):null))#audit_point.form-control
+						.input-group-append(data-target="#audit_point" data-toggle="datetimepicker")
+							.input-group-text
+								span.far.fa-calendar-alt
 			.page-header
 				h3.mb-3.pb-1.border-bottom Change password
 			.form-group.row

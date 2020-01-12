@@ -2,6 +2,7 @@ const BaseController = require('../../src/js/common/BaseController.js')
 const config = require('./config.json')
 
 const auth = require('../../src/js/authentication.js')
+const moment = require('moment')
 
 const Users = require('../../src/models/users.js')
 const Printers = require('../../src/models/printers.js')
@@ -56,7 +57,7 @@ class ProfileController extends BaseController {
 		}
 
 		if (req.body.audit_point) {
-			user.audit_point = new Date(req.body.audit_point)
+			user.audit_point = moment(req.body.audit_point, 'HH:mm DD/MM/YYYY').toDate()
 		} else {
 			user.audit_point = null
 		}

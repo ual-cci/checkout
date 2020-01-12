@@ -16,6 +16,9 @@ jQuery(document).ready(function() {
 		}
 	})
 
+	// Date time
+	$('#audit_point').datetimepicker({format: 'HH:mm DD/MM/YYYY', icons: {time: 'fa fa-clock'}});
+
 	// MultiPrint button shim
 	const multiPrint = document.getElementById('multi-print')
 	if (multiPrint) {// must be the items page

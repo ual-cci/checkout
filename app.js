@@ -26,6 +26,8 @@ app.use('/buzz', express.static('./node_modules/buzz/dist'))
 app.use('/clipboard', express.static('./node_modules/clipboard/dist'))
 app.use('/jquery', express.static('./node_modules/jquery/dist'))
 app.use('/fontawesome', express.static('./node_modules/@fortawesome/fontawesome-free'))
+app.use('/moment', express.static('./node_modules/moment/min'))
+app.use('/tempusdominus', express.static('./node_modules/tempusdominus-bootstrap-4/build'))
 
 // Use PUG to render pages
 app.set('views', './src/views')
