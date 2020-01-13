@@ -1,16 +1,16 @@
-const BaseModel = require('./base.js');
+const BaseModel = require('./base.js')
 
 class RoleModel extends BaseModel {
-  constructor(opts = {}) {
-    super({
-      ...opts,
-      table: 'roles'
-    });
-  }
+	constructor(opts = {}) {
+		super({
+			...opts,
+			table: 'roles'
+		})
+	}
 
-  getAll() {
-    return this.orderBy([['name']]).retrieve();
-  }
+	getAll() {
+		return this.orderBy([['name']]).retrieve()
+	}
 }
 
-module.exports = RoleModel;
+module.exports = RoleModel

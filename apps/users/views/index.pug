@@ -4,12 +4,19 @@ block prepend title
 	- title = "Users"
 	- heading = title
 
+block header
+	h2=heading
+		if currentUserCan('users_import')
+			a( href="/users/import" ).btn.btn-outline-success.btn-m.float-right.ml-2
+				span.fas.fa-file-csv
+				|  Import Users
+
 block contents
 	- filter_path = '/users/'
 	include partials/filter.pug
 	form( action="/users/edit" method="post" )
 		- edit = true
-		include partials/user-list.pug
+		include partials/list.pug
 		if currentUserCan('users_multi_edit')
 			button( type="submit" ).btn.btn-sm.btn-primary
 				span.fas.fa-pencil-alt

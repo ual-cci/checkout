@@ -55,7 +55,7 @@ if items && items.length > 0
 					tr
 						if edit
 							td: input( type="checkbox", name="edit", value=item.id, checked=multi )
-						td: +statusPill( item.status )
+						td: +statusPill( item.loanable ? item.status : 'unavailable' )
 						td
 							+clipboard( item.barcode )
 							if currentUserCan('print')

@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+docker-compose.yml
+node_modules
+*.log
+.git
+.gitignored
+.env
+*.env
+logging/logs/*.log
+logs

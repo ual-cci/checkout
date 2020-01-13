@@ -7,19 +7,22 @@ html
 		link( rel="shortcut icon" href="/imgs/favicon.ico" )
 		block title
 			if title
-				title #{ title } &mdash; Checkout
+				title #{ title } &mdash; #{config.app_name}
 			else
-				title Checkout
+				title=config.app_name
 		block head
 			block css
-				link( rel="stylesheet", href="/css/bootstrap.min.css" )
+				link( rel="stylesheet", href="/bootstrap/css/bootstrap.min.css" )
+				link( rel="stylesheet", href="/tempusdominus/css/tempusdominus-bootstrap-4.min.css" )
 				link( rel="stylesheet", href="/css/style.css" )
-				link( rel="stylesheet", href="/css/solid.min.css" )
-				link( rel="stylesheet", href="/css/all.min.css" )
+				link( rel="stylesheet", href="/fontawesome/css/solid.min.css" )
+				link( rel="stylesheet", href="/fontawesome/css/all.min.css" )
 			block js
-				script( src="/js/jquery.js" )
-				script( src="/js/bootstrap.min.js" )
-				script( src="/js/clipboard.min.js" )
+				script( src="/jquery/jquery.min.js" )
+				script( src="/bootstrap/js/bootstrap.bundle.min.js" )
+				script( src="/moment/moment.min.js" )
+				script( src="/tempusdominus/js/tempusdominus-bootstrap-4.min.js" )
+				script( src="/clipboard/clipboard.min.js" )
 				script( src="/js/script.js" )
 				if kioskMode
 					script( src="/js/kiosk.js" )
@@ -40,7 +43,9 @@ html
 					.col-12
 						hr
 					.col-9
-						small.text-muted Checkout &mdash;
+						small.text-muted #{config.app_name} &mdash;
+							if config.org_name
+								|  #{config.org_name} &mdash;
 							|  
 							a.text-muted( href="https://github.com/creativetechnologylab/checkout", target="_blank" ) Contribute on GitHub
 					.col-3

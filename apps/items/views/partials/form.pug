@@ -19,7 +19,9 @@ form( method="post" )
 			select( name="location" required )#location.form-control
 				option( value="" disabled selected ) Select a location
 				for location in locations
-					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) ) #{ location.name } [#{ location.barcode}]
+					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) ) #{ location.name }
+						if location.barcode
+							|  [#{location.barcode}]
 	.form-group.row
 		label( for="group" ).col-lg-2.col-form-label Group
 		.col-lg-4
@@ -49,6 +51,12 @@ form( method="post" )
 		label( for="notes" ).col-lg-2.col-form-label Notes
 		.col-lg-4
 			textarea( name="notes" type="text" )#notes.form-control #{ item ? item.notes : '' }
+	.form-group.row
+		.col-lg-4.offset-lg-2
+			.checkbox
+				label( for="loanable" )
+						input( name="loanable" type="checkbox" value='true' checked=(item ? item.loanable : true) )#loanable
+						|  Item is loanable
 	.form-group.row
 		.col-lg-4.offset-lg-2
 			.checkbox

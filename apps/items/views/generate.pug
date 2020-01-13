@@ -22,6 +22,12 @@ block contents
 			label( for="notes" ).col-sm-2.col-form-label Notes
 			.col-lg-4
 				input( name="notes" type="text" )#notes.form-control
+		.form-group.row
+			.col-lg-4.offset-lg-2
+				.checkbox
+					label( for="loanable" )
+							input( name="loanable" type="checkbox" value='true' checked )#loanable
+							|  Item is loanable
 		h3.mb-3.pb-1.border-bottom Categories
 		.form-group.row
 			label( for="group" ).col-sm-2.col-form-label Group
@@ -36,7 +42,9 @@ block contents
 				select( name="location" required )#location.form-control
 					option( value="" disabled selected ) Select a location
 					for location in locations
-						option( value=location.id ) #{ location.name } [#{ location.barcode}]
+						option( value=location.id ) #{ location.name }
+							if location.barcode
+								|  [#{location.barcode}]
 		.form-group.row
 			label( for="department" ).col-sm-2.col-form-label Department
 			.col-lg-4

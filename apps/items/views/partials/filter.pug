@@ -16,6 +16,14 @@ form( method="get" )
 				option( value='lost', selected=( selected.status == 'lost' ) ) Lost
 		.form-group.col-lg-1
 			- skip--
+			label( for="loanable" ) Loanable
+			select( name="loanable" )#loanable.form-control.form-control-sm
+				option( value="", selected )
+				option(disabled) ──────────
+				option( value='true', selected=( selected.loanable == 'true' ) ) Yes
+				option( value='false', selected=( selected.loanable == 'false' ) ) No
+		.form-group.col-lg-1
+			- skip--
 			label( for="groups" ) Group
 			select( name="group" )#group.form-control.form-control-sm
 				option( value="", selected )

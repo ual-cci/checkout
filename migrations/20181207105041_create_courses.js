@@ -1,12 +1,12 @@
 
-exports.up = function(knex, Promise) {
-  return knex.schema.createTable('courses', table => {
-    table.increments();
-    table.string('name').notNullable().unique();
-    table.integer('contact_id').nullable();
-  });
-};
+exports.up = function(knex) {
+	return knex.schema.createTable('courses', table => {
+		table.increments()
+		table.string('name').notNullable().unique()
+		table.integer('contact_id').nullable()
+	})
+}
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('courses');
-};
+exports.down = function(knex) {
+	return knex.schema.dropTable('courses')
+}

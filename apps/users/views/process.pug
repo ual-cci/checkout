@@ -1,0 +1,90 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Process items"
+	- heading = title
+
+block contents	
+	p Please check or match up the column headings with the data, you must provide a name and unique barcode for each line.
+	
+	form(method="post" action="/users/import")
+		h4 Data
+		.table-responsive
+			table.table.table-striped.table-sm
+				for row, y in data
+					if y == 0
+						thead
+							tr
+								for col, x in row
+									th
+										select(name='cols[]').form-control
+											- col = col.toLowerCase()
+											option(value='') Ignore
+											option(disabled) ──────────
+											option(value='name' selected=(col=='name'?true:false)) Name
+											option(value='barcode' selected=(col=='barcode'?true:false)) Barcode
+											option(value='email' selected=(col=='email'?true:false)) Email
+											option(value='password' selected=(col=='password'?true:false)) Password
+											if col == 'course'
+												- course_index = x
+												option(value='course' selected=true) Course
+											if col == 'year'
+												- year_index = x
+												option(value='year' selected=true) Year
+											if col == 'role'
+												- role_index = x
+												option(value='role' selected=true) Role
+					else
+						tr
+							for col, x in row
+								td
+									- displayed = false
+									if x == course_index
+										- displayed = true
+										select(name=`users[${y}][]`).form-control
+											- col = col.toLowerCase()
+											option(value="") Unknown
+											for course in courses
+												option(value=course.id selected=(col==course.name.toLowerCase()?true:false))=course.name
+									if x == year_index
+										- displayed = true
+										select(name=`users[${y}][]`).form-control
+											- col = col.toLowerCase()
+											option(value="") Unknown
+											for year in years
+												option(value=year.id selected=(col==year.name.toLowerCase()?true:false))=year.name
+									if x == role_index
+										- displayed = true
+										select(name=`users[${y}][]`).form-control
+											- col = col.toLowerCase()
+											option(value="") Unknown
+											for role in roles
+												option(value=role.id selected=(col==role.name.toLowerCase()?true:false))=role.name
+									if ! displayed
+										| #{col}
+										input(type='hidden' name=`users[${y}][]` value=col)
+										
+		h4.mb-3.pb-1.border-bottom Categories
+		.form-group.row
+			label( for="course" ).col-sm-2.col-form-label Course
+			.col-lg-4
+				select(name="course")#course.form-control
+					option(value="" selected) Select a course
+					for course in courses
+						option( value=course.id )=course.name
+		.form-group.row
+			label(for="years").col-sm-2.col-form-label Years
+			.col-lg-4
+				select(name="year")#year.form-control
+					option(value="" disabled selected) Select a year
+					for year in years
+						option(value=year.id)=year.name
+		.form-group.row
+			label(for="role").col-sm-2.col-form-label Role
+			.col-lg-4
+				select(name="role")#role.form-control
+					option(value="" selected) Select a role
+					for role in roles
+						option(value=role.id)=role.name
+		.form-group.offset-lg-2
+				input( type="submit" value="Import" ).btn.btn-primary

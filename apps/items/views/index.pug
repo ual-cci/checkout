@@ -7,12 +7,16 @@ block prepend title
 
 block header
 	h2=heading
+		if currentUserCan('items_import')
+			a( href="/items/import" ).btn.btn-outline-success.btn-m.float-right.ml-2
+				span.fas.fa-file-csv
+				|  Import Items
 		if currentUserCan('items_generate')
-			a( href="/items/generate" ).btn.btn-outline-success.btn-m.float-right
-				span.fas.fa-asterisk
+			a( href="/items/generate" ).btn.btn-outline-success.btn-m.float-right.ml-2
+				span.fas.fa-magic
 				|  Generate Items
 		if currentUserCan('items_create')
-			a( href="/items/create", style="margin-right: 1em;" ).btn.btn-outline-success.btn-m.float-right
+			a( href="/items/create" ).btn.btn-outline-success.btn-m.float-right.ml-2
 				span.fas.fa-plus
 				|  Create Item
 

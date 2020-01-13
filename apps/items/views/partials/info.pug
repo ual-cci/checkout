@@ -2,7 +2,7 @@
 	.col-md-4
 		.row
 			.col-md-5.font-weight-bold.text-md-right Status
-			.col-md-7: +status( item.status )
+			.col-md-7: +status( item.loanable ? item.status : 'unavailable' )
 			if item.owner_id
 				.col-md-5.font-weight-bold.text-md-right Owner
 				.col-md-7: +user( item.owner_name, item.owner_id )

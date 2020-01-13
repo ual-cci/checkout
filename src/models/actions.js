@@ -1,118 +1,118 @@
-const BaseModel = require('./base.js');
+const BaseModel = require('./base.js')
 
-const { ACTIONS } = require('../js/common/constants');
+const {ACTIONS} = require('../js/common/constants')
 
 class ActionModel extends BaseModel {
-  constructor(opts = {}) {
-    super({
-      ...opts,
-      table: 'actions'
-    });
-  }
+	constructor(opts = {}) {
+		super({
+			...opts,
+			table: 'actions'
+		})
+	}
 
-  get joins() {
-    return {
-      item: {
-        table: 'items',
-        join: ['id', 'item_id'],
-        properties: ['id', 'name', 'barcode']
-      },
-      user: {
-        prefix: 'owner_',
-        table: 'users',
-        join: ['id', 'user_id'],
-        properties: ['id', 'name']
-      },
-      operator: {
-        prefix: 'operator_',
-        table: 'users',
-        alias: 'operators',
-        join: ['operators.id', 'operator_id'],
-        properties: ['id', 'name']
-      }
-    };
-  }
+	get joins() {
+		return {
+			item: {
+				table: 'items',
+				join: ['id', 'item_id'],
+				properties: ['id', 'name', 'barcode']
+			},
+			user: {
+				prefix: 'owner_',
+				table: 'users',
+				join: ['id', 'user_id'],
+				properties: ['id', 'name']
+			},
+			operator: {
+				prefix: 'operator_',
+				table: 'users',
+				alias: 'operators',
+				join: ['operators.id', 'operator_id'],
+				properties: ['id', 'name']
+			}
+		}
+	}
 
-  get bootstrap() {
-    return ['user', 'operator'];
-  }
+	get bootstrap() {
+		return ['user', 'operator']
+	}
 
-  get properties() {
-    return ['id', 'item_id', 'user_id', 'datetime', 'action', 'operator_id'];
-  }
+	get properties() {
+		return ['id', 'item_id', 'user_id', 'datetime', 'action', 'operator_id']
+	}
 
-  create(values) {
-    return super.create({
-      ...values,
-      datetime: new Date(),
-    });
-  }
+	create(values) {
+		return super.create({
+			...values,
+			datetime: new Date(),
+		})
+	}
 
-  getByItemId(itemId) {
-    return this.query()
-      .where([
-        ['item_id', itemId]
-      ])
-      .orderBy([
-        ['datetime', 'desc']
-      ])
-      .retrieve();
-  }
+	getByItemId(itemId) {
+		return this.query()
+			.where([
+				['item_id', itemId]
+			])
+			.orderBy([
+				['datetime', 'desc']
+			])
+			.retrieve()
+	}
 
-  getByItemBarcode(barcode) {
-    return this.query()
-      .lookup(['item'])
-      .where([
-        ['barcode', barcode]
-      ])
-      .orderBy([
-        ['datetime', 'desc']
-      ])
-      .retrieve();
-  }
+	getByItemBarcode(barcode) {
+		return this.query()
+			.lookup(['item'])
+			.where([
+				['barcode', barcode]
+			])
+			.orderBy([
+				['datetime', 'desc']
+			])
+			.retrieve()
+	}
 
-  removeByItemId(itemId) {
-    return this.query()
-      .where([
-        ['item_id', itemId]
-      ])
-      .expose()
-      .delete();
-  }
+	removeByItemId(itemId) {
+		return this.query()
+			.where([
+				['item_id', itemId]
+			])
+			.expose()
+			.delete()
+	}
 
-  removeByUserId(userId) {
-    return this.query()
-      .where([
-        ['user_id', userId]
-      ])
-      .expose()
-      .delete();
-  }
+	removeByUserId(userId) {
+		return this.query()
+			.where([
+				['user_id', userId]
+			])
+			.expose()
+			.delete()
+	}
 
-  getByUserId(userId) {
-    return this.query()
-      .lookup(['item'])
-      .where([
-        ['user_id', userId]
-      ])
-      .orderBy([
-        ['datetime', 'desc']
-      ])
-      .retrieve();
-  }
+	getByUserId(userId) {
+		return this.query()
+			.lookup(['item'])
+			.where([
+				['user_id', userId]
+			])
+			.orderBy([
+				['datetime', 'desc']
+			])
+			.retrieve()
+	}
 
-  getDateRange(start, end) {
-    return this.query()
-      .lookup(['item'])
-      .raw(query => {
-        query.whereBetween( 'datetime', [ start, end ] )
-        .andWhereNot('action', ACTIONS.AUDITED)
-      })
-      .orderBy([
-        ['datetime', 'desc']
-      ])
-      .retrieve();
-  }
+	getDateRange(start, end) {
+		return this.query()
+			.lookup(['item'])
+			.raw(query => {
+				query.whereBetween('datetime', [start, end])
+				.andWhereNot('action', ACTIONS.AUDITED)
+			})
+			.orderBy([
+				['datetime', 'desc']
+			])
+			.retrieve()
+	}
 }
 
-module.exports = ActionModel;
+module.exports = ActionModel

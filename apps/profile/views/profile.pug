@@ -1,5 +1,11 @@
 extends ../../../src/views/base.pug
 
+block append css
+	link(rel="stylesheet" href="/css/password-requirements.css")
+
+block append js
+	script(type="text/javascript" src="/js/password-requirements.js")
+
 block prepend title
 	- title = "Profile"
 	- heading = title
@@ -27,14 +33,21 @@ block contents
 			.form-group.row
 				label( for="audit_point" ).col-lg-2.col-form-label Audit Point
 				.col-lg-4
-					input( name="audit_point" type="datetime-local" value=moment( loggedInUser.audit_point ).format( 'YYYY-MM-DDTHH:MM' )  )#audit_point.form-control
+					.input-group
+						input(name="audit_point" type="text" value=(loggedInUser.audit_point?moment(loggedInUser.audit_point).format('HH:mm DD/MM/YYYY'):null))#audit_point.form-control
+						.input-group-append(data-target="#audit_point" data-toggle="datetimepicker")
+							.input-group-text
+								span.far.fa-calendar-alt
 			.page-header
 				h3.mb-3.pb-1.border-bottom Change password
 			.form-group.row
 				label( for="password" ).col-lg-2.col-form-label Password
 				.col-lg-4
-					input( name="password" type="password" )#password.form-control
-					small.form-text.text-muted Password will only be changed if the field is modified.
+					input( name="password" type="password" )#password.form-control.pw-req
+			.form-group.row
+				label( for="password" ).col-lg-2.col-form-label Verify
+				.col-lg-4
+					input(name="verify" type="password")#verify.form-control.pw-mat
 			.form-group.row
 				.col-lg-4.offset-lg-2
 					button( type="submit" ).btn.btn-primary Update

@@ -1,35 +1,35 @@
-const	express = require('express');
+const	express = require('express')
 
-const ReservationController = require('./controller.js');
-const auth = require('../../src/js/authentication.js');
+const ReservationController = require('./controller.js')
+const auth = require('../../src/js/authentication.js')
 
-const app = express();
+const app = express()
 
-app.set( 'views', __dirname + '/views');
+app.set('views', __dirname + '/views')
 
 app.use((req, res, next) => {
-  req.controller = new ReservationController();
-  next();
-});
+	req.controller = new ReservationController()
+	next()
+})
 
 app.get('/', auth.isLoggedIn, (req, res) => {
-  req.controller.getRoot(req, res);
-});
+	req.controller.getRoot(req, res)
+})
 
 app.get('/:id/edit', auth.isLoggedIn, (req, res) => {
-  req.controller.getEdit(req, res);
+	req.controller.getEdit(req, res)
 })
 
 app.post('/:id/edit', auth.isLoggedIn, (req, res) => {
-  req.controller.postEdit(req, res);
-});
+	req.controller.postEdit(req, res)
+})
 
 app.get('/:id/remove', auth.isLoggedIn, (req, res) => {
-  req.controller.getRemove(req, res);
-});
+	req.controller.getRemove(req, res)
+})
 
 app.post('/:id/remove', auth.isLoggedIn, (req, res) => {
-  req.controller.postRemove(req, res);
-});
+	req.controller.postRemove(req, res)
+})
 
-module.exports = config => app;
+module.exports = config => app
