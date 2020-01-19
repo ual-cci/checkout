@@ -71,7 +71,7 @@ class KioskController extends BaseController {
 	}
 
 	postEnable(req, res) {
-		req.session.kioskMode = process.env.USER_PW_TRIES
+		req.session.kioskMode = process.env.KIOSK_TRIES
 		req.logout()
 		req.saveSessionAndRedirect('/kiosk')
 	}
