@@ -38,6 +38,7 @@ class KioskController extends BaseController {
 				if (user) {
 					req.login({id: user.id, km: true}, err => {
 						if (err) throw new Error(err)
+						req.session.kioskMode = process.env.KIOSK_TRIES
 						req.saveSessionAndRedirect('/checkout')
 					})
 				} else {
@@ -71,7 +72,7 @@ class KioskController extends BaseController {
 	}
 
 	postEnable(req, res) {
-		req.session.kioskMode = process.env.USER_PW_TRIES
+		req.session.kioskMode = process.env.KIOSK_TRIES
 		req.logout()
 		req.saveSessionAndRedirect('/kiosk')
 	}

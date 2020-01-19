@@ -26,6 +26,7 @@ services:
       - APP_COOKIE=checkout_session
       - USER_PW_ITERATIONS=50000
       - USER_PW_TRIES=5
+      - KIOSK_TRIES=10
       - LOG_PATH=./logs
       - LOG_STDOUT=true
 networks:
