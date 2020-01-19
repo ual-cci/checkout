@@ -1,7 +1,7 @@
 
 exports.up = function(knex) {
 	return knex.schema.table('roles', table => {
-		table.string('home').defaultTo('/').notNullable()
+		table.string('home').defaultTo('/checkout').notNullable()
 	})
 }
 
