@@ -13,7 +13,7 @@ class UserModel extends BaseModel {
 			role: {
 				table: 'roles',
 				join: ['id', 'role_id'],
-				properties: ['id', 'name']
+				properties: ['id', 'name', 'home']
 			},
 			course: {
 				table: 'courses',
