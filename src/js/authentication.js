@@ -88,7 +88,7 @@ const Authentication = {
 		var id
 		id = data.id
 		users.query()
-		.lookup(['printer'])
+		.lookup(['printer', 'role'])
 		.getById(id)
 		.then(user => {
 			if (user) {
