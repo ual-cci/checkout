@@ -75,13 +75,16 @@ nav.navbar.navbar-expand-lg(class=dev?"bg-warning navbar-light":"bg-dark navbar-
 									a( href="/years" ).dropdown-item Years
 								if currentUserCan('roles_read')
 									a( href="/roles" ).dropdown-item Roles
-							if currentUserCan('printers_read')
+							if currentUserCan({or:['printers_read','options_read']})
 								if divider
 									.dropdown-divider
 								h6.dropdown-header
 									span.fas.fa-cog
 									|  Configuration
-								a( href="/printers" ).dropdown-item Printers
+								if currentUserCan('printers_read')
+									a( href="/printers" ).dropdown-item Printers
+								if currentUserCan('options_read')
+									a( href="/options" ).dropdown-item Options
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right
