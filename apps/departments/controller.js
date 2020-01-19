@@ -28,7 +28,7 @@ class DepartmentController extends BaseController {
 
 	postCreate(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The department requires a name', this.getRoute('/create'), 'Error creating - ')
+			return this.displayError(req, res, 'The department requires a name', this.getRoute('/create'), 'Error creating - ')
 		}
 
 		var brand = req.body.brand
@@ -56,7 +56,7 @@ class DepartmentController extends BaseController {
 
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The department requires a name', this.getRoute([`/${req.params.id}`, '/edit']), 'Error editing - ')
+			return this.displayError(req, res, 'The department requires a name', this.getRoute([`/${req.params.id}`, '/edit']), 'Error editing - ')
 		}
 
 		var brand = req.body.brand

@@ -427,8 +427,7 @@ class UsersController extends BaseController {
 
 	getUserRemove(req, res) {
 		if (req.params.id == req.user.id) {
-			this.displayError(req, res, 'You cannot delete the logged in user.', this.getRoute())
-			return
+			return this.displayError(req, res, 'You cannot delete the logged in user.', this.getRoute())
 		}
 
 		let persist = {}
@@ -462,8 +461,7 @@ class UsersController extends BaseController {
 
 	postUserRemove(req, res) {
 		if (req.params.id == req.user.id) {
-			this.displayError(req, res, 'You cannot delete the logged in user.', this.getRoute())
-			return
+			return this.displayError(req, res, 'You cannot delete the logged in user.', this.getRoute())
 		}
 
 		let _user

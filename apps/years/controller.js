@@ -28,7 +28,7 @@ class YearsController extends BaseController {
 
 	postCreate(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, '', this.getRoute('/create'), 'The year requires a name')
+			return this.displayError(req, res, '', this.getRoute('/create'), 'The year requires a name')
 		}
 
 		const year = {
@@ -57,7 +57,7 @@ class YearsController extends BaseController {
 
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, '', this.getRoute('/edit'), 'The year requires a name')
+			return this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'The year requires a name')
 		}
 
 		const year = {

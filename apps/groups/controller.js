@@ -28,7 +28,7 @@ class GroupController extends BaseController {
 
 	postCreate(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, '', this.getRoute('/create'), 'The group requires a name')
+			return this.displayError(req, res, '', this.getRoute('/create'), 'The group requires a name')
 		}
 
 		const group = {
@@ -60,7 +60,7 @@ class GroupController extends BaseController {
 
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, '', this.getRoute('/edit'), 'The group requires a name')
+			return this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'The group requires a name')
 		}
 
 		const group = {

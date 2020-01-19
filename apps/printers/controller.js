@@ -28,11 +28,11 @@ class PrintersController extends BaseController {
 
 	postCreate(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The printer requires a name', this.getRoute('/create'))
+			return this.displayError(req, res, 'The printer requires a name', this.getRoute('/create'))
 		}
 
 		if (req.body.url == '') {
-			this.displayError(req, res, 'The printer requires a URL', this.getRoute('/create'))
+			return this.displayError(req, res, 'The printer requires a URL', this.getRoute('/create'))
 		}
 
 		const values = {
@@ -61,11 +61,11 @@ class PrintersController extends BaseController {
 
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The printer requires a name', this.getRoute(), '')
+			return this.displayError(req, res, 'The printer requires a name', this.getRoute(), '')
 		}
 
 		if (req.body.url == '') {
-			this.displayError(req, res, 'The printer requires a URL', this.getRoute(), '')
+			return this.displayError(req, res, 'The printer requires a URL', this.getRoute(), '')
 		}
 
 		const values = {

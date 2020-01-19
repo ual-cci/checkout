@@ -53,7 +53,7 @@ class CoursesController extends BaseController {
 	*/
 	postCreate(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The course requires a name', this.getRoute('/create'))
+			return this.displayError(req, res, 'The course requires a name', this.getRoute('/create'))
 		}
 
 		const course = {
@@ -104,7 +104,7 @@ class CoursesController extends BaseController {
 	*/
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The course requires a name', this.getRoute())
+			return this.displayError(req, res, 'The course requires a name', this.getRoute())
 		}
 
 		const course = {

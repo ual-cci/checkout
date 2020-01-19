@@ -32,7 +32,7 @@ class LocationController extends BaseController {
 
 	postCreate(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The location requires a name', this.getRoute('/create'), 'Error creating - ')
+			return this.displayError(req, res, 'The location requires a name', this.getRoute('/create'), 'Error creating - ')
 		}
 
 		var location = {
@@ -67,7 +67,7 @@ class LocationController extends BaseController {
 
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, 'The location requires a name', this.getRoute([`/${req.params.id}`, '/edit']), 'Error editing - ')
+			return this.displayError(req, res, 'The location requires a name', this.getRoute([`/${req.params.id}`, '/edit']), 'Error editing - ')
 		}
 
 		var location = {
