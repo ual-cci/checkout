@@ -4,6 +4,8 @@ const Roles = require('../../src/models/roles.js')
 const Users = require('../../src/models/users.js')
 const Permissions = require('../../src/models/permissions.js')
 
+const url = require('url')
+
 const all_permissions = require('./all_permissions.json')
 const flat_all_permissions = Object.keys(all_permissions)
 const config = require('./config.json')
@@ -35,8 +37,17 @@ class RoleController extends BaseController {
 			this.displayError(req, res, '', this.getRoute('/create'), 'The role requires a name')
 		}
 
+		if (req.body.home == '') {
+			this.displayError(req, res, '', this.getRoute('/create'), 'The role requires a home')
+		}
+
+		if (req.body.home.charAt(0) != '/') {
+			this.displayError(req, res, '', this.getRoute('/create'), 'The home must be a relative path')
+		}
+
 		const role = {
-			name: req.body.name
+			name: req.body.name,
+			home: req.body.home
 		}
 
 		this.models.roles.create(role)
@@ -61,11 +72,24 @@ class RoleController extends BaseController {
 
 	postEdit(req, res) {
 		if (req.body.name == '') {
-			this.displayError(req, res, '', this.getRoute('/edit'), 'The role requires a name')
+			this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'The role requires a name')
+		}
+
+		if (req.body.home == '') {
+			this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'The role requires a home')
+		}
+
+		if (req.body.home.charAt(0) != '/') {
+			return this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'The home must be a relative path')
+		}
+
+		if (req.body.home.length == 1) {
+			return this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'This path would cause a redirect loop')
 		}
 
 		const role = {
-			name: req.body.name
+			name: req.body.name,
+			home: req.body.home
 		}
 
 		this.models.roles.update(req.params.id, role)

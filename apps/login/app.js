@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 const passportAuth = passport.authenticate('local', {
 	failureRedirect: '/login',
-	successRedirect: '/checkout',
+	successRedirect: '/',
 	failureFlash: true,
 	successFlash: true
 })
