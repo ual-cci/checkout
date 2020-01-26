@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: 'checkout',
-    script: 'app.js',
+    script: 'npm run production',
     instances: 1,
     autorestart: true,
     watch: false,
