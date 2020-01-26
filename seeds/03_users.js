@@ -64,7 +64,7 @@ exports.seed = (knex) => {
 		getRole(knex),
 		getPassword(TEST_PASSWORD)
 	])
-		.then(([printer, course, year, role, password]) => {
-			return createUsers(knex, printer.id, course.id, year.id, role.id, password)
-		})
+	.then(([printer, course, year, role, password]) => {
+		return createUsers(knex, printer.id, course.id, year.id, role.id, password)
+	})
 }
