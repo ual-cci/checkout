@@ -9,3 +9,4 @@ node_modules
 *.env
 logging/logs/*.log
 logs
+database
