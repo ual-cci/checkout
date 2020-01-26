@@ -5,11 +5,11 @@ services:
     networks:
       - checkout
     volumes:
-      - ./database:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     env_file: ./docker.env
   web:
     build:
-      context: "./"
+      context: .
     ports:
       - "3000:3000"
     networks:
@@ -29,3 +29,5 @@ services:
       - LOG_STDOUT=true
 networks:
   checkout:
+volumes:
+  pg_data:
