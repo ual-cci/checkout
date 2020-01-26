@@ -7,7 +7,7 @@ function testDB() {
 		console.log('✅ Database ready.')
 		process.exit(0)
 	}).catch(err => {
-		console.log('⏱ Datasbase unavailable sleeping 1 second.')
+		console.log('⏱ Database unavailable, sleeping 1 second.')
 		setTimeout(testDB, 1000)
 	})
 }
