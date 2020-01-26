@@ -26,6 +26,8 @@ Docker is pretty straight-forward also:
 
 1. Install Docker + docker-compose
 1. Copy `docker.env.example` to `docker.env` and populate with your preferences.
+1. Create the database folder `mkdir database`.
+1. Set database folder permissions `chmod 0700 database`.
 1. Run `docker-compose up`, add `-d` for headerless operation
 
 `docker-compose down` will stop it.
