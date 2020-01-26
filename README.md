@@ -26,18 +26,16 @@ Docker is pretty straight-forward also:
 
 1. Install Docker + docker-compose
 1. Copy `docker.env.example` to `docker.env` and populate with your preferences.
-1. Create the database folder `mkdir database`.
-1. Set database folder permissions `chmod 0700 database`.
 1. Run `docker-compose up`, add `-d` for headerless operation
 
 `docker-compose down` will stop it.
 
-You can hop into the CLI using `docker exec -it checkout_web_1 sh` if you need to.
+You can hop into the CLI using `docker exec -it checkout_web_1 sh` if you need to, for example to run `npm run db:seed` to create an initial set of data and a dummy login user.
 
 # DB
 The database is Postgres and it uses Knex.js for its migrations and subsequent ORM. There are 2
 little helper aliases:
 
-- `npm run db:migrate` Runs the current migrations
+- `npm run db:migrate` Runs the current migrations (run automatically in docker)
 - `npm run db:seed` Seeds the database with basic data to allow first login.
 - `npm run db:rollback` Rolls back the latest batch of migrations
