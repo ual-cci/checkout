@@ -1,7 +1,7 @@
 const passport = require('@passport-next/passport')
 const LocalStrategy = require('@passport-next/passport-local').Strategy
 const crypto = require('crypto')
-const options = require('./options')
+const Options = require('./options')()
 
 const UsersModel = require('../models/users')
 const PermissionsModel = require('../models/permissions')
@@ -16,66 +16,65 @@ const Authentication = {
 		new LocalStrategy(function(email, password, done) {
 		users.getByEmail(email)
 			.then(user => {
-			if (!user) {
-				throw new Error('Invalid Login')
-			}
+				if (!user) {
+					throw new Error('Invalid Login')
+				}
 
-			if (user.pw_attempts >= Options.get('password_tries')) {
-				throw new Error('Account locked out')
-			}
+				if (user.pw_attempts >= Options.get('password_tries')) {
+					throw new Error('Account locked out')
+				}
 
-			if (!user.pw_salt) {
-				throw new Error('Invalid login')
-			}
+				if (!user.pw_salt) {
+					throw new Error('Invalid login')
+				}
 
-			return new Promise((resolve, reject) => {
-				// Hash the entered password with the users salt
-				Authentication.hashPassword(password, user.pw_salt, user.pw_iterations, (hash) => {
-				resolve({hash, user})
+				return new Promise((resolve, reject) => {
+					// Hash the entered password with the users salt
+					Authentication.hashPassword(password, user.pw_salt, user.pw_iterations, (hash) => {
+						resolve({hash, user})
+					})
 				})
-			})
-			// return done(null, false, {message: 'Incorrect username.'})
+				// return done(null, false, {message: 'Incorrect username.'})
 			})
 			.then(({hash, user}) => {
-			let persist = {
-				pw_attempts: user.pw_attempts,
-				successful: true,
-				flash: {},
-				user
-			}
-			if (hash == user.pw_hash) {
-				if (user.pw_attempts > 0) {
-				persist.flash = {
-					message: `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`
+				let persist = {
+					pw_attempts: user.pw_attempts,
+					successful: true,
+					flash: {},
+					user
 				}
-				persist.pw_attempts = 0
+				if (hash == user.pw_hash) {
+					if (user.pw_attempts > 0) {
+					persist.flash = {
+						message: `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`
+					}
+					persist.pw_attempts = 0
+					}
+				} else {
+					persist.successful = false
+					persist.pw_attempts++
+					persist.flash = {
+					message: 'Invalid login'
+					}
 				}
-			} else {
-				persist.successful = false
-				persist.pw_attempts++
-				persist.flash = {
-				message: 'Invalid login'
-				}
-			}
-			return users.update(user.id, {
-				pw_attempts: persist.pw_attempts
-			})
+				return users.update(user.id, {
+					pw_attempts: persist.pw_attempts
+				})
 				.then(id => {
-				return persist
+					return persist
 				})
 			})
 			.then(({successful, user, flash}) => {
-			if (flash) {
-				done(null, successful ? {id: user.id} : false, flash)
-			} else {
-				done(null, successful ? {id: user.id} : false)
-			}
+				if (flash) {
+					done(null, successful ? {id: user.id} : false, flash)
+				} else {
+					done(null, successful ? {id: user.id} : false)
+				}
 			})
 			.catch(err => {
-			done(null, false, {
-				message: err
-				}
-			)
+				done(null, false, {
+					message: err
+				})
 			})
 		})
 	)
