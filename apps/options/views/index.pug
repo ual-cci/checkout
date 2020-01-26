@@ -1,0 +1,11 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Options"
+	- heading = title
+
+block header
+	h2=heading
+
+block contents
+	include partials/list.pug
