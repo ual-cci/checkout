@@ -1,0 +1,36 @@
+if keys.length > 0
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col(width="40%")
+				col(width="35%")
+				col(width="10%")
+				if currentUserCan('options_edit')
+					col(width="20%")
+					
+			thead
+				tr
+					th Key
+						| 
+						span.fas.fa-angle-up.text-muted
+					th Value
+					th Default
+					if currentUserCan('options_edit')
+						th Manage
+			tbody
+				for key in keys
+					- option = options[key]
+					tr
+						td=key
+							br
+							small=option.purpose
+						td=option.value
+						td=!option.overridden ? 'Yes' : 'No'
+						if currentUserCan('options_edit')
+							td
+								+editBtn( '/options/' + key + '/edit' )
+								if option.overridden
+									+space
+									+btn( 'sm', 'outline-danger', 'eraser', 'Reset', '/options/' + key + '/reset' )
+else
+	+messageBlock( 'warning', 'black','There are no options to display.' )

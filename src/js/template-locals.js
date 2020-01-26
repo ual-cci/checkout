@@ -1,4 +1,5 @@
 const auth = require('./authentication')
+const Options = require('./options')()
 
 var gitRev = require('git-rev')
 var git = ''
@@ -15,12 +16,9 @@ function templateLocals(req, res, next) {
 	res.locals.currentUserCan = function(perm) {
 		return auth.userCan(req.user,perm)
 	}
+	res.locals.Options = {}
+	res.locals.Options.get = Options.getText
 	res.locals.moment = require('moment')
-	res.locals.config = {
-		app_name: process.env.APP_NAME,
-		org_name: process.env.ORG_NAME,
-		pw_tries: process.env.USER_PW_TRIES
-	}
 	next()
 }
 

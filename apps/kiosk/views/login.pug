@@ -18,9 +18,8 @@ block contents
 	.col-12.text-center
 		form( method="post", action="/kiosk" ).form-signin
 			img( src="/imgs/logo.svg" width="128" height="128" ).mb-2
-			h1.mb-0=config.app_name
-			if config.org_name
-				h5.text-muted=config.org_name
+			h1.mb-0=Options.get('application_name')
+			h5.text-muted=Options.get('organisation_name')
 			h5.mb-3.text-danger Kiosk Mode
 			include ../../../src/views/partials/flash.pug
 			label(for="barcode").sr-only barcode

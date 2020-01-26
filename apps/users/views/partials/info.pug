@@ -14,7 +14,7 @@ hr
 			if user.pw_attempts > 0
 				.col-md-5.font-weight-bold.text-md-right Password Attempts 
 				.col-md-7=user.pw_attempts
-					if user.pw_attempts >= config.pw_tries
+					if user.pw_attempts >= Options.get('password_tries')
 						|  (Locked Out)
 						if currentUserCan('users_reset_password_attempts')
 							|  – 

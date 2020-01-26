@@ -56,6 +56,8 @@
   "roles_edit": "User can edit roles.",
   "roles_remove": "User can remove and transfer users to another role.",
   "roles_set_permissions": "User can edit the permissions of a role.",
+  "options_read": "User can read site wide options.",
+  "options_edit": "User can edit site wide options.",
   "reservations_read": "User can view reservations.",
   "reservations_create": "User can create reservations.",
   "reservations_edit": "User can edit reservations.",

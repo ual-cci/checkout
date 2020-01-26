@@ -1,7 +1,7 @@
 nav.navbar.navbar-expand-lg(class=dev?"bg-warning navbar-light":"bg-dark navbar-dark")
 	a(href="/").navbar-brand
 		img( src="/imgs/icon.svg" width="30" height="30" ).d-inline-block.align-top
-		|  #{config.app_name}
+		|  #{Options.get('application_name')}
 	button(type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation").navbar-toggler
 		span.navbar-toggler-icon
 	.collapse.navbar-collapse#menu
@@ -75,13 +75,16 @@ nav.navbar.navbar-expand-lg(class=dev?"bg-warning navbar-light":"bg-dark navbar-
 									a( href="/years" ).dropdown-item Years
 								if currentUserCan('roles_read')
 									a( href="/roles" ).dropdown-item Roles
-							if currentUserCan('printers_read')
+							if currentUserCan({or:['printers_read','options_read']})
 								if divider
 									.dropdown-divider
 								h6.dropdown-header
 									span.fas.fa-cog
 									|  Configuration
-								a( href="/printers" ).dropdown-item Printers
+								if currentUserCan('printers_read')
+									a( href="/printers" ).dropdown-item Printers
+								if currentUserCan('options_read')
+									a( href="/options" ).dropdown-item Options
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right

@@ -1,0 +1,13 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Reset: ' + key
+	- heading = "Are you sure you want to reset " + key + "?"
+
+block contents
+	form( method="post" )
+		.form-group.row
+			.col-lg-4
+				button( type='submit' ).btn.btn-danger Yes, reset option
+				|  
+				a( href="/options" ).btn.btn-outline-dark Cancel
