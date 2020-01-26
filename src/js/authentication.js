@@ -1,6 +1,7 @@
 const passport = require('@passport-next/passport')
 const LocalStrategy = require('@passport-next/passport-local').Strategy
 const crypto = require('crypto')
+const options = require('./options')
 
 const UsersModel = require('../models/users')
 const PermissionsModel = require('../models/permissions')
@@ -19,7 +20,7 @@ const Authentication = {
 				throw new Error('Invalid Login')
 			}
 
-			if (user.pw_attempts >= process.env.USER_PW_TRIES) {
+			if (user.pw_attempts >= Options.get('password_tries')) {
 				throw new Error('Account locked out')
 			}
 

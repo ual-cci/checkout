@@ -10,9 +10,11 @@ const bunyanMiddleware = require('bunyan-middleware')
 const crypto = require('crypto')
 const randomKey = crypto.randomBytes(256)
 
+const options = require('./options')
+
 // Bunyan logging
 var bunyanConfig = {
-	name: process.env.APP_NAME,
+	name: Options.get('application_name'),
 	streams: []
 }
 

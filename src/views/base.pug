@@ -7,9 +7,9 @@ html
 		link( rel="shortcut icon" href="/imgs/favicon.ico" )
 		block title
 			if title
-				title #{ title } &mdash; #{config.app_name}
+				title #{title} &mdash; #{Options.get('application_name')}
 			else
-				title=config.app_name
+				title #{Options.get('application_name')}
 		block head
 			block css
 				link( rel="stylesheet", href="/bootstrap/css/bootstrap.min.css" )
@@ -43,10 +43,8 @@ html
 					.col-12
 						hr
 					.col-9
-						small.text-muted #{config.app_name} &mdash;
-							if config.org_name
-								|  #{config.org_name} &mdash;
+						small.text-muted #{Options.get('application_name')} &mdash; #{Options.get('organisation_name')} &mdash;
 							|  
-							a.text-muted( href="https://github.com/creativetechnologylab/checkout", target="_blank" ) Contribute on GitHub
+							a.text-muted( href=Options.get('github_url'), target="_blank" ) Contribute on GitHub
 					.col-3
-						p.text-right: small: a.text-muted( href=`https://github.com/creativetechnologylab/checkout/commit/${git}`, target="_blank" )=git
+						p.text-right: small: a.text-muted( href=`${Options.get('github_url')}/commit/${git}`, target="_blank" )=git

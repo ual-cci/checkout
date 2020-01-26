@@ -2,6 +2,8 @@ const PDFDocument = require('pdfkit')
 const bwipjs = require('bwip-js')
 const ipp = require('ipp')
 
+const options = require('./options')
+
 const Print = {
 	label: function(code, printer) {
 		Print.labels([code], printer)
@@ -180,9 +182,8 @@ const Print = {
 				"media": [size]
 			},
 			"operation-attributes-tag": {
-				"requesting-user-name": process.env.ORG_NAME ? process.env.ORG_NAME : process.env.APP_NAME,
+				"requesting-user-name": Options.get('application_name'),
 				"job-name": "Labels",
-				"requesting-user-name": process.env.APP_NAME,
 				"document-format": "application/pdf",
 			},
 			data: Buffer.concat(buffer)
