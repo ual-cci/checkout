@@ -2,7 +2,7 @@ const BaseController = require('../../src/js/common/BaseController.js')
 
 const config = require('./config.json')
 const auth = require('../../src/js/authentication')
-const options = require('../../src/js/options')
+const Options = require('../../src/js/options')()
 
 const Users = require('../../src/models/users')
 

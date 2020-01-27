@@ -2,7 +2,7 @@ const PDFDocument = require('pdfkit')
 const bwipjs = require('bwip-js')
 const ipp = require('ipp')
 
-const Options = require('./options')
+const Options = require('./options')()
 
 const Print = {
 	label: function(code, printer) {

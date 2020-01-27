@@ -10,7 +10,7 @@ const bunyanMiddleware = require('bunyan-middleware')
 const crypto = require('crypto')
 const randomKey = crypto.randomBytes(256)
 
-const Options = require('./options')
+const Options = require('./options')()
 
 // Bunyan logging
 var bunyanConfig = {
