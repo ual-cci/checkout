@@ -1,6 +1,6 @@
 const BaseController = require('../../src/js/common/BaseController.js')
 
-const Options = require('../../src/js/Options')()
+const Options = require('../../src/js/options')()
 
 const config = require('./config.json')
 
