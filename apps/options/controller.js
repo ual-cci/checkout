@@ -1,6 +1,6 @@
 const BaseController = require('../../src/js/common/BaseController.js')
 
-const options = require('../../src/js/options')()
+const Options = require('../../src/js/Options')()
 
 const config = require('./config.json')
 
@@ -10,12 +10,12 @@ class RoleController extends BaseController {
 	}
 
 	getRoot(req, res) {
-		const opts = options.getAll()
-		res.render('index', {options: opts, keys:Object.keys(opts)})
+		const opts = Options.getAll()
+		res.render('index', {Options: opts, keys:Object.keys(opts)})
 	}
 
 	getEdit(req, res) {
-		const opt = options.get(req.params.id)
+		const opt = Options.get(req.params.id)
 		if (opt) {
 			res.render('edit', {option: opt, key:req.params.id})
 		} else {
@@ -25,7 +25,7 @@ class RoleController extends BaseController {
 	}
 
 	postEdit(req, res) {
-		options.set(req.params.id, req.body.value, (result) => {
+		Options.set(req.params.id, req.body.value, (result) => {
 			if (result) {
 				req.flash('success', 'Option updated')
 			} else {
@@ -36,7 +36,7 @@ class RoleController extends BaseController {
 	}
 
 	getReset(req, res) {
-		const opt = options.get(req.params.id)
+		const opt = Options.get(req.params.id)
 		if (opt) {
 			res.render('confirm-reset', {key:req.params.id})
 		} else {
@@ -46,7 +46,7 @@ class RoleController extends BaseController {
 	}
 
 	postReset(req, res) {
-		options.reset(req.params.id, (result) => {
+		Options.reset(req.params.id, (result) => {
 			if (result) {
 				req.flash('success', 'Option reset')
 			} else {
