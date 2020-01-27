@@ -40,7 +40,7 @@ class KioskController extends BaseController {
 					req.login({id: user.id, km: true}, err => {
 						if (err) throw new Error(err)
 						console.log(Options.getText('kiosk_tries'))
-						req.session.kioskMode = Options.get('kiosk_tries')
+						req.session.kioskMode = Options.getText('kiosk_tries')
 						req.saveSessionAndRedirect('/checkout')
 					})
 				} else {
