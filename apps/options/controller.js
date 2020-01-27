@@ -11,7 +11,7 @@ class RoleController extends BaseController {
 
 	getRoot(req, res) {
 		const opts = Options.getAll()
-		res.render('index', {Options: opts, keys:Object.keys(opts)})
+		res.render('index', {options: opts, keys:Object.keys(opts)})
 	}
 
 	getEdit(req, res) {
