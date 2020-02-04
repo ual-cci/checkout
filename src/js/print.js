@@ -182,7 +182,7 @@ const Print = {
 				"media": [size]
 			},
 			"operation-attributes-tag": {
-				"requesting-user-name": Options.get('application_name'),
+				"requesting-user-name": Options.getText('application_name'),
 				"job-name": "Labels",
 				"document-format": "application/pdf",
 			},
