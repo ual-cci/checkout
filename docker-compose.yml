@@ -1,25 +1,24 @@
 version: "3"
 services:
-  db:
+  postgres:
     image: "postgres:9.6"
     networks:
-      - checkout
+      - database
     volumes:
       - pg_data:/var/lib/postgresql/data
     env_file: ./docker.env
-  web:
+  nodejs:
     build:
       context: .
-    ports:
-      - "3000:3000"
     networks:
-      - checkout
+      - database
+      - web
     depends_on:
-      - db
+      - postgres
     restart: unless-stopped
     env_file: ./docker.env
     environment:
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - APP_HOST=
       - APP_PORT=3000
@@ -27,7 +26,19 @@ services:
       - USER_PW_ITERATIONS=50000
       - LOG_PATH=./logs
       - LOG_STDOUT=true
+  nginx:
+    build:
+      context: ./docker/nginx
+    ports:
+      - "80:80"
+      - "433:433"
+    restart: always
+    depends_on:
+      - nodejs
+    networks:
+      - web
 networks:
-  checkout:
+  database:
+  web:
 volumes:
   pg_data:
