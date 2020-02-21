@@ -31,7 +31,7 @@ services:
       context: ./docker/nginx
     ports:
       - "80:80"
-      - "433:433"
+      - "443:443"
     restart: always
     depends_on:
       - nodejs
