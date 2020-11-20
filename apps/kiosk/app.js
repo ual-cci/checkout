@@ -28,6 +28,10 @@ app.post('/enable', auth.currentUserCan('activate_kiosk_mode'), (req, res) => {
 	req.controller.postEnable(req, res)
 })
 
+app.get('/fixed', (req, res) => {
+	req.controller.getFixed(req, res)
+})
+
 app.get('/logout', (req, res) => {
 	req.controller.getLogout(req, res)
 })

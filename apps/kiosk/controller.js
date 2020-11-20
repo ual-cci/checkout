@@ -79,6 +79,15 @@ class KioskController extends BaseController {
 		req.saveSessionAndRedirect('/kiosk')
 	}
 
+	getFixed(req, res) {
+		let kiosks = process.env.KIOSKS
+		if (kiosks && kiosks.includes(req.query.serialNumber)) {
+			req.session.kioskMode = Options.getText('kiosk_tries')
+			req.logout()
+		}
+		req.saveSessionAndRedirect('/kiosk')
+	}
+
 	getLogout(req, res) {
 		req.logout()
 		req.saveSessionAndRedirect('/kiosk')
