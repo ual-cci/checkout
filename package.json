@@ -34,7 +34,7 @@
     "moment": "^2.24.0",
     "pdfkit": "^0.10.0",
     "pg": "^7.12.1",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "tempusdominus-bootstrap-4": "^5.1.2"
   },
   "devDependencies": {
