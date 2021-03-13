@@ -1,44 +1,44 @@
 {
   "scripts": {
     "start": "node app | ./node_modules/.bin/bunyan -c 'this.sensitive == undefined'",
-	"dev": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
-	"production": "npm run db:wait; npm run db:migrate; npm run start;",
+    "dev": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
+    "production": "npm run db:wait; npm run db:migrate; npm run start;",
     "db:wait": "node ./_helpers/db-test",
-	"db:migrate": "knex migrate:latest",
+    "db:migrate": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback",
     "db:seed": "knex seed:run"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.10.2",
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "@passport-next/passport": "^3.0.0",
     "@passport-next/passport-local": "^1.2.0",
     "body-parser": "^1.19.0",
-    "bootstrap": "^4.3.1",
-    "bunyan": "^1.8.12",
-    "bunyan-middleware": "^1.0.0",
+    "bootstrap": "^4.6.0",
+    "bunyan": "^1.8.15",
+    "bunyan-middleware": "^1.0.1",
     "buzz": "^1.2.1",
     "bwip-js": "^1.7.3",
-    "clipboard": "^2.0.4",
-    "connect-pg-simple": "^6.0.1",
-    "cookie-parser": "^1.4.4",
+    "clipboard": "^2.0.8",
+    "connect-pg-simple": "^6.2.1",
+    "cookie-parser": "^1.4.5",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
-    "express-flash-plus": "^0.0.6",
-    "express-session": "^1.16.2",
+    "express-flash-plus": "^0.0.7",
+    "express-session": "^1.17.1",
     "faker": "^4.1.0",
     "git-rev": "^0.2.1",
-    "helmet": "^3.21.1",
+    "helmet": "^3.23.3",
     "ipp": "^2.0.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.6.0",
     "knex": "^0.19.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.1",
     "pdfkit": "^0.10.0",
-    "pg": "^7.12.1",
-    "pug": "^2.0.4",
-    "tempusdominus-bootstrap-4": "^5.1.2"
+    "pg": "^7.18.2",
+    "pug": "^3.0.2",
+    "tempusdominus-bootstrap-4": "^5.39.0"
   },
   "devDependencies": {
     "fs-extra": "^8.1.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^2.0.7"
   }
 }
