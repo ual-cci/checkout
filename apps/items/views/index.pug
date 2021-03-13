@@ -11,14 +11,10 @@ block header
 			a( href="/items/import" ).btn.btn-outline-success.btn-m.float-right.ml-2
 				span.fas.fa-file-csv
 				|  Import Items
-		if currentUserCan('items_generate')
-			a( href="/items/generate" ).btn.btn-outline-success.btn-m.float-right.ml-2
-				span.fas.fa-magic
-				|  Generate Items
 		if currentUserCan('items_create')
 			a( href="/items/create" ).btn.btn-outline-success.btn-m.float-right.ml-2
 				span.fas.fa-plus
-				|  Create Item
+				|  Create Items
 
 block contents
 	- filter_path = '/items/'

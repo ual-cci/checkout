@@ -24,15 +24,6 @@ app.post('/edit', auth.currentUserCan('items_multi_edit'), (req, res) => {
 	req.controller.postMultiEdit(req, res)
 })
 
-// Generate items
-app.get('/generate', auth.currentUserCan('items_generate'), (req, res) => {
-	req.controller.getGenerate(req, res)
-})
-
-app.post('/generate', auth.currentUserCan('items_generate'), (req, res) => {
-	req.controller.postGenerate(req, res)
-})
-
 // Import items
 app.get('/import', auth.currentUserCan('items_import'), (req, res) => {
 	req.controller.getImport(req, res)

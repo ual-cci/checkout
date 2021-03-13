@@ -1,9 +1,92 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Create Item"
+	- title = "Create items"
 	- heading = title
 
 block contents
-	- action = 'Create'
-	include partials/form.pug
+	form(method="post")
+		
+		// Basic item details
+		.form-group.row
+			label( for="name" ).col-sm-2.col-form-label Name
+			.col-lg-4
+				input( name="name" type="text" required )#name.form-control
+		.form-group.row
+			label( for="value" ).col-sm-2.col-form-label Value
+			.col-lg-4
+				.input-group
+					.input-group-prepend
+						.input-group-text &pound;
+					input( name="value" type="number" step="0.01" )#value.form-control
+		.form-group.row
+			label( for="notes" ).col-sm-2.col-form-label Notes
+			.col-lg-4
+				input( name="notes" type="text" )#notes.form-control
+		.form-group.row
+			.col-lg-4.offset-lg-2
+				.checkbox
+					label( for="loanable" )
+							input( name="loanable" type="checkbox" value='true' checked)#loanable
+							|  Item is loanable
+							
+		// Item categories 
+		h3.mb-3.pb-1.border-bottom Categories
+		.form-group.row
+			label( for="group" ).col-sm-2.col-form-label Group
+			.col-lg-4
+				select( name="group" )#group.form-control
+					option( value="" selected ) Select a group
+					for group in groups
+						option( value=group.id )=group.name
+		.form-group.row
+			label( for="location" ).col-sm-2.col-form-label Location
+			.col-lg-4
+				select( name="location" required )#location.form-control
+					option( value="" disabled selected ) Select a location
+					for location in locations
+						option( value=location.id ) #{ location.name }
+							if location.barcode
+								|  [#{location.barcode}]
+		.form-group.row
+			label( for="department" ).col-sm-2.col-form-label Department
+			.col-lg-4
+				select( name="department" required )#department.form-control
+					option( value="" selected ) Select a department
+					for department in departments
+						option( value=department.id )=department.name
+						
+		// Number of items to create
+		h3.mb-3.pb-1.border-bottom Barcode
+		.form-group.row
+			label(for="barcode").col-sm-2.col-form-label Barcode
+			.col-lg-4
+				input(name="barcode" type="text" autocomplete="off")#barcode.form-control
+				small.form-text.text-muted When the quantity is set above 1 the barcode should include one or more # symbols
+		.form-group.row
+			label( for="quantity" ).col-sm-2.col-form-label Quantity
+			.col-lg-4
+				input(name="quantity" type="number" min="1" max="9999" autocomplete="off" value="1" required)#quantity.form-control
+		.form-group.row
+			label(for="start").col-sm-2.col-form-label Start
+			.col-lg-4
+				input(name="start" type="number" min="1" max="9998" autocomplete="off")#start.form-control
+				small.form-text.text-muted For use when generating multiple items
+		
+		// Label and printing options
+		h3.mb-3.pb-1.border-bottom Label Print Options
+		.form-group.row
+			label( for="label" ).col-sm-2.col-form-label Label
+			.col-lg-4
+				select( name="label" required )#label.form-control
+					option( value="12mm" ) 12mm Label
+					option( value="12mm_flag" ) 12mm Flag
+		.form-group.row
+			.col-lg-4.offset-lg-2
+				.checkbox
+					label( for="print" )
+						input( name="print" type="checkbox" checked )#print
+						|  Print Barcode Labels
+		.form-group.row
+			.col-lg-4.offset-lg-2
+				input( type="submit" value="Generate" ).btn.btn-primary

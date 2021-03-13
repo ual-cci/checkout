@@ -44,12 +44,15 @@ class ItemController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	_checkFields(checks, redirect, req, res) {
+		let failed = false
 		for (let i = 0; i < checks.length; i++) {
 			if (checks[i].condition) {
 				this.displayError(req, res, checks[i].message, this.getRoute(redirect))
+				failed = true
 				break
 			}
 		}
+		return failed
 	}
 
 	_getAuditPoint(audited, userAuditPoint = false) {
@@ -241,12 +244,12 @@ class ItemController extends BaseController {
 	}
 
 	/**
-	* Get generate page with necessary data
+	* Get create page with necessary data
 	*
 	* @param {Object} req Express request object
 	* @param {Object} res Express response object
 	*/
-	getGenerate(req, res) {
+	getCreate(req, res) {
 		Promise.all([
 			this.models.locations.getAll(),
 			this.models.departments.getAll(),
@@ -254,7 +257,7 @@ class ItemController extends BaseController {
 		])
 		.then(([locations, departments, groups]) => {
 			if (locations.length > 0) {
-				res.render('generate', {locations: locations, departments: departments, groups: groups, item: {}})
+				res.render('create', {locations: locations, departments: departments, groups: groups, item: {}})
 			} else {
 				req.flash('warning', 'Create at least one location before creating items')
 				req.saveSessionAndRedirect(this.getRoute())
@@ -268,93 +271,104 @@ class ItemController extends BaseController {
 	* @param {Object} req Express request object
 	* @param {Object} res Express response object
 	*/
-	postGenerate(req, res) {
+	postCreate(req, res) {
+		const quantity = parseInt(req.body.quantity)
 		const start = parseInt(req.body.start)
-		const end = (start + parseInt(req.body.qty)) - 1
+		const end = (start + quantity) - 1
+		const barcode = req.body.barcode.trim()
+		const barcodeFilter = barcode.match(/^([\S\s]*?)([#]+)$/)
 
 		const checks = [
 			{
+				condition: (quantity > 1 && barcodeFilter == null),
+				message: 'To generate multiple items the barcode must include # symbol(s) at the end'
+			},
+			{
+				condition: (barcode.includes('#') && quantity < 2),
+				message: 'To generate multiple items you must specify how many'
+			},
+			{
 				condition: (req.body.name == ''),
-				message: 'The items require a name'
+				message: 'The item(s) require a name'
 			},
 			{
-				condition: (req.body.prefix == ''),
-				message: 'The items require a barcode prefix'
-			},
-			{
-				condition: (req.body.prefix.length < 3 == null),
-				message: 'The barcode prefix must be longer than 2 characters.'
-			},
-			{
-				condition: (start == '' || start < 1),
+				condition: (quantity > 1 && (start == '' || start < 1)),
 				message: 'The item numbering must start at 1 or above'
 			},
 			{
-				condition: (end > 25 && ! req.body.largeBatch),
-				message: 'You can\'t generate more than 25 items at a time without confirming you want to do this'
-			},
-			{
 				condition: (req.body.location == ''),
-				message: 'The items must be assigned to a location'
+				message: 'The item(s) must be assigned to a location'
 			}
 		]
 
-		this._checkFields(checks, '/generate', req, res)
+		if (!this._checkFields(checks, '/create', req, res)) {
+			const items = []
+			const barcodes = []
+			let numLen = 2
+			if (barcodeFilter) numLen = barcodeFilter[2].length
 
-		const items = []
-		const barcodes = []
+			this.models.departments.getById(req.body.department)
+			.then((department) => {
+				for (let i = 0; i < quantity; i++) {
+					let x = start + i
 
-		this.models.departments.getById(req.body.department)
-		.then((department) => {
-			for (let i = start; i <= end; i++) {
-				let item = {
-					name: req.body.name.trim(),
-					barcode: req.body.prefix,
-					label: req.body.label,
-					value: req.body.value,
-					location_id: req.body.location,
-					department_id: req.body.department,
-					notes: req.body.notes,
-					status: AVAILABILITY.AVAILABLE,
-					loanable: (req.body.loanable == 'true' ? true : false)
-				}
+					let item = {
+						name: req.body.name.trim(),
+						barcode: barcode,
+						label: req.body.label,
+						value: req.body.value,
+						location_id: req.body.location,
+						department_id: req.body.department,
+						notes: req.body.notes,
+						status: AVAILABILITY.AVAILABLE,
+						loanable: (req.body.loanable == 'true' ? true : false)
+					}
 
-				if (!req.body.value) {
-					item.value = 0.0
-				}
+					if (!req.body.value) {
+						item.value = 0.0
+					}
 
-				if (req.body.group)
-					item.group_id = req.body.group
+					if (req.body.group) {
+						item.group_id = req.body.group
+					}
 
-				const index = i.toString().padStart(2, '0')
-				if (req.body.suffix) item.name += " #" + index
-				item.barcode += index.toString()
-				barcodes.push({
-					barcode: item.barcode,
-					text: item.name,
-					type: item.label,
-					brand: department.brand
-				})
-				items.push(item)
-			}
-		})
-		.then(() => {
-			this.models.items.create(items)
-			.then(result => {
-				req.flash('success', 'Items created')
+					if (quantity > 1 && barcodeFilter) {
+						const index = x.toString().padStart(numLen, '0')
+						item.barcode = barcodeFilter[1] + index.toString()
+					}
 
-				if (req.body.print) {
-					if (req.user.printer_id) {
-						Print.labels(barcodes, req.user.printer_url)
-						req.flash('info', `Labels printed to ${req.user.printer_name}`)
-					} else {
-						req.flash('warning', 'No printer configured')
+					// Push item into array to be inserted into database
+					items.push(item)
+
+					// Push item details into array to be printed
+					if (req.body.print) {
+						barcodes.push({
+							barcode: item.barcode,
+							text: item.name,
+							type: item.label,
+							brand: department.brand
+						})
 					}
 				}
-				req.saveSessionAndRedirect(this.getRoute())
 			})
-			.catch(err => this.displayError(req, res, err, this.getRoute('/generate')))
-		})
+			.then(() => {
+				this.models.items.create(items)
+				.then(result => {
+					req.flash('success', `${items.length} item${items.length > 1 ? 's' : ''} created`)
+
+					if (req.body.print) {
+						if (req.user.printer_id) {
+							Print.labels(barcodes, req.user.printer_url)
+							req.flash('info', `Labels printed to ${req.user.printer_name}`)
+						} else {
+							req.flash('warning', 'No printer configured')
+						}
+					}
+					req.saveSessionAndRedirect(this.getRoute())
+				})
+				.catch(err => this.displayError(req, res, err, this.getRoute('/create')))
+			})
+		}
 	}
 
 	/**
@@ -488,100 +502,6 @@ class ItemController extends BaseController {
 				.catch(err => this.displayError(req, res, err, this.getRoute('/import')))
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute('/import')))
-	}
-
-	/**
-	* Gets the data for a create page
-	*
-	* @param {Object} req Express request object
-	* @param {Object} res Express response object
-	*/
-	getCreate(req, res) {
-		Promise.all([
-			this.models.locations.getAll(),
-			this.models.departments.getAll(),
-			this.models.groups.getAll()
-		])
-		.then(([locations, departments, groups]) => {
-			if (locations.length > 0) {
-				res.render('create', {item: null, locations, departments, groups})
-			} else {
-				req.flash('warning', 'Create at least one location before creating items')
-				req.saveSessionAndRedirect(this.getRoute())
-			}
-		})
-	}
-
-	/**
-	* Endpoint for creating an item
-	*
-	* @param {Object} req Express request object
-	* @param {Object} res Express response object
-	*/
-	postCreate(req, res) {
-		this.models.departments.getById(req.body.department)
-		.then((department) => {
-		const item = {
-			name: req.body.name,
-			barcode: req.body.barcode,
-			label: req.body.label,
-			value: req.body.value,
-			location_id: req.body.location,
-			department_id: req.body.department,
-			notes: req.body.notes,
-			serialnumber: req.body.serialnumber,
-			status: AVAILABILITY.AVAILABLE,
-			loanable: (req.body.loanable == 'true' ? true : false)
-		}
-
-		if (!req.body.value) {
-			item.value = 0.0
-		}
-
-		if (req.body.group) {
-			item.group_id = req.body.group
-		}
-
-		const checks = [
-			{
-				condition: (item.name == ''),
-				message: 'The item requires a name'
-			},
-			{
-				condition: (item.barcode == ''),
-				message: 'The item requires a unique barcode'
-			},
-			{
-				condition: (!item.location_id),
-				message: 'The item must be assigned to a location'
-			}
-		]
-
-		this._checkFields(checks, '/create', req, res)
-
-		this.models.items.create(item)
-			.then(id => {
-				req.flash('success', 'Item created')
-
-				if (req.body.print) {
-					if (req.user.printer_id) {
-						Print.label({
-							barcode: item.barcode,
-							text: item.name,
-							type: item.label,
-							brand: department.brand
-						}, req.user.printer_url)
-						req.flash('info', `Label printed to ${req.user.printer_name}`)
-					} else {
-						req.flash('warning', 'No printer configured')
-					}
-				}
-				req.saveSessionAndRedirect(this.getRoute())
-			})
-			.catch(err => {
-				this.displayError(req, res, err, this.getRoute('/create'), 'Error creating item - ')
-			})
-		})
 	}
 
 	/**
