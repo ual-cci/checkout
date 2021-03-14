@@ -7,23 +7,19 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 						span.mr-2.fa.fa-qrcode
 						| Kiosk
 		
-		if currentUserCan({or: ['items_read', 'items_create']})
+		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'departments_read']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Items
 			ul.nav.flex-column
-				if currentUserCan('items_read')
-					li.nav-item
-						a.nav-link(href="/items" class=(menu=='items'?'active':''))
-							span.mr-2.fa.fa-boxes
-							| View
 				if currentUserCan('items_create')
 					li.nav-item
 						a.nav-link(href="/items/create" class=(menu=='create items'?'active':''))
 							span.mr-2.fa.fa-plus
-							| Create
-						
-		if currentUserCan({or: ['groups_read', 'locations_read', 'departments_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Item categories
-			ul.nav.flex-column
+							| Create item
+				if currentUserCan('items_read')
+					li.nav-item
+						a.nav-link(href="/items" class=(menu=='items'?'active':''))
+							span.mr-2.fa.fa-boxes
+							| Items
 				if currentUserCan('groups_read')
 					li.nav-item
 						a.nav-link(href="/groups" class=(menu=='groups'?'active':''))
@@ -40,17 +36,14 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 							span.mr-2.fa.fa-building
 							| Departments
 					
-		if currentUserCan('users_read')
+		if currentUserCan({or: ['users_read', 'courses_read', 'years_read', 'roles_read']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Users
 			ul.nav.flex-column
-				li.nav-item
-					a.nav-link(href="/users" class=(menu=='users'?'active':''))
-						span.mr-2.fa.fa-users
-						|  View
-					
-		if currentUserCan({or: ['courses_read', 'years_read', 'roles_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted User categories
-			ul.nav.flex-column
+				if currentUserCan('users_read')
+					li.nav-item
+						a.nav-link(href="/users" class=(menu=='users'?'active':''))
+							span.mr-2.fa.fa-users
+							| Users
 				if currentUserCan('courses_read')
 					a.nav-link(href="/courses" class=(menu=='courses'?'active':''))
 						span.mr-2.fa.fa-user-graduate
