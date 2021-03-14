@@ -76,7 +76,7 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 			ul.nav.flex-column.mb-2
 				if currentUserCan('activate_kiosk_mode')
 					li.nav-item
-						a.nav-link(href="/kiosk/enable" class=(menu=='kiosk'?'active':''))
+						a.nav-link(href="/kiosk/enable" class=(menu=='kiosk mode'?'active':''))
 							span.mr-2.fa.fa-cash-register
 							| Kiosk Mode
 				if currentUserCan('generate_insurance_report')

@@ -229,11 +229,7 @@ function find(barcode, cb) {barcode ? apiGET('find', barcode, cb) : null}
 function getItem(barcode, cb) {apiGET('item', barcode, cb)}
 function getUser(barcode, cb) {apiGET('user', barcode, cb)}
 function identify(barcode, cb) {apiGET('identify', barcode, cb)}
-function apiGET(method, barcode, cb) {
-	jQuery.get('/api/' + method + '/' + barcode, function(data, status) {
-		cb(data)
-	})
-}
+
 function getHistory() {
 	jQuery.get('/api/history', function(data, status) {
 		jQuery('#history .items').html(data.actions)

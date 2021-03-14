@@ -206,3 +206,44 @@ td.flex {
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 }
+
+/* Search */
+
+.modalCover {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, .5);
+	z-index: 100;
+}
+
+.searchList {
+	z-index: 1000;
+	background-color: white;
+	position: fixed;
+	border-radius: 0px 0px 5px 0.5rem;
+	box-shadow: 0px 0px 11px rgba(0,0,0,.5);
+
+	max-height: 90vh;
+	overflow: scroll;
+}
+
+.searchList ul {
+	padding: 1em;
+}
+
+body.noScroll {
+	overflow: hidden;
+	height: 100%;
+}
+
+.searchList a:link,
+.searchList a:visited {
+	color: black
+}
+
+.searchList a:hover {
+	text-decoration: none;
+}

@@ -66,3 +66,9 @@ jQuery(document).ready(function() {
 		}
 	}
 })
+
+function apiGET(method, barcode, cb) {
+	jQuery.get('/api/' + method + '/' + barcode, function(data, status) {
+		cb(data)
+	})
+}
