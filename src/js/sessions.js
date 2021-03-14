@@ -1,5 +1,7 @@
 const session = require('express-session')
 const cookie = require('cookie-parser')
+const body = require('body-parser')
+const csrf = require('csurf')
 
 var PostgreSqlStore = require('connect-pg-simple')(session)
 const {constructTarget} = require('../js/utils.js')
@@ -23,6 +25,9 @@ module.exports =  function(app, io) {
 		unset: 'destroy'
 	}))
 
+	app.use(body.urlencoded({extended: true}))
+	app.use(body.json())
+
 	app.use(function(req, res, next) {
 		req.saveSessionAndRedirect = function (a, b) {
 			req.session.save(function(err) {
@@ -36,4 +41,19 @@ module.exports =  function(app, io) {
 		}
 		return next()
 	})
+
+	app.use((req, res, next) => {
+		if (req.url.match(/^\/api/i)) {
+			next();
+		} else {
+			csrf()(req, res, next);
+		}
+	} );
+
+	app.use((err, req, res, next) => {
+		if (err.code == 'EBADCSRFTOKEN') {
+			return res.status(400).send('400')
+		}
+		next(err);
+	} );
 }

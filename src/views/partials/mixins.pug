@@ -1,3 +1,6 @@
+mixin csrf
+	input( type="hidden", name="_csrf", value=csrf )
+
 mixin clipboard( text )
 	span( data-clipboard-text=text, title="Click to copy" ).clipboard=text
 

@@ -1,0 +1,9 @@
+extends base.pug
+
+block prepend title
+	- title = "Error 400"
+	- heading = "400: Bad Request"
+
+block contents
+	p.lead Please ensure cookies are enabled.
+	p Your browser request did not include the CSRF token or it was invalid.

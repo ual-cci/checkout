@@ -9,6 +9,7 @@ block contents
 	p Please check or match up the column headings with the data, you must provide a name and unique barcode for each line.
 	
 	form(method="post" action="/items/import")
+		+csrf
 		h4 Data
 		.table-responsive
 			table.table.table-striped.table-sm

@@ -8,6 +8,7 @@ block prepend title
 block contents
 	p Data must include a header row.
 	form(method="post" action="/users/process")
+		+csrf
 		.form-group
 			label(for="format").col-form-label Format
 			.col-md-1.row

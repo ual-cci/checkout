@@ -12,6 +12,7 @@ function templateLocals(req, res, next) {
 	res.locals.git = git
 	if (process.env.NODE_ENV == "development") res.locals.dev = true
 	if (req.session.kioskMode > 0) res.locals.kioskMode = true
+	if (req.csrfToken) res.locals.csrf = req.csrfToken()
 	res.locals.loggedInUser = req.user
 	res.locals.currentUserCan = function(perm) {
 		return auth.userCan(req.user,perm)

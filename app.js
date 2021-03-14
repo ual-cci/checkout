@@ -3,7 +3,6 @@ require('dotenv-safe').config({allowEmptyValues: true});
 const express = require('express')
 const http = require('http')
 const flash = require('express-flash-plus')
-const bodyParser = require('body-parser')
 const helmet = require('helmet')
 
 const {auth} = require('./src/js/authentication.js')
@@ -17,8 +16,6 @@ app.use(helmet())
 sessions(app)
 auth(app)
 app.use(flash())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(express.static('./static'))
 app.use('/bootstrap', express.static('./node_modules/bootstrap/dist'))

@@ -70,7 +70,7 @@ function routeApps(app, apps) {
 	})
 }
 
-module.exports = function(app) {
+module.exports = (app) => {
 	// Loop through main app director contents
 	const apps = loadApps(APP_ROOT)
 
@@ -81,13 +81,13 @@ module.exports = function(app) {
 	routeApps(app, apps)
 
 	// Error 404
-	app.use(function (req, res, next) {
+	app.use((req, res, next) => {
 		res.status(404)
 		res.render('404')
 	})
 
 	// Error 500
-	app.use(function (err, req, res, next) {
+	app.use((err, req, res, next) => {
 		console.log(err)
 		res.status(500);
 		res.render('500', {error: (res.locals.dev ? err.stack : undefined)})

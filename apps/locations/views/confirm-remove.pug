@@ -7,6 +7,7 @@ block prepend title
 
 block contents
 	form( method="post" )
+		+csrf
 		+messageBlock( 'dark', 'white', 'Deleting this location will transfer all the items to the new location selected below.' )
 		.form-group.row
 			label( for="location" ).col-lg-2.col-form-label Transfer items to

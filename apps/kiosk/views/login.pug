@@ -17,6 +17,7 @@ block append css
 block contents
 	.col-12.text-center
 		form( method="post", action="/kiosk" ).form-signin
+			+csrf
 			img( src="/imgs/logo.svg" width="128" height="128" ).mb-2
 			h1.mb-0=Options.get('application_name')
 			h5.text-muted=Options.get('organisation_name')

@@ -7,6 +7,7 @@ block prepend title
 
 block contents
 	form( method="post" )
+		+csrf
 		+messageBlock( 'dark', 'white', 'Items do not have to be associated with a group by not selecting a new group the items will be removed from the group being deleted.' )
 		.form-group.row
 			label( for="group" ).col-lg-2.col-form-label Transfer items to

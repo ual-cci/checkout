@@ -7,6 +7,7 @@ block prepend title
 
 block contents
 	form( action="/items/edit" method="post" )
+		+csrf
 		.form-group.row
 			label( for="label" ).col-lg-2.col-form-label Label
 			.col-lg-4
