@@ -27,9 +27,10 @@ const titles = {
 function search(term, cb) {term ? apiGET('search', term, cb) : null}
 
 jQuery(document).ready(function() {
+	searchInput = document.getElementById('search')
+
 	if (searchInput) {
 		searchInput.addEventListener('input', handleSearchInput)
-		searchInput = document.getElementById('search')
 		searchInput.addEventListener('focus', handleSearchInputFocus)
 		window.addEventListener('resize', positionSearchDropdown)
 	}

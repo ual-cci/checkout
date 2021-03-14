@@ -254,7 +254,7 @@ function handleKeyboardPress(e) {
 	lazyResetKioskTimer()
 
 	// Escape - empty search or close it
-	if (e.which == 27 && searchInput && document.activeElement !== searchInput) {
+	if (e.which == 27 && !(searchInput && document.activeElement === searchInput)) {
 		clearActive()
 		focus()
 	}
