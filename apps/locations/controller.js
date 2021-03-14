@@ -53,6 +53,10 @@ class LocationController extends BaseController {
 		.catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Location not created - '))
 	}
 
+	getSingle(req, res) {
+		res.redirect(this.getRoute(`/${req.params.id}/edit`))
+	}
+
 	getEdit(req, res) {
 		this.models.locations.getById(req.params.id)
 		.then(location => {

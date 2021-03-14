@@ -72,6 +72,10 @@ class CoursesController extends BaseController {
 		.catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Unable to create course – '))
 	}
 
+	getSingle(req, res) {
+		res.redirect(this.getRoute(`/${req.params.id}/edit`))
+	}
+
 	/**
 	* Gets the data for the edit course page
 	*

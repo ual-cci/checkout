@@ -24,6 +24,10 @@ app.post('/create', auth.currentUserCan('departments_create'), function(req, res
 	req.controller.postCreate(req, res)
 })
 
+app.get('/:id', auth.currentUserCan('departments_edit'), (req, res) => {
+	req.controller.getSingle(req, res)
+})
+
 app.get('/:id/edit', auth.currentUserCan('departments_edit'), function(req, res) {
 	req.controller.getEdit(req, res)
 })

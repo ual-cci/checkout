@@ -43,6 +43,10 @@ class YearsController extends BaseController {
 		.catch(err => this.displayError(req, res, err, this.getRoute(), 'Error creating year - '))
 	}
 
+	getSingle(req, res) {
+		res.redirect(this.getRoute(`/${req.params.id}/edit`))
+	}
+
 	getEdit(req, res) {
 		this.models.years.getById(req.params.id)
 		.then(year => {

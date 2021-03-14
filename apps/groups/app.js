@@ -24,6 +24,10 @@ app.post('/create', auth.currentUserCan('groups_create'), function(req, res) {
 	req.controller.postCreate(req, res)
 })
 
+app.get('/:id', auth.currentUserCan('groups_edit'), function(req, res) {
+	req.controller.getSingle(req, res)
+})
+
 app.get('/:id/edit', auth.currentUserCan('groups_edit'), function(req, res) {
 	req.controller.getEdit(req, res)
 })

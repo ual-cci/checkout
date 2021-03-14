@@ -23,6 +23,10 @@ app.post('/create', auth.currentUserCan('courses_create'), (req, res) => {
 	req.controller.postCreate(req, res)
 })
 
+app.get('/:id', auth.currentUserCan('courses_edit'), (req, res) => {
+	req.controller.getSingle(req, res)
+})
+
 app.get('/:id/edit', auth.currentUserCan('courses_edit'), (req, res) => {
 	req.controller.getEdit(req, res)
 })

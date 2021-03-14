@@ -46,6 +46,10 @@ class GroupController extends BaseController {
 		.catch(err => this.displayError(req, res, err, this.getRoute(), 'Error creating group - '))
 	}
 
+	getSingle(req, res) {
+		res.redirect(this.getRoute(`/${req.params.id}/edit`))
+	}
+
 	getEdit(req, res) {
 		this.models.groups.getById(req.params.id)
 		.then(group => {

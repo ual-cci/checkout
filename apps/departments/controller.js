@@ -42,6 +42,10 @@ class DepartmentController extends BaseController {
 		.catch(err => this.displayError(req, res, err, this.getRoute('/create'), 'Department not created - '))
 	}
 
+	getSingle(req, res) {
+		res.redirect(this.getRoute(`/${req.params.id}/edit`))
+	}
+
 	getEdit(req, res) {
 		this.models.departments.getById(req.params.id)
 		.then(department => {
