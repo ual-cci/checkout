@@ -1,0 +1,89 @@
+nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
+	.sidebar-sticky.pt-3
+		if currentUserCan({or: ['items_read', 'items_create']})
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Items
+			ul.nav.flex-column
+				if currentUserCan('items_read')
+					li.nav-item
+						a.nav-link(href="/items" class=(menu=='items'?'active':''))
+							span.mr-2.fa.fa-boxes
+							| View
+				if currentUserCan('items_create')
+					li.nav-item
+						a.nav-link(href="/items/create" class=(menu=='create items'?'active':''))
+							span.mr-2.fa.fa-plus
+							| Create
+						
+		if currentUserCan({or: ['groups_read', 'locations_read', 'departments_read']})
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Item categories
+			ul.nav.flex-column
+				if currentUserCan('groups_read')
+					li.nav-item
+						a.nav-link(href="/groups" class=(menu=='groups'?'active':''))
+							span.mr-2.fa.fa-object-group
+							| Groups
+				if currentUserCan('locations_read')
+					li.nav-item
+						a.nav-link(href="/locations" class=(menu=='locations'?'active':''))
+							span.mr-2.fa.fa-location-arrow
+							| Locations
+				if currentUserCan('departments_read')
+					li.nav-item
+						a.nav-link(href="/departments" class=(menu=='departments'?'active':''))
+							span.mr-2.fa.fa-building
+							| Departments
+					
+		if currentUserCan('users_read')
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Users
+			ul.nav.flex-column
+				li.nav-item
+					a.nav-link(href="/users" class=(menu=='users'?'active':''))
+						span.mr-2.fa.fa-users
+						|  View
+					
+		if currentUserCan({or: ['courses_read', 'years_read', 'roles_read']})
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted User categories
+			ul.nav.flex-column
+				if currentUserCan('courses_read')
+					a.nav-link(href="/courses" class=(menu=='courses'?'active':''))
+						span.mr-2.fa.fa-user-graduate
+						| Courses
+				if currentUserCan('years_read')
+					a.nav-link(href="/years" class=(menu=='years'?'active':''))
+						span.mr-2.fa.fa-user-clock
+						| Years
+				if currentUserCan('roles_read')
+					a.nav-link(href="/roles" class=(menu=='roles'?'active':''))
+						span.mr-2.fa.fa-user-tag
+						| Roles
+		
+		if currentUserCan('reservations_read')
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Reservations
+			ul.nav.flex-column
+				li.nav-item
+					a.nav-link(href="/reservations" class=(menu=='reservations'?'active':'')) View
+					
+
+		if currentUserCan({or: ['activate_kiosk_mode', 'generate_insurance_report', 'printers_read', 'options_read']})
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Administration
+			ul.nav.flex-column.mb-2
+				if currentUserCan('activate_kiosk_mode')
+					li.nav-item
+						a.nav-link(href="/kiosk/enable" class=(menu=='kiosk'?'active':''))
+							span.mr-2.fa.fa-cash-register
+							| Kiosk Mode
+				if currentUserCan('printers_read')
+					li.nav-item
+						a.nav-link(href="/reports/insurance" class=(menu=='insurance'?'active':''))
+							span.mr-2.fa.fa-file-alt
+							| Insurance Report
+				if currentUserCan('printers_read')
+					li.nav-item
+						a.nav-link(href="/printers" class=(menu=='printers'?'active':''))
+							span.mr-2.fa.fa-print
+							| Printers
+				if currentUserCan('options_read')
+					li.nav-item
+						a.nav-link(href="/options" class=(menu=='options'?'active':''))
+							span.mr-2.fa.fa-cog
+							| Options

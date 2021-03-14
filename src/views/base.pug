@@ -2,9 +2,9 @@ include partials/mixins.pug
 doctype html
 html
 	head
-		meta( charset="utf-8" )
-		meta( name="viewport", content="initial-scale=1.0, width=device-width, shrink-to-fit=no" )
-		link( rel="shortcut icon" href="/imgs/favicon.ico" )
+		meta(charset="utf-8")
+		meta(name="viewport", content="initial-scale=1.0, width=device-width, shrink-to-fit=no")
+		link(rel="shortcut icon" href="/imgs/favicon.ico")
 		block title
 			if title
 				title #{title} &mdash; #{Options.get('application_name')}
@@ -12,39 +12,29 @@ html
 				title #{Options.get('application_name')}
 		block head
 			block css
-				link( rel="stylesheet", href="/bootstrap/css/bootstrap.min.css" )
-				link( rel="stylesheet", href="/tempusdominus/css/tempusdominus-bootstrap-4.min.css" )
-				link( rel="stylesheet", href="/css/style.css" )
-				link( rel="stylesheet", href="/fontawesome/css/solid.min.css" )
-				link( rel="stylesheet", href="/fontawesome/css/all.min.css" )
+				link(rel="stylesheet", href="/bootstrap/css/bootstrap.min.css")
+				link(rel="stylesheet", href="/tempusdominus/css/tempusdominus-bootstrap-4.min.css")
+				link(rel="stylesheet", href="/css/style.css")
+				link(rel="stylesheet", href="/fontawesome/css/solid.min.css")
+				link(rel="stylesheet", href="/fontawesome/css/all.min.css")
 			block js
-				script( src="/jquery/jquery.min.js" )
-				script( src="/bootstrap/js/bootstrap.bundle.min.js" )
-				script( src="/moment/moment.min.js" )
-				script( src="/tempusdominus/js/tempusdominus-bootstrap-4.min.js" )
-				script( src="/clipboard/clipboard.min.js" )
-				script( src="/js/script.js" )
+				script(src="/jquery/jquery.min.js")
+				script(src="/bootstrap/js/bootstrap.bundle.min.js")
+				script(src="/moment/moment.min.js")
+				script(src="/tempusdominus/js/tempusdominus-bootstrap-4.min.js")
+				script(src="/clipboard/clipboard.min.js")
+				script(src="/js/script.js")
 				if kioskMode
-					script( src="/js/kiosk.js" )
-	body( class=( dev ? 'dev' : '' ) class=( kioskMode ? 'kiosk' : '' ) )
+					script(src="/js/kiosk.js")
+	body(class=(dev ? 'dev' : '') class=(kioskMode ? 'kiosk' : ''))
 		block navbar
 			include partials/navbar.pug
-		div( class=(wide?"container-fluid":"container"))
-			.row
-				.col-12
-					block header
-						h2=heading
-				block flash
-					.col-12
-						include partials/flash.pug
-				.col-12
-					block contents
-				block footer
-					.col-12
-						hr
-					.col-9
-						small.text-muted #{Options.get('application_name')} &mdash; #{Options.get('organisation_name')} &mdash;
-							|  
-							a.text-muted( href=Options.get('github_url'), target="_blank" ) Contribute on GitHub
-					.col-3
-						p.text-right: small: a.text-muted( href=`${Options.get('github_url')}/commit/${git}`, target="_blank" )=git
+		div.container-fluid
+			if loggedInUser && !kioskMode
+				.row
+					include partials/sidebar.pug
+					main.col-md-9.ml-sm-auto.col-lg-10.px-md-4
+						include partials/body.pug
+			else
+				main.col-md-12
+					include partials/body.pug
