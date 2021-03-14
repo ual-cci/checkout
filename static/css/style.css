@@ -239,6 +239,10 @@ body.noScroll {
 	height: 100%;
 }
 
+.searchList {
+	font-size: 10pt;
+}
+
 .searchList a:link,
 .searchList a:visited {
 	color: black
@@ -246,4 +250,40 @@ body.noScroll {
 
 .searchList a:hover {
 	text-decoration: none;
+}
+
+.searchList p {
+	margin: 1rem;
+}
+
+.searchList h3 {
+	margin: 1rem 1rem 0.5rem 1rem;
+	font-size: 12pt;
+	font-weight: 600;
+}
+
+.searchList a {
+	display: block;
+	padding: 0.5rem 1rem 0.5rem 1rem;
+	border-top: 1px solid rgba(0,0,0,.125);
+	background-color: white;
+	transition: .25s background-color;
+}
+
+.searchList a.object::after {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	content: "\f061";
+	position: absolute;
+	right: 1rem;
+	margin-top: -0.65rem;
+	color: #333
+}
+
+.searchList a.object:hover::after {
+	color: #007bff;;
+}
+
+.searchList a:hover {
+	background-color: #f5f5f5;
 }

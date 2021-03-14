@@ -6,7 +6,6 @@ let modalCover
 // API Search Function
 function search(term, cb) {term ? apiGET('find', term, cb) : null}
 
-
 jQuery(document).ready(function() {
 	searchInput = document.getElementById('search')
 	searchInput.addEventListener('input', handleSearchInput)
@@ -60,28 +59,49 @@ function searchTimer() {
 
 		// Process items
 		if (data.items.length > 0) {
-			lazyAddSearchDIV('item')
+			lazyAddSearchDIV('item', 'Items', 'box')
+
 			for (i in data.items) {
-				addSearchResult(data.items[i], 'item', 'items', 'fa-box')
+				addSearchResult(data.items[i], 'item', 'items', i > 4 ? 'none' : '')
 			}
+
+			if (data.items.length > 4) addOverflow('item')
 		}
 
 		// Process users
 		if (data.users.length > 0) {
-			lazyAddSearchDIV('user')
+			lazyAddSearchDIV('user', 'Users', 'users')
+
 			for (i in data.users) {
-				addSearchResult(data.users[i], 'user', 'users', 'fa-user')
+				addSearchResult(data.users[i], 'user', 'users', i > 4 ? 'none' : '')
 			}
+
+			if (data.users.length > 4) addOverflow('user')
+		}
+
+		if (data.users.length == 0 & data.items.length == 0) {
+			addNoResultsFound()
 		}
 	})
 }
 
-function lazyAddSearchDIV(type) {
+function lazyAddSearchDIV(type, title, faclass) {
 	if (searchDropdown && !searchDropdown.querySelector(`[data-type='${type}']`)) {
 		const div = document.createElement('div')
-		div.classList.add('list-group','list-group-hover')
 		div.dataset.type = type
+
+		const heading = document.createElement('h3')
+
+		const span = document.createElement('span')
+		span.classList.add('fa')
+		span.classList.add('mr-2')
+		span.classList.add(`fa-${faclass}`)
+		heading.appendChild(span)
+
+		heading.innerHTML += title
+
 		searchDropdown.appendChild(div)
+		searchDropdown.insertBefore(heading, div)
 	}
 }
 
@@ -95,27 +115,43 @@ function clearSearchResults() {
 	if (searchDropdown) searchDropdown.innerText = ''
 }
 
-function addSearchResult(object, type, path, faclass) {
+function addOverflow(type) {
 	const a = document.createElement('a')
-	a.classList.add('list-group-item')
-	a.href = `/${path}/${object.id}`
+	a.classList.add('overflow')
 
 	const span = document.createElement('span')
-	span.classList.add('fa')
-	span.classList.add('mr-2')
-	span.classList.add(faclass)
+	span.classList.add('fas')
+	span.classList.add('fa-ellipsis-h')
 	a.appendChild(span)
 
-	if (type == 'user') a.appendChild(createStatusBadge(object.status))
-	a.innerHTML += `<strong>${object.name}</strong><br>${object.barcode}`
+	searchDropdown.querySelector(`[data-type=${type}]`).appendChild(a)
+	a.addEventListener('click', (e) => {
+		jQuery(e.target.parentElement.querySelectorAll('.object')).slideDown()
+		jQuery(e.target).slideUp()
+	})
+}
+
+function addSearchResult(object, type, path, display) {
+	const a = document.createElement('a')
+	a.classList.add('object')
+	a.href = `/${path}/${object.id}`
+	a.style.display = display
+
+	if (type == 'item') a.appendChild(createStatusBadge(object.status))
+	a.innerHTML += `<strong>${object.name}</strong><br>`
+	a.innerHTML += `${object.barcode}`
 
 	searchDropdown.querySelector(`[data-type=${type}]`).appendChild(a)
+}
+
+function addNoResultsFound() {
+	searchDropdown.innerHTML = '<p>No results</p>'
 }
 
 function createStatusBadge(status) {
 	const span = document.createElement('span')
 	span.classList.add('badge')
-	span.classList.add('mr-2')
+	span.classList.add('mr-1')
 	span.innerHTML = '&nbsp;'
 
 	let badgeClass = 'default'
