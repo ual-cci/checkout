@@ -8,7 +8,7 @@ nav.navbar.navbar-expand-md.sticky-top.p-0.shadow.bg-dark.navbar-dark
 	
 	if loggedInUser
 		if currentUserCan('global_search')
-			input#search.form-control.form-control-dark.mr-md-2.w-100(type="text" placeholder="Search")
+			input#search.form-control.form-control-dark.mr-md-2.w-100(type="text" placeholder="Search" autocomplete="off")
 		.navbar-nav.ml-auto
 			if loggedInUser
 				.nav-item.dropdown
