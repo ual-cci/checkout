@@ -34,13 +34,13 @@ class ApiController extends BaseController {
 	}
 
 	/**
-	* Search end point that searches both users
+	* Find end point that searches both users
 	* and items by barcode and name
 	*
 	* @param {Object} req Express request object
 	* @param {Object} res Express response object
 	*/
-	getSearch(req, res) {
+	getFind(req, res) {
 		const {term} = req.params
 		Promise.all([
 			this.models.users.search(term),

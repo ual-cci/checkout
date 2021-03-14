@@ -12,8 +12,8 @@ app.use((req, res, next) => {
 	next()
 })
 
-app.get('/search/:term', auth.APIuserCan('checkout_issue'), (req, res) => {
-	req.controller.getSearch(req, res)
+app.get('/find/:term', auth.APIuserCan('checkout_issue'), (req, res) => {
+	req.controller.getFind(req, res)
 })
 
 app.get('/identify/:term', auth.APIuserCan('checkout_issue'), (req, res) => {

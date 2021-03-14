@@ -17,7 +17,7 @@ var cursor = 0
 
 jQuery(document).ready(function() {
 	focus()
-	jQuery('#find input').bind('input', handleSearchInput)
+	jQuery('#find input').bind('input', handleFindInput)
 	jQuery(document).bind('keyup', handleKeyPress)
 	jQuery('#find').bind('submit', handleIssueSubmit)
 	jQuery('#return').bind('submit', handleReturnSubmit)
@@ -33,8 +33,8 @@ jQuery(document).ready(function() {
 
 
 
-function searchTimer() {
-	search(jQuery('#find input').val(), function(data) {
+function findTimer() {
+	find(jQuery('#find input').val(), function(data) {
 		empty()
 
 		var last_item
@@ -225,7 +225,7 @@ function newUser(name, barcode, email, course, year, cb) {
 		cb(data)
 	})
 }
-function search(barcode, cb) {barcode ? apiGET('search', barcode, cb) : null}
+function find(barcode, cb) {barcode ? apiGET('find', barcode, cb) : null}
 function getItem(barcode, cb) {apiGET('item', barcode, cb)}
 function getUser(barcode, cb) {apiGET('user', barcode, cb)}
 function identify(barcode, cb) {apiGET('identify', barcode, cb)}
@@ -413,11 +413,11 @@ function handlePanelClick() {
 	select(clicked.data('type'), clicked.data('barcode'))
 }
 
-function handleSearchInput(e) {
+function handleFindInput(e) {
 	lazyResetKioskTimer()
 	if (jQuery('#find input').val() == '') empty()
 	clearTimeout(typeTimeout)
-	typeTimeout = setTimeout(searchTimer, 100)
+	typeTimeout = setTimeout(findTimer, 100)
 }
 
 function handleAuditSubmit(e) {
