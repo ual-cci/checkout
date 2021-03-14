@@ -5,9 +5,9 @@ let modalCover
 
 const icons = {
 	items: 'box',
-	users: 'user',
+	users: 'users',
 	courses: 'user-graduate',
-	groups: 'users',
+	groups: 'object-group',
 	locations: 'location-arrow',
 	departments: 'building',
 	years: 'user-clock'
