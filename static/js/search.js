@@ -28,11 +28,18 @@ function handleKeyboardInput(e) {
 		window.location = '/checkout'
 	}
 
-	// Escape - close search
+	// Escape - empty search or close it
 	if (document.activeElement === searchInput && e.which == 27) {
 		e.preventDefault()
-		searchInput.blur()
-		removeSearchDropdown()
+
+		if (searchInput.value == '') {
+			searchInput.blur()
+			removeSearchDropdown()
+		} else {
+			searchInput.value = ''
+			clearSearchResults()
+			jQuery(modalCover).fadeOut()
+		}
 	}
 }
 
