@@ -3,6 +3,7 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = 'Remove: ' + selected.name
 	- heading = "Are you sure you want to remove " + selected.name + "?"
+	- menu = "departments"
 
 block contents
 	form( method="post" )

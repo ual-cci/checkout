@@ -3,6 +3,7 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = "Edit Multiple Users"
 	- heading = title
+	- menu = "users"
 
 block contents
 	form( action="/users/edit" method="post" )

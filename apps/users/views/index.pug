@@ -3,13 +3,13 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = "Users"
 	- heading = title
+	- menu = "users"
 
-block header
-	h2=heading
-		if currentUserCan('users_import')
-			a( href="/users/import" ).btn.btn-outline-success.btn-m.float-right.ml-2
-				span.fas.fa-file-csv
-				|  Import Users
+block buttons
+	if currentUserCan('users_import')
+		a( href="/users/import" ).btn.btn-outline-success.btn-sm.float-right.ml-2
+			span.fas.fa-file-csv
+			|  Import Users
 
 block contents
 	- filter_path = '/users/'

@@ -3,6 +3,7 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = 'Permissions: ' + role.name
 	- heading = title
+	- menu = "roles"
 
 block contents
 	form( method="post" )

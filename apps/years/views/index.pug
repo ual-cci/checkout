@@ -3,13 +3,13 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = "Years"
 	- heading = title
+	- menu = "years"
 
-block header
-	h2=heading
-		if currentUserCan('years_create')
-			a( href="/years/create" ).btn.btn-outline-success.btn-m.float-right
-				span.fas.fa-plus
-				|  Create
+block buttons
+	if currentUserCan('years_create')
+		a( href="/years/create" ).btn.btn-outline-success.btn-sm.float-right
+			span.fas.fa-plus
+			|  Create
 
 block contents
 	include partials/list.pug

@@ -3,13 +3,13 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = "Roles"
 	- heading = title
+	- menu = "roles"
 
-block header
-	h2=heading
-		if currentUserCan('roles_create')
-			a( href="/roles/create" ).btn.btn-outline-success.btn-m.float-right
-				span.fas.fa-plus
-				|  Create
+block buttons
+	if currentUserCan('roles_create')
+		a( href="/roles/create" ).btn.btn-outline-success.btn-sm.float-right
+			span.fas.fa-plus
+			|  Create
 
 block contents
 	include partials/list.pug

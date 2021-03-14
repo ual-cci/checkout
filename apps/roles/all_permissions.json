@@ -61,5 +61,6 @@
   "reservations_create": "User can create reservations.",
   "reservations_edit": "User can edit reservations.",
   "reservations_remove": "User can remove reservations.",
-  "reservations_override": "User can override reservations when issuing items."
+  "reservations_override": "User can override reservations when issuing items.",
+  "global_search": "User can use global search in top nar bar."
 }

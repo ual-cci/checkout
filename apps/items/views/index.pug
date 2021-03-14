@@ -1,20 +1,19 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- wide = true
 	- title = "Items"
 	- heading = title
+	- menu = "items"
 
-block header
-	h2=heading
-		if currentUserCan('items_import')
-			a( href="/items/import" ).btn.btn-outline-success.btn-m.float-right.ml-2
-				span.fas.fa-file-csv
-				|  Import Items
-		if currentUserCan('items_create')
-			a( href="/items/create" ).btn.btn-outline-success.btn-m.float-right.ml-2
-				span.fas.fa-plus
-				|  Create Items
+block buttons
+	if currentUserCan('items_import')
+		a( href="/items/import" ).btn.btn-outline-success.btn-sm.float-right.ml-2
+			span.fas.fa-file-csv
+			|  Import Items
+	if currentUserCan('items_create')
+		a( href="/items/create" ).btn.btn-outline-success.btn-sm.float-right.ml-2
+			span.fas.fa-plus
+			|  Create Items
 
 block contents
 	- filter_path = '/items/'

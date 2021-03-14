@@ -3,13 +3,13 @@ extends ../../../src/views/base.pug
 block prepend title
 	- title = 'Departments'
 	- heading = title
-
-block header
-	h2=heading
-		if currentUserCan('departments_create')
-			a( href="/departments/create" ).btn.btn-outline-success.btn-m.float-right
-				span.fas.fa-plus
-				|  Create
+	- menu = "departments"
+	
+block buttons
+	if currentUserCan('departments_create')
+		a( href="/departments/create" ).btn.btn-outline-success.btn-sm.float-right
+			span.fas.fa-plus
+			|  Create
 
 block contents
 	include partials/list.pug
