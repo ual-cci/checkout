@@ -15,6 +15,7 @@ const Users = require('../../src/models/users.js')
 const Actions = require('../../src/models/actions.js')
 const Courses = require('../../src/models/courses.js')
 const Years = require('../../src/models/years.js')
+const Departments = require('../../src/models/departments.js')
 
 const Print = require('../../src/js/print')
 
@@ -30,7 +31,48 @@ class ApiController extends BaseController {
 			actions: new Actions(),
 			courses: new Courses(),
 			years: new Years(),
+			departments: new Departments(),
 		}
+	}
+
+	/**
+	* Search end point that searches various fields
+	* by barcode and name
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getSearch(req, res) {
+		const {term} = req.params
+		Promise.all([
+			this.models.users.search(term),
+			this.models.items.search(term),
+			this.models.groups.search(term),
+			this.models.locations.search(term),
+			this.models.departments.search(term),
+			this.models.courses.search(term),
+			this.models.years.search(term)
+		])
+		.then(([users, items, groups, locations, departments, courses, years]) => {
+			let result = {}
+
+			if (auth.userCan(req.user, 'items_read'))
+				result.items = items
+			if (auth.userCan(req.user, 'users_read'))
+				result.users = users
+			if (auth.userCan(req.user, 'groups_read'))
+				result.groups = groups
+			if (auth.userCan(req.user, 'courses_read'))
+				result.courses = courses
+			if (auth.userCan(req.user, 'years_read'))
+				result.years = years
+			if (auth.userCan(req.user, 'locations_read'))
+				result.locations = locations
+			if (auth.userCan(req.user, 'departments_read'))
+				result.departments = departments
+
+			res.json(result)
+		})
 	}
 
 	/**
@@ -53,7 +95,7 @@ class ApiController extends BaseController {
 				items
 			})
 		})
- }
+	}
 
 	/**
 	* Returns the type of object that is found

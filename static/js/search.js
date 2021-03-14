@@ -3,8 +3,28 @@ let searchInput
 let searchDropdown
 let modalCover
 
+const icons = {
+	items: 'box',
+	users: 'user',
+	courses: 'user-graduate',
+	groups: 'users',
+	locations: 'location-arrow',
+	departments: 'building',
+	years: 'user-clock'
+}
+
+const titles = {
+	items: 'Items',
+	users: 'Users',
+	courses: 'Courses',
+	groups: 'Groups',
+	locations: 'Locations',
+	departments: 'Departments',
+	years: 'Years'
+}
+
 // API Search Function
-function search(term, cb) {term ? apiGET('find', term, cb) : null}
+function search(term, cb) {term ? apiGET('search', term, cb) : null}
 
 jQuery(document).ready(function() {
 	searchInput = document.getElementById('search')
@@ -57,32 +77,29 @@ function searchTimer() {
 	search(searchInput.value, (data) => {
 		clearSearchResults()
 
-		// Process items
-		if (data.items.length > 0) {
-			lazyAddSearchDIV('item', 'Items', 'box')
+		let total_results = 0
+		const data_types = Object.keys(data)
+		data_types.forEach((type) => {
+			processDataSet(type, data[type])
+			total_results += data[type].length
+		})
 
-			for (i in data.items) {
-				addSearchResult(data.items[i], 'item', 'items', i > 4 ? 'none' : '')
-			}
-
-			if (data.items.length > 4) addOverflow('item')
-		}
-
-		// Process users
-		if (data.users.length > 0) {
-			lazyAddSearchDIV('user', 'Users', 'users')
-
-			for (i in data.users) {
-				addSearchResult(data.users[i], 'user', 'users', i > 4 ? 'none' : '')
-			}
-
-			if (data.users.length > 4) addOverflow('user')
-		}
-
-		if (data.users.length == 0 & data.items.length == 0) {
+		if (total_results == 0) {
 			addNoResultsFound()
 		}
 	})
+}
+
+function processDataSet(type, data) {
+	if (data.length > 0) {
+		lazyAddSearchDIV(type, titles[type], icons[type])
+
+		for (i in data) {
+			addSearchResult(data[i], type, type, i > 4 ? 'none' : '')
+		}
+
+		if (data.length > 4) addOverflow(type)
+	}
 }
 
 function lazyAddSearchDIV(type, title, faclass) {
@@ -138,8 +155,8 @@ function addSearchResult(object, type, path, display) {
 	a.style.display = display
 
 	if (type == 'item') a.appendChild(createStatusBadge(object.status))
-	a.innerHTML += `<strong>${object.name}</strong><br>`
-	a.innerHTML += `${object.barcode}`
+	a.innerHTML += `<strong>${object.name}</strong>`
+	if (object.barcode) a.innerHTML += `<br>${object.barcode}`
 
 	searchDropdown.querySelector(`[data-type=${type}]`).appendChild(a)
 }
