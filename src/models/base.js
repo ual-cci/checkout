@@ -164,11 +164,11 @@ class BaseModel {
 	 * Creates a new knex query and attaches the
 	 * models default selects to it
 	 */
-	query() {
+	query(all_properties = false) {
 		this._queryObj = db(this.options.table)
 
 		if (this.properties.length) {
-			this._queryObj.select(this._propertiesToSelect(this.properties))
+			this._queryObj.select(this._propertiesToSelect(all_properties?this.allProperties:this.properties))
 		}
 
 		this.lookup(this.bootstrap)

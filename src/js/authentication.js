@@ -14,7 +14,7 @@ const Authentication = {
 	// Add support for local authentication
 	passport.use(
 		new LocalStrategy(function(email, password, done) {
-		users.getByEmail(email)
+		users.getByEmail(email, 'all')
 			.then(user => {
 				if (!user) {
 					throw new Error('Invalid Login')

@@ -41,7 +41,11 @@ class UserModel extends BaseModel {
 	}
 
 	get properties() {
-		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_hash', 'pw_salt', 'pw_attempts', 'pw_iterations', 'audit_point', 'printer_id', 'role_id']
+		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id']
+	}
+
+	get allProperties() {
+		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_hash', 'pw_salt', 'pw_iterations', 'pw_attempts', 'audit_point', 'printer_id', 'role_id']
 	}
 
 	getAll() {
@@ -52,8 +56,8 @@ class UserModel extends BaseModel {
 		return this.where([['barcode', barcode]]).retrieveSingle()
 	}
 
-	getByEmail(email) {
-		return this.query().where([['email', email]]).retrieveSingle()
+	getByEmail(email, include) {
+		return this.query(include == 'all' ? true : false).where([['email', email]]).retrieveSingle()
 	}
 
 	updateCourse(oldCourseId, newCourseId) {
