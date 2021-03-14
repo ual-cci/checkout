@@ -27,37 +27,41 @@ const titles = {
 function search(term, cb) {term ? apiGET('search', term, cb) : null}
 
 jQuery(document).ready(function() {
-	searchInput = document.getElementById('search')
-	searchInput.addEventListener('input', handleSearchInput)
-	searchInput.addEventListener('focus', handleSearchInputFocus)
+	if (searchInput) {
+		searchInput.addEventListener('input', handleSearchInput)
+		searchInput = document.getElementById('search')
+		searchInput.addEventListener('focus', handleSearchInputFocus)
+		window.addEventListener('resize', positionSearchDropdown)
+	}
 	document.addEventListener('keydown', handleKeyboardInput)
-	window.addEventListener('resize', positionSearchDropdown)
 })
 
 function handleKeyboardInput(e) {
-	// Alt + F - open search
-	if (e.altKey && e.which == 70) {
-		e.preventDefault()
-		searchInput.focus()
-	}
-
 	// Alt + K - Go to kiosk
-	if (e.altKey && e.which == 75) {
+	if (e.altKey && e.shiftKey && e.which == 75) {
 		e.preventDefault()
 		window.location = '/checkout'
 	}
 
-	// Escape - empty search or close it
-	if (document.activeElement === searchInput && e.which == 27) {
-		e.preventDefault()
+	if (searchInput) {
+		// Alt + F - open search
+		if (e.altKey && e.shiftKey && e.which == 70) {
+			e.preventDefault()
+			searchInput.focus()
+		}
 
-		if (searchInput.value == '') {
-			searchInput.blur()
-			removeSearchDropdown()
-		} else {
-			searchInput.value = ''
-			clearSearchResults()
-			jQuery(modalCover).fadeOut()
+		// Escape - empty search or close it
+		if (document.activeElement === searchInput && e.which == 27) {
+			e.preventDefault()
+
+			if (searchInput.value == '') {
+				searchInput.blur()
+				removeSearchDropdown()
+			} else {
+				searchInput.value = ''
+				clearSearchResults()
+				jQuery(modalCover).fadeOut()
+			}
 		}
 	}
 }

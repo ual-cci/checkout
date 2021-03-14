@@ -18,7 +18,7 @@ var cursor = 0
 jQuery(document).ready(function() {
 	focus()
 	jQuery('#find input').bind('input', handleFindInput)
-	jQuery(document).bind('keyup', handleKeyPress)
+	document.addEventListener('keydown', handleKeyboardPress)
 	jQuery('#find').bind('submit', handleIssueSubmit)
 	jQuery('#return').bind('submit', handleReturnSubmit)
 	jQuery('#audit').bind('submit', handleAuditSubmit)
@@ -250,46 +250,47 @@ function clearActive() {
 	jQuery('#modules .bg-primary').addClass('bg-dark').removeClass('bg-primary')
 }
 
-function handleKeyPress(e) {
+function handleKeyboardPress(e) {
 	lazyResetKioskTimer()
-	switch(e.keyCode) {
-		case 27: // Escape
-			clearActive()
-			focus()
-			break
-		case 112: // F1
-			jQuery('.issue.nav-link').tab('show')
-			break
-		case 113: // F2
-			jQuery('.return.nav-link').tab('show')
-			break
-		case 114: // F3
-			jQuery('.reservation.nav-link').tab('show')
-			break
-		case 115: // F4
-			jQuery('.new-user.nav-link').tab('show')
-			break
-		case 116: // F5
-			jQuery('.print.nav-link').tab('show')
-			break
-		case 117: // F6
-			jQuery('.audit.nav-link').tab('show')
-			break
-		case 118: // F7
-			jQuery('.history.nav-link').tab('show')
-			break
-		case 119: // F8
-			if (typeof kioskLogout == 'function') kioskLogout()
-			break
-		case 120: // F9
-			jQuery('.users.nav-link').tab('show')
-			break
-		case 121: // F10
-			jQuery('.items.nav-link').tab('show')
-			break
-		default:
-			// console.log(e.keyCode)
-			break
+
+	// Escape - empty search or close it
+	if (e.which == 27 && searchInput && document.activeElement !== searchInput) {
+		clearActive()
+		focus()
+	}
+
+	// Alt +
+	if (e.altKey && e.shiftKey) {
+		e.preventDefault()
+		switch(e.which) {
+			case 73: // I
+				jQuery('.issue.nav-link').tab('show')
+				break
+			case 82: // R
+				jQuery('.return.nav-link').tab('show')
+				break
+			case 69: // E
+				jQuery('.reservation.nav-link').tab('show')
+				break
+			case 78: // N
+				jQuery('.new-user.nav-link').tab('show')
+				break
+			case 76: // L
+				jQuery('.print.nav-link').tab('show')
+				break
+			case 65: // A
+				jQuery('.audit.nav-link').tab('show')
+				break
+			case 72: // H
+				jQuery('.history.nav-link').tab('show')
+				break
+			case 88: // X
+				if (typeof kioskLogout == 'function') kioskLogout()
+				break
+			default:
+				// console.log(e.which)
+				break
+		}
 	}
 }
 
