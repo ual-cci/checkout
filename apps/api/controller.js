@@ -326,6 +326,8 @@ class ApiController extends BaseController {
 	*/
 	postReturn(req, res) {
 		let persist = {}
+		let owner
+		this.models.items.getByBarcode(req.params.item).then(item => {owner = item.owner_id})
 		this.models.items.return(req.params.item)
 		.then(item => {
 			persist.item = item
@@ -343,6 +345,7 @@ class ApiController extends BaseController {
 			return this.models.actions.create({
 				item_id: item.id,
 				action,
+				user_id: owner,
 				operator_id: req.user.id
 			})
 		})
