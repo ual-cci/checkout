@@ -1,6 +1,7 @@
 extends ../../../src/views/base.pug
 
 block append head
+	meta(name="csrf-token" content=csrf)
 	script( type="text/javascript", src="/buzz/buzz.min.js" )
 	script( type="text/javascript", src="/js/checkout.js" )
 	- menu = 'kiosk'

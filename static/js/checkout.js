@@ -7,6 +7,7 @@ var errorSound = new buzz.sound("/sounds/error.mp3")
 
 var locationRegex = /^L:(.+)$/
 
+var token
 var typeTimeout
 var flashTimeout
 var one_item
@@ -16,6 +17,7 @@ var current = {}
 var cursor = 0
 
 jQuery(document).ready(function() {
+	token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 	focus()
 	jQuery('#find input').bind('input', handleFindInput)
 	document.addEventListener('keydown', handleKeyboardPress)

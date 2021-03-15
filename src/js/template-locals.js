@@ -14,7 +14,7 @@ function templateLocals(req, res, next) {
 	if (req.session.kioskMode > 0) res.locals.kioskMode = true
 	if (req.csrfToken) res.locals.csrf = req.csrfToken()
 	res.locals.loggedInUser = req.user
-	res.locals.currentUserCan = function(perm) {
+	res.locals.currentUserCan = (perm) => {
 		return auth.userCan(req.user,perm)
 	}
 	res.locals.Options = {}
@@ -23,6 +23,6 @@ function templateLocals(req, res, next) {
 	next()
 }
 
-module.exports = function(apps) {
+module.exports = (apps) => {
 	return templateLocals
 }

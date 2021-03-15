@@ -8,6 +8,7 @@ const helmet = require('helmet')
 const {auth} = require('./src/js/authentication.js')
 const sessions = require('./src/js/sessions.js')
 const appLoader = require('./src/js/app-loader.js')
+const errors = require('./src/js/errors.js')
 
 const app = express()
 const server = http.Server(app)
@@ -33,6 +34,8 @@ app.set('view cache', false)
 
 // Load apps
 appLoader(app)
+
+errors(app)
 
 // Start server
 const listener = server.listen(process.env.APP_PORT ,process.env.APP_HOST, function () {

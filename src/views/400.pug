@@ -1,4 +1,4 @@
-extends base.pug
+extends base-basic.pug
 
 block prepend title
 	- title = "Error 400"
@@ -6,4 +6,4 @@ block prepend title
 
 block contents
 	p.lead Please ensure cookies are enabled.
-	p Your browser request did not include the CSRF token or it was invalid.
+	p.lead Your browser request did not include the CSRF token or it was invalid.
