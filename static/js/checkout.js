@@ -187,9 +187,7 @@ function issue(item, user, override, cb) {
 		user: user
 	}
 	if (override) query += '?override=true'
-	jQuery.post('/api/issue/' + item + '/' + user + query, function(data, status) {
-		cb(data)
-	})
+	apiPOST(`/api/issue/${item}/${user}${query}`, cb)
 }
 function returnItem(item, cb) {
 	apiPOST(`/api/return/${item}`, cb)
