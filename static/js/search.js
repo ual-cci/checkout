@@ -233,7 +233,8 @@ function createSearchDropdown() {
 function positionSearchDropdown() {
 	if (searchDropdown) {
 		const searchInputPosition = searchInput.getBoundingClientRect()
-		searchDropdown.style.top = `${searchInputPosition.bottom}px`
+		const navbarPosition = document.querySelector('nav.navbar').getBoundingClientRect()
+		searchDropdown.style.top = `${navbarPosition.bottom}px`
 		searchDropdown.style.width = `${searchInputPosition.width}px`
 		searchDropdown.style.left = `${searchInputPosition.left}px`
 	}

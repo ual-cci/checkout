@@ -226,7 +226,7 @@ td.flex {
 	border-radius: 0px 0px 5px 0.5rem;
 	box-shadow: 0px 0px 11px rgba(0,0,0,.5);
 
-	max-height: 90vh;
+	max-height: 80vh;
 	overflow: scroll;
 }
 
