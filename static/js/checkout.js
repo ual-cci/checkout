@@ -192,40 +192,31 @@ function issue(item, user, override, cb) {
 	})
 }
 function returnItem(item, cb) {
-	jQuery.post('/api/return/' + item, function(data, status) {
-		cb(data)
-	})
+	apiPOST(`/api/return/${item}`, cb)
 }
 function broken(item, cb) {
-	jQuery.post('/api/broken/' + item, function(data, status) {
-		cb(data)
-	})
+	apiPOST(`/api/broken/${item}`, cb)
 }
 function lost(item, cb) {
-	jQuery.post('/api/lost/' + item, function(data, status) {
-		cb(data)
-	})
+	apiPOST(`/api/lost/${item}`, cb)
 }
 function label(item, cb) {
-	jQuery.post('/api/label/' + item, function(data, status) {
-		cb(data)
-	})
+	apiPOST(`/api/label/${item}`, cb)
 }
 function audit(item, location, override, cb) {
-	jQuery.post('/api/audit/' + item, {location: location, override: override}, function(data, status) {
-		cb(data)
-	})
+	apiPOST(`/api/audit/${item}`, {
+		location: location,
+		override: override
+	}, cb)
 }
 function newUser(name, barcode, email, course, year, cb) {
-	jQuery.post('/api/new-user/', {
+	apiPOST(`/api/new-user`, {
 		name: name,
 		barcode: barcode,
 		email: email,
 		course: course,
 		year: year
-	}, function(data, status) {
-		cb(data)
-	})
+	}, cb)
 }
 function find(barcode, cb) {barcode ? apiGET('find', barcode, cb) : null}
 function getItem(barcode, cb) {apiGET('item', barcode, cb)}
@@ -508,8 +499,36 @@ setInterval(refreshHistory, 10000)
 
 
 function lazyResetKioskTimer() {
-  if (typeof resetKioskTimer == 'function') {
-    console.log('resetKioskTimer')
-    resetKioskTimer()
- }
+	if (typeof resetKioskTimer == 'function') {
+		console.log('resetKioskTimer')
+		resetKioskTimer()
+	}
+}
+
+function apiPOST(path, data, cb) {
+	if (typeof data == 'function') {
+		cb = data
+		delete data
+	}
+
+	let request = {
+		url: path,
+		type: 'post',
+		headers: {
+			'CSRF-Token': token
+		},
+		xhrFields: {
+			withCredentials: true
+		},
+		dataType: 'json',
+		success: (data, status) => {
+			cb(data)
+		}
+	}
+
+	if (typeof data == 'object') {
+		request.data = data
+	}
+
+	jQuery.ajax(request)
 }
