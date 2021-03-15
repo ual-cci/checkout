@@ -38,7 +38,7 @@ function check() {
 		jQuery('.pw.low').addClass('pass')
 	}
 
-	if (pw.match(/[^A-Z0-9]/g) == null) {
+	if (pw.match(/[^A-z0-9]/g) == null) {
 		jQuery('.pw.special').removeClass('pass')
 	} else {
 		jQuery('.pw.special').addClass('pass')
