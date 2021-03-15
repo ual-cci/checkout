@@ -1,7 +1,6 @@
 module.exports = (app) => {
 	// Error 404
 	app.use((req, res, next) => {
-		console.log(res.locals)
 		res.status(404)
 		res.render('404')
 	})
