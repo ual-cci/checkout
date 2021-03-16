@@ -103,7 +103,7 @@ function processDataSet(type, data) {
 			addSearchResult(data[i], type, type, i > 4 ? 'none' : '')
 		}
 
-		if (data.length > 4) addOverflow(type)
+		if (data.length > 5) addOverflow(type)
 	}
 }
 
