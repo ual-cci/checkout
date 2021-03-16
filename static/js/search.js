@@ -159,7 +159,7 @@ function addSearchResult(object, type, path, display) {
 	a.href = `/${path}/${object.id}`
 	a.style.display = display
 
-	if (type == 'item') a.appendChild(createStatusBadge(object.status))
+	if (type == 'items') a.appendChild(createStatusBadge(object.status))
 	a.innerHTML += `<strong>${object.name}</strong>`
 	if (object.barcode) a.innerHTML += `<br>${object.barcode}`
 
