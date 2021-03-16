@@ -3,6 +3,8 @@ let searchInput
 let searchDropdown
 let modalCover
 
+let searchSelectIndex = -1;
+
 const icons = {
 	items: 'box',
 	users: 'users',
@@ -38,6 +40,9 @@ jQuery(document).ready(function() {
 })
 
 function handleKeyboardInput(e) {
+
+	// console.log(e)
+
 	// Alt + K - Go to kiosk
 	if (e.altKey && e.shiftKey && e.which == 75) {
 		e.preventDefault()
@@ -51,20 +56,56 @@ function handleKeyboardInput(e) {
 			searchInput.focus()
 		}
 
-		// Escape - empty search or close it
-		if (document.activeElement === searchInput && e.which == 27) {
-			e.preventDefault()
+		if (document.activeElement === searchInput) {
+			// Escape - empty search or close it
+			if (e.which == 27) {
+				e.preventDefault()
 
-			if (searchInput.value == '') {
-				searchInput.blur()
-				removeSearchDropdown()
-			} else {
-				searchInput.value = ''
-				clearSearchResults()
-				jQuery(modalCover).fadeOut()
+				if (searchInput.value == '') {
+					searchInput.blur()
+					removeSearchDropdown()
+				} else {
+					searchInput.value = ''
+					clearSearchResults()
+					jQuery(modalCover).fadeOut()
+				}
+			}
+
+			const numResults = document.querySelectorAll('.searchList a:not([style*="display: none;"]').length
+			if (numResults > 0) {
+				if (e.which == 40) {
+					e.preventDefault()
+					searchSelectIndex++
+					if (searchSelectIndex > document.querySelectorAll('.searchList a:not([style*="display: none;"]').length - 1) {
+						searchSelectIndex = 0
+					}
+					moveSearchSelection()
+				} else if (e.which == 38) {
+					e.preventDefault()
+					searchSelectIndex--
+					if (searchSelectIndex < 0) {
+						searchSelectIndex = document.querySelectorAll('.searchList a:not([style*="display: none;"]').length - 1
+					}
+					moveSearchSelection()
+				} else if (e.which == 13) {
+					e.preventDefault()
+					if (numResults == 1) {
+						document.querySelectorAll('.searchList a:not([style*="display: none;"]')[0].click()
+					} else if (searchSelectIndex != -1) {
+						document.querySelectorAll('.searchList a:not([style*="display: none;"]')[searchSelectIndex].click()
+					}
+				}
 			}
 		}
 	}
+}
+
+function moveSearchSelection() {
+	document.querySelectorAll('.searchList a.selected').forEach((el) => {el.classList.remove('selected')})
+
+	const selected = document.querySelectorAll('.searchList a:not([style*="display: none;"]')[searchSelectIndex]
+	selected.classList.add('selected')
+	selected.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
 }
 
 function handleSearchInputFocus() {
@@ -134,6 +175,7 @@ function handleSearchInput(e) {
 }
 
 function clearSearchResults() {
+	searchSelectIndex = -1
 	if (searchDropdown) searchDropdown.innerText = ''
 }
 
@@ -150,6 +192,7 @@ function addOverflow(type) {
 	a.addEventListener('click', (e) => {
 		jQuery(e.target.parentElement.querySelectorAll('.object')).slideDown()
 		jQuery(e.target).slideUp()
+		moveSearchSelection()
 	})
 }
 

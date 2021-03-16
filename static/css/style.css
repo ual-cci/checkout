@@ -273,3 +273,7 @@ body.noScroll {
 .searchList a:hover {
 	background-color: #f5f5f5;
 }
+
+.searchList a.selected {
+	background-color: #dfdfdf;
+}
