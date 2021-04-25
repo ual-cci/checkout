@@ -15,6 +15,7 @@ block contents
 	- filter_path = '/users/'
 	include partials/filter.pug
 	form( action="/users/edit" method="post" )
+		+csrf
 		- edit = true
 		include partials/list.pug
 		if currentUserCan('users_multi_edit')

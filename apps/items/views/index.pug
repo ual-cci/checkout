@@ -19,6 +19,7 @@ block contents
 	- filter_path = '/items/'
 	include partials/filter.pug
 	form#items-form( action="/items/edit", method="post" )
+		+csrf
 		- edit = true
 		include partials/list.pug
 		if items && items.length > 0
