@@ -53,14 +53,15 @@ jQuery(document).ready(function() {
 				oldForm.parentElement.removeChild(oldForm)
 			}
 
-			const form = document.createElement('FORM')
+			const form = document.createElement('form')
 			form.setAttribute('action', '/items/multi')
 			form.setAttribute('method', 'post')
 			form.setAttribute('id', 'hidden-form')
-			const input = document.createElement('INPUT')
+			const input = document.createElement('input')
 			input.setAttribute('type', 'hidden')
 			input.setAttribute('name', 'ids')
 			input.value = ids.join(',')
+			form.appendChild(document.getElementsByName('_csrf')[0])
 			form.appendChild(input)
 			return form
 		}
