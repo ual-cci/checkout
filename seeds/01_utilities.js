@@ -29,8 +29,8 @@ function createGroups(knex) {
 		createFunc: () => {
 			return {
 				name: faker.commerce.productName(),
-				limiter: faker.random.number(10),
-				duration: `${ faker.random.number(10) + 1 } days`
+				limiter: faker.datatype.number(10),
+				duration: `${ faker.datatype.number(10) + 1 } days`
 			}
 		}
 	})
@@ -42,7 +42,7 @@ function createLocations(knex) {
 		createFunc: () => {
 			return {
 				name: faker.company.companyName(),
-				barcode: faker.random.uuid().substring(0, 6)
+				barcode: faker.datatype.uuid().substring(0, 6)
 			}
 		}
 	})
