@@ -2,7 +2,7 @@
 exports.up = function(knex) {
 	return Promise.resolve()
 		.then(() => knex('departments').select('id', 'name', 'barcode'))
-		.then((rows) => knex('locations').insert(rows))
+		// .then((rows) => knex('locations').insert(rows))
 		.then(() => knex('departments').del())
 }
 
