@@ -13,6 +13,17 @@ const Options = {
 			return ''
 		}
 	},
+	getBoolean: (key) => {
+		const opt = Options.getText(key)
+		console.log(opt)
+		if (opt == 'true') {
+			return true
+		} else if (opt == 'false') {
+			return false
+		} else {
+			return null
+		}
+	},
 	getAll: () => {
 		return Options._opts
 	},
