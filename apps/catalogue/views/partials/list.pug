@@ -16,7 +16,7 @@ if items && items.length > 0
 						td
 							.progress
 								- percent = (item.available / item.stock) * 100
-								- percentage = `${percent}%`
+								- percentage = `${Math.round(percent)}%`
 								.progress-bar(style=`width: ${percentage}` class=(percent <= 25 ? 'bg-danger' : (percent <= 50 ? 'bg-warning' : 'bg-success')))=percentage
 else
 	+messageBlock('warning', 'black', 'There are no items to display.')
