@@ -12,7 +12,7 @@ app.use((req, res, next) => {
 	next()
 })
 
-app.get('/', (req, res) => {
+app.get('/', auth.currentUserCanOrOptionOverride('items_read', 'public_catalogue'), (req, res) => {
 	req.controller.getRoot(req, res)
 })
 

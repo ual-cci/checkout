@@ -18,5 +18,9 @@
 	"kiosk_tries": {
 		"default": 10,
 		"purpose": "Number of allowed kiosk login attempts before kiosk mode is disabled."
+	},
+	"public_catalogue": {
+		"default": "false",
+		"purpose": "Make the catalogue of items available without login."
 	}
 }
