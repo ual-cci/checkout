@@ -19,6 +19,7 @@ function templateLocals(req, res, next) {
 	}
 	res.locals.Options = {}
 	res.locals.Options.get = Options.getText
+	res.locals.Options.getBoolean = Options.getBoolean
 	res.locals.moment = require('moment')
 	next()
 }
