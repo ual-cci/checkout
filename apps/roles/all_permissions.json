@@ -62,5 +62,6 @@
   "reservations_edit": "User can edit reservations.",
   "reservations_remove": "User can remove reservations.",
   "reservations_override": "User can override reservations when issuing items.",
-  "global_search": "User can use global search in top nar bar."
+  "global_search": "User can use global search in top nar bar.",
+  "view_catalogue": "User can view item catalogue."
 }
