@@ -298,6 +298,10 @@ class ItemController extends BaseController {
 			{
 				condition: (req.body.location == ''),
 				message: 'The item(s) must be assigned to a location'
+			},
+			{
+				condition: (quantity > 1 && req.body.serialnumber),
+				message: 'You cannot assign the serial number of an item when generating more than 1'
 			}
 		]
 
@@ -322,6 +326,10 @@ class ItemController extends BaseController {
 						notes: req.body.notes,
 						status: AVAILABILITY.AVAILABLE,
 						loanable: (req.body.loanable == 'true' ? true : false)
+					}
+
+					if (quantity == 1) {
+						item.serialnumber = req.body.serialnumber
 					}
 
 					if (!req.body.value) {
