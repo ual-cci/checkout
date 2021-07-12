@@ -1,0 +1,26 @@
+extends ../../../src/views/base.pug
+
+block navbar
+
+block header
+
+block footer
+	
+block flash
+
+block append css
+	link(rel="stylesheet", type="text/css", href="/css/login.css")
+
+block contents
+	.col-12.text-center
+		.form-signin
+			img( src="/imgs/logo.svg" width="128" height="128" ).mb-2
+			h1.mb-0=Options.get('application_name')
+			h5.mb-4.text-muted=Options.get('organisation_name')
+			include ../../../src/views/partials/flash.pug
+			
+			if Options.getBoolean('public_catalogue')
+				a(href="/catalogue").btn.btn-lg.btn-outline-dark.btn-block View Catalogue
+
+			
+			a(href="/login").btn.btn-lg.btn-outline-dark.btn-block Staff Login
