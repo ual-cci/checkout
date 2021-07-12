@@ -182,6 +182,18 @@ mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 		|  
 		span.fas( class=( sort_dir == 'asc' ? 'fa-angle-up' : 'fa-angle-down' ) ).text-muted
 
+mixin sortCatalogueHead( text, slug, sort_by, sort_dir, filter_path )
+	- sort_by = sort_by.split('_')[0]
+	if sort_dir == 'desc' || sort_by != slug
+		- alt_dir = 'asc'
+	else
+		- alt_dir = 'desc'
+
+	a( href=`${filter_path}?sortby=${slug}&direction=${alt_dir}` )=text
+	if sort_by == slug
+		|  
+		span.fas( class=( sort_dir == 'asc' ? 'fa-angle-up' : 'fa-angle-down' ) ).text-muted
+
 mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
 	if sort_dir == 'desc' || sort_by != slug
 		- alt_dir = 'asc'

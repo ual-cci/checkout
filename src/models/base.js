@@ -164,7 +164,7 @@ class BaseModel {
 	 * Creates a new knex query and attaches the
 	 * models default selects to it
 	 */
-	query(all_properties = false) {
+	 query(all_properties = false) {
 		this._queryObj = db(this.options.table)
 
 		if (this.properties.length) {
@@ -172,6 +172,15 @@ class BaseModel {
 		}
 
 		this.lookup(this.bootstrap)
+
+		return this
+	}
+
+	/**
+	 * Creates a new empty knex query
+	 */
+	 emptyQuery() {
+		this._queryObj = db(this.options.table)
 
 		return this
 	}
@@ -255,6 +264,19 @@ class BaseModel {
 					break
 			}
 		})
+
+		return this
+	}
+
+	/**
+	 * Adds a group by to the query
+	 *
+	 * @param {Array} args Single value
+	 */
+	groupBy(column) {
+		this._safeguard()
+
+		this._queryObj.groupBy(column)
 
 		return this
 	}

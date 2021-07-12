@@ -1,0 +1,14 @@
+if items && items.length > 0
+	.table-responsive
+		table.table.table-striped.table-sm
+			thead
+				tr
+					th: +sortCatalogueHead('Name', 'name', sortby, direction, filter_path)
+					th Availability
+			tbody
+				for item in items
+					tr
+						td=item.name
+						td #{item.available} / #{item.stock}
+else
+	+messageBlock('warning', 'black', 'There are no items to display.')

@@ -1,3 +1,4 @@
+const db = require('../js/database.js')
 const BaseModel = require('./base.js')
 const {AVAILABILITY} = require('../js/common/constants')
 
@@ -122,6 +123,15 @@ class ItemModel extends BaseModel {
 	getByBarcode(barcode) {
 		this._safeguard()
 		return this.where([['barcode', barcode]]).retrieveSingle()
+	}
+
+	getCatalogue() {
+		return this.emptyQuery()
+			.expose()
+			.select('items.name', db.raw(`SUM(CASE WHEN "items"."status" = 'available' THEN 1 ELSE 0 END) AS available`))
+			.count('items.id AS stock')
+			.where('loanable', true)
+			.groupBy('items.name')
 	}
 
 	audit(barcode) {

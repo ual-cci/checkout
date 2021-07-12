@@ -1,0 +1,10 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Catalogue"
+	- heading = title
+	- menu = "catalogue"
+
+block contents
+	- filter_path = '/catalogue/'
+	include partials/list.pug
