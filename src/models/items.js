@@ -130,6 +130,7 @@ class ItemModel extends BaseModel {
 			.expose()
 			.select('items.name', db.raw(`SUM(CASE WHEN "items"."status" = 'available' THEN 1 ELSE 0 END) AS available`))
 			.count('items.id AS stock')
+			.orderBy('name', 'asc')
 			.where('loanable', true)
 			.groupBy('items.name')
 	}
