@@ -190,50 +190,64 @@ const Authentication = {
 		}
 	},
 	userCan: function(user, permission) {
-	if (typeof permission == 'object') {
-		if (permission.or) {
-		return permission.or.some(p => user.permissions.includes(p))
-		} else if (permission.and) {
-		return permission.and.every(p => user.permissions.includes(p))
+		if (typeof permission == 'object') {
+			if (permission.or) {
+				return permission.or.some(p => user.permissions.includes(p))
+			} else if (permission.and) {
+				return permission.and.every(p => user.permissions.includes(p))
+			}
+		} else {
+			return user.permissions.includes(permission)
 		}
-	} else {
-		return user.permissions.includes(permission)
-	}
+	},
+	_currentUserCheck: function(permission, req, res, next) {
+		var status = Authentication.loggedIn(req)
+		if (status) {
+			var authorised = Authentication.userCan(req.user, permission)
+			if (authorised) {
+				return next()
+			} else {
+				res.status(403)
+				res.render(__dirname + '/../views/403', {
+					permission: permission,
+					user_permissions: req.user.permissions
+				})
+			}
+		} else {
+			req.flash('error', "Please login")
+			res.redirect('/login')
+		}
 	},
 	currentUserCan: function(permission) {
-	return function(req, res, next) {
-		var status = Authentication.loggedIn(req)
-		if (status) {
-		var authorised = Authentication.userCan(req.user, permission)
-		if (authorised) {
-			return next()
-		} else {
-			res.status(403)
-			res.render(__dirname + '/../views/403', {
-			permission:permission,
-			user_permissions: req.user.permissions
-			})
+		return function(req, res, next) {
+			Authentication._currentUserCheck(permission, req, res, next)
 		}
-		} else {
-		req.flash('error', "Please login")
-		res.redirect('/login')
+	},
+	currentUserCanOrOptionOverride: function(permission, option) {
+		return function(req, res, next) {
+			// If option is true then show the page
+			if (Options.getBoolean(option)) {
+				return next()
+			}
+
+			// Otherwise check the permission
+			Authentication._currentUserCheck(permission, req, res, next)
 		}
-	}
 	},
 	APIuserCan: function(permission) {
-	return function(req, res, next) {
-		var status = Authentication.loggedIn(req)
-		if (status) {
-		var authorised = Authentication.userCan(req.user, permission)
-		if (authorised) {
-			return next()
-		} else {
-			res.json({status:'danger', message: 'Permission denied'})
+		return function(req, res, next) {
+			var status = Authentication.loggedIn(req)
+			if (status) {
+				var authorised = Authentication.userCan(req.user, permission)
+				if (authorised) {
+					return next()
+				} else {
+					res.json({status:'danger', message: 'Permission denied'})
+				}
+			} else {
+				res.json({status:'danger', message: 'Please login'})
+			}
 		}
-		} else {
-		res.json({status:'danger', message: 'Please login'})
-		}
-	}
 	}
 }
 
