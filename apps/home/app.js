@@ -14,7 +14,7 @@ app.get('/', auth.isLoggedIn, (req, res) => {
 		if (req.user.role_home) {
 			req.saveSessionAndRedirect(req.user.role_home)
 		} else {
-			res.render('index')
+				res.render('blank')
 		}
 	}
 })
