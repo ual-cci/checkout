@@ -3,8 +3,11 @@ if items && items.length > 0
 		table.table.table-striped.table-sm
 			thead
 				tr
-					th: +sortCatalogueHead('Name', 'name', sortby, direction, filter_path)
+					th Name
+						| 
+						span.fas.fa-angle-up.text-muted
 					th Availability
+					th
 			tbody
 				for item in items
 					tr
