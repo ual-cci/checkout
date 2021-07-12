@@ -5,6 +5,12 @@ block prepend title
 	- heading = title
 	- menu = "catalogue"
 
+block buttons
+	if Options.getBoolean('public_catalogue')
+		.badge-pill.badge-primary.float-right(title="This page is publically visible without login.")
+			span.fas.fa-globe
+			|  Publically Viewable
+
 block contents
 	- filter_path = '/catalogue/'
 	include partials/list.pug
