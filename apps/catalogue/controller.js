@@ -25,18 +25,11 @@ class CatalogueController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getRoot(req, res) {
-		const {orderBy, direction} = getSortBy(req.query.sortby, req.query.direction, {
-			mutator: SORTBY_MUTATIONS.ITEMS
-		})
-
 		// Get items
 		this.models.items.getCatalogue()
 		.then(items => {
-			console.log(items)
 			res.render('index', {
-				items,
-				sortby: orderBy,
-				direction
+				items
 			})
 		})
 	}
