@@ -361,7 +361,7 @@ class ItemController extends BaseController {
 			})
 			.then(() => {
 				this.models.items.create(items)
-				.then(result => {
+				.then(id => {
 					req.flash('success', `${items.length} item${items.length > 1 ? 's' : ''} created`)
 
 					if (req.body.print) {
@@ -372,7 +372,11 @@ class ItemController extends BaseController {
 							req.flash('warning', 'No printer configured')
 						}
 					}
-					req.saveSessionAndRedirect(this.getRoute())
+					if (quantity == 1) {
+						req.saveSessionAndRedirect(`${this.getRoute()}/${id}`)
+					} else {
+						req.saveSessionAndRedirect(this.getRoute())
+					}
 				})
 				.catch(err => this.displayError(req, res, err, this.getRoute('/create')))
 			})
