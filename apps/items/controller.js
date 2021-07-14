@@ -185,21 +185,15 @@ class ItemController extends BaseController {
 	postMultiEdit(req, res) {
 		// If the ID passed is singular, redirect
 		// to the single edit form
-		const singleItemCheck = (edit) => {
-			if (!Array.isArray(edit)) {
-				this.displayError(
-					req,
-					res,
-					'Only one item was selected for group editing, use the single edit form',
-					this.getRoute([`/${edit}`, '/edit'])
-			 )
-			}
+		if (!Array.isArray(req.body.edit)) {
+			return this.displayError(req, res,
+				'Only one item was selected for group editing, use the single edit form',
+				this.getRoute([`/${req.body.edit}`, '/edit'])
+		 )
 		}
 
 		// Checks if its a request with data
 		if (req.body.fields) {
-			singleItemCheck(req.body.edit)
-
 			const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable']
 			const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable']
 			const item = {}

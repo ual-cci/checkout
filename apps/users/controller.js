@@ -104,20 +104,14 @@ class UsersController extends BaseController {
 	}
 
 	postEdit(req, res) {
-		const singleItemCheck = (edit) => {
-			if (!Array.isArray(edit)) {
-				this.displayError(
-					req,
-					res,
-					'Only one user was selected for group editing, use the single edit form',
-					this.getRoute([`/${edit}`, '/edit'])
-			 )
-			}
+		if (!Array.isArray(req.body.edit)) {
+			return this.displayError(req, res,
+				'Only one user was selected for group editing, use the single edit form',
+				this.getRoute([`/${req.body.edit}`, '/edit'])
+			)
 		}
 
 		if (req.body.fields) {
-			singleItemCheck(req.body.edit)
-
 			const keys = ['course', 'year', 'status']
 			const values = ['course_id', 'year_id', 'disable']
 			const user = {}
@@ -145,8 +139,6 @@ class UsersController extends BaseController {
 				this.models.courses.getAll()
 			])
 			.then(([years, courses]) => {
-				singleItemCheck(req.body.edit)
-
 				persist = {
 					...persist,
 					years,
