@@ -369,7 +369,7 @@ class BaseModel {
 	 * @param {Number} id
 	 */
 	getById(id) {
-		return this.where([['id', id]]).retrieveSingle()
+		return this.query().where([['id', id]]).retrieveSingle()
 	}
 
 	/**

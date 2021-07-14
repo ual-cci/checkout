@@ -89,7 +89,7 @@ const Authentication = {
 			id = data.id
 			users.query()
 			.lookup(['printer', 'role'])
-			.getById(id)
+			.where([['id', id]]).retrieveSingle()
 			.then(user => {
 				if (user) {
 					return permissions.getByRoleId(user.role_id).then(perms => {

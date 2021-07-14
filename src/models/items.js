@@ -121,8 +121,7 @@ class ItemModel extends BaseModel {
 	}
 
 	getByBarcode(barcode) {
-		this._safeguard()
-		return this.where([['barcode', barcode]]).retrieveSingle()
+		return this.query().where([['barcode', barcode]]).retrieveSingle()
 	}
 
 	getCatalogue() {

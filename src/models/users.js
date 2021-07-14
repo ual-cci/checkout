@@ -53,7 +53,7 @@ class UserModel extends BaseModel {
 	}
 
 	getByBarcode(barcode) {
-		return this.where([['barcode', barcode]]).retrieveSingle()
+		return this.query().where([['barcode', barcode]]).retrieveSingle()
 	}
 
 	getByEmail(email, include) {
