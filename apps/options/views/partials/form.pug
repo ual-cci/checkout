@@ -3,7 +3,9 @@ form( method="post" )
 	.form-group.row
 		label( for="value" ).col-lg-2.col-form-label Value
 		.col-lg-4
-			input( name="value" type="text" value=option.value required )#value.form-control
+			input( name="value" type="text" value=option.value required placeholder=option.default )#value.form-control
+			if option.example
+				small.form-text.text-muted Example: #{option.example}
 	.form-group.row
 		.col-lg-4.offset-lg-2
 			button( type="submit" ).btn.btn-primary=action

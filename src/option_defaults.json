@@ -8,8 +8,9 @@
 		"purpose": "Displayed under the application name on the login screen and in the footer."
 	},
 	"github_url": {
-		"default": "https://github.com/creativetechnologylab/checkout",
-		"purpose": "URL of GitHub repository in the footer."
+		"default": "https://github.com/ual-cci/checkout",
+		"purpose": "URL of GitHub repository in the footer.",
+		"example": "https://github.com/username/checkout"
 	},
 	"password_tries": {
 		"default": 5,

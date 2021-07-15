@@ -21,10 +21,14 @@ if keys.length > 0
 				for key in keys
 					- option = options[key]
 					tr
-						td=key
-							br
-							small=option.purpose
-						td=option.value
+						td
+							strong: pre=key
+							p
+								small=option.purpose
+								if option.example
+									br
+									small Example: #{option.example}
+						td: pre=option.value
 						td=!option.overridden ? 'Yes' : 'No'
 						if currentUserCan('options_edit')
 							td
