@@ -6,6 +6,7 @@ const moment = require('moment')
 
 const Users = require('../../src/models/users.js')
 const Printers = require('../../src/models/printers.js')
+const Templates = require('../../src/models/templates.js')
 
 class ProfileController extends BaseController {
 	constructor() {
@@ -13,7 +14,8 @@ class ProfileController extends BaseController {
 
 		this.models = {
 			users: new Users(),
-			printers: new Printers()
+			printers: new Printers(),
+			templates: new Templates()
 		}
 	}
 
@@ -24,9 +26,12 @@ class ProfileController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getRoot(req, res) {
-		this.models.printers.getAll()
-		.then(printers => {
-			res.render('profile', {printers})
+		Promise.all([
+			this.models.printers.getAll(),
+			this.models.templates.getAll()
+		])
+		.then(([printers, templates]) => {
+			res.render('profile', {printers, templates})
 		})
 	}
 
@@ -54,6 +59,7 @@ class ProfileController extends BaseController {
 			name: req.body.name,
 			email: req.body.email,
 			printer_id: req.body.printer ? req.body.printer : null,
+			template_id: req.body.template ? req.body.template : null,
 		}
 
 		if (req.body.audit_point) {
