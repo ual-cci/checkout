@@ -65,4 +65,8 @@
   "reservations_override": "User can override reservations when issuing items.",
   "global_search": "User can use global search in top nar bar.",
   "view_catalogue": "User can view item catalogue."
+  "templates_read": "User can view email templates.",
+  "templates_create": "User can create email templates.",
+  "templates_edit": "User can edit email templates.",
+  "templates_remove": "User can remove email templates."
 }
