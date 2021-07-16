@@ -522,9 +522,13 @@ class UsersController extends BaseController {
 				return
 			}
 
+			if (!req.user.template_id) {
+				req.flash('warning', 'You must set an email template for your profile')
+				req.saveSessionAndRedirect(this.getRoute())
+				return
+			}
+
 			const {user} = persist
-			
-			const template = `Hello [name],\n\nYou currently have the following item(s) on loan which are due back:\n\n[items]\n\nPlease return these as soon as possible.\n\nKind Regards\n\n[org]`
 
 			const tags = {
 				name: user.name,
@@ -537,7 +541,7 @@ class UsersController extends BaseController {
 				address: user.email
 			}
 
-			Mail.sendTemplate(to, 'Important: Items on loan due for return', template, tags)
+			Mail.sendTemplate(to, req.user.template_subject, req.user.template_body, tags)
 				.then((state) => {
 					if (state.accepted.length == 1) {
 						req.flash('success', `Email sent to ${user.name}`)
