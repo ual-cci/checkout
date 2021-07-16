@@ -32,6 +32,13 @@ block contents
 						for printer in printers
 							option( value=printer.id selected=( printer.id == loggedInUser.printer_id ) )=printer.name
 			.form-group.row
+				label( for="template" ).col-lg-2.col-form-label Default Email Template
+				.col-lg-4
+					select( name="template" )#template.form-control
+						option( value="" ) None
+						for template in templates
+							option( value=template.id selected=( template.id == loggedInUser.template_id ) )=template.name
+			.form-group.row
 				label( for="audit_point" ).col-lg-2.col-form-label Audit Point
 				.col-lg-4
 					.input-group
