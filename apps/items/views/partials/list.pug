@@ -78,9 +78,10 @@ if items && items.length > 0
 						if ! multi
 							if item.owner_id
 								td
-									small: a( href=`/users/${item.owner_id}/email` title=`Email user: ${item.owner_name}` ).text-muted
-										span.fas.fa-envelope
-									| 
+									if currentUserCan('users_email')
+										small: a( href=`/users/${item.owner_id}/email` title=`Email user: ${item.owner_name}` ).text-muted
+											span.fas.fa-envelope
+										| 
 									+user( item.owner_name, item.owner_id )
 								td: +course( item.owner_course_name, item.owner_course_id )
 								td: +year( item.owner_year_name, item.owner_year_id )

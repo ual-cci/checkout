@@ -59,7 +59,7 @@ app.post('/:id/remove', auth.currentUserCan('users_remove'), (req, res) => {
 })
 
 // Reset password attempts for user
-app.get('/:id/email', auth.currentUserCan('users_read'), (req, res) => {
+app.get('/:id/email', auth.currentUserCan('users_email'), (req, res) => {
 	req.controller.getEmail(req, res)
 })
 
