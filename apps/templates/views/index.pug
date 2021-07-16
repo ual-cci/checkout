@@ -1,0 +1,15 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Email Templates"
+	- heading = title
+	- menu = "templates"
+
+block buttons
+	if currentUserCan('templates_create')
+		a( href="/templates/create" ).btn.btn-outline-success.btn-sm.float-right
+			span.fas.fa-plus
+			|  Create
+
+block contents
+	include partials/list.pug
