@@ -1,0 +1,10 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Create Email Template"
+	- heading = title
+	- menu = "templates"
+
+block contents
+	- action = 'Create'
+	include partials/form.pug
