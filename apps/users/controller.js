@@ -4,6 +4,9 @@ const config = require('./config.json')
 const BaseController = require('../../src/js/common/BaseController.js')
 const auth = require('../../src/js/authentication')
 
+const Options = require('../../src/js/options')()
+const Mail = require('../../src/js/mail')
+
 const Courses = require('../../src/models/courses')
 const Users = require('../../src/models/users')
 const Years = require('../../src/models/years')
@@ -518,15 +521,36 @@ class UsersController extends BaseController {
 				req.saveSessionAndRedirect(this.getRoute())
 				return
 			}
+
 			const {user} = persist
-			var email = `Hello ${user.name},\n\nYou currently have the following item${items.length > 1 ? 's' : ''} on loan which ${items.length > 1 ? 'are' : 'is'} due back:\n\n`
-			for (var i in items) {
-				var item = items[i]
-				email += ` ∙ ${item.name} (${item.barcode})\n`
+			
+			const template = `Hello [name],\n\nYou currently have the following item(s) on loan which are due back:\n\n[items]\n\nPlease return these as soon as possible.\n\nKind Regards\n\n[org]`
+
+			const tags = {
+				name: user.name,
+				items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
+				org: Options.getText('organisation_name')
 			}
-			res.render('email', {
-				user,
-				email
+
+			const to = {
+				name: user.name,
+				address: user.email
+			}
+
+			Mail.sendTemplate(to, 'Important: Items on loan due for return', template, tags)
+			.then((state) => {
+				if (state.accepted.length == 1) {
+					req.flash('success', `Email sent to ${user.name}`)
+					req.saveSessionAndRedirect(this.getRoute())
+				} else {
+					req.flash('danger', `Email did not send to ${user.name}`)
+					req.saveSessionAndRedirect(this.getRoute())
+				}
+			})
+			.catch((err) => {
+				req.flash('danger', `Email did not send to ${user.name}`)
+				req.saveSessionAndRedirect(this.getRoute())
+				console.log(err)
 			})
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
