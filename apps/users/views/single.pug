@@ -11,6 +11,7 @@ block buttons
 			a( href="/users/" + user.id + "/email", title=`Email ${user.name}` ).btn.btn-outline-dark.btn-sm
 				span.fas.fa-envelope
 				|  Generate email
+		|  &nbsp;
 	.btn-group.float-right
 		if currentUserCan('users_edit')
 			a( href="/users/" + user.id + "/edit", title=`Edit ${user.name}` ).btn.btn-outline-dark.btn-sm
