@@ -23,5 +23,15 @@
 	"public_catalogue": {
 		"default": "false",
 		"purpose": "Make the catalogue of items available without login."
+	},
+	"smtp_from_address": {
+		"default": "",
+		"purpose": "Where should emails come from?",
+		"example": "Checkout <checkout@example.com>"
+	},
+	"smtp_connection_url": {
+		"default": "",
+		"purpose": "SMTP Connection String",
+		"example": "smtp://username:password@example.com"
 	}
 }
