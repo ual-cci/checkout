@@ -36,12 +36,17 @@ class UserModel extends BaseModel {
 				table: 'printers',
 				join: ['id', 'printer_id'],
 				properties: ['id', 'name', 'url']
+			},
+			template: {
+				table: 'templates',
+				join: ['id', 'template_id'],
+				properties: ['id', 'name', 'template']
 			}
 		}
 	}
 
 	get properties() {
-		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id']
+		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id', 'default_template_id']
 	}
 
 	get allProperties() {
