@@ -40,17 +40,17 @@ class UserModel extends BaseModel {
 			template: {
 				table: 'templates',
 				join: ['id', 'template_id'],
-				properties: ['id', 'name', 'template']
+				properties: ['id', 'name', 'subject', 'body']
 			}
 		}
 	}
 
 	get properties() {
-		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id', 'default_template_id']
+		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id', 'template_id']
 	}
 
 	get allProperties() {
-		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_hash', 'pw_salt', 'pw_iterations', 'pw_attempts', 'audit_point', 'printer_id', 'role_id']
+		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_hash', 'pw_salt', 'pw_iterations', 'pw_attempts', 'audit_point', 'printer_id', 'role_id', 'template_id']
 	}
 
 	getAll() {
