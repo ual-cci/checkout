@@ -5,9 +5,13 @@ form( method="post" )
 		.col-lg-4
 			input( name="name", type="text", value=( template && template.name ? template.name : null ), required ).form-control#name
 	.form-group.row
-		label( for="template" ).col-lg-2.col-form-label Email template
+		label( for="subject" ).col-lg-2.col-form-label Subject
 		.col-lg-4
-			textarea( name="template", rows="15", type="text", required )#template.form-control=(template && template.template ?template.template:'')
+			input( name="subject", type="text", value=( template && template.subject ? template.subject : null ), required ).form-control#subject
+	.form-group.row
+		label( for="body" ).col-lg-2.col-form-label Body
+		.col-lg-4
+			textarea( name="body", rows="15", type="text", required )#body.form-control=(template && template.body ?template.body : '')
 	.row
 		.col-lg-4.offset-lg-2
 			p.mb-0

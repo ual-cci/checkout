@@ -31,7 +31,8 @@ class TemplatesController extends BaseController {
 
 		const templates = {
 			name: req.body.name,
-			template: req.body.template
+			subject: req.body.subject,
+			body: req.body.body
 		}
 
 		this.models.templates.create(templates)
@@ -65,7 +66,8 @@ class TemplatesController extends BaseController {
 
 		const template = {
 			name: req.body.name,
-			template: req.body.template
+			subject: req.body.subject,
+			body: req.body.body
 		}
 
 		this.models.templates.update(req.params.id, template)
