@@ -538,20 +538,19 @@ class UsersController extends BaseController {
 			}
 
 			Mail.sendTemplate(to, 'Important: Items on loan due for return', template, tags)
-			.then((state) => {
-				if (state.accepted.length == 1) {
-					req.flash('success', `Email sent to ${user.name}`)
-					req.saveSessionAndRedirect(this.getRoute())
-				} else {
+				.then((state) => {
+					if (state.accepted.length == 1) {
+						req.flash('success', `Email sent to ${user.name}`)
+					} else {
+						req.flash('danger', `Email did not send to ${user.name}`)
+					}
+					req.saveSessionAndRedirect(`${this.getRoute()}/${user.id}`)
+				})
+				.catch((err) => {
 					req.flash('danger', `Email did not send to ${user.name}`)
-					req.saveSessionAndRedirect(this.getRoute())
-				}
-			})
-			.catch((err) => {
-				req.flash('danger', `Email did not send to ${user.name}`)
-				req.saveSessionAndRedirect(this.getRoute())
-				console.log(err)
-			})
+					req.saveSessionAndRedirect(`${this.getRoute()}/${user.id}`)
+					console.log(err)
+				})
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}
