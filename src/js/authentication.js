@@ -88,7 +88,7 @@ const Authentication = {
 			var id
 			id = data.id
 			users.query()
-			.lookup(['printer', 'role'])
+			.lookup(['printer', 'role', 'template'])
 			.where([['id', id]]).retrieveSingle()
 			.then(user => {
 				if (user) {
