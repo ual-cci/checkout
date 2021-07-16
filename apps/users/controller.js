@@ -173,7 +173,8 @@ class UsersController extends BaseController {
 		let persist = {}
 		this.models.users.query()
 		.lookup(['printer', 'role', 'course', 'year', 'contact'])
-		.getById(req.params.id)
+		.where([['id', req.params.id]])
+		.retrieveSingle()
 		.then(user => {
 			if (!user) {
 				throw new Error('User not found')
@@ -205,7 +206,8 @@ class UsersController extends BaseController {
 
 		this.models.users.query()
 		.lookup(['printer', 'course', 'year'])
-		.getById(req.params.id)
+		.where([['id', req.params.id]])
+		.retrieveSingle()
 		.then(user => {
 			if (!user) {
 				throw new Error('User not found')
