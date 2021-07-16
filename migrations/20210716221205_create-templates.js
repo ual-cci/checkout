@@ -1,0 +1,11 @@
+exports.up = function(knex) {
+	return knex.schema.createTable('templates', table => {
+		table.increments()
+		table.string('name').notNullable().unique()
+		table.text('template').notNullable()
+	})
+}
+
+exports.down = function(knex) {
+	return knex.schema.dropTable('templates')
+}
