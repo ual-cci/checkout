@@ -37,6 +37,7 @@
   "users_change_role": "User can change another users role (requires user_edit).",
   "users_history": "User can view another users loaning history.",
   "users_remove": "User can remove another user.",
+  "users_email": "User can email users.",
   "users_multi_edit": "User can edit multiple other users.",
   "courses_read": "User can view courses.",
   "courses_create": "User can create courses.",
