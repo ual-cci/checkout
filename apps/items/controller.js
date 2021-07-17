@@ -183,15 +183,6 @@ class ItemController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	postMultiEdit(req, res) {
-		// If the ID passed is singular, redirect
-		// to the single edit form
-		if (!Array.isArray(req.body.edit)) {
-			return this.displayError(req, res,
-				'Only one item was selected for group editing, use the single edit form',
-				this.getRoute([`/${req.body.edit}`, '/edit'])
-		 )
-		}
-
 		// Checks if its a request with data
 		if (req.body.fields) {
 			const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable']
@@ -212,19 +203,20 @@ class ItemController extends BaseController {
 				this.displayError(req, res, err, this.getRoute())
 			})
 		} else {
+			const ids = req.body.ids.split(',')
+		
 			Promise.all([
 				this.models.groups.getAll(),
 				this.models.locations.getAll(),
 				this.models.departments.getAll()
 			])
 			.then(([groups, locations, departments]) => {
-
 				this.models.items.query()
 				.orderBy([
 					['barcode', 'asc']
 				])
 				.expose()
-				.whereIn('items.id', req.body.edit)
+				.whereIn('items.id', ids)
 				.then(items => {
 					res.render('edit-multiple', {
 						items,
@@ -602,7 +594,7 @@ class ItemController extends BaseController {
 	* @param {Object} req Express request object
 	* @param {Object} res Express response object
 	*/
-	getMulti(req, res) {
+	getMultiPrint(req, res) {
 		if (req.user.printer_id) {
 			this.models.items.getMultipleByIds(req.body.ids.split(','))
 				.then(items => {

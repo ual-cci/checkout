@@ -16,8 +16,8 @@ app.get('/', auth.currentUserCan('items_read'), (req, res) => {
 	req.controller.getRoot(req, res)
 })
 
-app.post('/multi', auth.currentUserCan('print'), (req, res) => {
-	req.controller.getMulti(req, res)
+app.post('/label', auth.currentUserCan('print'), (req, res) => {
+	req.controller.getMultiPrint(req, res)
 })
 
 app.post('/edit', auth.currentUserCan('items_multi_edit'), (req, res) => {

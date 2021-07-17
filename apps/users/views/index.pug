@@ -5,6 +5,9 @@ block prepend title
 	- heading = title
 	- menu = "users"
 
+block append js
+	script(src="/js/multiaction.js")
+
 block buttons
 	if currentUserCan('users_import')
 		a( href="/users/import" ).btn.btn-outline-success.btn-sm.float-right.ml-2
@@ -14,11 +17,12 @@ block buttons
 block contents
 	- filter_path = '/users/'
 	include partials/filter.pug
-	form( action="/users/edit" method="post" )
+	form#multi-form
 		+csrf
 		- edit = true
 		include partials/list.pug
-		if currentUserCan('users_multi_edit')
-			button( type="submit" ).btn.btn-sm.btn-primary
-				span.fas.fa-pencil-alt
-				|  Edit Selected
+			if currentUserCan('users_multi_edit')
+				button(disabled type="submit" data-action="/users/edit").multi.btn.btn-sm.btn-primary
+					span.fas.fa-pencil-alt
+					|  Edit Selected
+				|  

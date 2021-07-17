@@ -19,7 +19,7 @@ app.get('/', auth.currentUserCan('users_read'), (req, res) => {
 
 // Edit multiple
 app.post('/edit', auth.currentUserCan('users_multi_edit'), (req, res) => {
-	req.controller.postEdit(req, res)
+	req.controller.postMultiEdit(req, res)
 })
 
 // Import users

@@ -42,6 +42,17 @@ block contents
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="year" )
 		.form-group.row
+			label( for="role" ).col-lg-2.col-form-label Role
+			.col-lg-4
+				.input-group
+					select( name="role" )#course.form-control
+						option( value="" disabled selected ) Select a role
+						for role in roles
+							option( value=role.id )=role.name
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="role" )
+		.form-group.row
 			.col-lg-4.offset-lg-2
 				button( type="submit" ).btn.btn-primary Update
 		h3 Items
