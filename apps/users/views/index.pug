@@ -26,3 +26,8 @@ block contents
 					span.fas.fa-pencil-alt
 					|  Edit Selected
 				|  
+			if currentUserCan('users_email')
+				button(disabled type="button" data-action="/users/email").multi.btn.btn-sm.btn-outline-dark
+					span.fas.fa-envelope
+					|  Email Selected Users
+

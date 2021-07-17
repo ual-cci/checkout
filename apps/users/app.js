@@ -22,6 +22,11 @@ app.post('/edit', auth.currentUserCan('users_multi_edit'), (req, res) => {
 	req.controller.postMultiEdit(req, res)
 })
 
+// Email multiple users
+app.post('/email', auth.currentUserCan('users_email'), (req, res) => {
+	req.controller.postMultiEmail(req, res)
+})
+
 // Import users
 app.get('/import', auth.currentUserCan('users_import'), (req, res) => {
 	req.controller.getImport(req, res)

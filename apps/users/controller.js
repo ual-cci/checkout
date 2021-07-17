@@ -558,6 +558,41 @@ class UsersController extends BaseController {
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}
+
+	postMultiEmail(req, res) {
+		const ids = req.body.ids.split(',')
+		this.models.users.query().getMultipleByIds(ids)
+		.then(users => {
+			if (!req.user.template_id) {
+				req.flash('warning', 'You must set an email template for your profile')
+				req.saveSessionAndRedirect(this.getRoute())
+				return
+			}
+
+			users.forEach((user) => {
+				this.models.items.getOnLoanByUserId(user.id).then(items => {
+					if (items.length > 0) {
+						const tags = {
+							name: user.name,
+							items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
+							org: Options.getText('organisation_name')
+						}
+			
+						const to = {
+							name: user.name,
+							address: user.email
+						}
+			
+						Mail.sendTemplate(to, req.user.template_subject, req.user.template_body, tags)	
+					}
+				})
+			})
+			
+			req.flash('success', `Emails sent`)
+			req.saveSessionAndRedirect(`${this.getRoute()}`)
+		})
+		.catch(err => this.displayError(req, res, err, this.getRoute()))
+	}
 }
 
 module.exports = UsersController
