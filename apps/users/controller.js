@@ -106,17 +106,10 @@ class UsersController extends BaseController {
 		})
 	}
 
-	postEdit(req, res) {
-		if (!Array.isArray(req.body.edit)) {
-			return this.displayError(req, res,
-				'Only one user was selected for group editing, use the single edit form',
-				this.getRoute([`/${req.body.edit}`, '/edit'])
-			)
-		}
-
+	postMultiEdit(req, res) {
 		if (req.body.fields) {
-			const keys = ['course', 'year', 'status']
-			const values = ['course_id', 'year_id', 'disable']
+			const keys = ['course', 'year', 'role','status']
+			const values = ['course_id', 'year_id', 'role_id','disable']
 			const user = {}
 
 			keys.forEach((k, index) => {
@@ -135,24 +128,28 @@ class UsersController extends BaseController {
 			})
 			.catch(err => this.displayError(req, res, err, this.getRoute()))
 		} else {
+			const ids = req.body.ids.split(',')
+		
 			let persist = {}
 
 			Promise.all([
 				this.models.years.getAll(),
-				this.models.courses.getAll()
+				this.models.courses.getAll(),
+				this.models.roles.getAll()
 			])
-			.then(([years, courses]) => {
+			.then(([years, courses, roles]) => {
 				persist = {
 					...persist,
 					years,
-					courses
+					courses,
+					roles
 				}
 
 				var query = this.models.users.query()
-					.getMultipleByIds(req.body.edit)
+					.getMultipleByIds(ids)
 
 				var q2 = this.models.users.rewrap(query)
-				q2.lookup(['course', 'year'])
+				q2.lookup(['course', 'year', 'role'])
 					.orderBy([
 						['barcode', 'asc']
 					])
@@ -160,12 +157,13 @@ class UsersController extends BaseController {
 				return q2.retrieve()
 			})
 			.then(users => {
-				const {years, courses} = persist
+				const {years, courses, roles} = persist
 
 				res.render('edit-multiple', {
 					users,
 					courses,
-					years
+					years,
+					roles
 				})
 			})
 			.catch(err => this.displayError(req, res, err, this.getRoute()))

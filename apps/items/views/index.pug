@@ -5,6 +5,9 @@ block prepend title
 	- heading = title
 	- menu = "items"
 
+block append js
+	script(src="/js/multiaction.js")
+
 block buttons
 	if currentUserCan('items_import')
 		a( href="/items/import" ).btn.btn-outline-success.btn-sm.float-right.ml-2
@@ -18,17 +21,16 @@ block buttons
 block contents
 	- filter_path = '/items/'
 	include partials/filter.pug
-	form#items-form( action="/items/edit", method="post" )
+	form#multi-form
 		+csrf
 		- edit = true
 		include partials/list.pug
-		if items && items.length > 0
 			if currentUserCan('items_multi_edit')
-				button( type="submit" ).btn.btn-sm.btn-primary
+				button(disabled type="button" data-action="/items/edit").multi.btn.btn-sm.btn-primary
 					span.fas.fa-pencil-alt
 					|  Edit Selected
 				|  
 			if currentUserCan('print')
-				button#multi-print(disabled type="button" ).btn.btn-sm.btn-outline-dark
+				button(disabled type="button" data-action="/items/label").multi.btn.btn-sm.btn-outline-dark
 					span.fas.fa-print
 					|  Print Selected Labels
