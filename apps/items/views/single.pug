@@ -12,12 +12,12 @@ block buttons
 		| &nbsp;
 	.btn-group.float-right
 		if currentUserCan('items_edit')
-			a( href="/items/" + item.id + "/edit", title=`Edit ${item.name}` ).btn.btn-outline-dark.btn-sm
+			a( href="/items/" + item.id + "/edit", title=`Edit ${item.name}` ).btn.btn-outline-primary.btn-sm
 				span.fas.fa-pencil-alt
 				|  Edit
 		if currentUserCan('items_remove')
-			a( href="/items/" + item.id + "/remove", title=`Remove ${item.name}` ).btn.btn-outline-dark.btn-sm
-				span.fas.fa-times
+			a( href="/items/" + item.id + "/remove", title=`Remove ${item.name}` ).btn.btn-outline-danger.btn-sm
+				span.far.fa-trash-alt
 				|  Remove
 
 block contents
