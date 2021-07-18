@@ -1,6 +1,8 @@
-let multiForm, multiBtns, items
+let multiForm, multiBtns, items, _csrf
 
 window.addEventListener('load', () => {	
+	_csrf = document.getElementsByName('_csrf')[0].value
+
 	multiBtns = Array.from(document.getElementsByClassName('multi'))
 	if (multiBtns && multiBtns.length > 0) {
 		multiForm = document.getElementById('multi-form')
@@ -30,11 +32,19 @@ function handleCheckboxChange() {
 
 function handleMultiActionButtons(e) {
 	e.preventDefault()
+
+	let target = e.target
+
 	const fd = new FormData(multiForm)
-	const ids = fd.getAll('edit')
-	
-	if (ids.length) {
-		const hf = createForm(ids, e.target.dataset.action)
+	const ids = fd.getAll('ids')
+
+	if (ids.length > 0) {
+		// Captures button icon click target
+		if (target.tagName == 'SPAN') {
+			target = target.parentElement
+		}
+
+		const hf = createForm(ids, target.dataset.action)
 		document.body.appendChild(hf)
 		hf.submit()
 	}
@@ -50,13 +60,18 @@ function createForm(ids, action) {
 	form.setAttribute('action', action)
 	form.setAttribute('method', 'post')
 	form.setAttribute('id', 'hidden-form')
-	form.appendChild(document.getElementsByName('_csrf')[0])
 	
-	const input = document.createElement('input')
-	input.setAttribute('type', 'hidden')
-	input.setAttribute('name', 'ids')
-	input.value = ids.join(',')
-	form.appendChild(input)
+	const csrfInput = document.createElement('input')
+	csrfInput.setAttribute('type', 'hidden')
+	csrfInput.setAttribute('name', '_csrf')
+	csrfInput.value = _csrf
+	form.appendChild(csrfInput)
 	
+	const idsInput = document.createElement('input')
+	idsInput.setAttribute('type', 'hidden')
+	idsInput.setAttribute('name', 'ids')
+	idsInput.value = ids.join(',')
+	form.appendChild(idsInput)
+
 	return form
 }
