@@ -189,7 +189,10 @@ class ItemController extends BaseController {
 			return;
 		}
 
-		const ids = req.body.ids.split(',')
+		let ids = req.body.ids
+		if (!Array.isArray(req.body.ids)) {
+			ids = req.body.ids.split(',')
+		}
 		
 		// Checks if its a request with data
 		if (req.body.fields) {
