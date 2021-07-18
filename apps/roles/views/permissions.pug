@@ -5,6 +5,9 @@ block prepend title
 	- heading = title
 	- menu = "roles"
 
+block buttons 
+	+search
+
 block contents
 	form( method="post" )
 		+csrf
@@ -24,8 +27,8 @@ block contents
 						tr
 							td
 								input(name='permissions' type='checkbox' checked=(selected_perms.includes(key)?true:false) value=key id=key)
-							td: label(for=key).mb-0=key
-							td=desc
+							td(data-searchable=key): label(for=key).mb-0=key
+							td(data-searchable=desc)=desc
 		.form-group
 			button( type="submit" ).btn.btn-primary Set
 			|  
