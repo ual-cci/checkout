@@ -27,17 +27,6 @@ block contents
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="label" )
 		.form-group.row
-			label( for="group" ).col-lg-2.col-form-label Group
-			.col-lg-4
-				.input-group
-					select( name="group" )#group.form-control
-						option( value="" selected ) Select a group
-						for group in groups
-							option( value=group.id )=group.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="group" )
-		.form-group.row
 			label( for="location" ).col-lg-2.col-form-label Location
 			.col-lg-4
 				.input-group
@@ -48,6 +37,17 @@ block contents
 					.input-group-append
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="location" )
+		.form-group.row
+			label( for="group" ).col-lg-2.col-form-label Group
+			.col-lg-4
+				.input-group
+					select( name="group" )#group.form-control
+						option( value="" selected ) Select a group
+						for group in groups
+							option( value=group.id )=group.name
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="group" )
 		.form-group.row
 			label( for="department" ).col-lg-2.col-form-label Department
 			.col-lg-4
