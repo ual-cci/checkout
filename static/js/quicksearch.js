@@ -7,8 +7,8 @@ window.addEventListener('load', () => {
 		document.addEventListener('keydown', QShandleKeyboardInput)
 	}
 
+	checkAllBox = document.querySelector('input[type=checkbox].checkall')
 	if (checkAllBox) {
-		checkAllBox = document.querySelector('input[type=checkbox].checkall')
 		checkAllBox.addEventListener('click', checkAll)
 	}
 })
