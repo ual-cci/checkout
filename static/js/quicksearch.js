@@ -32,11 +32,11 @@ function checkAll() {
 
 function quickSearch() {
 	const searchText = searchTextField.value.toLowerCase()
-
+	checkAllBox.checked = false
+	
 	document.querySelectorAll('tbody tr').forEach(tr => {
 		let hide = true
 		tr.querySelectorAll('td[data-searchable]').forEach(td => {
-			console.log(td.dataset.searchable.toLowerCase().indexOf(searchText))
 			if (td.dataset.searchable.toLowerCase().indexOf(searchText) != -1) {
 				hide = false
 			}
