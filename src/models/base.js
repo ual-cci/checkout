@@ -403,7 +403,6 @@ class BaseModel {
 	 * @param {Array} ids
 	 */
 	getMultipleByIds(ids) {
-		console.log(ids)
 		const query = this.query().expose()
 		this.logQuery(query, 'getMultipleByIds')
 

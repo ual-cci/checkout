@@ -109,8 +109,10 @@ class UsersController extends BaseController {
 			req.saveSessionAndRedirect(this.getRoute())
 			return;
 		}
-
-		const ids = req.body.ids.split(',')
+		let ids = req.body.ids
+		if (!Array.isArray(req.body.ids)) {
+			ids = req.body.ids.split(',')
+		}
 
 		if (ids.includes(req.user.id.toString())) {
 			return this.displayError(req, res, 'You cannot edit the logged in user.', this.getRoute())
