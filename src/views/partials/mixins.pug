@@ -28,7 +28,7 @@ mixin relative( date, alert )
 mixin messageBlock( bg, fg, text )
 	p( style="padding: 1em; margin-top: 1em;" class=`bg-${bg}` class=`text-${fg}` )=text
 
-mixin item( name, id )
+mixin item( name, id, url )
 	if name
 		if currentUserCan('items_read')
 			a( href=`/items/${id}` title=`View item: ${name}`  )=name
@@ -38,6 +38,10 @@ mixin item( name, id )
 			|  
 			small: a( href=`/items/${id}/edit` title=`Edit item: ${name}` ).text-muted
 				span.fas.fa-pencil-alt
+		if url
+			|  
+			a(href=url target="_blank").text-muted
+				span.fa.fa-globe
 	else
 		| &mdash;
 

@@ -53,7 +53,7 @@ class ItemModel extends BaseModel {
 	}
 
 	get properties() {
-		return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated', 'serialnumber', 'issued', 'due', 'loanable']
+		return ['id', 'name', 'barcode', 'notes', 'value', 'label', 'status', 'audited', 'updated', 'serialnumber', 'issued', 'due', 'loanable', 'info_url']
 	}
 
 	updateLocation(oldLocationId, newLocationId) {
@@ -127,7 +127,9 @@ class ItemModel extends BaseModel {
 	getCatalogue() {
 		return this.emptyQuery()
 			.expose()
-			.select('items.name', db.raw(`SUM(CASE WHEN "items"."status" = 'available' THEN 1 ELSE 0 END) AS available`))
+			.select('items.name',
+				db.raw(`SUM(CASE WHEN "items"."status" = 'available' THEN 1 ELSE 0 END) AS available`),
+				db.raw(`ARRAY_REMOVE(ARRAY_AGG(DISTINCT "items"."info_url"), NULL) AS urls`))
 			.count('items.id AS stock')
 			.orderBy('name', 'asc')
 			.where('loanable', true)

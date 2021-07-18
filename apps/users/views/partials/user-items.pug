@@ -9,7 +9,7 @@ if items.length > 0
 			tbody
 				for item in items
 					tr
-						td: +item( item.name, item.id )
+						td: +item( item.name, item.id, item.info_url )
 						td: +clipboard( item.barcode )
 						td: +relative( item.updated )
 else

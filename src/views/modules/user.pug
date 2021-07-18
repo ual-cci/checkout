@@ -30,7 +30,7 @@ include ../partials/mixins.pug
 			tbody
 				for item in onloan
 					tr
-						td: +item( item.name, item.id )
+						td: +item( item.name, item.id, item.info_url )
 						td: +clipboard( item.barcode )
 						td: +date( item.issued )
 						td: +relative( item.due, true )

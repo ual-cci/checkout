@@ -62,7 +62,7 @@ if items && items.length > 0
 								|  
 								a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
 									span.fas.fa-print.text-muted
-						td(data-searchable=item.name): +item( item.name, item.id )
+						td(data-searchable=item.name): +item( item.name, item.id, item.info_url )
 						td: +group( item.group_name, item.group_id )
 						td: +location( item.location_name, item.location_id )
 						td: +department( item.department_name, item.department_id )
