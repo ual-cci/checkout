@@ -38,6 +38,7 @@
   "users_history": "User can view another users loaning history.",
   "users_remove": "User can remove another user.",
   "users_multi_edit": "User can edit multiple other users.",
+  "users_multi_remove": "User can remove multiple other users.",
   "courses_read": "User can view courses.",
   "courses_create": "User can create courses.",
   "courses_edit": "User can edit courses.",

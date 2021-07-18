@@ -5,46 +5,48 @@ if users && users.length > 0
 				tr
 					if edit
 						th
-							input( type="checkbox", title="Check All", checked=edit_users ).checkall
+							input(type="checkbox" title="Check All", checked=edit_users).checkall
 					if multi
 						th Name
 					else
 						th
-							+sortUserHead( 'Name', 'name', sortby, direction, selected )
+							+sortUserHead('Name', 'name', sortby, direction, selected)
 					if multi
 						th Role
 					else
 						th
-							+sortUserHead( 'Role', 'role', sortby, direction, selected )
+							+sortUserHead('Role', 'role', sortby, direction, selected)
 					if multi
 						th Course
 					else
 						th
-							+sortUserHead( 'Course', 'course', sortby, direction, selected )
+							+sortUserHead('Course', 'course', sortby, direction, selected)
 					if multi
 						th Year
 					else
 						th
-							+sortUserHead( 'Year', 'year', sortby, direction, selected )
+							+sortUserHead('Year', 'year', sortby, direction, selected)
 					if multi
 						th Barcode
 							span.dropup
 								span.caret
 					else
 						th
-							+sortUserHead( 'Barcode', 'barcode', sortby, direction, selected )
+							+sortUserHead('Barcode', 'barcode', sortby, direction, selected)
 					th
 						| Email
 			tbody
 				for user in users
 					tr
 						if edit
-							td: input( type="checkbox", name="edit", value=user.id, checked=multi )
-						td: +user( user.name, user.id )
-						td: +role( user.role_name, user.role_id )
-						td: +course( user.course_name, user.course_id )
-						td: +year( user.year_name, user.year_id )
-						td: +clipboard( user.barcode )
-						td: +email( user.email )
+							td
+								if user.id != loggedInUser.id
+									input(type="checkbox" name="edit" value=user.id checked=multi)
+						td: +user(user.name, user.id)
+						td: +role(user.role_name, user.role_id)
+						td: +course(user.course_name, user.course_id)
+						td: +year(user.year_name, user.year_id)
+						td: +clipboard(user.barcode)
+						td: +email(user.email)
 else
-	+messageBlock( 'warning', 'black','There are no users to display.' )
+	+messageBlock('warning', 'black','There are no users to display.')

@@ -24,5 +24,10 @@ block contents
 			if currentUserCan('users_multi_edit')
 				button(disabled type="submit" data-action="/users/edit").multi.btn.btn-sm.btn-primary
 					span.fas.fa-pencil-alt
-					|  Edit Selected
+					|  Edit
+				|  
+			if currentUserCan('users_multi_remove')
+				button(disabled type="button" data-action="/users/remove").multi.btn.btn-sm.btn-danger
+					span.far.fa-trash-alt
+					|  Remove
 				|  

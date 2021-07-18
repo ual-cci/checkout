@@ -1,0 +1,32 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove multiple users'
+	- heading = "Are you sure you want to remove the following users?"
+	- menu = "users"
+
+block contents
+	form(method="post")
+		.form-group.row
+			.col-lg-12
+				+csrf
+				+messageBlock('dark', 'white', 'Removing these user will also delete it the historical data about actions performed against this user.')
+		.form-group.row
+			.col-lg-12
+				ul
+					for user in users
+						li=user.name
+							|  <
+							+email(user.email)
+							| >
+			.col-lg-12
+				.checkbox
+					label(for="confirm")
+						input(id="confirm" name="confirm" type="checkbox")
+						|  I am sure I want to delete all of these users and their historical data
+		.form-group.row
+			.col-lg-12
+				input(type="hidden" name="ids" value=ids)
+				button(type='submit').btn.btn-danger Yes, remove these users
+				|  
+				a( href="/users" ).btn.btn-outline-dark Cancel

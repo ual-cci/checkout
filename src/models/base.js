@@ -126,6 +126,30 @@ class BaseModel {
 	}
 
 	/**
+	 * Remove multiple rows at once
+	 *
+	 * @param {Array} ids
+	 * @param {Object} values
+	 */
+	removeMultiple(ids) {
+		return new Promise((resolve, reject) => {
+			const query = this.query().getMultipleByIds(ids).delete()
+
+			this.logQuery(query, 'removeMultiple')
+
+			query.then(ids => {
+					resolve(ids)
+				})
+				.catch(err => {
+					reject(err)
+				})
+				.finally(() => {
+					this._reset()
+				})
+		})
+	}
+
+	/**
 	 * Makes sure a query has been created
 	 * and creates one if not
 	 *

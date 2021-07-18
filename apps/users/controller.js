@@ -104,6 +104,12 @@ class UsersController extends BaseController {
 	}
 
 	postMultiEdit(req, res) {
+		const ids = req.body.ids.split(',')
+
+		if (ids.includes(req.user.id.toString())) {
+			return this.displayError(req, res, 'You cannot edit the logged in user.', this.getRoute())
+		}
+
 		if (req.body.fields) {
 			const keys = ['course', 'year', 'role','status']
 			const values = ['course_id', 'year_id', 'role_id','disable']
@@ -124,9 +130,7 @@ class UsersController extends BaseController {
 				req.saveSessionAndRedirect(this.getRoute())
 			})
 			.catch(err => this.displayError(req, res, err, this.getRoute()))
-		} else {
-			const ids = req.body.ids.split(',')
-		
+		} else {		
 			let persist = {}
 
 			Promise.all([
@@ -164,6 +168,65 @@ class UsersController extends BaseController {
 				})
 			})
 			.catch(err => this.displayError(req, res, err, this.getRoute()))
+		}
+	}
+
+	postMultiRemove(req, res) {
+		const ids = req.body.ids.split(',')
+
+		if (ids.includes(req.user.id.toString())) {
+			return this.displayError(req, res, 'You cannot delete the logged in user.', this.getRoute())
+		}
+
+		if (!req.body.ids) {
+			return this.displayError(req, res, 'At least one user must be selected.', this.getRoute())
+		}
+
+		
+		if (req.body.confirm) {
+			let userLoans = []
+			ids.forEach((id) => {
+				userLoans.push(this.models.items.getOnLoanByUserId(id))
+			})
+			Promise.all(userLoans)
+				.then((items) => {
+					items.forEach(items => {
+						if (items.length) {
+							throw new Error('Users cannot be deleted if they have items on loan to them')
+						}
+					})
+
+					let actions = []
+					ids.forEach((id) => {
+						actions.push(this.models.actions.removeByUserId(id))
+					})
+					Promise.all(actions)
+						.then(() => {
+							this.models.users.removeMultiple(ids)
+								.then(result => {
+									req.flash('success', 'Users removed')
+									req.saveSessionAndRedirect(this.getRoute())
+								})
+								.catch(err => {
+									this.displayError(req, res, err, this.getRoute())
+								})
+						})
+						.catch(err => {
+							this.displayError(req, res, err, this.getRoute())
+						})
+				})
+				.catch(err => {
+					this.displayError(req, res, err, this.getRoute())
+				})
+		} else {
+			this.models.users.getMultipleByIds(ids)
+				.then((users) => {
+					const ids = users.map((i) => {
+						return i.id
+					}).join(',')
+					res.render('confirm-multi-remove', {users, ids})
+				})
+				.catch(err => this.displayError(req, res, err, this.getRoute()))
 		}
 	}
 
