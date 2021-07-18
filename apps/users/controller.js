@@ -104,6 +104,12 @@ class UsersController extends BaseController {
 	}
 
 	postMultiEdit(req, res) {
+		if (!req.body.ids) {
+			req.flash('danger', 'At least one item must be selected')
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+
 		const ids = req.body.ids.split(',')
 
 		if (ids.includes(req.user.id.toString())) {
@@ -124,7 +130,7 @@ class UsersController extends BaseController {
 				user.disable = user.disable == 'disabled' ? true : false
 			}
 
-			this.models.users.updateMultiple(req.body.edit, user)
+			this.models.users.updateMultiple(ids, user)
 			.then(() => {
 				req.flash('success', 'User updated')
 				req.saveSessionAndRedirect(this.getRoute())

@@ -17,9 +17,9 @@ window.addEventListener('load', () => {
 
 function handleCheckboxChange() {
 	const fd = new FormData(multiForm)
-	const ids = fd.getAll('edit')
+	const ids = fd.getAll('ids')
 
-	if (ids.length > 1) {
+	if (ids.length > 0) {
 		multiBtns.forEach(btn => {
 			btn.removeAttribute('disabled')
 		})

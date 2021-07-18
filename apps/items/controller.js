@@ -183,6 +183,14 @@ class ItemController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	postMultiEdit(req, res) {
+		if (!req.body.ids) {
+			req.flash('danger', 'At least one item must be selected')
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+
+		const ids = req.body.ids.split(',')
+		
 		// Checks if its a request with data
 		if (req.body.fields) {
 			const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable']
@@ -194,7 +202,7 @@ class ItemController extends BaseController {
 					item[values[index]] = req.body[k]
 			})
 
-			this.models.items.updateMultiple(req.body.edit, item)
+			this.models.items.updateMultiple(ids, item)
 			.then(result => {
 				req.flash('success', 'Items updated')
 				req.saveSessionAndRedirect(this.getRoute())
@@ -203,8 +211,6 @@ class ItemController extends BaseController {
 				this.displayError(req, res, err, this.getRoute())
 			})
 		} else {
-			const ids = req.body.ids.split(',')
-		
 			Promise.all([
 				this.models.groups.getAll(),
 				this.models.locations.getAll(),
