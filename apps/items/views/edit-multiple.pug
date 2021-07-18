@@ -9,6 +9,14 @@ block contents
 	form( action="/items/edit" method="post" )
 		+csrf
 		.form-group.row
+			label( for="name" ).col-lg-2.col-form-label Name
+			.col-lg-4
+				.input-group
+					input( name="name" type="text" )#name.form-control
+					.input-group-append
+							.input-group-text
+								input( type="checkbox" name="fields[]" value="name" )
+		.form-group.row
 			label( for="label" ).col-lg-2.col-form-label Label
 			.col-lg-4
 				.input-group

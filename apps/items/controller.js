@@ -196,8 +196,8 @@ class ItemController extends BaseController {
 		
 		// Checks if its a request with data
 		if (req.body.fields) {
-			const keys = ['label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable']
-			const values = ['label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable']
+			const keys = ['name', 'label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable']
+			const values = ['name', 'label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable']
 			const item = {}
 
 			keys.forEach((k, index) => {
