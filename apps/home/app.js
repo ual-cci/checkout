@@ -25,4 +25,8 @@ app.get('/', (req, res) => {
 	}
 })
 
+app.get('/shortcuts', auth.isLoggedIn, (req,res) => {
+	res.render('shortcuts')
+})
+
 module.exports = config => app

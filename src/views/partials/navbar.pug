@@ -14,7 +14,11 @@ nav.navbar.navbar-expand-md.sticky-top.p-0.shadow.bg-dark.navbar-dark
 				.nav-item.dropdown
 					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link.mr-2=loggedInUser.name
 					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right.mr-2
+						a( href='/shortcuts' ).dropdown-item
+							span.far.fa-keyboard
+							|  Shortcuts
 						if currentUserCan('edit_profile')
+							.dropdown-divider
 							a( href='/profile' ).dropdown-item
 								span.fas.fa-pencil-alt
 								|  Edit Profile

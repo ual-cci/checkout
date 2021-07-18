@@ -1,0 +1,35 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Shortcuts'
+	- heading = title
+
+block contents
+	p There are a number of shortcuts built into #{Options.get('application_name')}, the following are applicable to your user role.
+	h3 Global Shortcuts
+	ul
+		if currentUserCan('global_search')
+			li Alt + Shift + F – Will open global search at the top
+				br
+				| When open users can use the up/down arrows to nagivate, enter to select, escape to close the menu
+		if currentUserCan({or: ['checkout_issue', 'checkout_return', 'reservations_create', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
+			li Alt + Shift + K – Will go to the Kiosk
+		li Alt + Shift + Q – Will move the text input to quick search if the page has one
+	if currentUserCan({or: ['checkout_issue', 'checkout_return', 'reservations_create', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
+		h3 Kiosk Shortcuts
+		ul
+			li Escape – Will highlight the scanning field when on the kiosk screen		
+			if currentUserCan('checkout_issue')
+				li Alt + Shift + I – Opens the Issue tab
+			if currentUserCan('checkout_return')
+				li Alt + Shift + R – Opens the Return tab
+			if currentUserCan('reservations_create')
+				li Alt + Shift + E – Opens the New Reservations tab
+			if currentUserCan('users_create')
+				li Alt + Shift + N – Opens the New User tab
+			if currentUserCan('print')
+				li Alt + Shift + L – Opens the Label tab
+			if currentUserCan('checkout_audit')
+				li Alt + Shift + A – Opens the Audit tab 
+			if currentUserCan('checkout_history')
+				li Alt + Shift + H – Opens the History tab 
