@@ -24,6 +24,10 @@ app.post('/edit', auth.currentUserCan('items_multi_edit'), (req, res) => {
 	req.controller.postMultiEdit(req, res)
 })
 
+app.post('/remove', auth.currentUserCan('items_multi_remove'), (req, res) => {
+	req.controller.postMultiRemove(req, res)
+})
+
 // Import items
 app.get('/import', auth.currentUserCan('items_import'), (req, res) => {
 	req.controller.getImport(req, res)

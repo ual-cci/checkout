@@ -229,6 +229,52 @@ class ItemController extends BaseController {
 		}
 	}
 
+	postMultiRemove(req, res) {
+		if (!req.body.ids) {
+			req.flash('danger', 'At least one item must be selected')
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+
+		const ids = req.body.ids.split(',')
+
+		if (req.body.confirm) {
+			if (!req.body.ids) {
+				req.flash('danger', 'At least one item must be selected')
+				req.saveSessionAndRedirect(this.getRoute())
+				return;
+			}
+
+			let actions = []
+			ids.forEach((id) => {
+				actions.push(this.models.actions.removeByItemId(id))
+			})
+			Promise.all(actions)
+				.then(() => {
+					this.models.items.removeMultiple(ids)
+						.then(result => {
+							req.flash('success', 'Items removed')
+							req.saveSessionAndRedirect(this.getRoute())
+						})
+						.catch(err => {
+							this.displayError(req, res, err, this.getRoute())
+						})
+				})
+				.catch(err => {
+					this.displayError(req, res, err, this.getRoute())
+				})
+		} else {
+			this.models.items.getMultipleByIds(ids)
+				.then((items) => {
+					const ids = items.map((i) => {
+						return i.id
+					}).join(',')
+					res.render('confirm-multi-remove', {items, ids})
+				})
+				.catch(err => this.displayError(req, res, err, this.getRoute()))
+		}
+	}
+
 	/**
 	* Get create page with necessary data
 	*

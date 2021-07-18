@@ -28,9 +28,14 @@ block contents
 			if currentUserCan('items_multi_edit')
 				button(disabled type="button" data-action="/items/edit").multi.btn.btn-sm.btn-primary
 					span.fas.fa-pencil-alt
-					|  Edit Selected
+					|  Edit
+				|  
+			if currentUserCan('items_multi_remove')
+				button(disabled type="button" data-action="/items/remove").multi.btn.btn-sm.btn-danger
+					span.far.fa-trash-alt
+					|  Remove
 				|  
 			if currentUserCan('print')
 				button(disabled type="button" data-action="/items/label").multi.btn.btn-sm.btn-outline-dark
 					span.fas.fa-print
-					|  Print Selected Labels
+					|  Print Labels
