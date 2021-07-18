@@ -7,8 +7,10 @@ window.addEventListener('load', () => {
 		document.addEventListener('keydown', QShandleKeyboardInput)
 	}
 
-	checkAllBox = document.querySelector('input[type=checkbox].checkall')
-	checkAllBox.addEventListener('click', checkAll)
+	if (checkAllBox) {
+		checkAllBox = document.querySelector('input[type=checkbox].checkall')
+		checkAllBox.addEventListener('click', checkAll)
+	}
 })
 
 function QShandleKeyboardInput(e) {
@@ -32,8 +34,9 @@ function checkAll() {
 
 function quickSearch() {
 	const searchText = searchTextField.value.toLowerCase()
-	checkAllBox.checked = false
 	
+	if (checkAllBox) checkAllBox.checked = false
+
 	document.querySelectorAll('tbody tr').forEach(tr => {
 		let hide = true
 		tr.querySelectorAll('td[data-searchable]').forEach(td => {
