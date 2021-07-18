@@ -1,40 +1,35 @@
-form( method="get" )
-	.row
-		input( type="hidden", name="sortby", value=sortby )
-		input( type="hidden", name="direction", value=direction )
-		.form-group.col-lg-2
-			label( for="status" ) Status
+form( method="get" )#filter
+	input( type="hidden", name="sortby", value=sortby )
+	input( type="hidden", name="direction", value=direction )
+	.form-group.row.collapse#statusFilter(class=(selected.status?'show':''))
+		label( for="status" ).col-lg-2 Status
+		.col-lg-3
 			select( name="status" )#status.form-control.input-sm
 				option( value="", selected )
 				option(disabled) ──────────
 				option( value='active', selected=( selected.status == 'active' ) ) Active
 				option( value='disabled', selected=( selected.status == 'disabled' ) ) Disabled
-		.form-group.col-lg-2
-			label( for="role" ) Role
+	.form-group.row.collapse#roleFilter(class=(selected.role?'show':''))
+		label( for="role" ).col-lg-2 Role
+		.col-lg-3
 			select( name="role" )#group.form-control.input-sm
 				option( value="", selected )
 				option(disabled) ──────────
 				for role in roles
 					option( value=role.id, selected=( role.id == selected.role ) ) #{ role.name }
-		.form-group.col-lg-2
-			label( for="course" ) Course
+	.form-group.row.collapse#courseFilter(class=(selected.course?'show':''))
+		label( for="course" ).col-lg-2 Course
+		.col-lg-3
 			select( name="course" )#group.form-control.input-sm
 				option( value="", selected )
 				option(disabled) ──────────
 				for course in courses
 					option( value=course.id, selected=( course.id == selected.course ) ) #{ course.name }
-		.form-group.col-lg-2
-			label( for="year" ) Year
+	.form-group.row.collapse#yearFilter(class=(selected.year?'show':''))
+		label( for="year" ).col-lg-2 Year
+		.col-lg-3
 			select( name="year" )#year.form-control.input-sm
 				option( value="", selected )
 				option(disabled) ──────────
 				for year in years
 					option( value=year.id, selected=( year.id == selected.year ) ) #{ year.name }
-		.col-lg-2.offset-lg-2
-			div( style="padding-top: 1.8em;" )
-				a( href="/users?clear=" ).btn.btn-outline-dark.btn-sm.float-right
-					span.fas.fa-times
-					|  Clear
-				button( style="margin-right: 1em;" ).btn.btn-outline-primary.btn-sm.float-right
-					span.fas.fa-filter
-					|  Filter
