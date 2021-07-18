@@ -21,7 +21,7 @@ if groups.length > 0
 			tbody
 				for group in groups
 					tr
-						td=group.name
+						td(data-searchable=group.name)=group.name
 						td=(group.limiter?group.limiter:'–')
 						td=(group.duration?group.duration.toPostgres():'–')
 						if currentUserCan('items_read')

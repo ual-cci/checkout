@@ -277,3 +277,16 @@ body.noScroll {
 .searchList a.selected {
 	background-color: #dfdfdf;
 }
+
+#searchText input {
+	width: 15em;
+	transition: width 0.5s;
+}
+
+#searchText input:placeholder-shown {
+	width: 4.5em;
+}
+
+#searchText input:focus {
+	width: 15em;
+}

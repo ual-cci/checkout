@@ -21,14 +21,14 @@ if keys.length > 0
 				for key in keys
 					- option = options[key]
 					tr
-						td
+						td(data-searchable=key)
 							strong: pre=key
 							p
 								small=option.purpose
 								if option.example
 									br
 									small Example: #{option.example}
-						td: pre=option.value
+						td(data-searchable=option.value): pre=option.value
 						td=!option.overridden ? 'Yes' : 'No'
 						if currentUserCan('options_edit')
 							td

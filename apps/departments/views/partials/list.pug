@@ -16,7 +16,7 @@ if departments.length > 0
 			tbody
 				for department in departments
 					tr
-						td=department.name
+						td(data-searchable=department.name)=department.name
 						if currentUserCan('items_read')
 							td
 								+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?department=' + department.id )

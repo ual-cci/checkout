@@ -254,3 +254,9 @@ mixin statusPill( status )
 		span.badge.badge-secondary(title='Unavailable') &nbsp;
 	else
 		span.badge.badge-info(title=status) &nbsp;
+
+mixin search 
+	.input-group.input-group-sm.ml-2#searchText
+		.input-group-prepend
+			span.input-group-text.fa.fa-search
+		input(type="text" placeholder="Search").form-control

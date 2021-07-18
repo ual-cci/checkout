@@ -14,7 +14,7 @@ if years.length > 0
 			tbody
 				for year in years
 					tr
-						td=year.name
+						td(data-searchable=year.name)=year.name
 						if currentUserCan({or:['years_edit','years_remove']})
 							td
 								if currentUserCan('years_edit')

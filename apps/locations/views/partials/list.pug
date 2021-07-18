@@ -17,8 +17,8 @@ if locations.length > 0
 			tbody
 				for location in locations
 					tr
-						td=location.name
-						td: +clipboard( location.barcode )
+						td(data-searchable=location.name)=location.name
+						td(data-searchable=location.barcode): +clipboard( location.barcode )
 						if currentUserCan('items_read')
 							td
 								+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?location=' + location.id )

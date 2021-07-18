@@ -19,7 +19,7 @@ if roles.length > 0
 			tbody
 				for role in roles
 					tr
-						td=role.name
+						td(data-searchable=role.name)=role.name
 						if currentUserCan('users_read')
 							td
 								a( href="/users/?role=" + role.id ).btn.btn-sm.btn-outline-dark
