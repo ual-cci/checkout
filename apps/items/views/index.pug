@@ -4,22 +4,64 @@ block prepend title
 	- title = "Items"
 	- heading = title
 	- menu = "items"
+	- filter_path = '/items/'
 
 block append js
 	script(src="/js/multiaction.js")
 
 block buttons
 	if currentUserCan('items_import')
-		a( href="/items/import" ).btn.btn-outline-success.btn-sm.float-right.ml-2
+		a( href="/items/import" ).btn.btn-outline-success.btn-sm.ml-2
 			span.fas.fa-file-csv
 			|  Import Items
 	if currentUserCan('items_create')
-		a( href="/items/create" ).btn.btn-outline-success.btn-sm.float-right.ml-2
+		a( href="/items/create" ).btn.btn-outline-success.btn-sm.ml-2
 			span.fas.fa-plus
 			|  Create Items
+	.dropdown.ml-2
+		button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+			span.fas.fa-bolt
+			|  Reports
+		.dropdown-menu.dropdown-menu-right
+			h6.dropdown-header Due
+			a( href="/items/?due=overdue" ).dropdown-item Overdue
+			a( href="/items/?due=today" ).dropdown-item Today
+			.dropdown-divider
+			h6.dropdown-header Status
+			a( href="/items/?status=available" ).dropdown-item Available
+			a( href="/items/?status=on-loan" ).dropdown-item On Loan
+			a( href="/items/?status=broken" ).dropdown-item Broken
+			a( href="/items/?status=lost" ).dropdown-item Lost
+			.dropdown-divider
+			h6.dropdown-header Audit
+			a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
+			a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
+	.btn-group.ml-2
+		button(type="submit" form="filter").btn.btn-outline-secondary.btn-sm
+			span.fas.fa-filter
+			|  Filter
+		button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+		.dropdown-menu.dropdown-menu-right
+			h6.dropdown-header Item Categorisation
+			a(data-toggle="collapse" href="#groupFilter").dropdown-item Group
+			a(data-toggle="collapse" href="#locationFilter").dropdown-item Location
+			a(data-toggle="collapse" href="#departmentFilter").dropdown-item Department
+			a(data-toggle="collapse" href="#courseFilter").dropdown-item Course
+			a(data-toggle="collapse" href="#dueFilter").dropdown-item Year
+			.dropdown-divider
+			h6.dropdown-header Item Meta Data
+			a(data-toggle="collapse" href="#statusFilter").dropdown-item Status
+			a(data-toggle="collapse" href="#loanableFilter").dropdown-item Loanable
+			a(data-toggle="collapse" href="#dueFilter").dropdown-item Due
+			a(data-toggle="collapse" href="#auditedFilter").dropdown-item Audited
+			a(data-toggle="collapse" href="#scannedFilter").dropdown-item Scanned
+	if Object.values(selected).join('') != ''
+		a(href=filter_path + "?clear=").btn.btn-outline-secondary.btn-sm.ml-2
+			span.fas.fa-times
+			|  Clear
+
 
 block contents
-	- filter_path = '/items/'
 	include partials/filter.pug
 	form#multi-form
 		+csrf
