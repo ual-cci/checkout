@@ -50,8 +50,10 @@ if items && items.length > 0
 						th: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
 						th: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
 			tbody
+				- item_count = 0
 				- item_total = 0
 				for item in items
+					- item_count += 1
 					tr
 						if edit
 							td: input( type="checkbox", name="ids", value=item.id, checked=multi )
@@ -100,9 +102,8 @@ if items && items.length > 0
 									| –
 			tfoot
 				tr
-					if edit
-						th
-					th( colspan="6" ) Total
+					th Total
+					th( style="font-weight: normal;" colspan=(edit ? "6" : "5") ) #{item_count} items
 					th £#{ item_total.toFixed(2) }
 					th( colspan="5" )
 else
