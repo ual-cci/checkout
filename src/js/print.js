@@ -21,6 +21,11 @@ const Print = {
 			var code = codes[c]
 			switch(code.type) {
 				default:
+				case '9mm':
+					size = "Custom.9x12mm"
+					barcodes.push(Print.add9mmLabel(doc, code.barcode, code.text, code.brand))
+					break
+
 				case '12mm':
 					size = "Custom.12x18mm"
 					barcodes.push(Print.add12mmLabel(doc, code.barcode, code.text, code.brand))
@@ -46,6 +51,32 @@ const Print = {
 
 		doc.on('end', function() {
 			Print.send(buffer, printer, size)
+		})
+	},
+	add9mmLabel: function(doc, barcode, text) {
+		return new Promise(function(resolve, reject) {
+			Print.generate2DBarcodeImage(barcode).then(function(png) {
+			var page = doc.addPage({
+				size: [pt(10), pt(9)],
+				layout: 'landscape',
+				margin: 0
+			})
+
+			page.image(png, pt(1), pt(1), {
+				width: pt(7),
+				height: pt(7)
+			})
+
+			page.fontSize(3)
+			page.font('Helvetica')
+			
+			page.text(barcode, pt(1), pt(8.5), {
+				width: pt(7),
+				align: 'left'
+			})
+
+			resolve(page)
+			})
 		})
 	},
 	add12mmLabel: function(doc, barcode, text, brand) {
