@@ -27,7 +27,7 @@ const Print = {
 					break
 
 				case '12mm':
-					size = "Custom.12x18mm"
+					size = "Custom.12x17mm"
 					barcodes.push(Print.add12mmLabel(doc, code.barcode, code.text, code.brand))
 					break
 
@@ -83,7 +83,7 @@ const Print = {
 		return new Promise(function(resolve, reject) {
 			Print.generate2DBarcodeImage(barcode).then(function(png) {
 			var page = doc.addPage({
-				size: [pt(18), pt(12)],
+				size: [pt(17), pt(12)],
 				layout: 'landscape',
 				margin: 0
 			})
@@ -97,14 +97,14 @@ const Print = {
 				lineGap: -1.5
 			})
 
-			page.image(png, pt(1), pt(6), {
+			page.image(png, pt(1), pt(5.5), {
 				width: pt(9),
 				height: pt(9)
 			})
 
 			page.fontSize(4)
 			page.font('Helvetica')
-			page.text(barcode, pt(1), pt(16), {
+			page.text(barcode, pt(1), pt(15), {
 				width: pt(9),
 				align: 'left'
 			})
