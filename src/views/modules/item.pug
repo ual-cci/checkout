@@ -47,8 +47,9 @@ include ../partials/mixins.pug
 						.col-md-7=item.notes
 			.col-md-2.buttons
 				if item.status == 'available'
-					button.btn.btn-outline-dark.float-right( style='margin-bottom: .25em;' ) Lost
-					button.btn.btn-outline-dark.float-right Broken
+					button.btn.btn-warning.float-right( style='margin: .25em;' ) Lost
+					button.btn.btn-warning.float-right( style='margin: .25em;' ) Broken
+					button.btn.btn-secondary.float-right( style='margin: .25em;' ) Sold
 				else
-					button.btn.btn-outline-dark.float-right Return
+					button.btn.btn-success.float-right( style='margin: .25em;' ) Return
 					

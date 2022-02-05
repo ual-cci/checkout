@@ -421,9 +421,32 @@ class ApiController extends BaseController {
 		})
 		.catch(err => this.displayErrorJson(req, res, err))
 	}
+
+	/**
+	* Marks an item as sold and logs an action
+	* nothing that
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	postSold(req, res) {
+		let persist = {}
+		this.models.items.sold(req.params.item)
+		.then(item => {
+			persist.item = item
+
+			return this.models.actions.create({
+				item_id: item.id,
+				action: ACTIONS.SOLD,
+				operator_id: req.user.id
+			})
+		})
+		.then(() => {
+			const {item} = persist
+
 			return res.json({
 				status: 'success',
-				message: 'Successfully posted as lost',
+				message: 'Successfully marked as sold',
 				barcode: item.barcode
 			})
 		})

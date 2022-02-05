@@ -185,6 +185,10 @@ class ItemModel extends BaseModel {
 	lost(barcode) {
 		return this.changeStatus(barcode, AVAILABILITY.LOST)
 	}
+	
+	sold(barcode) {
+		return this.changeStatus(barcode, AVAILABILITY.SOLD)
+	}
 
 	issue(itemId, userId, operator, dueDate) {
 		return this.update(itemId, {

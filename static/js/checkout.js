@@ -198,6 +198,9 @@ function broken(item, cb) {
 function lost(item, cb) {
 	apiPOST(`/api/lost/${item}`, cb)
 }
+function sold(item, cb) {
+	apiPOST(`/api/sold/${item}`, cb)
+}
 function label(item, cb) {
 	apiPOST(`/api/label/${item}`, cb)
 }
@@ -371,6 +374,11 @@ function handleItemButtons() {
 			break
 		case 'Lost':
 			lost(barcode, function(data) {
+				flash(data)
+				select('item', data.barcode)
+			})
+		case 'Sold':
+			sold(barcode, function(data) {
 				flash(data)
 				select('item', data.barcode)
 			})

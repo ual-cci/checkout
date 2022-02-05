@@ -48,6 +48,10 @@ app.post('/lost/:item', auth.APIuserCan('checkout_issue'), (req, res) => {
 	req.controller.postLost(req, res)
 })
 
+app.post('/sold/:item', auth.APIuserCan('checkout_issue'), (req, res) => {
+	req.controller.postSold(req, res)
+})
+
 app.post('/issue/:item/:user', auth.APIuserCan('checkout_issue'), (req, res) => {
 	req.controller.postIssue(req, res)
 })

@@ -218,16 +218,18 @@ mixin status( status )
 		span.badge.badge-warning Broken
 	else if status == 'lost'
 		span.badge.badge-warning Lost
+	else if status == 'sold'
+		span.badge.badge-secondary Sold
 	else if status == 'issued'
 		span.badge.badge-danger Issued
+	else if status == 'unavailable'
+		span.badge.badge-info Unavailable
 	else if status == 'audited'
 		span.badge.badge-secondary Audited
 	else if status == 'reserve'
 		span.badge.badge-danger Reserve
 	else if status == 'maintenance'
 		span.badge.badge-primary Maintenance
-	else if status == 'unavailable'
-		span.badge.badge-secondary Unavailable
 	else
 		span.badge.badge-info=status
 
@@ -248,14 +250,16 @@ mixin statusPill( status )
 		span.badge.badge-warning(title='Lost') &nbsp;
 	else if status == 'issued'
 		span.badge.badge-danger(title='Issued') &nbsp;
+	else if status == 'sold'
+		span.badge.badge-secondary(title='Sold') &nbsp;
+	else if status == 'unavailable'
+		span.badge.badge-info(title='Unavailable') &nbsp;
 	else if status == 'audited'
 		span.badge.badge-secondary(title='Audited') &nbsp;
 	else if status == 'reserve'
 		span.badge.badge-danger(title='Reserve') &nbsp;
 	else if status == 'maintenance'
 		span.badge.badge-primary(title='Maintenance') &nbsp;
-	else if status == 'unavailable'
-		span.badge.badge-secondary(title='Unavailable') &nbsp;
 	else
 		span.badge.badge-info(title=status) &nbsp;
 

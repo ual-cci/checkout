@@ -4,6 +4,7 @@ module.exports = {
 		LOST: 'lost',
 		BROKEN: 'broken',
 		AVAILABLE: 'available',
+		SOLD: 'sold'
 	},
 	STATUS: {
 		ACTIVE: 'active',
@@ -18,7 +19,8 @@ module.exports = {
 		FOUND: 'found',
 		ISSUED: 'issued',
 		BROKEN: 'broken',
-		LOST: 'lost'
+		LOST: 'lost',
+		SOLD: 'sold'
 	},
 	SORTBY_MUTATIONS: {
 		DEFAULT: (sortBy) => {
