@@ -569,8 +569,7 @@ class UsersController extends BaseController {
 	getEmail(req, res) {
 		let persist = {}
 		this.models.users.query()
-		.lookup(['course','contact'])
-		.getById(req.params.id)
+		.getContactById(req.params.id)
 		.then(user => {
 			if (!user) {
 				throw new Error('User not found')

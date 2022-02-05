@@ -60,6 +60,13 @@ class UserModel extends BaseModel {
 		return this.query(include == 'all' ? true : false).where([['email', email]]).retrieveSingle()
 	}
 
+	getContactById(id) {
+		return this.query()
+			.lookup(['course', 'contact'])
+			.where([['id', id]])
+			.retrieveSingle()
+	}
+
 	updateCourse(oldCourseId, newCourseId) {
 		return new Promise((resolve, reject) => {
 			this.query()
