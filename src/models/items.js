@@ -117,7 +117,7 @@ class ItemModel extends BaseModel {
 	}
 
 	search(term) {
-		return super.search(term, ['name', 'barcode'], ['barcode', 'asc'])
+		return super.search(term, ['name', 'barcode', 'serialnumber'], ['barcode', 'asc'])
 	}
 
 	getByBarcode(barcode) {

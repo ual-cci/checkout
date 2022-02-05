@@ -136,7 +136,7 @@ class UserModel extends BaseModel {
 	}
 
 	search(term) {
-		return super.search(term, ['name', 'barcode'], ['name', 'asc'])
+		return super.search(term, ['name', 'barcode', 'email'], ['name', 'asc'])
 	}
 }
 
