@@ -384,7 +384,7 @@ class ApiController extends BaseController {
 
 			return res.json({
 				status: 'success',
-				message: 'Successfully posted as broken',
+				message: 'Successfully marked as broken',
 				barcode: item.barcode
 			})
 		})
