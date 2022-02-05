@@ -377,6 +377,7 @@ function handleItemButtons() {
 				flash(data)
 				select('item', data.barcode)
 			})
+			break;
 		case 'Sold':
 			sold(barcode, function(data) {
 				flash(data)
