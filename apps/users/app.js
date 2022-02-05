@@ -27,6 +27,11 @@ app.post('/remove', auth.currentUserCan('users_multi_remove'), (req, res) => {
 	req.controller.postMultiRemove(req, res)
 })
 
+// Email multiple users
+app.post('/email', auth.currentUserCan('users_email'), (req, res) => {
+	req.controller.postMultiEmail(req, res)
+})
+
 // Import users
 app.get('/import', auth.currentUserCan('users_import'), (req, res) => {
 	req.controller.getImport(req, res)
@@ -64,7 +69,7 @@ app.post('/:id/remove', auth.currentUserCan('users_remove'), (req, res) => {
 })
 
 // Reset password attempts for user
-app.get('/:id/email', auth.currentUserCan('users_read'), (req, res) => {
+app.get('/:id/email', auth.currentUserCan('users_email'), (req, res) => {
 	req.controller.getEmail(req, res)
 })
 

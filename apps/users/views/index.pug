@@ -58,3 +58,8 @@ block contents
 					span.far.fa-trash-alt
 					|  Remove
 				|  
+			if currentUserCan('users_email')
+				button(disabled type="button" data-action="/users/email").multi.btn.btn-sm.btn-outline-dark
+					span.fas.fa-envelope
+					|  Email Selected Users
+

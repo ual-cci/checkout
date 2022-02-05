@@ -4,6 +4,9 @@ const config = require('./config.json')
 const BaseController = require('../../src/js/common/BaseController.js')
 const auth = require('../../src/js/authentication')
 
+const Options = require('../../src/js/options')()
+const Mail = require('../../src/js/mail')
+
 const Courses = require('../../src/models/courses')
 const Users = require('../../src/models/users')
 const Years = require('../../src/models/years')
@@ -588,16 +591,75 @@ class UsersController extends BaseController {
 				req.saveSessionAndRedirect(this.getRoute())
 				return
 			}
-			const {user} = persist
-			var email = `Hello ${user.name},\n\nYou currently have the following item${items.length > 1 ? 's' : ''} on loan which ${items.length > 1 ? 'are' : 'is'} due back:\n\n`
-			for (var i in items) {
-				var item = items[i]
-				email += ` ∙ ${item.name} (${item.barcode})\n`
+
+			if (!req.user.template_id) {
+				req.flash('warning', 'You must set an email template for your profile')
+				req.saveSessionAndRedirect(this.getRoute())
+				return
 			}
-			res.render('email', {
-				user,
-				email
+
+			const {user} = persist
+
+			const tags = {
+				name: user.name,
+				items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
+				org: Options.getText('organisation_name')
+			}
+
+			const to = {
+				name: user.name,
+				address: user.email
+			}
+
+			Mail.sendTemplate(to, req.user.template_subject, req.user.template_body, tags)
+				.then((state) => {
+					if (state.accepted.length == 1) {
+						req.flash('success', `Email sent to ${user.name}`)
+					} else {
+						req.flash('danger', `Email did not send to ${user.name}`)
+					}
+					req.saveSessionAndRedirect(`${this.getRoute()}/${user.id}`)
+				})
+				.catch((err) => {
+					req.flash('danger', `Email did not send to ${user.name}`)
+					req.saveSessionAndRedirect(`${this.getRoute()}/${user.id}`)
+					console.log(err)
+				})
+		})
+		.catch(err => this.displayError(req, res, err, this.getRoute()))
+	}
+
+	postMultiEmail(req, res) {
+		const ids = req.body.ids.split(',')
+		this.models.users.query().getMultipleByIds(ids)
+		.then(users => {
+			if (!req.user.template_id) {
+				req.flash('warning', 'You must set an email template for your profile')
+				req.saveSessionAndRedirect(this.getRoute())
+				return
+			}
+
+			users.forEach((user) => {
+				this.models.items.getOnLoanByUserId(user.id).then(items => {
+					if (items.length > 0) {
+						const tags = {
+							name: user.name,
+							items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
+							org: Options.getText('organisation_name')
+						}
+			
+						const to = {
+							name: user.name,
+							address: user.email
+						}
+			
+						Mail.sendTemplate(to, req.user.template_subject, req.user.template_body, tags)	
+					}
+				})
 			})
+			
+			req.flash('success', `Emails sent`)
+			req.saveSessionAndRedirect(`${this.getRoute()}`)
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}

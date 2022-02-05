@@ -1,0 +1,29 @@
+if templates.length > 0
+	.table-responsive
+		table.table.table-striped.table-hover.table-condensed
+			tgroup
+				col( width="30%" )
+				col( width="50%" )
+				col( width="20%" )
+			thead
+				tr
+					th Name
+						| 
+						span.fas.fa-angle-up.text-muted
+					th Subject
+					if currentUserCan({or:['templates_edit','templates_remove']})
+						th Manage
+			tbody
+				for template in templates
+					tr
+						td=template.name
+						td=template.subject
+						if currentUserCan({or:['templates_edit','templates_remove']})
+							td
+								if currentUserCan('templates_edit')
+									+editBtn( '/templates/' + template.id + '/edit' )
+									+space
+								if currentUserCan('templates_remove')
+									+removeBtn( '/templates/' + template.id + '/remove' )
+else
+	+messageBlock( 'warning', 'black','There are no templates to display.' )
