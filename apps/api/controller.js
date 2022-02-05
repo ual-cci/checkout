@@ -399,8 +399,28 @@ class ApiController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	postLost(req, res) {
+		let persist = {}
 		this.models.items.lost(req.params.item)
 		.then(item => {
+			persist.item = item
+
+			return this.models.actions.create({
+				item_id: item.id,
+				action: ACTIONS.LOST,
+				operator_id: req.user.id
+			})
+		})
+		.then(() => {
+			const {item} = persist
+
+			return res.json({
+				status: 'success',
+				message: 'Successfully marked as lost',
+				barcode: item.barcode
+			})
+		})
+		.catch(err => this.displayErrorJson(req, res, err))
+	}
 			return res.json({
 				status: 'success',
 				message: 'Successfully posted as lost',
