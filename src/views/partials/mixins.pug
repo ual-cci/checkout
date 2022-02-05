@@ -222,6 +222,8 @@ mixin status( status )
 		span.badge.badge-secondary Sold
 	else if status == 'issued'
 		span.badge.badge-danger Issued
+	else if status == 'replaced'
+		span.badge.badge-success Replaced
 	else if status == 'unavailable'
 		span.badge.badge-info Unavailable
 	else if status == 'audited'

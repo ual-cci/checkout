@@ -1,20 +1,24 @@
 if actions && actions.length > 0
 	for action in actions
-		.list-group-item.action( class=( action.action == 'broken' || action.action == 'lost' ? 'list-group-item-danger' : null ), class=( action.action == 'repaired' || action.action == 'found' ? 'list-group-item-success' : null ) )
+		.list-group-item.action
 			
 			//- Icon
 			if action.action == 'issued'
-				span.icon.fas.fa-paper-plane
+				span.icon.fas.fa-sign-out-alt
 			else if action.action == 'returned'
-				span.icon.fas.fa-home
+				span.icon.fas.fa-sign-in-alt
 			else if action.action == 'broken'
-				span.icon.fas.fa-trash
+				span.icon.fas.fa-heart-broken
 			else if action.action == 'lost'
-				span.icon.fas.fa-search
+				span.icon.fas.fa-compass
 			else if action.action == 'repaired'
 				span.icon.fas.fa-heart
 			else if action.action == 'found'
 				span.icon.fas.fa-check
+			else if action.action == 'sold'
+				span.icon.fas.fa-cash-register
+			else if action.action == 'replaced'
+				span.icon.fas.fa-money-bill
 
 			//- Who
 			if action.owner_name
@@ -22,13 +26,10 @@ if actions && actions.length > 0
 				|  
 			
 			//- Did What
-			if action.action == 'issued'
-				|  was 
-				strong issued  
-			else if action.action == 'returned'
-				|  has 
-				strong returned 
-			
+			if action.action
+				strong=action.action
+				|  
+
 			//- To What
 			span.clipboard( data-clipboard-text=action.item_barcode )=action.item_name
 			

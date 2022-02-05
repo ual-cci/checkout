@@ -16,6 +16,7 @@ module.exports = {
 		AUDITED: 'audited',
 		RETURNED: 'returned',
 		REPAIRED: 'repaired',
+		REPLACED: 'replaced',
 		FOUND: 'found',
 		ISSUED: 'issued',
 		BROKEN: 'broken',

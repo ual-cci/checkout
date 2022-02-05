@@ -827,6 +827,7 @@ class ItemController extends BaseController {
 			return this.models.actions.create({
 				item_id: _item.id,
 				action: ACTIONS.LOST,
+				user_id: item.owner_id ? item.owner_id : null,
 				operator_id: req.user.id
 			})
 		})
@@ -860,6 +861,7 @@ class ItemController extends BaseController {
 			return this.models.actions.create({
 				item_id: _item.id,
 				action: ACTIONS.BROKEN,
+				user_id: item.owner_id ? item.owner_id : null,
 				operator_id: req.user.id
 			})
 		})
@@ -893,6 +895,7 @@ class ItemController extends BaseController {
 			return this.models.actions.create({
 				item_id: _item.id,
 				action: ACTIONS.SOLD,
+				user_id: item.owner_id ? item.owner_id : null,
 				operator_id: req.user.id
 			})
 		})
@@ -923,9 +926,23 @@ class ItemController extends BaseController {
 
 			_item = item
 
+			let action = ACTIONS.RETURNED
+			switch (item.status) {
+				case AVAILABILITY.BROKEN:
+					action = ACTIONS.REPAIRED
+					break
+				case AVAILABILITY.LOST:
+					action = ACTIONS.FOUND
+					break
+				case AVAILABILITY.SOLD:
+					action = ACTIONS.REPLACED
+					break
+			}
+
 			return this.models.actions.create({
 				item_id: _item.id,
-				action: ACTIONS.RETURNED,
+				action,
+				user_id: item.owner_id ? item.owner_id : null,
 				operator_id: req.user.id
 			})
 		})

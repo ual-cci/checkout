@@ -18,7 +18,7 @@ block contents
 				|  
 				span.badge.badge-secondary.d-none.d-lg-inline I
 				
-		if currentUserCan('checkout_return')
+		if currentUserCan('items_return')
 			if ! set_active
 				- set_active = 'return';
 			a.return.nav-item.nav-link( href="#return" data-toggle="tab" class=(set_active=='return'?'active':null) ) Return
