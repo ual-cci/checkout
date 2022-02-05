@@ -836,8 +836,11 @@ class ItemController extends BaseController {
 		})
 		.then(() => {
 			req.flash('success', "Item marked as lost")
-			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
-			
+			if (req.query.returnTo == 'user') {
+				req.saveSessionAndRedirect(`/users/${_item.owner_id}`)
+			} else {
+				req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			}
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}
@@ -870,8 +873,11 @@ class ItemController extends BaseController {
 		})
 		.then(() => {
 			req.flash('success', "Item marked as broken")
-			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
-			
+			if (req.query.returnTo == 'user') {
+				req.saveSessionAndRedirect(`/users/${_item.owner_id}`)
+			} else {
+				req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			}
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}
@@ -904,8 +910,11 @@ class ItemController extends BaseController {
 		})
 		.then(() => {
 			req.flash('success', "Item marked as sold")
-			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
-			
+			if (req.query.returnTo == 'user') {
+				req.saveSessionAndRedirect(`/users/${_item.owner_id}`)
+			} else {
+				req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			}
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}
@@ -951,7 +960,12 @@ class ItemController extends BaseController {
 		})
 		.then(() => {
 			req.flash('success', "Item returned")
-			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			if (req.query.returnTo == 'user') {
+				req.saveSessionAndRedirect(`/users/${_item.owner_id}`)
+			} else {
+				req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			}
+			
 			
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
