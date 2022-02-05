@@ -70,6 +70,26 @@ app.post('/:id/edit', auth.currentUserCan('items_edit'), (req, res) => {
 	req.controller.postEdit(req, res)
 })
 
+// Change item status handlers
+
+app.get('/:id/return', auth.currentUserCan('items_edit'), (req, res) => {
+	req.controller.getReturn(req, res)
+})
+
+app.get('/:id/broken', auth.currentUserCan('items_edit'), (req, res) => {
+	req.controller.getBroken(req, res)
+})
+
+app.get('/:id/lost', auth.currentUserCan('items_edit'), (req, res) => {
+	req.controller.getLost(req, res)
+})
+
+app.get('/:id/sold', auth.currentUserCan('items_edit'), (req, res) => {
+	req.controller.getSold(req, res)
+})
+
+// Remove item handlers
+
 app.get('/:id/remove', auth.currentUserCan('items_remove'), (req, res) => {
 	req.controller.getRemove(req, res)
 })

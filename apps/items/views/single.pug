@@ -6,6 +6,28 @@ block prepend title
 	- menu = "items"
 
 block buttons
+	if item.status != 'available'
+		.btn-group.float-right(style='margin-left:.25em;')
+			a( href="/items/" + item.id + "/return", title=`Return ${item.name}` ).btn.btn-outline-success.btn-sm
+				span.fas.fa-sign-in-alt
+				|  Return
+	else
+		.dropdown.ml-2
+			button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+				span.fas.fa-traffic-light
+				|  Change Status
+			.dropdown-menu.dropdown-menu-right
+				h6.dropdown-header Change status
+				a( href="/items/" + item.id + "/broken", title=`Mark ${item.name} as Broken` ).dropdown-item
+					span.fas.fa-heart-broken
+					|  Broken		
+				a( href="/items/" + item.id + "/lost", title=`Mark ${item.name} as Lost` ).dropdown-item
+					span.fas.fa-compass
+					|  Lost
+				a( href="/items/" + item.id + "/sold", title=`Mark ${item.name} as Sold` ).dropdown-item
+					span.fas.fa-cash-register
+					|  Sold
+	| &nbsp;
 	if currentUserCan('print')
 		.btn-group.float-right(style='margin-left:.25em;')
 			include partials/print-btn.pug

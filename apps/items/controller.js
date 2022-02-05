@@ -12,7 +12,7 @@ const Actions = require('../../src/models/actions.js')
 // TODO
 const Print = require('../../src/js/print')
 const {getSortBy} = require('../../src/js/utils.js')
-const {AVAILABILITY, SORTBY_MUTATIONS} = require('../../src/js/common/constants')
+const {AVAILABILITY, ACTIONS, SORTBY_MUTATIONS} = require('../../src/js/common/constants')
 
 const moment = require('moment')
 
@@ -804,6 +804,138 @@ class ItemController extends BaseController {
 		.then(() => {
 			req.flash('success', "Item and it's history removed")
 			req.saveSessionAndRedirect(this.getRoute())
+		})
+		.catch(err => this.displayError(req, res, err, this.getRoute()))
+	}
+
+	/**
+	* Endpoint for marking an item lost
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getLost(req, res) {
+		let _item
+		this.models.items.getById(req.params.id)
+		.then(item => {
+			if (!item) {
+				throw new Error('Item not found')
+			}
+
+			_item = item
+
+			return this.models.actions.create({
+				item_id: _item.id,
+				action: ACTIONS.LOST,
+				operator_id: req.user.id
+			})
+		})
+		.then(() => {
+			return this.models.items.lost(_item.barcode)
+		})
+		.then(() => {
+			req.flash('success', "Item marked as lost")
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			
+		})
+		.catch(err => this.displayError(req, res, err, this.getRoute()))
+	}
+
+	/**
+	* Endpoint for marking an item broken
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getBroken(req, res) {
+		let _item
+		this.models.items.getById(req.params.id)
+		.then(item => {
+			if (!item) {
+				throw new Error('Item not found')
+			}
+
+			_item = item
+
+			return this.models.actions.create({
+				item_id: _item.id,
+				action: ACTIONS.BROKEN,
+				operator_id: req.user.id
+			})
+		})
+		.then(() => {
+			return this.models.items.broken(_item.barcode)
+		})
+		.then(() => {
+			req.flash('success', "Item marked as broken")
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			
+		})
+		.catch(err => this.displayError(req, res, err, this.getRoute()))
+	}
+
+	/**
+	* Endpoint for marking an item sold
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getSold(req, res) {
+		let _item
+		this.models.items.getById(req.params.id)
+		.then(item => {
+			if (!item) {
+				throw new Error('Item not found')
+			}
+
+			_item = item
+
+			return this.models.actions.create({
+				item_id: _item.id,
+				action: ACTIONS.SOLD,
+				operator_id: req.user.id
+			})
+		})
+		.then(() => {
+			return this.models.items.sold(_item.barcode)
+		})
+		.then(() => {
+			req.flash('success', "Item marked as sold")
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			
+		})
+		.catch(err => this.displayError(req, res, err, this.getRoute()))
+	}
+
+	/**
+	* Endpoint for returning an item
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getReturn(req, res) {
+		let _item
+		this.models.items.getById(req.params.id)
+		.then(item => {
+			if (!item) {
+				throw new Error('Item not found')
+			}
+
+			_item = item
+
+			return this.models.actions.create({
+				item_id: _item.id,
+				action: ACTIONS.RETURNED,
+				operator_id: req.user.id
+			})
+		})
+		.then(() => {
+			return this.models.items.return(_item.barcode)
+		})
+		.then(() => {
+			req.flash('success', "Item returned")
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
+			
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}
