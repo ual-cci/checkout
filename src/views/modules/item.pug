@@ -48,12 +48,20 @@ include ../partials/mixins.pug
 			.col-md-2.buttons
 				if item.status != 'available'
 					if currentUserCan('items_return')
-						button.btn.btn-success.float-right( style='margin: .25em;' ) Return
+						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+							span.fas.fa-sign-in-alt
+							|  Return
 				if item.status != 'lost' && item.status != 'broken' && item.status != 'sold'
-					if currentUserCan('items_lost')
-						button.btn.btn-warning.float-right( style='margin: .25em;' ) Lost
 					if currentUserCan('items_broken')
-						button.btn.btn-warning.float-right( style='margin: .25em;' ) Broken
+						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+							span.fas.fa-compass
+							|  Lost
+					if currentUserCan('items_lost')
+						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+							span.fas.fa-heart-broken
+							|  Broken
 					if currentUserCan('items_sold')
-						button.btn.btn-secondary.float-right( style='margin: .25em;' ) Sold
+						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+							span.fas.fa-cash-register
+							|  Sold
 					
