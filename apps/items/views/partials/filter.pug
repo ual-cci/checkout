@@ -26,7 +26,7 @@ form(method="get")#filter
 				for department in departments
 					option(value=department.id selected=(department.id == selected.department)) #{ department.name }
 	if courses
-		.form-group.row.collapse#courseFilter(class=(selected.courses?'show':''))
+		.form-group.row.collapse#courseFilter(class=(selected.course?'show':''))
 			label(for="course").col-lg-2 Course
 			.col-lg-3
 				select(name="course")#group.form-control.form-control-sm
