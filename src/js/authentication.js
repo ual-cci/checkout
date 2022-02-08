@@ -99,7 +99,7 @@ const Authentication = {
 						if (data.km) {
 							perms = perms.filter(p => {
 								if (p == 'checkout_issue') return true
-								if (p == 'checkout_return') return true
+								if (p == 'items_return') return true
 								if (p == 'checkout_history') return true
 								if (p == 'groups_override') return true
 								if (p == 'users_create') return true
