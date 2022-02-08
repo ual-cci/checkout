@@ -12,7 +12,7 @@ app.use((req, res, next) => {
 	next()
 })
 
-app.get('/', auth.currentUserCan({or:['checkout_issue','checkout_return','checkout_audit','checkout_history','print','users_create','reservations_create']}), (req, res) => {
+app.get('/', auth.currentUserCan({or:['checkout_issue','items_return','checkout_audit','checkout_history','print','users_create','reservations_create']}), (req, res) => {
 	req.controller.getRoot(req, res)
 })
 

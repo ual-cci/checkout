@@ -1,7 +1,7 @@
 nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 	.sidebar-sticky.pt-3
 		ul.nav.flex-column
-			if currentUserCan({or: ['checkout_issue', 'checkout_return', 'reservations_create', 'checkout_audit', 'users_create', 'checkout_history', 'print']})
+			if currentUserCan({or: ['checkout_issue', 'items_return', 'reservations_create', 'checkout_audit', 'users_create', 'checkout_history', 'print']})
 				li.nav-item
 					a.nav-link(href="/checkout" class=(menu=='kiosk'?'active':''))
 						span.mr-2.fa.fa-qrcode
