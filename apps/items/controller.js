@@ -201,7 +201,7 @@ class ItemController extends BaseController {
 			const item = {}
 
 			keys.forEach((k, index) => {
-				if (req.body.fields.indexOf(k) >= 0 && req.body[k])
+				if (req.body.fields.indexOf(k) >= 0)
 					item[values[index]] = req.body[k]
 			})
 
