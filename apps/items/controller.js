@@ -196,8 +196,8 @@ class ItemController extends BaseController {
 		
 		// Checks if its a request with data
 		if (req.body.fields) {
-			const keys = ['name', 'label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable', 'info_url']
-			const values = ['name', 'label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable', 'info_url']
+			const keys = ['name', 'label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable', 'info_url', 'alert_msg']
+			const values = ['name', 'label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable', 'info_url', 'alert_msg']
 			const item = {}
 
 			keys.forEach((k, index) => {
@@ -366,6 +366,7 @@ class ItemController extends BaseController {
 						department_id: req.body.department,
 						info_url: req.body.info_url,
 						notes: req.body.notes,
+						alert_msg: req.body.alert_msg,
 						status: AVAILABILITY.AVAILABLE,
 						loanable: (req.body.loanable == 'true' ? true : false)
 					}
@@ -717,6 +718,7 @@ class ItemController extends BaseController {
 			location_id: req.body.location,
 			value: req.body.value,
 			notes: req.body.notes,
+			alert_msg: req.body.alert_msg,
 			serialnumber: req.body.serialnumber,
 			info_url: req.body.info_url,
 			loanable: (req.body.loanable == 'true' ? true : false)

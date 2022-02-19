@@ -11,6 +11,10 @@ include ../partials/mixins.pug
 				span.text-white #{item.name}
 			.float-right( style="margin-top: -3px;" ): +status( item.loanable ? item.status : 'unavailable' )
 	.card-body
+		if item.alert_msg
+			.alert( class='alert-info' )
+				strong Alert:
+				|  #{item.alert_msg}
 		.row
 			.col-md-5
 				.row

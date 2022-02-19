@@ -32,7 +32,11 @@ block contents
 		.form-group.row
 			label( for="notes" ).col-sm-2.col-form-label Notes
 			.col-lg-4
-				input( name="notes" type="text" )#notes.form-control
+				textarea( name="notes" type="text" )#notes.form-control
+		.form-group.row
+			label( for="alert_msg" ).col-sm-2.col-form-label Alert Message
+			.col-lg-4
+				textarea( name="alert_msg" type="text" )#alert_msg.form-control
 		.form-group.row
 			.col-lg-4.offset-lg-2
 				.checkbox

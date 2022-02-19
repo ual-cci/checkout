@@ -96,6 +96,14 @@ block contents
 						.input-group-text
 							input( type="checkbox" name="fields[]" value="notes" )
 		.form-group.row
+			label( for="alert_msg" ).col-lg-2.col-form-label Alert Message
+			.col-lg-4
+				.input-group
+					textarea( name="alert_msg" )#alert_msg.form-control
+					.input-group-append
+						.input-group-text
+							input( type="checkbox" name="fields[]" value="alert_msg" )
+		.form-group.row
 			.col-lg-4.offset-lg-2
 				button( type="submit" ).btn.btn-outline-dark Update
 		h3 Items
