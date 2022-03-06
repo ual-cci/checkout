@@ -29,9 +29,26 @@
 		"purpose": "Where should emails come from?",
 		"example": "Checkout <checkout@example.com>"
 	},
-	"smtp_connection_url": {
+	"smtp_url": {
 		"default": "",
-		"purpose": "SMTP Connection String",
-		"example": "smtp://username:password@example.com"
+		"purpose": "SMTP Hostname",
+		"example": "smtp.example.com"
+	},
+	"smtp_username": {
+		"default": "",
+		"purpose": "SMTP Username",
+		"example": "checkout@example.com"
+	},
+	"smtp_password": {
+		"default": "",
+		"purpose": "SMTP Password"
+	},
+	"smtp_port": {
+		"default": "587",
+		"purpose": "SMTP Port"
+	},
+	"smtp_secure": {
+		"default": "false",
+		"purpose": "SMTP Secure"
 	}
 }

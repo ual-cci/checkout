@@ -86,9 +86,11 @@ const Options = {
 			options.forEach(o => {
 				Options._set(o.key, o.value, o.id)
 			})
+			Options.ready = true
 		})
+	},
 
-	}
+	ready: false
 }
 
 module.exports = function() {

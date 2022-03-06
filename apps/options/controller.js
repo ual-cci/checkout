@@ -4,7 +4,7 @@ const Options = require('../../src/js/options')()
 
 const config = require('./config.json')
 
-class RoleController extends BaseController {
+class OptionsController extends BaseController {
 	constructor() {
 		super({path: config.path})
 	}
@@ -57,4 +57,4 @@ class RoleController extends BaseController {
 	}
 }
 
-module.exports = RoleController
+module.exports = OptionsController
