@@ -5,7 +5,10 @@ include ../partials/mixins.pug
 		.card-title.mb-0
 			span.fas.fa-user.text-white
 			|  
-			a( href="/users/" + user.id ).text-white.font-weight-strong=user.name
+			if currentUserCan('users_read')
+				a( href="/users/" + user.id ).text-white.font-weight-strong=user.name
+			else
+				span.text-white #{user.name}
 	.card-body
 		.row
 			.col-md-5.font-weight-bold.text-md-right Barcode

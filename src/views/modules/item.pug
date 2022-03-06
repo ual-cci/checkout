@@ -5,9 +5,16 @@ include ../partials/mixins.pug
 		.card-title.mb-0
 			span.fas.fa-box.text-white
 			|  
-			a( href="/items/" + item.id ).text-white.font-weight-strong=item.name
+			if currentUserCan('items_read')
+				a( href="/items/" + item.id ).text-white.font-weight-strong=item.name
+			else
+				span.text-white #{item.name}
 			.float-right( style="margin-top: -3px;" ): +status( item.loanable ? item.status : 'unavailable' )
 	.card-body
+		if item.alert_msg
+			.alert( class='alert-info' )
+				strong Alert:
+				|  #{item.alert_msg}
 		.row
 			.col-md-5
 				.row
@@ -48,20 +55,20 @@ include ../partials/mixins.pug
 			.col-md-2.buttons
 				if item.status != 'available'
 					if currentUserCan('items_return')
-						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+						button.btn.btn-outline-dark.float-right(style='margin: .25em;' data-btn-action='return')
 							span.fas.fa-sign-in-alt
 							|  Return
 				if item.status != 'lost' && item.status != 'broken' && item.status != 'sold'
 					if currentUserCan('items_broken')
-						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+						button.btn.btn-outline-dark.float-right(style='margin: .25em;' data-btn-action='broken')
 							span.fas.fa-compass
 							|  Lost
 					if currentUserCan('items_lost')
-						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+						button.btn.btn-outline-dark.float-right(style='margin: .25em;' data-btn-action='broken')
 							span.fas.fa-heart-broken
 							|  Broken
 					if currentUserCan('items_sold')
-						button.btn.btn-outline-dark.float-right( style='margin: .25em;' )
+						button.btn.btn-outline-dark.float-right(style='margin: .25em;' data-btn-action='sold')
 							span.fas.fa-cash-register
 							|  Sold
 					

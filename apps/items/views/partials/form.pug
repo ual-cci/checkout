@@ -58,6 +58,10 @@ form( method="post" )
 		.col-lg-4
 			textarea( name="notes" type="text" )#notes.form-control #{ item ? item.notes : '' }
 	.form-group.row
+		label( for="alert_msg" ).col-lg-2.col-form-label Alert Message
+		.col-lg-4
+			textarea( name="alert_msg" type="text" )#alert_msg.form-control #{ item ? item.alert_msg : '' }
+	.form-group.row
 		.col-lg-4.offset-lg-2
 			.checkbox
 				label( for="loanable" )

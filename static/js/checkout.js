@@ -26,8 +26,8 @@ jQuery(document).ready(function() {
 	jQuery('#audit').bind('submit', handleAuditSubmit)
 	jQuery('#label').bind('submit', handleLabelSubmit)
 	jQuery('#new-user form').bind('submit', handleUserSubmit)
-	jQuery(document).delegate('#modules .card-header', 'click', handlePanelClick)
 	jQuery(document).delegate('#modules .buttons button', 'click', handleItemButtons)
+	jQuery(document).delegate('#modules .card-header', 'click', handlePanelClick)
 	jQuery(document).delegate('#issue .flash .override', 'click', handleOverride)
 	jQuery(document).delegate('#results .list-group-item', 'click', handleResultClick)
 	jQuery('#mode .nav-link').on('shown.bs.tab', function(a) {focus()})
@@ -359,31 +359,31 @@ function handleItemButtons() {
 	var type = jQuery(clicked).data('type')
 	var barcode = jQuery(clicked).data('barcode')
 
-	switch (jQuery(this).html()) {
-		case 'Return':
+	switch (jQuery(this).data('btn-action')) {
+		case 'return':
 			returnItem(barcode, function(data) {
 				flash(data)
 				select('item', data.barcode)
 			})
 			break
-		case 'Broken':
+		case 'broken':
 			broken(barcode, function(data) {
 				flash(data)
 				select('item', data.barcode)
 			})
 			break
-		case 'Lost':
+		case 'lost':
 			lost(barcode, function(data) {
 				flash(data)
 				select('item', data.barcode)
 			})
 			break;
-		case 'Sold':
+		case 'sold':
 			sold(barcode, function(data) {
 				flash(data)
 				select('item', data.barcode)
 			})
-			break
+			break;
 	}
 }
 
@@ -507,7 +507,6 @@ setInterval(refreshHistory, 10000)
 
 function lazyResetKioskTimer() {
 	if (typeof resetKioskTimer == 'function') {
-		console.log('resetKioskTimer')
 		resetKioskTimer()
 	}
 }
