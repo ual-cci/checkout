@@ -53,8 +53,8 @@ const Mail = {
 		Mail._connectSMTP()
 
 		// This should be abstracted with options and something to update the bottleneck settings, for now just restart the server
-		const messagesPer = 1
-		const timeSpan = 600000
+		const messagesPer = 100
+		const timeSpan = 60000
 
 		Mail._limiter = new Bottleneck({
 			reservoir: messagesPer,
