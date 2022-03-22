@@ -600,18 +600,24 @@ class UsersController extends BaseController {
 
 			const {user} = persist
 
-			const tags = {
-				name: user.name,
-				items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
-				org: Options.getText('organisation_name')
-			}
-
 			const to = {
 				name: user.name,
 				address: user.email
 			}
+						
+			const replyTo = {
+				name: req.user.name,
+				address: req.user.email
+			}
 
-			Mail.queueTemplate(to, req.user.template_subject, req.user.template_body, tags)
+			const tags = {
+				name: to.name,
+				items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
+				org: Options.getText('organisation_name'),
+				sender: replyTo.name
+			}
+
+			Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags)
 			req.flash('success', `Email queued to send to ${user.name}`)
 			req.saveSessionAndRedirect(`${this.getRoute()}/${user.id}`)
 		})
@@ -627,27 +633,33 @@ class UsersController extends BaseController {
 				req.saveSessionAndRedirect(this.getRoute())
 				return
 			}
+						
+			const replyTo = {
+				name: req.user.name,
+				address: req.user.email
+			}
 
 			users.forEach((user) => {
 				this.models.items.getOnLoanByUserId(user.id).then(items => {
 					if (items.length > 0) {
-						const tags = {
-							name: user.name,
-							items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
-							org: Options.getText('organisation_name')
-						}
-			
 						const to = {
 							name: user.name,
 							address: user.email
 						}
+
+						const tags = {
+							name: to.name,
+							items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
+							org: Options.getText('organisation_name'),
+							sender: replyTo.name
+						}
 			
-						Mail.queueTemplate(to, req.user.template_subject, req.user.template_body, tags)	
+						Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags)	
 					}
 				})
 			})
 			
-			req.flash('success', `Emails sent`)
+			req.flash('success', `Emails queued`)
 			req.saveSessionAndRedirect(`${this.getRoute()}`)
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
