@@ -6,14 +6,18 @@ const Mail = {
 	_transporter: null,
 	_limiter: null,
 
-	queueTemplate: (to, subject, template, tags) => {
+	queueTemplate: (to, replyTo, subject, template, tags) => {
 		const msg = {
+			from: Options.getText('smtp_from_address'),
 			to: to,
+			replyTo: replyTo,
 			subject: subject,
 			text: Mail._replaceTags(template, tags)
 		}
+
+		const msgID = `${msg.to.name} - ${msg.to.address} - ${new Date()}`
 		
-		Mail._limiter.wrap(Mail._send).withOptions({id: `${msg.to.name} - ${msg.to.address} - ${new Date()}`}, msg.to, msg.subject, msg.text)
+		Mail._limiter.wrap(Mail._send).withOptions({id: msgID}, msg)
 			.then((result) => {
 				console.log(`Message sent - ${result}`)
 			})
@@ -22,14 +26,9 @@ const Mail = {
 			})
 	},
 
-	_send: (to, subject, text) => {
+	_send: (msg) => {
 		return new Promise((resolve, reject) => {
-			Mail._transporter.sendMail({
-				from: Options.getText('smtp_from_address'),
-				to: to,
-				subject: subject,
-				text: text
-			}, (err, info) => {
+			Mail._transporter.sendMail(msg, (err, info) => {
 				if (err) {
 					console.log(err)
 					reject(err.message)
