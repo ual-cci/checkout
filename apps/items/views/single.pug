@@ -36,6 +36,10 @@ block buttons
 			include partials/print-btn.pug
 		| &nbsp;
 	.btn-group.float-right
+		if currentUserCan('items_clone')
+			a( href="/items/clone/" + item.id, title=`Clone ${item.name}` ).btn.btn-outline-success.btn-sm
+				span.fas.fa-clone
+				|  Clone
 		if currentUserCan('items_edit')
 			a( href="/items/" + item.id + "/edit", title=`Edit ${item.name}` ).btn.btn-outline-primary.btn-sm
 				span.fas.fa-pencil-alt

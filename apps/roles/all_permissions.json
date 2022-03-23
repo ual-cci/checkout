@@ -13,6 +13,7 @@
   "items_read": "User can view items.",
   "items_history": "User can view item loaning history.",
   "items_create": "User can create items.",
+  "items_clone": "User can clone items.",
   "items_import": "User can import multiple items.",
   "items_edit": "User can edit items.",
   "items_remove": "User can remove items.",

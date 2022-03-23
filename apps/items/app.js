@@ -46,6 +46,11 @@ app.get('/create', auth.currentUserCan('items_create'), (req, res) => {
 	req.controller.getCreate(req, res)
 })
 
+// Clone item
+app.get('/clone/:id', auth.currentUserCan('items_clone'), (req, res) => {
+	req.controller.getTemplateItem(req, res)
+})
+
 app.post('/create', auth.currentUserCan('items_create'), (req, res) => {
 	req.controller.postCreate(req, res)
 })

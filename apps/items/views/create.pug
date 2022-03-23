@@ -1,109 +1,116 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Create items"
+	if template
+		- title = `Clone item "${item.name}"`	
+	else
+		- title = "Create items"
 	- heading = title
 	- menu = "create items"
 
 block contents
-	form(method="post")
+	form(method="post" action="/items/create")
 		+csrf
 		
 		// Basic item details
 		.form-group.row
-			label( for="name" ).col-sm-2.col-form-label Name
+			label(for="name").col-sm-2.col-form-label Name
 			.col-lg-4
-				input( name="name" type="text" required )#name.form-control
+				input(name="name" type="text" required value=item.name)#name.form-control
 		.form-group.row
-			label( for="value" ).col-sm-2.col-form-label Value
+			label(for="value").col-sm-2.col-form-label Value
 			.col-lg-4
 				.input-group
 					.input-group-prepend
 						.input-group-text &pound;
-					input( name="value" type="number" step="0.01" )#value.form-control
+					input(name="value" type="number" step="0.01" value=item.value)#value.form-control
 		.form-group.row
-			label( for="serialnumber" ).col-lg-2.col-form-label Serial number
+			label(for="serialnumber").col-lg-2.col-form-label Serial number
 			.col-lg-4
-				input( name="serialnumber" type="text" )#serialnumber.form-control
+				input(name="serialnumber" type="text" value=item.serialnumber)#serialnumber.form-control
 		.form-group.row
-			label( for="info_url" ).col-lg-2.col-form-label Information URL
+			label(for="info_url").col-lg-2.col-form-label Information URL
 			.col-lg-4
-				input( name="info_url" type="text" )#info_url.form-control
+				input(name="info_url" type="text" value=item.info_url)#info_url.form-control
 		.form-group.row
-			label( for="notes" ).col-sm-2.col-form-label Notes
+			label(for="notes").col-sm-2.col-form-label Notes
 			.col-lg-4
-				textarea( name="notes" type="text" )#notes.form-control
+				textarea(name="notes" type="text")#notes.form-control
 		.form-group.row
-			label( for="alert_msg" ).col-sm-2.col-form-label Alert Message
+			label(for="alert_msg").col-sm-2.col-form-label Alert Message
 			.col-lg-4
-				textarea( name="alert_msg" type="text" )#alert_msg.form-control
+				textarea(name="alert_msg" type="text")#alert_msg.form-control=item.alert_msg
 		.form-group.row
 			.col-lg-4.offset-lg-2
 				.checkbox
 					label( for="loanable" )
-							input( name="loanable" type="checkbox" value='true' checked)#loanable
+							input(name="loanable" type="checkbox" value='true' checked=(item.loanable!=undefined?item.loanable:true))#loanable
 							|  Item is loanable
 							
 		// Item categories 
 		h3.mb-3.pb-1.border-bottom Categories
 		.form-group.row
-			label( for="group" ).col-sm-2.col-form-label Group
+			label(for="group").col-sm-2.col-form-label Group
 			.col-lg-4
-				select( name="group" )#group.form-control
-					option( value="" selected ) Select a group
+				select(name="group")#group.form-control
+					option(value="") Select a group
 					for group in groups
-						option( value=group.id )=group.name
+						option(value=group.id selected=(group.id==item.group_id?true:false))=group.name
 		.form-group.row
-			label( for="location" ).col-sm-2.col-form-label Location
+			label(for="location").col-sm-2.col-form-label Location
 			.col-lg-4
-				select( name="location" required )#location.form-control
-					option( value="" disabled selected ) Select a location
+				select(name="location" required)#location.form-control
+					option(value="" disabled selected=(item.location_id==undefined?true:false)) Select a location
 					for location in locations
-						option( value=location.id ) #{ location.name }
+						option(value=location.id selected=(location.id==item.location_id?true:false))=location.name
 							if location.barcode
 								|  [#{location.barcode}]
 		if departments.length == 1
-			input( type="hidden" name="department" value=departments[0].id )
+			input(type="hidden" name="department" value=departments[0].id)
 		else 
 			.form-group.row
-				label( for="department" ).col-sm-2.col-form-label Department
+				label(for="department").col-sm-2.col-form-label Department
 				.col-lg-4
-					select( name="department" required )#department.form-control
-						option( value="" selected ) Select a department
+					select(name="department" required)#department.form-control
+						option(value="") Select a department
 						for department in departments
-							option( value=department.id )=department.name
+							option(value=department.id selected=(department.id==item.department_id?true:false))=department.name
 						
 		// Number of items to create
 		h3.mb-3.pb-1.border-bottom Barcode
 		.form-group.row
 			label(for="barcode").col-sm-2.col-form-label Barcode
 			.col-lg-4
-				input(name="barcode" type="text" autocomplete="off")#barcode.form-control
+				input(name="barcode" type="text" autocomplete="off" value=(item.barcode))#barcode.form-control
+				if template
+					small.form-text.text-danger Warning: This barcode was generated from the item templated, it may be wrong.
 				small.form-text.text-muted When the quantity is set above 1 the barcode should include one or more # symbols
+		.form-group.row
+			label(for="start").col-sm-2.col-form-label Start at
+			.col-lg-4
+				input(name="start" type="number" min="1" max="9998" autocomplete="off" value=item.start)#start.form-control
+				if template
+					small.form-text.text-danger Warning: This number was generated from the item templated, it may be wrong.
+				small.form-text.text-muted For use when generating multiple items
 		.form-group.row
 			label( for="quantity" ).col-sm-2.col-form-label Quantity
 			.col-lg-4
 				input(name="quantity" type="number" min="1" max="9999" autocomplete="off" value="1" required)#quantity.form-control
-		.form-group.row
-			label(for="start").col-sm-2.col-form-label Start
-			.col-lg-4
-				input(name="start" type="number" min="1" max="9998" autocomplete="off")#start.form-control
-				small.form-text.text-muted For use when generating multiple items
 		
 		// Label and printing options
 		h3.mb-3.pb-1.border-bottom Label Print Options
 		.form-group.row
-			label( for="label" ).col-sm-2.col-form-label Label
+			label(for="label").col-sm-2.col-form-label Label
 			.col-lg-4
-				select( name="label" required )#label.form-control
-					option( value="12mm" ) 12mm Label
-					option( value="12mm_flag" ) 12mm Flag
+				select(name="label" required)#label.form-control
+					option(value="12mm" selected=(item.label=='12mm'?true:false)) 12mm Label
+					option(value="12mm_flag" selected=(item.label=='12mm_flag'?true:false)) 12mm Flag
 		.form-group.row
 			.col-lg-4.offset-lg-2
 				.checkbox
-					label( for="print" )
-						input( name="print" type="checkbox" checked )#print
+					label(for="print")
+						input(name="print" type="checkbox" checked)#print
 						|  Print Barcode Labels
 		.form-group.row
 			.col-lg-4.offset-lg-2
-				input( type="submit" value="Create" ).btn.btn-primary
+				input(type="submit" value="Create").btn.btn-primary

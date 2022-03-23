@@ -298,11 +298,51 @@ class ItemController extends BaseController {
 		])
 		.then(([locations, departments, groups]) => {
 			if (locations.length > 0) {
-				res.render('create', {locations: locations, departments: departments, groups: groups, item: {}})
+				res.render('create', {locations: locations, departments: departments, groups: groups, item: {}, template:false})
 			} else {
 				req.flash('warning', 'Create at least one location before creating items')
 				req.saveSessionAndRedirect(this.getRoute())
 			}
+		})
+	}
+
+	/**
+	* Gets the item and populates a template create page
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getTemplateItem(req, res) {
+		Promise.all([
+			this.models.locations.getAll(),
+			this.models.departments.getAll(),
+			this.models.groups.getAll(),
+			this.models.items.getById(req.params.id)
+		])
+		.then(([locations, departments, groups, item]) => {
+			if (!item) {
+				throw new Error('Item not found')
+			}
+
+			if (locations.length > 0) {
+				// Get the first number in the barcode and suggest it as the next item				
+				let start = item.barcode.match(/[0-9]+/g)
+				if (start != undefined) {
+					start = parseInt(start[0])
+					if (Number.isInteger(start)) item.start = start + 1
+				}
+
+				// Convert numbers in barcode to hashes and suggest it as the barcode generation label
+				item.barcode = item.barcode.replaceAll(/[0-9]/g, '#')
+
+				res.render('create', {locations: locations, departments: departments, groups: groups, item: item, template:true})
+			} else {
+				req.flash('warning', 'Create at least one location before creating items')
+				req.saveSessionAndRedirect(this.getRoute())
+			}
+		})
+		.catch(err => {
+			this.displayError(req, res, err, `${this.getRoute()}/${req.params.id}`)
 		})
 	}
 
