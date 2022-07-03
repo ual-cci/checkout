@@ -12,19 +12,19 @@ if items && items.length > 0
 				for item in items
 					tr
 						td(data-searchable=item.name)
-							//- p=item.urls.length
-							if item.urls.length > 0
+							if (item.urls.length == 1 && item.urls[0] != '')
 								a(href=item.urls[0] target="_blank")=item.name
-							else
-								| #{item.name}
-							
-							if item.urls.length > 1
+							else if item.urls.length > 1
+								a(href=item.urls[0] target="_blank")=item.name
 								|  –
 								for url, i in item.urls
 									|  
 									a(href=url target="_blank")
 										span.fa.fa-globe
 										|  #{i+1}
+							else
+								| #{item.name}
+							
 						td #{item.available} / #{item.stock}
 						td
 							.progress
