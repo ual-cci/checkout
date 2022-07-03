@@ -1,5 +1,3 @@
-const faker = require('faker')
-
 function deleteTables(knex, tables) {
 	return Promise.all(tables.map(t => {
 		return knex(t).del()

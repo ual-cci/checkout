@@ -1,4 +1,4 @@
-const faker = require('faker')
+const {faker} = require('@faker-js/faker')
 const { createFactory } = require('./_helper')
 
 function createPermissions(knex, id) {
