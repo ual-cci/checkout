@@ -6,6 +6,8 @@ block prepend title
 	- menu = "catalogue"
 
 block buttons
+	if loggedInUser
+		+btn('sm', 'outline-primary', 'code', 'Markdown', '/catalogue/md')
 	+search
 	
 

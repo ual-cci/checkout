@@ -16,4 +16,8 @@ app.get('/', auth.currentUserCanOrOptionOverride('view_catalogue', 'public_catal
 	req.controller.getRoot(req, res)
 })
 
+app.get('/md', auth.currentUserCanOrOptionOverride('view_catalogue'), (req, res) => {
+	req.controller.getMarkdown(req, res)
+})
+
 module.exports = config => app

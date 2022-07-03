@@ -1,0 +1,13 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "Catalogue in Markdown"
+	- heading = title
+	- menu = "catalogue"
+
+block buttons
+	+btn('sm', 'outline-dark', 'arrow-left', 'Back', '/catalogue')
+	
+
+block contents
+	pre=md
