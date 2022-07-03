@@ -1,4 +1,5 @@
 {
+  "name": "Checkout",
   "scripts": {
     "start": "node app | ./node_modules/.bin/bunyan -c 'this.sensitive == undefined'",
     "dev": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
