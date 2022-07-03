@@ -365,6 +365,10 @@ class ItemController extends BaseController {
 				message: 'To generate multiple items the barcode must include # symbol(s) at the end'
 			},
 			{
+				condition: (barcode == ''),
+				message: 'The item(s) require a barcode'
+			},
+			{
 				condition: (barcode.includes('#') && quantity < 2),
 				message: 'To generate multiple items you must specify how many'
 			},
