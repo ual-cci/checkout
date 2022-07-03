@@ -8,6 +8,8 @@ const Users = require('../../src/models/users.js')
 const Printers = require('../../src/models/printers.js')
 const Templates = require('../../src/models/templates.js')
 
+const ItemColumns = require('../items/columns.json')
+
 class ProfileController extends BaseController {
 	constructor() {
 		super({path: config.path})
@@ -31,7 +33,7 @@ class ProfileController extends BaseController {
 			this.models.templates.getAll()
 		])
 		.then(([printers, templates]) => {
-			res.render('profile', {printers, templates})
+			res.render('profile', {printers, templates, ItemColumns})
 		})
 	}
 
@@ -55,11 +57,19 @@ class ProfileController extends BaseController {
 			return
 		}
 
+		if (!Array.isArray(req.body.itemColumns))
+			req.body.itemColumns = [req.body.itemColumns]
+
+		const itemColumns = req.body.itemColumns.filter((i) => Object.keys(ItemColumns).includes(i))
+
 		const user = {
 			name: req.body.name,
 			email: req.body.email,
 			printer_id: req.body.printer ? req.body.printer : null,
 			template_id: req.body.template ? req.body.template : null,
+			columns: {
+				items: itemColumns
+			}
 		}
 
 		if (req.body.audit_point) {

@@ -2,110 +2,117 @@ if items && items.length > 0
 	.table-responsive
 		table.table.table-striped.table-sm
 			thead
+				//- - console.log(columns)
 				tr
-					if edit
-						th
-							input( type="checkbox", title="Check All", checked=edit_items ).checkall
-					th
-						if multi
-							| Status
-						else
-							+sortItemHead( 'Status', 'status', sortby, direction, selected, filter_path )
-					th
-						if multi
-							| Barcode
-							span.dropup
-								span.caret
-						else
-							+sortItemHead( 'Barcode', 'barcode', sortby, direction, selected, filter_path )
-					th
-						if multi
-							| Name
-						else
-							+sortItemHead( 'Name', 'name', sortby, direction, selected, filter_path )
-					th
-						if multi
-							| Group
-						else
-							+sortItemHead( 'Group', 'group', sortby, direction, selected, filter_path )
-					th 
-						if multi
-							| Location
-						else
-							+sortItemHead( 'Location', 'location', sortby, direction, selected, filter_path )
-					th 
-						if multi
-							| Department
-						else
-							+sortItemHead( 'Department', 'department', sortby, direction, selected, filter_path )
-					th
-						if multi
-							| Value
-						else
-							+sortItemHead( 'Value', 'value', sortby, direction, selected, filter_path )
-					if ! multi
-						th: +sortItemHead( 'Owner', 'owner', sortby, direction, selected, filter_path )
-						th: +sortItemHead( 'Course', 'course', sortby, direction, selected, filter_path )
-						th: +sortItemHead( 'Year', 'year', sortby, direction, selected, filter_path )
-						th: +sortItemHead( 'Issued', 'issued', sortby, direction, selected, filter_path )
-						th: +sortItemHead( 'Due', 'due', sortby, direction, selected, filter_path )
+					if columns.includes('edit')
+						th: input(type="checkbox", title="Check All", checked=edit_items).checkall
+					if columns.includes('status')
+						th: +sortItemHead('Status', 'status', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('barcode')
+						th: +sortItemHead('Barcode', 'barcode', sortby, direction, selected, filter_path, sortable)
+					
+					th: +sortItemHead('Name', 'name', sortby, direction, selected, filter_path, sortable)
+					
+					if columns.includes('group')
+						th: +sortItemHead('Group', 'group', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('location')
+						th: +sortItemHead('Location', 'location', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('department')
+						th: +sortItemHead('Department', 'department', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('value')
+						th: +sortItemHead('Value', 'value', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('owner')
+						th: +sortItemHead('Owner', 'owner', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('course')
+						th: +sortItemHead('Course', 'course', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('year')
+						th: +sortItemHead('Year', 'year', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('issued')
+						th: +sortItemHead('Issued', 'issued', sortby, direction, selected, filter_path, sortable)
+					if columns.includes('due')
+						th: +sortItemHead('Due', 'due', sortby, direction, selected, filter_path, sortable)
 			tbody
 				- item_count = 0
 				- item_total = 0
 				for item in items
 					- item_count += 1
 					tr
-						if edit
-							td: input( type="checkbox", name="ids", value=item.id, checked=multi )
-						td: +statusPill( item.loanable ? item.status : 'unavailable' )
-						td(data-searchable=item.barcode)
-							+clipboard( item.barcode )
-							if currentUserCan('print')
-								|  
-								a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
-									span.fas.fa-print.text-muted
-						td(data-searchable=item.name): +item( item.name, item.id, item.info_url )
-						td: +group( item.group_name, item.group_id )
-						td: +location( item.location_name, item.location_id )
-						td: +department( item.department_name, item.department_id )
-						
-						//- Value
-						if parseFloat( item.value ) > 0
-							- value = parseFloat( item.value )
-						else
-							- value = 0
-						
-						- item_total = ( item_total + value )
-						td £#{ value.toFixed(2) }
-						if ! multi
-							if item.owner_id
-								td
-									if currentUserCan('users_email')
-										small: a( href=`/users/${item.owner_id}/email` title=`Email user: ${item.owner_name}` ).text-muted
-											span.fas.fa-envelope
-										| 
-									+user( item.owner_name, item.owner_id )
-								td: +course( item.owner_course_name, item.owner_course_id )
-								td: +year( item.owner_year_name, item.owner_year_id )
+						if columns.includes('edit')
+							td: input(type="checkbox", name="ids", value=item.id, checked=multi)
+						if columns.includes('status')
+							td: +statusPill(item.loanable ? item.status : 'unavailable')
+						if columns.includes('barcode')
+							if actionable
+								td(data-searchable=item.barcode)
+									+clipboard(item.barcode)
+									if currentUserCan('print')
+										|  
+										a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
+											span.fas.fa-print.text-muted
 							else
-								td( colspan=3 )
-									| &mdash;
-							
-							td
-								if item.issued
-									+date( item.issued )
+								td=item.barcode
+						if actionable
+							td(data-searchable=item.name): +item(item.name, item.id, item.info_url)
+						else
+							td=item.name
+						if columns.includes('group')
+							if actionable
+								td: +group(item.group_name, item.group_id)
+							else
+								td=item.group_name
+						if columns.includes('location')
+							if actionable
+								td: +location(item.location_name, item.location_id)
+							else
+								td=item.location_name
+						if columns.includes('department')
+							if actionable
+								td: +department(item.department_name, item.department_id)
+							else
+								td=item.department_name
+						
+						if columns.includes('value')
+							if parseFloat(item.value) > 0
+								- value = parseFloat(item.value)
+							else
+								- value = 0
+						
+							- item_total = (item_total + value)
+							td £#{value.toFixed(2)}
+						
+						if columns.includes('owner')
+							if item.owner_id
+								if actionable
+									td
+										if currentUserCan('users_email')
+											small: a(href=`/users/${item.owner_id}/email` title=`Email user: ${item.owner_name}`).text-muted
+												span.fas.fa-envelope
+											| 
+										+user(item.owner_name, item.owner_id)
 								else
-									| –
-							td
-								if item.due
-									+relative( item.due, true )
-								else
-									| –
+									td=item.owner_name
+									if columns.includes('course')
+							else
+								td &mdash;
+						if columns.includes('course')
+							if actionable
+								td: +course(item.owner_course_name, item.owner_course_id)
+							else
+								td=item.owner_course_name
+						if columns.includes('year')
+							if actionable
+								td: +year(item.owner_year_name, item.owner_year_id)
+							else
+								td=item.owner_year_name
+						if columns.includes('issued')
+							td: +date(item.issued)
+						if columns.includes('due')
+							td: +relative(item.due, true)
 			tfoot
 				tr
 					th Total
-					th( style="font-weight: normal;" colspan=(edit ? "6" : "5") ) #{item_count} items
-					th £#{ item_total.toFixed(2) }
-					th( colspan="5" )
+					th(style="font-weight: normal;" colspan=(edit ? "6" : "5")) #{item_count} items
+					th £#{item_total.toFixed(2)}
+					th(colspan="5")
 else
-	+messageBlock( 'warning', 'black','There are no items to display.' )
+	+messageBlock('warning', 'black','There are no items to display.')

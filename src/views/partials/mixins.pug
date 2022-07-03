@@ -163,7 +163,7 @@ mixin compactDeleteBtn( url )
 mixin space
 	|  
 
-mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
+mixin sortItemHead(text, slug, sort_by, sort_dir, selected, filter_path, sortable)
 	- sort_by = sort_by.split('_')[0]
 	if sort_dir == 'desc' || sort_by != slug
 		- alt_dir = 'asc'
@@ -181,7 +181,10 @@ mixin sortItemHead( text, slug, sort_by, sort_dir, selected, filter_path )
 		- audited = (selected.audited ? selected.audited : '')
 		- scanned = (selected.scanned ? selected.scanned : '')
 	
-	a( href=`${filter_path}?status=${status}&location=${location}&department=${department}&group=${group}&course=${course}&year=${year}&due=${due}&audited=${audited}&scanned=${scanned}&sortby=${slug}&direction=${alt_dir}` )=text
+	if sortable
+		a(href=`${filter_path}?status=${status}&location=${location}&department=${department}&group=${group}&course=${course}&year=${year}&due=${due}&audited=${audited}&scanned=${scanned}&sortby=${slug}&direction=${alt_dir}`)=text
+	else
+		| #{text}
 	if sort_by == slug
 		|  
 		span.fas( class=( sort_dir == 'asc' ? 'fa-angle-up' : 'fa-angle-down' ) ).text-muted

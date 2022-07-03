@@ -46,6 +46,21 @@ block contents
 						.input-group-append(data-target="#audit_point" data-toggle="datetimepicker")
 							.input-group-text
 								span.far.fa-calendar-alt
+			
+			.form-group.row
+				label.col-lg-2.col-form-label Item Columns
+				.col-lg-4
+					table.table.table-striped.table-sm
+						thead
+							tr
+								th Show
+								th Description
+						tbody
+							for col, key in ItemColumns
+								tr
+									td: input(type='checkbox' name='itemColumns' value=key checked=(key=='name' || loggedInUser.columns.items.includes(key)) id=`item_${key}` disabled=key=='name')
+									td: label(for=`item_${key}`).form-check-label=col
+
 			.page-header
 				h3.mb-3.pb-1.border-bottom Change password
 			.form-group.row

@@ -46,7 +46,7 @@ class UserModel extends BaseModel {
 	}
 
 	get properties() {
-		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id', 'template_id']
+		return ['id', 'name', 'email', 'barcode', 'disable', 'pw_attempts', 'audit_point', 'printer_id', 'role_id', 'template_id', 'columns']
 	}
 
 	get allProperties() {

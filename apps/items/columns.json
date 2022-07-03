@@ -1,0 +1,14 @@
+{
+	"status": "Status icon",
+	"barcode": "Barcode",
+	"name": "Name",
+	"group": "Group",
+	"location": "Location",
+	"department": "Department",
+	"value": "Value",
+	"owner": "Owner",
+	"course": "Owner's course",
+	"year": "Owner's year group",
+	"issued": "Issue date",
+	"due": "Due date"
+}
