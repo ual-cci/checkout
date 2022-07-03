@@ -65,8 +65,8 @@ class ItemController extends BaseController {
 				data.push(row.join(delimiter))
 			}
 			data = data.join("\n")
-
-			res.set('Content-Disposition', `inlinefilename=insurance-report.${format}`)
+			console.log(format)
+			res.set('Content-Disposition', `inline; filename=insurance-report.${format}`)
 			res.set('Content-Type', `text/${format}`)
 			res.send(data)
 		})
