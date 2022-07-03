@@ -9,6 +9,9 @@
     "db:rollback": "knex migrate:rollback",
     "db:seed": "knex seed:run"
   },
+  "nodemon": {
+    "ignore": ["static/*", "logging/*", "migrations/*", "seeds/*", "_*", "docker/*"]
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@passport-next/passport": "^3.0.0",
