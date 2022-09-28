@@ -12,12 +12,13 @@ You can run Checkout standalone or with Docker, which is probably better for pro
 Quick steps to install Checkout standalone for production or development:
 
 1. Copy `.env.example` to `.env` and populate with your preferences.
-1. Install Postgres
+1. Install Postgres (NB -- the default homebrew install wasn't working on my M1 Mac. Instead, I used the Postgres app + double clicked the db icon to open a terminal)
 1. Install dependencies: `npm i`
+1. Create a local database called checkout in the postgres terminal `create database checkout;`
 1. Run Knex migrations to create database structure: `npm run db:migrate`
 1. Run Knex seed to create a dummy user, and data structure: `npm run db:seed`
 1. Launch Checkout with `npm run start` for production or `npm run dev` for development.
-1. Navigate to `localhost:3000`
+1. Navigate to `localhost:8080` (you can change the default port by editing the .env file)
 
 Optionally for production you can install pm2: `npm install -g pm2` then use it to run Checkout `pm2-runtime ecosystem.config.js`
 
