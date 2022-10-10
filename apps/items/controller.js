@@ -291,6 +291,8 @@ class ItemController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getCreate(req, res) {
+		const savedSession = req.session.formData ? req.session.formData : {}
+
 		Promise.all([
 			this.models.locations.getAll(),
 			this.models.departments.getAll(),
@@ -298,7 +300,7 @@ class ItemController extends BaseController {
 		])
 		.then(([locations, departments, groups]) => {
 			if (locations.length > 0) {
-				res.render('create', {locations: locations, departments: departments, groups: groups, item: {}, template:false})
+				res.render('create', {locations: locations, departments: departments, groups: groups, item: savedSession, template:false})
 			} else {
 				req.flash('warning', 'Create at least one location before creating items')
 				req.saveSessionAndRedirect(this.getRoute())
@@ -358,6 +360,9 @@ class ItemController extends BaseController {
 		const end = (start + quantity) - 1
 		const barcode = req.body.barcode.trim()
 		const barcodeFilter = barcode.match(/^([\S\s]*?)([#]+)$/)
+
+		// save form data to session (cleared on success)
+		req.session.formData = req.body;
 
 		const checks = [
 			{
@@ -450,6 +455,9 @@ class ItemController extends BaseController {
 				this.models.items.create(items)
 				.then(id => {
 					req.flash('success', `${items.length} item${items.length > 1 ? 's' : ''} created`)
+
+					// on success, clear form data from session
+					req.session.formData = {};
 
 					if (req.body.print) {
 						if (req.user.printer_id) {
