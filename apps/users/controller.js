@@ -441,7 +441,6 @@ class UsersController extends BaseController {
 				} else if (req.body.role) {
 					user.role_id = parseInt(req.body.role)
 				} else {
-					console.log('gets here')
 					errors.push('No default role was specified and one of more rows were missing a role')
 					reject(user)
 				}
@@ -483,7 +482,6 @@ class UsersController extends BaseController {
 
 		Promise.all(promises)
 		.then(users => {
-			console.log('errors is', errors)
 			if (errors.length === 0 ) {
 				this.models.users.create(users)
 					.then(result => {
