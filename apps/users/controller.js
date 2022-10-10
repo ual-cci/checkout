@@ -410,7 +410,6 @@ class UsersController extends BaseController {
 	postImportData(req, res) {
 		// Test if there are duplicate column headings, after removing ignored columns
 		const filteredCols = req.body.cols.filter(n => n)
-		console.log('cols are', req.body.cols, filteredCols)
 
 		if (new Set(filteredCols).size !== filteredCols.length) {
 			req.flash('danger', 'Each heading may only be used once.')
@@ -428,6 +427,8 @@ class UsersController extends BaseController {
 		var promises = []
 		var _self = this
 		function generateUser(data) {
+			console.log(data)
+			console.log(req.body)
 			return new Promise((resolve, reject) => {
 				var user = {
 					name: data[headingMap.name],
@@ -435,13 +436,17 @@ class UsersController extends BaseController {
 					email: data[headingMap.email]
 				}
 
-				if (headingMap.role > 0) {
+				if (data[headingMap.role] > 0) {
 					user.role_id = parseInt(data[headingMap.role])
 				} else if (req.body.role) {
 					user.role_id = parseInt(req.body.role)
+				} else {
+					req.flash('danger', 'No default role was specified and one of more rows were missing a role')
+					req.saveSessionAndRedirect(this.getRoute())
+					return
 				}
 
-				if (headingMap.course > 0) {
+				if (data[headingMap.course] > 0) {
 					user.course_id = parseInt(data[headingMap.course])
 				} else if (req.body.course) {
 					user.course_id = parseInt(req.body.course)
@@ -451,7 +456,7 @@ class UsersController extends BaseController {
 					return
 				}
 
-				if (headingMap.year > 0) {
+				if (data[headingMap.year] > 0) {
 					user.year_id = parseInt(data[headingMap.year])
 				} else if (req.body.year) {
 					user.year_id = parseInt(req.body.year)
@@ -481,10 +486,6 @@ class UsersController extends BaseController {
 
 		Promise.all(promises)
 		.then(users => {
-
-			console.log("\n\n\n\n USERS:")
-			console.log(users)
-
 			this.models.users.create(users)
 				.then(result => {
 					req.flash('success', 'Users imported')
