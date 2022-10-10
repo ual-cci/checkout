@@ -408,8 +408,11 @@ class UsersController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	postImportData(req, res) {
-		// Test if there are duplicate column headings.
-		if (new Set(req.body.cols).size !== req.body.cols.length) {
+		// Test if there are duplicate column headings, after removing ignored columns
+		const filteredCols = req.body.cols.filter(n => n)
+		console.log('cols are', req.body.cols, filteredCols)
+
+		if (new Set(filteredCols).size !== filteredCols.length) {
 			req.flash('danger', 'Each heading may only be used once.')
 			req.saveSessionAndRedirect(this.getRoute())
 			return
