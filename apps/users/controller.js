@@ -424,11 +424,11 @@ class UsersController extends BaseController {
 			headingMap[head] = req.body.cols.indexOf(head)
 		})
 
-		var promises = []
-		var _self = this
-		function generateUser(data) {
-			console.log(data)
-			console.log(req.body)
+		const promises = []
+		const errors = []
+
+		const generateUser = (data) => {
+
 			return new Promise((resolve, reject) => {
 				var user = {
 					name: data[headingMap.name],
@@ -441,9 +441,9 @@ class UsersController extends BaseController {
 				} else if (req.body.role) {
 					user.role_id = parseInt(req.body.role)
 				} else {
-					req.flash('danger', 'No default role was specified and one of more rows were missing a role')
-					req.saveSessionAndRedirect(this.getRoute())
-					return
+					console.log('gets here')
+					errors.push('No default role was specified and one of more rows were missing a role')
+					reject(user)
 				}
 
 				if (data[headingMap.course] > 0) {
@@ -451,9 +451,8 @@ class UsersController extends BaseController {
 				} else if (req.body.course) {
 					user.course_id = parseInt(req.body.course)
 				} else {
-					req.flash('danger', 'No default course was specified and one of more rows were missing a course')
-					req.saveSessionAndRedirect(this.getRoute())
-					return
+					errors.push('No default course was specified and one of more rows were missing a course')
+					reject(user)
 				}
 
 				if (data[headingMap.year] > 0) {
@@ -461,9 +460,8 @@ class UsersController extends BaseController {
 				} else if (req.body.year) {
 					user.year_id = parseInt(req.body.year)
 				} else {
-					req.flash('danger', 'No default year was specified and one of more rows were missing a year')
-					req.saveSessionAndRedirect(this.getRoute())
-					return
+					errors.push('No default year was specified and one of more rows were missing a year')
+					reject(user)
 				}
 
 				if (headingMap.password > 0) {
@@ -476,22 +474,29 @@ class UsersController extends BaseController {
 				} else {
 					resolve(user)
 				}
-			})
+			}).catch(err => console.log(err))
 		}
 
-		// Process data into item objects.
 		req.body.users.forEach(data => {
 			promises.push(generateUser(data))
 		})
 
 		Promise.all(promises)
 		.then(users => {
-			this.models.users.create(users)
-				.then(result => {
-					req.flash('success', 'Users imported')
-					req.saveSessionAndRedirect(this.getRoute())
-				})
-				.catch(err => this.displayError(req, res, err, this.getRoute('/import')))
+			console.log('errors is', errors)
+			if (errors.length === 0 ) {
+				this.models.users.create(users)
+					.then(result => {
+						req.flash('success', 'Users imported')
+						req.saveSessionAndRedirect(this.getRoute())
+					}).catch(err => this.displayError(req, res, err, this.getRoute('/import')))
+				}
+
+			else {
+				const errList =  [...new Set(errors)]
+				errList.forEach(error => req.flash('danger', error))
+				req.saveSessionAndRedirect(this.getRoute('/import'))
+			}
 		})
 	}
 
