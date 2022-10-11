@@ -441,8 +441,8 @@ class UsersController extends BaseController {
 				} else if (req.body.role) {
 					user.role_id = parseInt(req.body.role)
 				} else {
-					errors.push('No default role was specified and one of more rows were missing a role')
-					reject(user)
+					// students don't need roles
+					user.role_id = null
 				}
 
 				if (data[headingMap.course] > 0) {
