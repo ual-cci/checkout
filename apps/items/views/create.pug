@@ -28,6 +28,9 @@ block contents
 			label(for="serialnumber").col-lg-2.col-form-label Serial number
 			.col-lg-4
 				input(name="serialnumber" type="text" value=item.serialnumber)#serialnumber.form-control
+				if template
+					small.form-text.text-danger Warning: This serial number was generated from the item templated, it may be wrong.
+				small.form-text.text-muted Only include if creating a single item -- if multiple items are to be added, serial numbers should be added individually after items are generated
 		.form-group.row
 			label(for="info_url").col-lg-2.col-form-label Information URL
 			.col-lg-4

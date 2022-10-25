@@ -361,12 +361,12 @@ class ItemController extends BaseController {
 
 		const checks = [
 			{
-				condition: (quantity > 1 && barcodeFilter == null),
-				message: 'To generate multiple items the barcode must include # symbol(s) at the end'
-			},
-			{
 				condition: (barcode == ''),
 				message: 'The item(s) require a barcode'
+			},
+			{
+				condition: (quantity > 1 && barcodeFilter == null),
+				message: 'To generate multiple items the barcode must include # symbol(s) at the end'
 			},
 			{
 				condition: (barcode.includes('#') && quantity < 2),
@@ -460,7 +460,7 @@ class ItemController extends BaseController {
 						}
 					}
 					if (quantity == 1) {
-						req.saveSessionAndRedirect(`${this.getRoute()}/${id}`)
+						req.saveSessionAndRedirect(`${this.getRoute()}/${id[0].id}`)
 					} else {
 						req.saveSessionAndRedirect(this.getRoute())
 					}

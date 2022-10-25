@@ -408,8 +408,10 @@ class UsersController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	postImportData(req, res) {
-		// Test if there are duplicate column headings.
-		if (new Set(req.body.cols).size !== req.body.cols.length) {
+		// Test if there are duplicate column headings, after removing ignored columns
+		const filteredCols = req.body.cols.filter(n => n)
+
+		if (new Set(filteredCols).size !== filteredCols.length) {
 			req.flash('danger', 'Each heading may only be used once.')
 			req.saveSessionAndRedirect(this.getRoute())
 			return
@@ -422,9 +424,11 @@ class UsersController extends BaseController {
 			headingMap[head] = req.body.cols.indexOf(head)
 		})
 
-		var promises = []
-		var _self = this
-		function generateUser(data) {
+		const promises = []
+		const errors = []
+
+		const generateUser = (data) => {
+
 			return new Promise((resolve, reject) => {
 				var user = {
 					name: data[headingMap.name],
@@ -432,30 +436,31 @@ class UsersController extends BaseController {
 					email: data[headingMap.email]
 				}
 
-				if (headingMap.role > 0) {
+				if (data[headingMap.role] > 0) {
 					user.role_id = parseInt(data[headingMap.role])
 				} else if (req.body.role) {
 					user.role_id = parseInt(req.body.role)
+				} else {
+					// students don't need roles
+					user.role_id = null
 				}
 
-				if (headingMap.course > 0) {
+				if (data[headingMap.course] > 0) {
 					user.course_id = parseInt(data[headingMap.course])
 				} else if (req.body.course) {
 					user.course_id = parseInt(req.body.course)
 				} else {
-					req.flash('danger', 'No default course was specified and one of more rows were missing a course')
-					req.saveSessionAndRedirect(this.getRoute())
-					return
+					errors.push('No default course was specified and one of more rows were missing a course')
+					reject(user)
 				}
 
-				if (headingMap.year > 0) {
+				if (data[headingMap.year] > 0) {
 					user.year_id = parseInt(data[headingMap.year])
 				} else if (req.body.year) {
 					user.year_id = parseInt(req.body.year)
 				} else {
-					req.flash('danger', 'No default year was specified and one of more rows were missing a year')
-					req.saveSessionAndRedirect(this.getRoute())
-					return
+					errors.push('No default year was specified and one of more rows were missing a year')
+					reject(user)
 				}
 
 				if (headingMap.password > 0) {
@@ -468,26 +473,28 @@ class UsersController extends BaseController {
 				} else {
 					resolve(user)
 				}
-			})
+			}).catch(err => console.log(err))
 		}
 
-		// Process data into item objects.
 		req.body.users.forEach(data => {
 			promises.push(generateUser(data))
 		})
 
 		Promise.all(promises)
 		.then(users => {
+			if (errors.length === 0 ) {
+				this.models.users.create(users)
+					.then(result => {
+						req.flash('success', 'Users imported')
+						req.saveSessionAndRedirect(this.getRoute())
+					}).catch(err => this.displayError(req, res, err, this.getRoute('/import')))
+				}
 
-			console.log("\n\n\n\n USERS:")
-			console.log(users)
-
-			this.models.users.create(users)
-				.then(result => {
-					req.flash('success', 'Users imported')
-					req.saveSessionAndRedirect(this.getRoute())
-				})
-				.catch(err => this.displayError(req, res, err, this.getRoute('/import')))
+			else {
+				const errList =  [...new Set(errors)]
+				errList.forEach(error => req.flash('danger', error))
+				req.saveSessionAndRedirect(this.getRoute('/import'))
+			}
 		})
 	}
 
