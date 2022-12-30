@@ -2,7 +2,9 @@
   "name": "Checkout",
   "scripts": {
     "start": "node app | ./node_modules/.bin/bunyan -c 'this.sensitive == undefined'",
-    "dev": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
+	"watch-css": "npx node-sass -rw ./static/scss -o ./static/css",
+	"dev": "npx nodemon app",
+    "dev2": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
     "production": "npm run db:wait; npm run db:migrate; npm run start;",
     "db:wait": "node ./_helpers/db-test",
     "db:migrate": "knex migrate:latest",
@@ -10,7 +12,14 @@
     "db:seed": "knex seed:run"
   },
   "nodemon": {
-    "ignore": ["static/*", "logging/*", "migrations/*", "seeds/*", "_*", "docker/*"]
+    "ignore": [
+      "static/*",
+      "logging/*",
+      "migrations/*",
+      "seeds/*",
+      "_*",
+      "docker/*"
+    ]
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.1",
