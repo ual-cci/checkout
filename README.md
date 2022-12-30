@@ -33,6 +33,9 @@ Docker is pretty straight-forward also:
 
 You can hop into the CLI using `docker exec -it checkout_web_1 sh` if you need to, for example to run `npm run db:seed` to create an initial set of data and a dummy login user.
 
+## Backups
+You can backup inside Docker using `docker exec pg-dump checkout > backup.psql` with the approriate commands.
+
 # DB
 The database is Postgres and it uses Knex.js for its migrations and subsequent ORM. There are 2
 little helper aliases:
@@ -47,14 +50,23 @@ little helper aliases:
 Checkout is able to run on almost any machine, however it's recommended to run it in Docker on an Ubuntu Server which can be almost any spec, an Intel NUC works well for this purpose, or a virtual machine.
 
 ## Scanners
-You may want to have mobile 2D barcode scanners for use of the audit function or for staff performing back office admin tasks, for this purpose USB Keyboard Emulation scanners are what you are looking for, the best coming from Zebra (formerly Motorola, formerly Symbol) and can be easily obtained second hand for very reasonable prices, the [DS4208-SR](https://www.zebra.com/gb/en/products/scanners/general-purpose-scanners/handheld/ds4208.html) is a great wired hand scanner for this purpose, and the [DS9208](https://www.zebra.com/gb/en/products/scanners/general-purpose-scanners/hands-free-on-counter/ds9208.html) is a great hands free option.
+You will need a 2D barcode scanner that emulates keyboard input to use Checkout. There are 3 models we've tested and recommend, all of them are older models cheaply available on eBay 2nd hand, note that Zebra, was previously owned by Motorola, and previous to that Symbol, so you will find these brands used interchangably with the same model numbers:
 
-Most Zebra/Motorola/Symbol brand scanners have an interchangable cable which allows you to switch between different modes, a RS232 or Keyboard Wedge scanner can be converted to a USB Keyboard Emulation keyboard by purchasing the apporirate Zebra Synapse cable, additionally different options are available in various lengths and also straight or coiled cables.
+1. [Zebra DS4208](DS4208-SR](https://www.zebra.com/gb/en/products/scanners/general-purpose-scanners/handheld/ds4208.html) - This is a great option for a USB hand-held option.
+2. [Zebra DS9208](https://www.zebra.com/gb/en/products/scanners/general-purpose-scanners/hands-free-on-counter/ds9208.html) - This is a great option for a USB hands-free option such as a kiosk location.
+3. [Zebra DS6878](https://www.zebra.com/us/en/support-downloads/scanners/general-purpose-scanners/ds6878-sr.html) – This is a great option for a wireless hand-held option.
+
+Almost all Zebra scanners use what is known as a Synapse cable, which allows you to switch the cable on the scanner for different lengths and connectors, including straight, coiled cable, USB keyboard emulation, RS232, and others.
 
 ## Label printing
-Older versions of Checkout made use of Dymo label printers however we found that the the tapes often didn't stick well over a long time and the mechanism of the Dymo printer would often cut the transfer tape (destroying the cartridge) 9 in 10 times before the tape got to half way through.
+Older versions of Checkout made use of Dymo label printers however, we found that the the tapes often didn't stick well over a long time and the mechanism of the Dymo printer would often cut the transfer tape (destroying the cartridge) 9 in 10 times before the tape got to half way through.
 
-We now use Brother label printers, you are going to need to use this printer via IPP using 12mm or 36mm black on white tape, it's planned to review this option as these printers don't natively support IPP so you have to use CUPS and the Linux support is extremely poor meaning the barcode resolution is unusable meaning you are currently limited to requiring a macOS device to print.
+We now use Brother label printers, this option required a Mac to print, as Windows doesn't support IPP, and the Linux drivers provided by Brother are very out of date and won't print at full quality, resulting in non-scanning barcodes.
+
+To use the printing feature at present you will need a Mac with the most recent version of macOS supported by your printer, unfortunately Brother also decided to stop developing drivers for newer macOS versions, and while the feature works, we will need to redevelop this feature in future.
+
+## Email 
+The system now supports SMTP emailing to people who have items on loan.
 
 ## Kiosk
 Checkout is designed to be run in Kiosk mode in your office or store area, the [Elo Touch 10" I-Series 3.0 Android with Google Play Services](https://www.elotouch.com/touchscreen-computers-aaio3-10.html) touch screen and mount/stand is a great standalone kiosk device and can be bought with a 2D barcode scanner.
