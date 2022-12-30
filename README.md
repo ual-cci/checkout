@@ -1,4 +1,4 @@
-<img src="https://github.com/creativetechnologylab/checkout/raw/master/_assets/icon.png" height="150px" />
+<img src="https://github.com/ual-cci/checkout/raw/main/_assets/icon.png" height="150px" />
 
 # Checkout
 Checkout is a software system for tracking assets within a higher education environment, originally created for use within the Creative Technology Lab at London College of Communication it is now maintained at [UAL Creative Computing Institute](https://arts.ac.uk/cci).
