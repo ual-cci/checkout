@@ -1,5 +1,8 @@
 extends ../../../src/views/base.pug
 
+block prepend base
+	- fs = true
+
 block prepend title
 	- title = "Login"
 
@@ -26,6 +29,6 @@ block contents
 			input(type="username" name="username" placeholder="Username" autofocus required)#username.form-control
 			label(for="password").sr-only Username
 			input(type="password" name="password" placeholder="Password"  required)#password.form-control
-			button( type="submit").btn.btn-lg.btn-primary.btn-block Login
+			button( type="submit").btn.btn-lg.btn-primary.btn-block.w-100.mb-2 Login
 			if Options.getBoolean('public_catalogue')
-				a(href="/").btn.btn-sm.btn-outline-dark.btn-block Cancel
+				a(href="/").btn.btn-lg.btn-outline-secondary.btn-block.w-100 Cancel
