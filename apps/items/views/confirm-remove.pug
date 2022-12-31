@@ -8,7 +8,7 @@ block prepend title
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock( 'dark', 'white', 'Removing this item will also delete it the historical data about actions performed against this item.', 'white' )
+		+messageBlock('danger', 'white', 'Removing this item will also delete it the historical data about actions performed against this item.')
 		.form-group
 			button( type='submit' ).btn.btn-danger Yes, remove item
 			|  

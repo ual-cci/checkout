@@ -8,7 +8,7 @@ block prepend title
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock( 'dark', 'white', 'Removing this user will also delete it the historical data about actions performed against this user.' )
+		+messageBlock('danger', 'white', 'Removing this user will also delete it the historical data about actions performed against this user.')
 		.form-group.row
 			.col-lg-4
 				button( type='submit' ).btn.btn-danger Yes, remove user

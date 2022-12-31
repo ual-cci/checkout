@@ -8,7 +8,7 @@ block prepend title
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock( 'dark', 'white', 'Switching to kiosk mode means this computer is trusted to use barcode only authentication.' )
+		+messageBlock('danger', 'white', 'Switching to kiosk mode means this computer is trusted to use barcode only authentication.')
 		.form-group.row
 			.col-lg-4
 				button( type='submit' ).btn.btn-success Activate kiosk mode

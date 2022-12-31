@@ -8,7 +8,7 @@ block prepend title
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock( 'dark', 'white', 'Deleting this course will transfer all the users to the new course selected below.' )
+		+messageBlock('danger', 'white', 'Deleting this course will transfer all the users to the new course selected below.')
 		.form-group.row
 			label( for="course" ).col-lg-2.col-form-label Transfer users to
 			.col-lg-4

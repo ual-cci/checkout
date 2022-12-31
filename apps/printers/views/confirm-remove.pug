@@ -8,7 +8,7 @@ block prepend title
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock( 'dark', 'white','Users do not have to be associated with a printer by not selecting a new printer the users will be removed have no default printer.' )
+		+messageBlock('danger', 'white','Users do not have to be associated with a printer by not selecting a new printer the users will be removed have no default printer.')
 		.form-group.row
 			label( for="printer" ).col-lg-2.col-form-label Transfer users to
 			.col-lg-4
