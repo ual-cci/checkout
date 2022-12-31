@@ -35,13 +35,9 @@ mixin item( name, id, url )
 		else
 			| #{name}
 		if currentUserCan('items_edit')
-			|  
-			small: a( href=`/items/${id}/edit` title=`Edit item: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/items/${id}/edit`, `Edit item: ${name}`)
 		if url
-			|  
-			a(href=url target="_blank").text-muted
-				span.fa.fa-globe
+			+actionBtn('globe', url, 'View Item', '_blank')
 	else
 		| &mdash;
 
@@ -52,9 +48,7 @@ mixin user( name, id )
 		else
 			| #{name}
 		if currentUserCan('users_edit')
-			|  
-			small: a( href=`/users/${id}/edit` title=`Edit user: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/users/${id}/edit`, `Edit user: ${name}`)
 	else
 		| &mdash;
 
@@ -65,9 +59,7 @@ mixin role( name, id )
 		else
 			| #{name}
 		if currentUserCan('roles_edit')
-			|  
-			small: a( href=`/roles/${id}/edit` title=`Edit role: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/roles/${id}/edit`, `Edit role: ${name}`)
 	else
 		| &mdash;
 
@@ -78,9 +70,7 @@ mixin course( name, id )
 		else
 			| #{name}
 		if currentUserCan('courses_edit')
-			|  
-			small: a( href=`/courses/${id}/edit` title=`Edit course: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/courses/${id}/edit`, `Edit course: ${name}`)
 	else
 		| &mdash;
 
@@ -91,9 +81,7 @@ mixin year( name, id )
 		else
 			| #{name}
 		if currentUserCan('years_edit')
-			|  
-			small: a( href=`/years/${id}/edit` title=`Edit year: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/years/${id}/edit`, `Edit year: ${name}`)
 	else
 		| &mdash;
 
@@ -104,9 +92,7 @@ mixin location( name, id )
 		else
 			| #{name}
 		if currentUserCan('locations_edit')
-			|  
-			small: a( href=`/locations/${id}/edit` title=`Edit location: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/locations/${id}/edit`, `Edit location: ${name}`)
 	else
 		| &mdash;
 		
@@ -117,9 +103,7 @@ mixin department( name, id )
 		else
 			| #{name}
 		if currentUserCan('departments_edit')
-			|  
-			small: a( href=`/departments/${id}/edit` title=`Edit department: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/departments/${id}/edit`, `Edit department: ${name}`)
 	else
 		| &mdash;
 		
@@ -130,9 +114,7 @@ mixin group( name, id )
 		else
 			| #{name}
 		if currentUserCan('groups_edit')
-			|  
-			small: a( href=`/groups/${id}/edit` title=`Edit group: ${name}` ).text-muted
-				span.fas.fa-pencil-alt
+			+actionBtn('pencil-alt', `/groups/${id}/edit`, `Edit group: ${name}`)
 	else
 		| &mdash;
 
@@ -269,3 +251,8 @@ mixin search
 	.input-group.input-group-sm#searchText
 		span.input-group-text: span.fa.fa-search
 		input(type="text" placeholder="Search").form-control
+
+mixin actionBtn(icon, url, title, target)
+	|  
+	small: a(href=url title=title target=target).actionBtn
+		span.fas(class=`fa-${icon}`)
