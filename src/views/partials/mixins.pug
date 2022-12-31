@@ -205,65 +205,65 @@ mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
 
 mixin status( status )
 	if status == 'available'
-		span.badge.badge-success Available
+		span.badge.text-bg-success Available
 	else if status == 'returned'
-		span.badge.badge-success Returned
+		span.badge.text-bg-success Returned
 	else if status == 'found'
-		span.badge.badge-success Found
+		span.badge.text-bg-success Found
 	else if status == 'repaired'
-		span.badge.badge-success Repaired
+		span.badge.text-bg-success Repaired
 	else if status == 'on-loan'
-		span.badge.badge-danger On Loan
+		span.badge.text-bg-danger On Loan
 	else if status == 'broken'
-		span.badge.badge-warning Broken
+		span.badge.text-bg-warning Broken
 	else if status == 'lost'
-		span.badge.badge-warning Lost
+		span.badge.text-bg-warning Lost
 	else if status == 'sold'
-		span.badge.badge-secondary Sold
+		span.badge.text-bg-secondary Sold
 	else if status == 'issued'
-		span.badge.badge-danger Issued
+		span.badge.text-bg-danger Issued
 	else if status == 'replaced'
-		span.badge.badge-success Replaced
+		span.badge.text-bg-success Replaced
 	else if status == 'unavailable'
-		span.badge.badge-info Unavailable
+		span.badge.text-bg-info Unavailable
 	else if status == 'audited'
-		span.badge.badge-secondary Audited
+		span.badge.text-bg-secondary Audited
 	else if status == 'reserve'
-		span.badge.badge-danger Reserve
+		span.badge.text-bg-danger Reserve
 	else if status == 'maintenance'
-		span.badge.badge-primary Maintenance
+		span.badge.text-bg-primary Maintenance
 	else
 		span.badge.badge-info=status
 
 mixin statusPill( status )
 	if status == 'available'
-		span.badge.badge-success(title='Available') &nbsp;
+		span.badge.text-bg-success(title='Available') &nbsp
 	else if status == 'returned'
-		span.badge.badge-success(title='Returned') &nbsp;
+		span.badge.text-bg-success(title='Returned') &nbsp;
 	else if status == 'found'
-		span.badge.badge-success(title='Found') &nbsp;
+		span.badge.text-bg-success(title='Found') &nbsp;
 	else if status == 'repaired'
-		span.badge.badge-success(title='Repaired') &nbsp;
+		span.badge.text-bg-success(title='Repaired') &nbsp;
 	else if status == 'on-loan'
-		span.badge.badge-danger(title='On Loan') &nbsp;
+		span.badge.text-bg-danger(title='On Loan') &nbsp;
 	else if status == 'broken'
-		span.badge.badge-warning(title='Broken') &nbsp;
+		span.badge.text-bg-warning(title='Broken') &nbsp;
 	else if status == 'lost'
-		span.badge.badge-warning(title='Lost') &nbsp;
+		span.badge.text-bg-warning(title='Lost') &nbsp;
 	else if status == 'issued'
-		span.badge.badge-danger(title='Issued') &nbsp;
+		span.badge.text-bg-danger(title='Issued') &nbsp;
 	else if status == 'sold'
-		span.badge.badge-secondary(title='Sold') &nbsp;
+		span.badge.text-bg-secondary(title='Sold') &nbsp;
 	else if status == 'unavailable'
-		span.badge.badge-info(title='Unavailable') &nbsp;
+		span.badge.text-bg-info(title='Unavailable') &nbsp;
 	else if status == 'audited'
-		span.badge.badge-secondary(title='Audited') &nbsp;
+		span.badge.text-bg-secondary(title='Audited') &nbsp;
 	else if status == 'reserve'
-		span.badge.badge-danger(title='Reserve') &nbsp;
+		span.badge.text-bg-danger(title='Reserve') &nbsp;
 	else if status == 'maintenance'
-		span.badge.badge-primary(title='Maintenance') &nbsp;
+		span.badge.text-bg-primary(title='Maintenance') &nbsp;
 	else
-		span.badge.badge-info(title=status) &nbsp;
+		span.badge.text-bg-info(title=status) &nbsp;
 
 mixin search 
 	.input-group.input-group-sm#searchText

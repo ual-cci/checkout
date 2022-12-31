@@ -16,49 +16,49 @@ block contents
 				- set_active = 'issue';
 			a.issue.nav-item.nav-link( href="#issue" data-bs-toggle="tab" class=(set_active=='issue'?'active':null) ) Issue
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline I
+				span.badge.text-bg-secondary.d-none.d-lg-inline I
 				
 		if currentUserCan('items_return')
 			if ! set_active
 				- set_active = 'return';
 			a.return.nav-item.nav-link( href="#return" data-bs-toggle="tab" class=(set_active=='return'?'active':null) ) Return
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline R
+				span.badge.text-bg-secondary.d-none.d-lg-inline R
 			
 		if currentUserCan('reservations_create')
 			if ! set_active
 				- set_active = 'new_reservation';
 			a.reservation.nav-item.nav-link( href="#reservation" data-bs-toggle="tab" class=(set_active=='new_reservation'?'active':null) ) New Reservation
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline E
+				span.badge.text-bg-secondary.d-none.d-lg-inline E
 			
 		if currentUserCan('users_create')
 			if ! set_active
 				- set_active = 'new_user';
 			a.new-user.nav-item.nav-link( href="#new-user" data-bs-toggle="tab" class=(set_active=='new_user'?'active':null) ) New User
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline N
+				span.badge.text-bg-secondary.d-none.d-lg-inline N
 			
 		if currentUserCan('print')
 			if ! set_active
 				- set_active = 'label';
 			a.print.nav-item.nav-link( href="#label" data-bs-toggle="tab" class=(set_active=='label'?'active':null) ) Label
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline L
+				span.badge.text-bg-secondary.d-none.d-lg-inline L
 			
 		if currentUserCan('checkout_audit')
 			if ! set_active
 				- set_active = 'audit';
 			a.audit.nav-item.nav-link( href="#audit" data-bs-toggle="tab" class=(set_active=='audit'?'active':null) ) Audit
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline A
+				span.badge.text-bg-secondary.d-none.d-lg-inline A
 			
 		if currentUserCan('checkout_history')
 			if ! set_active
 				- set_active = 'history';
 			a.history.nav-item.nav-link( href="#history" data-bs-toggle="tab" class=(set_active=='history'?'active':null)) History
 				|  
-				span.badge.badge-secondary.d-none.d-lg-inline H
+				span.badge.text-bg-secondary.d-none.d-lg-inline H
 			
 	.tab-content.break
 		include partials/issue.pug
