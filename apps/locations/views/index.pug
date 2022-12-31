@@ -7,9 +7,7 @@ block prepend title
 
 block buttons
 	if currentUserCan('locations_create')
-		a( href="/locations/create" ).btn.btn-outline-success.btn-sm.float-right
-			span.fas.fa-plus
-			|  Create
+		+btn('sm', 'outline-success', 'plus', 'Create Location', '/locations/create')
 	+search
 
 block contents

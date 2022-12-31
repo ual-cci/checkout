@@ -7,9 +7,7 @@ block prepend title
 
 block buttons
 	if currentUserCan('courses_create')
-		a( href="/courses/create" ).btn.btn-outline-success.btn-sm.float-right
-			span.fas.fa-plus
-			|  Create
+		+btn('sm', 'outline-success', 'plus', 'Create Course', '/courses/create')
 	+search
 
 block contents

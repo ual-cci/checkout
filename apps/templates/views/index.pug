@@ -7,9 +7,7 @@ block prepend title
 
 block buttons
 	if currentUserCan('templates_create')
-		a( href="/templates/create" ).btn.btn-outline-success.btn-sm.float-right
-			span.fas.fa-plus
-			|  Create
+		+btn('sm', 'outline-success', 'plus', 'Create Email Template', '/templates/create')
 
 block contents
 	include partials/list.pug

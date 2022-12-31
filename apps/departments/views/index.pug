@@ -7,9 +7,7 @@ block prepend title
 	
 block buttons
 	if currentUserCan('departments_create')
-		a( href="/departments/create" ).btn.btn-outline-success.btn-sm.float-right
-			span.fas.fa-plus
-			|  Create
+		+btn('sm', 'outline-success', 'plus', 'Create Department', '/departments/create')
 	+search
 
 block contents

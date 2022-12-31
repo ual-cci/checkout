@@ -7,9 +7,7 @@ block prepend title
 
 block buttons
 	if currentUserCan('roles_create')
-		a( href="/roles/create" ).btn.btn-outline-success.btn-sm.float-right
-			span.fas.fa-plus
-			|  Create
+		+btn('sm', 'outline-success', 'plus', 'Create Role', '/roles/create')
 	+search
 
 block contents
