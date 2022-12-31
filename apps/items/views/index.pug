@@ -36,7 +36,7 @@ block buttons
 			h6.dropdown-header Audit
 			a( href="/items/?audited=auditpoint&scanned=true" ).dropdown-item Scanned
 			a( href="/items/?audited=auditpoint&scanned=false" ).dropdown-item Missing
-	.btn-group.ml-2
+	.btn-group.me-2
 		button(type="submit" form="filter").btn.btn-outline-secondary.btn-sm
 			span.fas.fa-filter
 			|  Filter
@@ -56,7 +56,7 @@ block buttons
 			a(data-toggle="collapse" href="#auditedFilter").dropdown-item Audited
 			a(data-toggle="collapse" href="#scannedFilter").dropdown-item Scanned
 	if Object.values(selected).join('') != ''
-		a(href=filter_path + "?clear=").btn.btn-outline-secondary.btn-sm.ml-2
+		a(href=filter_path + "?clear=").btn.btn-outline-secondary.btn-sm.me-2
 			span.fas.fa-times
 			|  Clear
 	+search

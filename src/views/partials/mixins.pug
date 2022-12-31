@@ -137,7 +137,7 @@ mixin group( name, id )
 		| &mdash;
 
 mixin btn( size, colour, icon, text, url )
-	a( href=url, class='btn-' + size, class='btn-' + colour ).btn
+	a( href=url, class='btn-' + size, class='btn-' + colour ).btn.me-2
 		span.fas( class='fa-' + icon )
 		if text
 			|  #{ text }
@@ -266,7 +266,6 @@ mixin statusPill( status )
 		span.badge.badge-info(title=status) &nbsp;
 
 mixin search 
-	.input-group.input-group-sm.ml-2#searchText
-		.input-group-prepend
-			span.input-group-text.fa.fa-search
+	.input-group.input-group-sm#searchText
+		span.input-group-text: span.fa.fa-search
 		input(type="text" placeholder="Search").form-control

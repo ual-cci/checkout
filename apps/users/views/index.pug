@@ -11,10 +11,10 @@ block append js
 
 block buttons
 	if currentUserCan('users_import')
-		a( href="/users/import" ).btn.btn-outline-success.btn-sm.float-right.ml-2
+		a( href="/users/import" ).btn.btn-outline-success.btn-sm.float-right.me-2
 			span.fas.fa-file-csv
 			|  Import Users
-	.dropdown.ml-2
+	.dropdown.me-2
 		button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
 			span.fas.fa-bolt
 			|  Reports
@@ -22,7 +22,7 @@ block buttons
 			h6.dropdown-header User Status
 			a( href="/users/?status=active" ).dropdown-item Active
 			a( href="/users/?status=disabled" ).dropdown-item Disabled
-	.btn-group.ml-2
+	.btn-group.me-2
 		button(type="submit" form="filter").btn.btn-outline-secondary.btn-sm
 			span.fas.fa-filter
 			|  Filter
@@ -37,7 +37,7 @@ block buttons
 			a(data-toggle="collapse" href="#statusFilter").dropdown-item Status
 			
 	if Object.values(selected).join('') != ''
-		a(href=filter_path + "?clear=").btn.btn-outline-secondary.btn-sm.ml-2
+		a(href=filter_path + "?clear=").btn.btn-outline-secondary.btn-sm.me-2
 			span.fas.fa-times
 			|  Clear
 	+search

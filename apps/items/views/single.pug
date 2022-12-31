@@ -13,7 +13,7 @@ block buttons
 					span.fas.fa-sign-in-alt
 					|  Return
 	if currentUserCan({or: ['items_broken', 'items_lost', 'items_sold']})
-		.dropdown.ml-2
+		.dropdown.me-2
 			button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
 				span.fas.fa-traffic-light
 				|  Change Status
