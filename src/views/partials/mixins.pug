@@ -26,7 +26,7 @@ mixin relative( date, alert )
 		| –
 
 mixin messageBlock( bg, fg, text )
-	p( style="padding: 1em; margin-top: 1em;" class=`bg-${bg}` class=`text-${fg}` )=text
+	p.p-3.mt-3(class=`bg-${bg} text-${fg}`)=text
 
 mixin item( name, id, url )
 	if name
@@ -117,6 +117,7 @@ mixin group( name, id )
 			+actionBtn('pencil-alt', `/groups/${id}/edit`, `Edit group: ${name}`)
 	else
 		| &mdash;
+
 
 mixin btn( size, colour, icon, text, url )
 	a( href=url, class='btn-' + size, class='btn-' + colour ).btn.me-2
@@ -252,7 +253,8 @@ mixin search
 		span.input-group-text: span.fa.fa-search
 		input(type="text" placeholder="Search").form-control
 
-mixin actionBtn(icon, url, title, target)
+mixin actionBtn(icon, url, title, target, text)
 	|  
 	small: a(href=url title=title target=target).actionBtn
 		span.fas(class=`fa-${icon}`)
+		|  #{text}
