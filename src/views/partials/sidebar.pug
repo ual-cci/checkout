@@ -1,4 +1,4 @@
-nav#sidebarMenu.col-2.d-lg-block.sidebar.collapse
+nav#sidebarMenu.col-2.d-none.d-md-block.sidebar
 	.sidebar-sticky.pt-3
 		ul.nav.flex-column
 			if currentUserCan({or: ['checkout_issue', 'items_return', 'reservations_create', 'checkout_audit', 'users_create', 'checkout_history', 'print']})
@@ -13,7 +13,7 @@ nav#sidebarMenu.col-2.d-lg-block.sidebar.collapse
 						| Catalogue
 		
 		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'departments_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Items
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Items
 			ul.nav.flex-column
 				if currentUserCan('items_create')
 					li.nav-item
@@ -42,7 +42,7 @@ nav#sidebarMenu.col-2.d-lg-block.sidebar.collapse
 							| Departments
 					
 		if currentUserCan({or: ['users_read', 'courses_read', 'years_read', 'roles_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Users
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Users
 			ul.nav.flex-column
 				if currentUserCan('users_read')
 					li.nav-item
@@ -50,26 +50,29 @@ nav#sidebarMenu.col-2.d-lg-block.sidebar.collapse
 							span.me-2.fa.fa-users
 							| Users
 				if currentUserCan('courses_read')
-					a.nav-link(href="/courses" class=(menu=='courses'?'active':''))
-						span.me-2.fa.fa-user-graduate
-						| Courses
+					li.nav-item
+						a.nav-link(href="/courses" class=(menu=='courses'?'active':''))
+							span.me-2.fa.fa-user-graduate
+							| Courses
 				if currentUserCan('years_read')
-					a.nav-link(href="/years" class=(menu=='years'?'active':''))
-						span.me-2.fa.fa-user-clock
-						| Years
+					li.nav-item
+						a.nav-link(href="/years" class=(menu=='years'?'active':''))
+							span.me-2.fa.fa-user-clock
+							| Years
 				if currentUserCan('roles_read')
-					a.nav-link(href="/roles" class=(menu=='roles'?'active':''))
-						span.me-2.fa.fa-user-tag
-						| Roles
+					li.nav-item
+						a.nav-link(href="/roles" class=(menu=='roles'?'active':''))
+							span.me-2.fa.fa-user-tag
+							| Roles
 		
 		if currentUserCan('reservations_read')
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Reservations
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Reservations
 			ul.nav.flex-column
 				li.nav-item
 					a.nav-link(href="/reservations" class=(menu=='reservations'?'active':'')) View
 					
 		if currentUserCan({or: ['templates_read', 'email_queue_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Email
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Email
 			ul.nav.flex-column.mb-2
 				if currentUserCan('email_queue_read')
 					li.nav-item
@@ -84,7 +87,7 @@ nav#sidebarMenu.col-2.d-lg-block.sidebar.collapse
 				
 
 		if currentUserCan({or: ['activate_kiosk_mode', 'generate_insurance_report', 'printers_read', 'options_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-3.mb-1.text-muted Administration
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Administration
 			ul.nav.flex-column.mb-2
 				if currentUserCan('activate_kiosk_mode')
 					li.nav-item

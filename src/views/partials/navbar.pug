@@ -1,6 +1,6 @@
-nav.container-fluid.navbar.navbar-dark.sticky-top.flex-md-nowrap.p-0
-	a(href="/").navbar-brand.col-2.px-3
-		img(src="/imgs/icon.svg" width="22" height="22")
+nav#topMenu.container-fluid.navbar.sticky-top.flex-md-nowrap.p-0
+	a(href="/").navbar-brand.col-2.ps-2
+		img(src="/imgs/icon.svg" width="24" height="24")
 		span=Options.get('application_name')
 		
 	button.navbar-toggler.position-absolute.d-md-none(type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true" aria-label="Toggle navigation")
@@ -8,8 +8,8 @@ nav.container-fluid.navbar.navbar-dark.sticky-top.flex-md-nowrap.p-0
 	
 	if loggedInUser
 		if currentUserCan('global_search')
-			input#search.form-control.form-control-dark.w-100(type="text" placeholder="Search" autocomplete="off")
-		.navbar-nav.me-auto
+			input#search.form-control.form-control.w-100(type="text" placeholder="Search" autocomplete="off")
+		.navbar-nav
 			if loggedInUser
 				.nav-item.dropdown
 					a( href="#" id="user" data-bs-toggle="dropdown" ).dropdown-toggle.nav-link.me-2=loggedInUser.name
