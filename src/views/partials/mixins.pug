@@ -118,12 +118,11 @@ mixin group( name, id )
 	else
 		| &mdash;
 
-
-mixin btn( size, colour, icon, text, url )
-	a( href=url, class='btn-' + size, class='btn-' + colour ).btn.me-2
-		span.fas( class='fa-' + icon )
+mixin btn( size, colour, icon, text, url, title, margin )
+	a.btn(href=url class=`btn-${size} btn-${colour} ${margin ? margin : `me-2`}` title=title)
+		span.fas(class=`fa-${icon}`)
 		if text
-			|  #{ text }
+			|  #{text}
 
 mixin labelBtn( url )
 	+btn( 'sm', 'outline-dark', 'print', 'Label', url )
