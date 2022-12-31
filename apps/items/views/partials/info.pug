@@ -3,44 +3,44 @@ if item.alert_msg
 		strong Alert:
 		|  #{item.alert_msg}
 .row
-	.col-md-4
+	.col-4
 		.row
-			.col-md-5.font-weight-bold.text-md-right Status
-			.col-md-7: +status( item.loanable ? item.status : 'unavailable' )
+			.col-5.font-weight-bold.text-right Status
+			.col-7: +status( item.loanable ? item.status : 'unavailable' )
 			if item.owner_id
-				.col-md-5.font-weight-bold.text-md-right Owner
-				.col-md-7: +user( item.owner_name, item.owner_id )
+				.col-5.font-weight-bold.text-right Owner
+				.col-7: +user( item.owner_name, item.owner_id )
 			if item.status == 'on-loan'
-				.col-md-5.font-weight-bold.text-md-right Issued
-				.col-md-7: +fulldate( item.issued )
-				.col-md-5.font-weight-bold.text-md-right Due
-				.col-md-7: +relative( item.due, true )
+				.col-5.font-weight-bold.text-right Issued
+				.col-7: +fulldate( item.issued )
+				.col-5.font-weight-bold.text-right Due
+				.col-7: +relative( item.due, true )
 			if item.audited
-				.col-md-5.font-weight-bold.text-md-right Last audited
-				.col-md-7: +relative( item.audited )
-	.col-md-4
+				.col-5.font-weight-bold.text-right Last audited
+				.col-7: +relative( item.audited )
+	.col-4
 		.row
-			.col-md-5.font-weight-bold.text-md-right Barcode
-			.col-md-7: +clipboard(item.barcode)
+			.col-5.font-weight-bold.text-right Barcode
+			.col-7: +clipboard(item.barcode)
 			if item.value
-				.col-md-5.font-weight-bold.text-md-right Value
-				.col-md-7 £#{item.value}
+				.col-5.font-weight-bold.text-right Value
+				.col-7 £#{item.value}
 			if item.serialnumber
-				.col-md-5.font-weight-bold.text-md-right Serial number
-				.col-md-7: +clipboard(item.serialnumber)
+				.col-5.font-weight-bold.text-right Serial number
+				.col-7: +clipboard(item.serialnumber)
 			if item.info_url
-				.col-md-5.font-weight-bold.text-md-right Information URL
-				.col-md-7: a(href=item.info_url target="_blank") Open Link
+				.col-5.font-weight-bold.text-right Information URL
+				.col-7: a(href=item.info_url target="_blank") Open Link
 			if item.notes
-				.col-md-5.font-weight-bold.text-md-right Notes
-				.col-md-7=item.notes
-	.col-md-4
+				.col-5.font-weight-bold.text-right Notes
+				.col-7=item.notes
+	.col-4
 		.row
-			.col-md-5.font-weight-bold.text-md-right Location
-			.col-md-7: +location(item.location_name, item.location_id)
+			.col-5.font-weight-bold.text-right Location
+			.col-7: +location(item.location_name, item.location_id)
 			if item.group_id
-				.col-md-5.font-weight-bold.text-md-right Group
-				.col-md-7: +group(item.group_name, item.group_id)
+				.col-5.font-weight-bold.text-right Group
+				.col-7: +group(item.group_name, item.group_id)
 			if item.department_id
-				.col-md-5.font-weight-bold.text-md-right Department
-				.col-md-7: +department(item.department_name, item.department_id)
+				.col-5.font-weight-bold.text-right Department
+				.col-7: +department(item.department_name, item.department_id)
