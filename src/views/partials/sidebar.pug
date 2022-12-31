@@ -1,15 +1,15 @@
-nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
+nav#sidebarMenu.col-2.d-lg-block.sidebar.collapse
 	.sidebar-sticky.pt-3
 		ul.nav.flex-column
 			if currentUserCan({or: ['checkout_issue', 'items_return', 'reservations_create', 'checkout_audit', 'users_create', 'checkout_history', 'print']})
 				li.nav-item
 					a.nav-link(href="/checkout" class=(menu=='kiosk'?'active':''))
-						span.mr-2.fa.fa-qrcode
+						span.me-2.fa.fa-qrcode
 						| Kiosk
 			if currentUserCan('view_catalogue')
 				li.nav-item
 					a.nav-link(href="/catalogue" class=(menu=='catalogue'?'active':''))
-						span.mr-2.fa.fa-book
+						span.me-2.fa.fa-book
 						| Catalogue
 		
 		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'departments_read']})
@@ -18,27 +18,27 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 				if currentUserCan('items_create')
 					li.nav-item
 						a.nav-link(href="/items/create" class=(menu=='create items'?'active':''))
-							span.mr-2.fa.fa-plus
+							span.me-2.fa.fa-plus
 							| Create item
 				if currentUserCan('items_read')
 					li.nav-item
 						a.nav-link(href="/items" class=(menu=='items'?'active':''))
-							span.mr-2.fa.fa-boxes
+							span.me-2.fa.fa-boxes
 							| Items
 				if currentUserCan('groups_read')
 					li.nav-item
 						a.nav-link(href="/groups" class=(menu=='groups'?'active':''))
-							span.mr-2.fa.fa-object-group
+							span.me-2.fa.fa-object-group
 							| Groups
 				if currentUserCan('locations_read')
 					li.nav-item
 						a.nav-link(href="/locations" class=(menu=='locations'?'active':''))
-							span.mr-2.fa.fa-location-arrow
+							span.me-2.fa.fa-location-arrow
 							| Locations
 				if currentUserCan('departments_read')
 					li.nav-item
 						a.nav-link(href="/departments" class=(menu=='departments'?'active':''))
-							span.mr-2.fa.fa-building
+							span.me-2.fa.fa-building
 							| Departments
 					
 		if currentUserCan({or: ['users_read', 'courses_read', 'years_read', 'roles_read']})
@@ -47,19 +47,19 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 				if currentUserCan('users_read')
 					li.nav-item
 						a.nav-link(href="/users" class=(menu=='users'?'active':''))
-							span.mr-2.fa.fa-users
+							span.me-2.fa.fa-users
 							| Users
 				if currentUserCan('courses_read')
 					a.nav-link(href="/courses" class=(menu=='courses'?'active':''))
-						span.mr-2.fa.fa-user-graduate
+						span.me-2.fa.fa-user-graduate
 						| Courses
 				if currentUserCan('years_read')
 					a.nav-link(href="/years" class=(menu=='years'?'active':''))
-						span.mr-2.fa.fa-user-clock
+						span.me-2.fa.fa-user-clock
 						| Years
 				if currentUserCan('roles_read')
 					a.nav-link(href="/roles" class=(menu=='roles'?'active':''))
-						span.mr-2.fa.fa-user-tag
+						span.me-2.fa.fa-user-tag
 						| Roles
 		
 		if currentUserCan('reservations_read')
@@ -74,12 +74,12 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 				if currentUserCan('email_queue_read')
 					li.nav-item
 						a.nav-link(href="/email-queue" class=(menu=='email-queue'?'active':''))
-							span.mr-2.fa.fa-inbox
+							span.me-2.fa.fa-inbox
 							| Send Queue
 				if currentUserCan('templates_read')
 					li.nav-item
 						a.nav-link(href="/templates" class=(menu=='templates'?'active':''))
-							span.mr-2.fa.fa-mail-bulk
+							span.me-2.fa.fa-mail-bulk
 							| Templates
 				
 
@@ -89,20 +89,20 @@ nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
 				if currentUserCan('activate_kiosk_mode')
 					li.nav-item
 						a.nav-link(href="/kiosk/enable" class=(menu=='kiosk mode'?'active':''))
-							span.mr-2.fa.fa-cash-register
+							span.me-2.fa.fa-cash-register
 							| Kiosk Mode
 				if currentUserCan('generate_insurance_report')
 					li.nav-item
 						a.nav-link(href="/reports/insurance" class=(menu=='insurance'?'active':''))
-							span.mr-2.fa.fa-file-alt
+							span.me-2.fa.fa-file-alt
 							| Insurance Report
 				if currentUserCan('printers_read')
 					li.nav-item
 						a.nav-link(href="/printers" class=(menu=='printers'?'active':''))
-							span.mr-2.fa.fa-print
+							span.me-2.fa.fa-print
 							| Printers
 				if currentUserCan('options_read')
 					li.nav-item
 						a.nav-link(href="/options" class=(menu=='options'?'active':''))
-							span.mr-2.fa.fa-cog
+							span.me-2.fa.fa-cog
 							| Options
