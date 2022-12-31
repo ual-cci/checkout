@@ -46,9 +46,7 @@ if items && items.length > 0
 								td(data-searchable=item.barcode)
 									+clipboard(item.barcode)
 									if currentUserCan('print')
-										|  
-										a(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}`)
-											span.fas.fa-print.text-muted
+										+actionBtn('print', `/items/${item.id}/label?printer=${loggedInUser.printer_id}`, 'Print Label')
 							else
 								td=item.barcode
 						if actionable
@@ -84,11 +82,9 @@ if items && items.length > 0
 							if item.owner_id
 								if actionable
 									td
-										if currentUserCan('users_email')
-											small: a(href=`/users/${item.owner_id}/email` title=`Email user: ${item.owner_name}`).text-muted
-												span.fas.fa-envelope
-											| 
 										+user(item.owner_name, item.owner_id)
+										if currentUserCan('users_email')
+											+actionBtn('envelope', `/users/${item.owner_id}/email`, `Email user: ${item.owner_name}`)
 								else
 									td=item.owner_name
 									if columns.includes('course')
