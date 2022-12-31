@@ -25,14 +25,12 @@ if courses.length > 0
 							td
 								if currentUserCan('users_read')
 									+btn( 'sm', 'outline-dark', 'user', 'Users', '/users/?course=' + course.id )
-									+space
 								if currentUserCan('items_read')
 									+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?course=' + course.id )
 						if currentUserCan({or:['courses_edit','courses_remove']})
 							td
 								if currentUserCan('courses_edit')
 									+editBtn( '/courses/' + course.id + '/edit' )
-									+space
 								if currentUserCan('courses_remove')
 									+removeBtn( '/courses/' + course.id + '/remove' )
 else

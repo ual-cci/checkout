@@ -24,7 +24,6 @@ if departments.length > 0
 							td
 								if currentUserCan('departments_edit')
 									+editBtn( '/departments/' + department.id + '/edit' )
-									+space
 								if currentUserCan('departments_remove')
 									+removeBtn( '/departments/' + department.id + '/remove' )
 else

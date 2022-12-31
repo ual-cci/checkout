@@ -34,7 +34,6 @@ if keys.length > 0
 							td
 								+editBtn( '/options/' + key + '/edit' )
 								if option.overridden
-									+space
 									+btn( 'sm', 'outline-danger', 'eraser', 'Reset', '/options/' + key + '/reset' )
 else
 	+messageBlock( 'warning', 'black','There are no options to display.' )

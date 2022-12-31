@@ -19,7 +19,6 @@ if years.length > 0
 							td
 								if currentUserCan('years_edit')
 									+editBtn( '/years/' + year.id + '/edit' )
-									+space
 								if currentUserCan('years_remove')
 									+removeBtn( '/years/' + year.id + '/remove' )
 else

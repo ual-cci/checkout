@@ -160,9 +160,6 @@ mixin removeBtn( url )
 mixin compactDeleteBtn( url )
 	+btn( 'sm', 'outline-danger', 'trash', '', url )
 
-mixin space
-	|  
-
 mixin sortItemHead(text, slug, sort_by, sort_dir, selected, filter_path, sortable)
 	- sort_by = sort_by.split('_')[0]
 	if sort_dir == 'desc' || sort_by != slug

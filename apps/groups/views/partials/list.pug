@@ -33,7 +33,6 @@ if groups.length > 0
 							td
 								if currentUserCan('groups_edit')
 									+editBtn( '/groups/' + group.id + '/edit' )
-									+space
 								if currentUserCan('groups_remove')
 									+removeBtn( '/groups/' + group.id + '/remove' )
 else

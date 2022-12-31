@@ -29,10 +29,8 @@ if roles.length > 0
 							td
 								if currentUserCan('roles_edit')
 									+editBtn( '/roles/' + role.id + '/edit' )
-									+space
 								if currentUserCan('roles_set_permissions')
 									+btn( 'sm', 'outline-primary', 'user-lock', 'Set Permissions', '/roles/' + role.id + '/permissions' )
-									+space
 								if currentUserCan('roles_remove')
 									+removeBtn( '/roles/' + role.id + '/remove' )
 else
