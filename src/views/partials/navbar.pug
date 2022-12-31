@@ -1,19 +1,19 @@
-nav.navbar.navbar-expand-md.sticky-top.p-0.shadow.bg-dark.navbar-dark
-	a(href="/").navbar-brand.col-md-3.col-lg-2.mr-0.px-3.d-flex.align-items-center
+nav.container-fluid.navbar.navbar-dark.sticky-top.flex-md-nowrap.p-0
+	a(href="/").navbar-brand.col-2.px-3
 		img(src="/imgs/icon.svg" width="22" height="22")
-		span.ml-2.align=Options.get('application_name')
+		span=Options.get('application_name')
 		
 	button.navbar-toggler.position-absolute.d-md-none(type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true" aria-label="Toggle navigation")
 		span.navbar-toggler-icon
 	
 	if loggedInUser
 		if currentUserCan('global_search')
-			input#search.form-control.form-control-dark.mr-md-2.w-100(type="text" placeholder="Search" autocomplete="off")
-		.navbar-nav.ml-auto
+			input#search.form-control.form-control-dark.w-100(type="text" placeholder="Search" autocomplete="off")
+		.navbar-nav.me-auto
 			if loggedInUser
 				.nav-item.dropdown
-					a( href="#" id="user" data-toggle="dropdown" ).dropdown-toggle.nav-link.mr-2=loggedInUser.name
-					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right.mr-2
+					a( href="#" id="user" data-bs-toggle="dropdown" ).dropdown-toggle.nav-link.me-2=loggedInUser.name
+					.dropdown-menu( aria-labelledby="user" ).dropdown-menu-right.me-2
 						a( href='/shortcuts' ).dropdown-item
 							span.far.fa-keyboard
 							|  Shortcuts
