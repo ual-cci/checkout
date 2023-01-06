@@ -238,11 +238,12 @@ const Authentication = {
 			Authentication._currentUserCheck(permission, req, res, next)
 		}
 	},
-	APIuserCan: function(permission) {
-		return function(req, res, next) {
-			var status = Authentication.loggedIn(req)
+	
+	APIuserCan: (permission) => {
+		return (req, res, next) => {
+			const status = Authentication.loggedIn(req)
 			if (status) {
-				var authorised = Authentication.userCan(req.user, permission)
+				const authorised = Authentication.userCan(req.user, permission)
 				if (authorised) {
 					return next()
 				} else {
