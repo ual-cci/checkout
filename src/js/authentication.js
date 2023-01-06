@@ -85,8 +85,7 @@ const Authentication = {
 		})
 
 		passport.deserializeUser(function(data, done) {
-			var id
-			id = data.id
+			const id = data.id
 			users.query()
 			.lookup(['printer', 'role', 'template'])
 			.where([['id', id]]).retrieveSingle()
