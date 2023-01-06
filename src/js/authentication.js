@@ -193,7 +193,8 @@ const Authentication = {
 				return
 		}
 	},
-	userCan: function(user, permission) {
+
+	userCan: (user, permission) => {
 		if (typeof permission == 'object') {
 			if (permission.or) {
 				return permission.or.some(p => user.permissions.includes(p))
