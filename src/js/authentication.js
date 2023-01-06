@@ -13,60 +13,84 @@ const Authentication = {
 
 		// Add support for local authentication
 		passport.use(
-			users.getByEmail(email, 'all')
 			new LocalStrategy((email, password, done) => {
+				let persist = {}
+				users.getByEmail(email, 'all')
 				.then(user => {
+					// Does the email even exist?
 					if (!user) {
-						throw new Error('Invalid Login')
+						throw new Error('Invalid Email Address')
 					}
 
 					// Is there a password set?
 					if (!user.pw_salt) {
-						throw new Error('Invalid login')
+						throw new Error('Account has no password')
 					}
 
-					return new Promise((resolve, reject) => {
-						// Hash the entered password with the users salt
-						Authentication.hashPassword(password, user.pw_salt, user.pw_iterations, (hash) => {
-							resolve({hash, user})
-						})
-					})
-					// return done(null, false, {message: 'Incorrect username.'})
-				})
-				.then(({hash, user}) => {
-					let persist = {
-						pw_attempts: user.pw_attempts,
-						successful: true,
-						flash: {},
-						user
+					// Is the user active?
+					if (user.disable) {
+						throw new Error('Account disabled')
 					}
+
+					// Have the password attempts been exceeded?
+					if (user.pw_attempts >= Options.getInt('password_tries')) {
+						throw new Error('Account locked')
+					}
+
+					// Persist the user for the promise chain
+					persist.user = user
+
+					return Authentication.hashPassword(password, user.pw_salt, user.pw_iterations)
+				})
+				.then(hash => {
+					const {user} = persist
+					persist.successful = false // Default to a failed login
+					
 					if (hash == user.pw_hash) {
+						persist.successful = true // This is what makes the login work
+
+						// Advise user of incorrect password attempts and reset to 0
 						if (user.pw_attempts > 0) {
-						persist.flash = {
-							message: `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`
-						}
-						persist.pw_attempts = 0
+							persist.flash = {
+								message: `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`
+							}
+							user.pw_attempts = 0
 						}
 					} else {
-						persist.successful = false
-						persist.pw_attempts++
+						user.pw_attempts++
 						persist.flash = {
-						message: 'Invalid login'
+							message: 'Incorrect password'
 						}
 					}
-					return users.update(user.id, {
-						pw_attempts: persist.pw_attempts
-					})
-					.then(id => {
-						return persist
-					})
+					
+					// Transparently check and update password hashes if necessary
+					if (user.pw_iterations < process.env.USER_PW_ITERATIONS) {
+						Authentication.generatePassword(password)
+						.then(pw => {
+							user.pw_hash = pw.hash
+							user.pw_salt = pw.salt
+							user.pw_iterations = pw.iterations
+
+							let updateFields = {
+								pw_attempts: user.pw_attempts,
+								pw_hash: pw.hash,
+								pw_salt: pw.salt,
+								pw_iterations: pw.iterations
+							}
+
+							// Update user data
+							users.update(user.id, updateFields).then(id => {
+								console.log(`${id} password iterations updated to ${pw.iterations}`)
+							})
+						})
+					}
+
+					persist.user = user
 				})
-				.then(({successful, user, flash}) => {
-					if (flash) {
-						done(null, successful ? {id: user.id} : false, flash)
-					} else {
-						done(null, successful ? {id: user.id} : false)
-					}
+				.then(() => {
+					const {user, flash} = persist
+					// Pass the login status and flash messages to passport deserializer
+					done(null, persist.successful ? {id: user.id} : false, flash)
 				})
 				.catch(err => {
 					done(null, false, {
@@ -246,7 +270,7 @@ const Authentication = {
 			Authentication._currentUserCheck(permission, req, res, next)
 		}
 	},
-	
+
 	APIuserCan: (permission) => {
 		return (req, res, next) => {
 			const status = Authentication.loggedIn(req)
