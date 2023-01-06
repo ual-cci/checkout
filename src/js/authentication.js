@@ -205,8 +205,9 @@ const Authentication = {
 			return user.permissions.includes(permission)
 		}
 	},
-	_currentUserCheck: function(permission, req, res, next) {
-		var status = Authentication.loggedIn(req)
+
+	_currentUserCheck: (permission, req, res, next) => {
+		const status = Authentication.loggedIn(req)
 		if (status) {
 			var authorised = Authentication.userCan(req.user, permission)
 			if (authorised) {
