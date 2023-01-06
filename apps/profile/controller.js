@@ -78,7 +78,8 @@ class ProfileController extends BaseController {
 			user.audit_point = null
 		}
 
-		auth.generatePassword(req.body.password, password => {
+		auth.generatePassword(req.body.password)
+		.then(password => {
 			if (req.body.password) {
 				user.pw_hash = password.hash
 				user.pw_salt = password.salt

@@ -340,7 +340,7 @@ class UsersController extends BaseController {
 			}
 		}
 
-		auth.generatePassword(req.body.password?req.body.password:'', password => {
+		auth.generatePassword(req.body.password?req.body.password:'').then(password => {
 			if (req.body.password) {
 				if (auth.userCan(req.user, 'users_change_password')) {
 					user.pw_hash = password.hash

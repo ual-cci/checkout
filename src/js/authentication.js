@@ -7,73 +7,94 @@ const UsersModel = require('../models/users')
 const PermissionsModel = require('../models/permissions')
 
 const Authentication = {
-	auth: function(app) {
+	auth: (app) => {
 		const users = new UsersModel()
 		const permissions = new PermissionsModel()
 
 		// Add support for local authentication
 		passport.use(
-			new LocalStrategy(function(email, password, done) {
-			users.getByEmail(email, 'all')
+			new LocalStrategy((email, password, done) => {
+				let persist = {}
+				users.getByEmail(email, 'all')
 				.then(user => {
+					// Does the email even exist?
 					if (!user) {
-						throw new Error('Invalid Login')
+						throw new Error('Invalid Email Address')
 					}
 
-					if (user.pw_attempts >= Options.get('password_tries')) {
-						throw new Error('Account locked out')
-					}
-
+					// Is there a password set?
 					if (!user.pw_salt) {
-						throw new Error('Invalid login')
+						throw new Error('Account has no password')
 					}
 
-					return new Promise((resolve, reject) => {
-						// Hash the entered password with the users salt
-						Authentication.hashPassword(password, user.pw_salt, user.pw_iterations, (hash) => {
-							resolve({hash, user})
-						})
-					})
-					// return done(null, false, {message: 'Incorrect username.'})
-				})
-				.then(({hash, user}) => {
-					let persist = {
-						pw_attempts: user.pw_attempts,
-						successful: true,
-						flash: {},
-						user
+					// Is the user active?
+					if (user.disable) {
+						throw new Error('Account disabled')
 					}
+
+					// Have the password attempts been exceeded?
+					if (user.pw_attempts >= Options.getInt('password_tries')) {
+						throw new Error('Account locked')
+					}
+
+					// Persist the user for the promise chain
+					persist.user = user
+
+					return Authentication.hashPassword(password, user.pw_salt, user.pw_iterations)
+				})
+				.then(hash => {
+					const {user} = persist
+					persist.successful = false // Default to a failed login
+					
 					if (hash == user.pw_hash) {
+						persist.successful = true // This is what makes the login work
+
+						// Advise user of incorrect password attempts and reset to 0
 						if (user.pw_attempts > 0) {
-						persist.flash = {
-							message: `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`
-						}
-						persist.pw_attempts = 0
+							persist.flash = {
+								message: `There has been ${user.pw_attempts} attempt(s) to login to your account since you last logged in`
+							}
+							user.pw_attempts = 0
 						}
 					} else {
-						persist.successful = false
-						persist.pw_attempts++
+						user.pw_attempts++
 						persist.flash = {
-						message: 'Invalid login'
+							message: 'Incorrect password'
 						}
 					}
-					return users.update(user.id, {
-						pw_attempts: persist.pw_attempts
-					})
-					.then(id => {
-						return persist
-					})
+					
+					// Transparently check and update password hashes if necessary
+					if (user.pw_iterations < process.env.USER_PW_ITERATIONS) {
+						Authentication.generatePassword(password)
+						.then(pw => {
+							user.pw_hash = pw.hash
+							user.pw_salt = pw.salt
+							user.pw_iterations = pw.iterations
+
+							let updateFields = {
+								pw_attempts: user.pw_attempts,
+								pw_hash: pw.hash,
+								pw_salt: pw.salt,
+								pw_iterations: pw.iterations
+							}
+
+							// Update user data
+							users.update(user.id, updateFields).then(id => {
+								console.log(`${id} password iterations updated to ${pw.iterations}`)
+							})
+						})
+					}
+
+					persist.user = user
 				})
-				.then(({successful, user, flash}) => {
-					if (flash) {
-						done(null, successful ? {id: user.id} : false, flash)
-					} else {
-						done(null, successful ? {id: user.id} : false)
-					}
+				.then(() => {
+					const {user, flash} = persist
+					// Pass the login status and flash messages to passport deserializer
+					done(null, persist.successful ? {id: user.id} : false, flash)
 				})
 				.catch(err => {
 					done(null, false, {
-						message: err
+						message: err.message
 					})
 				})
 			})
@@ -85,8 +106,7 @@ const Authentication = {
 		})
 
 		passport.deserializeUser(function(data, done) {
-			var id
-			id = data.id
+			const id = data.id
 			users.query()
 			.lookup(['printer', 'role', 'template'])
 			.where([['id', id]]).retrieveSingle()
@@ -126,36 +146,43 @@ const Authentication = {
 
 	// Used to create a long salt for each individual user
 	// returns a 256 byte / 512 character hex string
-	generateSalt: function(callback) {
-		crypto.randomBytes(256, function(ex, salt) {
-			callback(salt.toString('hex'))
+	generateSalt: (callback) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(256, (ex, salt) => {
+				resolve(salt.toString('hex'))
+			})
 		})
 	},
 
 	// Hashes passwords through sha512 1000 times
 	// returns a 512 byte / 1024 character hex string
-	hashPassword: function(password, salt, iterations, callback) {
-		crypto.pbkdf2(password, salt, iterations, 512, 'sha512', function(err, hash) {
-			callback(hash.toString('hex'))
+	hashPassword: (password, salt, iterations) => {
+		return new Promise((resolve, reject) => {
+			crypto.pbkdf2(password, salt, iterations, 512, 'sha512', (err, hash) => {
+				resolve(hash.toString('hex'))
+			})
 		})
 	},
 
 	// Utility function generates a salt and hash from a plain text password
-	generatePassword: function(password, callback) {
-		Authentication.generateSalt(function(salt) {
-			Authentication.hashPassword(password, salt, parseInt(process.env.USER_PW_ITERATIONS, 10), function(hash) {
-				callback({
-					salt: salt,
-					hash: hash,
-					iterations: parseInt(process.env.USER_PW_ITERATIONS, 10)
+	generatePassword: (password) => {
+		return new Promise((resolve, reject) => {
+			const iterations = parseInt(process.env.USER_PW_ITERATIONS, 10)
+			Authentication.generateSalt().then(salt => {
+				Authentication.hashPassword(password, salt, iterations).then(hash => {
+					resolve({
+						salt: salt,
+						hash: hash,
+						iterations: iterations
+					})
 				})
 			})
 		})
 	},
 	
 	// Checks password meets requirements
-	passwordRequirements: function(password) {
-		if (! password)
+	passwordRequirements: (password) => {
+		if (!password)
 			return 'No password entered'
 
 		if (password.length < 8)
@@ -173,7 +200,7 @@ const Authentication = {
 		return true
 	},
 
-	loggedIn: function(req) {
+	loggedIn: (req) => {
 		// Is the user logged in?
 		if (req.isAuthenticated() && req.user != undefined) {
 			return true
@@ -181,8 +208,9 @@ const Authentication = {
 			return false
 		}
 	},
-	isLoggedIn: function(req, res, next) {
-		var status = Authentication.loggedIn(req)
+
+	isLoggedIn: (req, res, next) => {
+		const status = Authentication.loggedIn(req)
 		switch (status) {
 			case true:
 				return next()
@@ -193,7 +221,8 @@ const Authentication = {
 				return
 		}
 	},
-	userCan: function(user, permission) {
+
+	userCan: (user, permission) => {
 		if (typeof permission == 'object') {
 			if (permission.or) {
 				return permission.or.some(p => user.permissions.includes(p))
@@ -204,8 +233,9 @@ const Authentication = {
 			return user.permissions.includes(permission)
 		}
 	},
-	_currentUserCheck: function(permission, req, res, next) {
-		var status = Authentication.loggedIn(req)
+
+	_currentUserCheck: (permission, req, res, next) => {
+		const status = Authentication.loggedIn(req)
 		if (status) {
 			var authorised = Authentication.userCan(req.user, permission)
 			if (authorised) {
@@ -222,13 +252,15 @@ const Authentication = {
 			res.redirect('/login')
 		}
 	},
-	currentUserCan: function(permission) {
-		return function(req, res, next) {
+
+	currentUserCan: (permission) => {
+		return (req, res, next) => {
 			Authentication._currentUserCheck(permission, req, res, next)
 		}
 	},
-	currentUserCanOrOptionOverride: function(permission, option) {
-		return function(req, res, next) {
+
+	currentUserCanOrOptionOverride: (permission, option) => {
+		return (req, res, next) => {
 			// If option is true then show the page
 			if (Options.getBoolean(option)) {
 				return next()
@@ -238,11 +270,12 @@ const Authentication = {
 			Authentication._currentUserCheck(permission, req, res, next)
 		}
 	},
-	APIuserCan: function(permission) {
-		return function(req, res, next) {
-			var status = Authentication.loggedIn(req)
+
+	APIuserCan: (permission) => {
+		return (req, res, next) => {
+			const status = Authentication.loggedIn(req)
 			if (status) {
-				var authorised = Authentication.userCan(req.user, permission)
+				const authorised = Authentication.userCan(req.user, permission)
 				if (authorised) {
 					return next()
 				} else {
