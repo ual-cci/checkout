@@ -73,7 +73,7 @@ const Authentication = {
 				})
 				.catch(err => {
 					done(null, false, {
-						message: err
+						message: err.message
 					})
 				})
 			})
