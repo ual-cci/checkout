@@ -145,13 +145,16 @@ const Authentication = {
 	},
 
 	// Utility function generates a salt and hash from a plain text password
-	generatePassword: function(password, callback) {
-		Authentication.generateSalt(function(salt) {
-			Authentication.hashPassword(password, salt, parseInt(process.env.USER_PW_ITERATIONS, 10), function(hash) {
-				callback({
-					salt: salt,
-					hash: hash,
-					iterations: parseInt(process.env.USER_PW_ITERATIONS, 10)
+	generatePassword: (password) => {
+		return new Promise((resolve, reject) => {
+			const iterations = parseInt(process.env.USER_PW_ITERATIONS, 10)
+			Authentication.generateSalt().then(salt => {
+				Authentication.hashPassword(password, salt, iterations).then(hash => {
+					resolve({
+						salt: salt,
+						hash: hash,
+						iterations: iterations
+					})
 				})
 			})
 		})
