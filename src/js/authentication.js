@@ -181,8 +181,9 @@ const Authentication = {
 			return false
 		}
 	},
-	isLoggedIn: function(req, res, next) {
-		var status = Authentication.loggedIn(req)
+
+	isLoggedIn: (req, res, next) => {
+		const status = Authentication.loggedIn(req)
 		switch (status) {
 			case true:
 				return next()
