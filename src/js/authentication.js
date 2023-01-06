@@ -126,9 +126,11 @@ const Authentication = {
 
 	// Used to create a long salt for each individual user
 	// returns a 256 byte / 512 character hex string
-	generateSalt: function(callback) {
-		crypto.randomBytes(256, function(ex, salt) {
-			callback(salt.toString('hex'))
+	generateSalt: (callback) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(256, (ex, salt) => {
+				resolve(salt.toString('hex'))
+			})
 		})
 	},
 
