@@ -222,8 +222,9 @@ const Authentication = {
 			res.redirect('/login')
 		}
 	},
-	currentUserCan: function(permission) {
-		return function(req, res, next) {
+
+	currentUserCan: (permission) => {
+		return (req, res, next) => {
 			Authentication._currentUserCheck(permission, req, res, next)
 		}
 	},
