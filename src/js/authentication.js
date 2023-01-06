@@ -134,9 +134,11 @@ const Authentication = {
 
 	// Hashes passwords through sha512 1000 times
 	// returns a 512 byte / 1024 character hex string
-	hashPassword: function(password, salt, iterations, callback) {
-		crypto.pbkdf2(password, salt, iterations, 512, 'sha512', function(err, hash) {
-			callback(hash.toString('hex'))
+	hashPassword: (password, salt, iterations) => {
+		return new Promise((resolve, reject) => {
+			crypto.pbkdf2(password, salt, iterations, 512, 'sha512', (err, hash) => {
+				resolve(hash.toString('hex'))
+			})
 		})
 	},
 
