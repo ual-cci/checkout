@@ -173,7 +173,7 @@ const Authentication = {
 		return true
 	},
 
-	loggedIn: function(req) {
+	loggedIn: (req) => {
 		// Is the user logged in?
 		if (req.isAuthenticated() && req.user != undefined) {
 			return true
