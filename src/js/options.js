@@ -5,6 +5,14 @@ const Options = {
 	get: (key) => {
 		return Options._opts[key] ? Options._opts[key] : null
 	},
+	getInt: (key) => {
+		const opt = Options.get(key)
+		if (opt) {
+			return parseInt(opt.value)
+		} else {
+			return ''
+		}
+	},
 	getText: (key) => {
 		const opt = Options.get(key)
 		if (opt) {
