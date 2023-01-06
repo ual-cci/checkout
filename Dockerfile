@@ -1,5 +1,5 @@
-# Build from node v10 alpine with gyp + pm2
-FROM node:10-alpine
+# Build from node v16 alpine with gyp + pm2
+FROM node:16-alpine
 RUN apk add --no-cache g++ make python
 RUN npm install pm2 -g
 
