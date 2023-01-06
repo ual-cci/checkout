@@ -7,7 +7,7 @@ const UsersModel = require('../models/users')
 const PermissionsModel = require('../models/permissions')
 
 const Authentication = {
-	auth: function(app) {
+	auth: (app) => {
 		const users = new UsersModel()
 		const permissions = new PermissionsModel()
 
