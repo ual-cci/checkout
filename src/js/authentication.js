@@ -227,8 +227,9 @@ const Authentication = {
 			Authentication._currentUserCheck(permission, req, res, next)
 		}
 	},
-	currentUserCanOrOptionOverride: function(permission, option) {
-		return function(req, res, next) {
+
+	currentUserCanOrOptionOverride: (permission, option) => {
+		return (req, res, next) => {
 			// If option is true then show the page
 			if (Options.getBoolean(option)) {
 				return next()
