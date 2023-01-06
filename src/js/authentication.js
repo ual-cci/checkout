@@ -20,10 +20,7 @@ const Authentication = {
 						throw new Error('Invalid Login')
 					}
 
-					if (user.pw_attempts >= Options.get('password_tries')) {
-						throw new Error('Account locked out')
-					}
-
+					// Is there a password set?
 					if (!user.pw_salt) {
 						throw new Error('Invalid login')
 					}
