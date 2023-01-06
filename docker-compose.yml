@@ -23,7 +23,7 @@ services:
       - APP_HOST=
       - APP_PORT=3000
       - APP_COOKIE=checkout_session
-      - USER_PW_ITERATIONS=50000
+      - USER_PW_ITERATIONS=350000
       - LOG_PATH=./logs
       - LOG_STDOUT=true
   nginx:
