@@ -154,8 +154,8 @@ const Authentication = {
 	},
 	
 	// Checks password meets requirements
-	passwordRequirements: function(password) {
-		if (! password)
+	passwordRequirements: (password) => {
+		if (!password)
 			return 'No password entered'
 
 		if (password.length < 8)
