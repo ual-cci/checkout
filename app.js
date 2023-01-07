@@ -8,6 +8,7 @@ const helmet = require('helmet')
 const {auth} = require('./src/js/authentication.js')
 const sessions = require('./src/js/sessions.js')
 const appLoader = require('./src/js/app-loader.js')
+const templateLocals = require('./src/js/template-locals.js')
 const errors = require('./src/js/errors.js')
 
 const app = express()
@@ -33,7 +34,9 @@ app.set('view engine', 'pug')
 app.set('view cache', false)
 
 // Load apps
+app.use(templateLocals())
 appLoader(app)
+
 
 errors(app)
 

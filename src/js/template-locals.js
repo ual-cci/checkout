@@ -24,6 +24,6 @@ function templateLocals(req, res, next) {
 	next()
 }
 
-module.exports = (apps) => {
+module.exports = () => {
 	return templateLocals
 }
