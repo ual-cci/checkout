@@ -3,12 +3,11 @@ nav.navbar.navbar-expand-md.sticky-top
 		a(href="/").navbar-brand.d-flex.align-items-center
 			img(src="/imgs/logo.svg").d-inline-block.align-text-top
 			| #{Options.get('application_name')}
+		button.navbar-toggler.ms-auto(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle sidebar")
+				span.navbar-toggler-icon
 
 	if loggedInUser
 		.container-fluid.col-lg-10.col-md-9.p-0
-			button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle sidebar")
-				span.navbar-toggler-icon
-
 			.navbar-collapse.collapse
 				if currentUserCan('global_search')
 					input#search.form-control.w-100(type="search" placeholder="Search" aria-label="Search" autocomplete="off")
