@@ -26,7 +26,7 @@ jQuery(document).ready(function() {
 	jQuery('#audit').bind('submit', handleAuditSubmit)
 	jQuery('#label').bind('submit', handleLabelSubmit)
 	jQuery('#new-user form').bind('submit', handleUserSubmit)
-	jQuery(document).delegate('#modules .buttons button', 'click', handleItemButtons)
+	jQuery(document).delegate('#modules [data-btn-action]', 'click', handleItemButtons)
 	jQuery(document).delegate('#modules .card-header', 'click', handlePanelClick)
 	jQuery(document).delegate('#issue .flash .override', 'click', handleOverride)
 	jQuery(document).delegate('#results .list-group-item', 'click', handleResultClick)
@@ -151,26 +151,26 @@ function addResult(result, type) {
 	if (result.loanable) {
 		switch (result.status) {
 			case 'unavailable':
-				html += ' <span class="badge badge-success">&nbsp</span>'
+				html += ' <span class="badge text-bg-success">&nbsp</span>'
 				break
 			case 'available':
-				html += ' <span class="badge badge-success">&nbsp</span>'
+				html += ' <span class="badge text-bg-success">&nbsp</span>'
 				break
 			case 'on-loan':
-				html += ' <span class="badge badge-danger">&nbsp</span>'
+				html += ' <span class="badge text-bg-danger">&nbsp</span>'
 				break
 			case 'lost':
 			case 'broken':
-				html += ' <span class="badge badge-warning">&nbsp</span>'
+				html += ' <span class="badge text-bg-warning">&nbsp</span>'
 				break
 			case undefined:
 				break
 			default:
-				html += ' <span class="badge badge-default">&nbsp</span>'
+				html += ' <span class="badge text-bg-secondary">&nbsp</span>'
 				break
 		}
 	} else {
-		html += ' <span class="badge badge-secondary">&nbsp</span>'
+		html += ' <span class="badge text-bg-secondary">&nbsp</span>'
 	}
 	html += ' <strong>' + result.name + '</strong>'
 	html += '<br />'
