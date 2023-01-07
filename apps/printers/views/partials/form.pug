@@ -1,15 +1,18 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name" type="text" value=printer.name required autocomplete="off" )#name.form-control
-	.form-group.row
-		label( for="url" ).col-lg-2.col-form-label URL
+			input#name(name="name" type="text" value=printer.name required autocomplete="off").form-control
+	
+	.form-group.row.mb-3
+		label(for="url").col-lg-2.col-form-label URL
 		.col-lg-4
-			input( name="url" type="text" value=printer.url required autocomplete="off" )#url.form-control
-	.form-group.row
+			input#url(name="url" type="text" value=printer.url required autocomplete="off").form-control
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			input( type="submit" value=action ).btn.btn-primary
+			input(type="submit" value=action).btn.btn-primary
 			|  
-			a( href="/printers" ).btn.btn-outline-dark Cancel
+			a(href="/printers").btn.btn-outline-secondary Cancel

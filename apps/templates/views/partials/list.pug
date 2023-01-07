@@ -22,7 +22,6 @@ if templates.length > 0
 							td
 								if currentUserCan('templates_edit')
 									+editBtn( '/templates/' + template.id + '/edit' )
-									+space
 								if currentUserCan('templates_remove')
 									+removeBtn( '/templates/' + template.id + '/remove' )
 else

@@ -1,70 +1,78 @@
 form(method="get")#filter
 	input(type="hidden" name="sortby" value=sortby)
 	input(type="hidden" name="direction" value=direction)
-	.form-group.row.collapse#groupFilter(class=(selected.group?'show':''))
-		label(for="groups").col-lg-2 Group
-		.col-lg-3
-			select(name="group")#group.form-control.form-control-sm
+
+	.form-group.row.collapse.mb-1#groupFilter(class=(selected.group?'show':''))
+		label(for="groups").col-sm-2 Group
+		.col-md-5.col-sm-9
+			select#group(name="group").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				for group in groups
 					option(value=group.id selected=(group.id == selected.group)) #{ group.name }
-	.form-group.row.collapse#locationFilter(class=(selected.location?'show':''))
-		label(for="location").col-lg-2 Location
-		.col-lg-3
-			select(name="location")#location.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#locationFilter(class=(selected.location?'show':''))
+		label(for="location").col-sm-2 Location
+		.col-md-5.col-sm-9
+			select#location(name="location").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				for location in locations
 					option(value=location.id selected=(location.id == selected.location)) #{ location.name }
-	.form-group.row.collapse#departmentFilter(class=(selected.department?'show':''))
-		label(for="department").col-lg-2 Department
-		.col-lg-3
-			select(name="department")#department.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#departmentFilter(class=(selected.department?'show':''))
+		label(for="department").col-sm-2 Department
+		.col-md-5.col-sm-9
+			select#department(name="department").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				for department in departments
 					option(value=department.id selected=(department.id == selected.department)) #{ department.name }
+	
 	if courses
-		.form-group.row.collapse#courseFilter(class=(selected.course?'show':''))
-			label(for="course").col-lg-2 Course
-			.col-lg-3
-				select(name="course")#group.form-control.form-control-sm
+		.form-group.row.collapse.mb-1#courseFilter(class=(selected.course?'show':''))
+			label(for="course").col-sm-2 Course
+			.col-md-5.col-sm-9
+				select#group(name="course").form-control.form-select.form-select-sm
 					option(value="" selected)
 					option(disabled) ──────────
 					for course in courses
 						option(value=course.id selected=(course.id == selected.course)) #{ course.name }
+	
 	if years
-		.form-group.row.collapse#yearFilter(class=(selected.year?'show':''))
-			label(for="year").col-lg-2 Year
-			.col-lg-3
-				select(name="year")#year.form-control.form-control-sm
+		.form-group.row.collapse.mb-1#yearFilter(class=(selected.year?'show':''))
+			label(for="year").col-sm-2 Year
+			.col-md-5.col-sm-9
+				select#year(name="year").form-control.form-select.form-select-sm
 					option(value="" selected)
 					option(disabled) ──────────
 					for year in years
 						option(value=year.id selected=(year.id == selected.year)) #{ year.name }
-	.form-group.row.collapse#statusFilter(class=(selected.status?'show':''))
-		label(for="status").col-lg-2 Status
-		.col-lg-3
-			select(name="status")#status.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#statusFilter(class=(selected.status?'show':''))
+		label(for="status").col-sm-2 Status
+		.col-md-5.col-sm-9
+			select#status(name="status").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				option(value='available' selected=(selected.status == 'available')) Available
 				option(value='on-loan' selected=(selected.status == 'on-loan')) On Loan
 				option(value='broken' selected=(selected.status == 'broken')) Broken
 				option(value='lost' selected=(selected.status == 'lost')) Lost
-	.form-group.row.collapse#loanableFilter(class=(selected.loanable?'show':''))
-		label(for="loanable").col-lg-2 Loanable
-		.col-lg-3
-			select(name="loanable")#loanable.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#loanableFilter(class=(selected.loanable?'show':''))
+		label(for="loanable").col-sm-2 Loanable
+		.col-md-5.col-sm-9
+			select#loanable(name="loanable").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				option(value='true' selected=(selected.loanable == 'true')) Yes
 				option(value='false' selected=(selected.loanable == 'false')) No
-	.form-group.row.collapse#dueFilter(class=(selected.due?'show':''))
-		label(for="due").col-lg-2 Due
-		.col-lg-3
-			select(name="due")#due.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#dueFilter(class=(selected.due?'show':''))
+		label(for="due").col-sm-2 Due
+		.col-md-5.col-sm-9
+			select#due(name="due").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				option(value='overdue' selected=(selected.due == 'overdue')) Overdue
@@ -73,10 +81,11 @@ form(method="get")#filter
 				option(value='today' selected=(selected.due == 'today')) Today
 				option(value='thisweek' selected=(selected.due == 'thisweek')) This week
 				option(value='thismonth' selected=(selected.due == 'thismonth')) This month
-	.form-group.row.collapse#auditedFilter(class=(selected.audited?'show':''))
-		label(for="audited").col-lg-2 Audited
-		.col-lg-3
-			select(name="audited")#audited.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#auditedFilter(class=(selected.audited?'show':''))
+		label(for="audited").col-sm-2 Audited
+		.col-md-5.col-sm-9
+			select#audited(name="audited").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				option(value='auditpoint' selected=(selected.audited == 'auditpoint')) Audit Point
@@ -84,10 +93,11 @@ form(method="get")#filter
 				option(value='today' selected=(selected.audited == 'today')) Today
 				option(value='thisweek' selected=(selected.audited == 'thisweek')) This week
 				option(value='thismonth' selected=(selected.audited == 'thismonth')) This month
-	.form-group.row.collapse#scannedFilter(class=(selected.scanned?'show':''))
-		label(for="scanned").col-lg-2 Scanned
-		.col-lg-3
-			select(name="scanned")#scanned.form-control.form-control-sm
+	
+	.form-group.row.collapse.mb-1#scannedFilter(class=(selected.scanned?'show':''))
+		label(for="scanned").col-sm-2 Scanned
+		.col-md-5.col-sm-9
+			select#scanned(name="scanned").form-control.form-select.form-select-sm
 				option(value="" selected)
 				option(disabled) ──────────
 				option(value='true' selected=(selected.scanned == 'true')) Yes

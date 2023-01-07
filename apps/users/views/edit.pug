@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Edit " + user.name
-	- heading = title
-	- menu = "users"
+	- title = 'Edit User'
+	- breadcrumb.push({name: user.name, url: `/users/${user.id}`})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'users'
 
 block contents
 	- action = 'Update'

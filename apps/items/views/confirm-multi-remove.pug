@@ -1,16 +1,17 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove multiple items'
-	- heading = "Are you sure you want to remove the following items?"
-	- menu = "items"
+	- title = 'Remove Items'
+	- heading = 'Are you sure you want to remove the following items?'
+	- breadcrumb.push({name: 'Remove'})
+	- menu = 'items'
 
 block contents
 	form(method="post")
 		.form-group.row
 			.col-lg-12
 				+csrf
-				+messageBlock( 'dark', 'white', 'Removing these items will also delete it the historical data about actions performed against these items.', 'white' )
+				+messageBlock('danger', 'white', 'Removing these items will also delete it the historical data about actions performed against these items.')
 		.form-group.row
 			.col-lg-12
 				ul
@@ -30,4 +31,4 @@ block contents
 				input(type="hidden" name="ids" value=ids)
 				button(type='submit').btn.btn-danger Yes, remove these items
 				|  
-				a(href="/items").btn.btn-outline-dark Cancel
+				a(href="/items").btn.btn-outline-secondary Cancel

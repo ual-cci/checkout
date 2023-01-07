@@ -22,19 +22,18 @@ if keys.length > 0
 					- option = options[key]
 					tr
 						td(data-searchable=key)
-							strong: pre=key
-							p
+							strong: pre.mb-0=key
+							p.mb-0
 								small=option.purpose
 								if option.example
 									br
 									small Example: #{option.example}
-						td(data-searchable=option.value): pre=option.value
+						td(data-searchable=option.value): pre.mb-0=option.value
 						td=!option.overridden ? 'Yes' : 'No'
 						if currentUserCan('options_edit')
 							td
 								+editBtn( '/options/' + key + '/edit' )
 								if option.overridden
-									+space
 									+btn( 'sm', 'outline-danger', 'eraser', 'Reset', '/options/' + key + '/reset' )
 else
 	+messageBlock( 'warning', 'black','There are no options to display.' )

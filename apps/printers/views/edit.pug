@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Edit: " + printer.name
-	- heading = title
-	- menu = "printers"
+	- title = 'Edit Printer'
+	- breadcrumb.push({name: printer.name})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'printers'
 
 block contents
 	- action = 'Update'

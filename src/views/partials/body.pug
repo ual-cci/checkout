@@ -1,7 +1,9 @@
+if !heading
+	- heading = title
 .row
 	.col-12.pt-3
 		block header
-			.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+			.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-1.pb-2.mb-3.border-bottom
 				h1.h2=heading
 				.btn-toolbar.mb-2.mb-md-0
 					block buttons
@@ -10,12 +12,11 @@
 			include flash.pug
 	.col-12
 		block contents
+.row.mt-3
 	block footer
-		.col-12
-			hr
 		.col-9
 			small.text-muted #{Options.get('application_name')} &mdash; #{Options.get('organisation_name')} &mdash;
 				|  
 				a.text-muted( href=Options.get('github_url'), target="_blank" ) Contribute on GitHub
 		.col-3
-			p.text-right: small: a.text-muted( href=`${Options.get('github_url')}/commit/${git}`, target="_blank" )=git
+			p.text-end: small: a.text-muted( href=`${Options.get('github_url')}/commit/${git}`, target="_blank" )=git

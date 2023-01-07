@@ -22,7 +22,6 @@ if reservations && reservations.length > 0
 						td: +user( reservation.operator_name, reservation.operator_id )
 						td
 							+editBtn( '/reservations/' + reservation.id + '/edit' )
-							+space
 							+removeBtn( '/reservations/' + reservation.id + '/remove' )
 else
 	+messageBlock( 'warning', 'black','There are no reservations to display.' )

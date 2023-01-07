@@ -1,9 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Create Email Template"
-	- heading = title
-	- menu = "templates"
+	- title = 'Create Template'
+	- breadcrumb.push({name: 'Create'})
+	- menu = 'templates'
 
 block contents
 	- action = 'Create'

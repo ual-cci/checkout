@@ -1,13 +1,15 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="value" ).col-lg-2.col-form-label Value
+	
+	.form-group.row.mb-3
+		label(for="value").col-lg-2.col-form-label Value
 		.col-lg-4
-			input( name="value" type="text" value=option.value required placeholder=option.default )#value.form-control
+			input#value(name="value" type="text" value=option.value required placeholder=option.default).form-control
 			if option.example
 				small.form-text.text-muted Example: #{option.example}
-	.form-group.row
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action
 			|  
-			a( href="/options" ).btn.btn-outline-dark Cancel
+			a(href="/options").btn.btn-outline-secondary Cancel

@@ -1,7 +1,7 @@
-var kioskTimer
+let kioskTimer
 
 function setKioskTimer() {
-	kioskTimer = setTimeout(function() {
+	kioskTimer = setTimeout(() => {
 		kioskLogout()
 	}, 30000)
 }

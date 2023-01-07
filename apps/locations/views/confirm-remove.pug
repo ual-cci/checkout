@@ -1,23 +1,27 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove: ' + selected.name
-	- heading = "Are you sure you want to remove " + selected.name + "?"
-	- menu = "locations"
+	- title = 'Remove Location'
+	- heading = `Are you sure you want to remove "${selected.name}"?`
+	- breadcrumb.push({name: selected.name})
+	- breadcrumb.push({name: 'Remove'})
+	- menu = 'locations'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
-		+messageBlock( 'dark', 'white', 'Deleting this location will transfer all the items to the new location selected below.' )
-		.form-group.row
+		+messageBlock('danger', 'white', 'Deleting this location will transfer all the items to the new location selected below.')
+		
+		.form-group.row.mb-3
 			label( for="location" ).col-lg-2.col-form-label Transfer items to
 			.col-lg-4
-				select( name="location", required )#location.form-control
-					option( value="" disabled selected ) Select a location
+				select#location(name="location" required).form-control.form-select
+					option(value="" disabled selected) Select a location
 					for location in locations
-						option( value=location.id, disabled=location.disabled )=location.name
-		.form-group.row
+						option(value=location.id, disabled=location.disabled)=location.name
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type='submit' ).btn.btn-danger Yes, remove and transfer
+				button(type='submit').btn.btn-danger Yes, remove and transfer
 				|  
-				a( href="/locations" ).btn.btn-outline-dark Cancel
+				a(href="/locations").btn.btn-outline-secondary Cancel

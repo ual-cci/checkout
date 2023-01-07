@@ -1,26 +1,28 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Insurance Report"
-	- heading = title
-	- menu = "insurance"
+	- title = 'Insurance Report'
+	- breadcrumb.push({name: title})
+	- menu = 'insurance'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
-		.form-group.row
-			label( for="min_value" ).col-lg-2.col-form-label Minimum value
+		
+		.form-group.row.mb-3
+			label(for="min_value").col-lg-2.col-form-label Minimum value
 			.col-lg-4
 				.input-group
-					.input-group-prepend
-						.input-group-text &pound;
-					input( name="min_value" type="number" step="0.01" value=100 )#min_value.form-control
-		.form-group.row
+					.input-group-text &pound;
+					input#min_value(name="min_value" type="number" step="0.01" value=100).form-control
+		
+		.form-group.row.mb-3
 			label(for="format").col-lg-2.col-form-label Format
 			.col-md-4
-				select(name="format")#format.form-control
+				select(name="format")#format.form-control.form-select
 					option(value='tsv') TSV
 					option(value='csv') CSV
-		.form-group.row
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type="submit" ).btn.btn-primary Download
+				button(type="submit").btn.btn-primary Download

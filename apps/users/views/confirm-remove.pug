@@ -1,16 +1,18 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove: ' + selected.name
-	- heading = "Are you sure you want to remove " + selected.name + "?"
-	- menu = "users"
+	- title = 'Remove User'
+	- heading = `Are you sure you want to remove "${selected.name}"?`
+	- breadcrumb.push({name: selected.name, url: `/users/${selected.id}`})
+	- breadcrumb.push({name: 'Remove'})
+	- menu = 'users'
 
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock( 'dark', 'white', 'Removing this user will also delete it the historical data about actions performed against this user.' )
+		+messageBlock('danger', 'white', 'Removing this user will also delete it the historical data about actions performed against this user.')
 		.form-group.row
 			.col-lg-4
 				button( type='submit' ).btn.btn-danger Yes, remove user
 				|  
-				a( href="/users" ).btn.btn-outline-dark Cancel
+				a( href="/users" ).btn.btn-outline-secondary Cancel

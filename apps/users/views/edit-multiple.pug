@@ -1,60 +1,62 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Edit Multiple Users"
-	- heading = title
-	- menu = "users"
+	- title = 'Edit Multiple Users'
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'users'
 
 block contents
-	form( action="/users/edit" method="post" )
+	form(action="/users/edit" method="post")
 		+csrf
-		.form-group.row
-			label( for="status" ).col-lg-2.col-form-label Status
+		
+		.form-group.row.mb-3
+			label(for="status").col-lg-2.col-form-label Status
 			.col-lg-4
 				.input-group
-					select( name="status" )#status.form-control
-						option( value="" disabled selected ) &mdash;
-						option( value="active" ) Active
-						option( value="disabled" ) Disabled
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="status" )
-		.form-group.row
-			label( for="course" ).col-lg-2.col-form-label Course
+					select#status(name="status").form-control.form-select
+						option(value="" disabled selected) &mdash;
+						option(value="active") Active
+						option(value="disabled") Disabled
+					.input-group-text
+						input(type="checkbox" name="fields[]" value="status")
+		
+		.form-group.row.mb-3
+			label(for="course").col-lg-2.col-form-label Course
 			.col-lg-4
 				.input-group
-					select( name="course" )#course.form-control
-						option( value="" disabled selected ) Select a course
+					select#course(name="course").form-control.form-select
+						option(value="" disabled selected) Select a course
 						for course in courses
-							option( value=course.id )=course.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="course" )
-		.form-group.row
-			label( for="year" ).col-lg-2.col-form-label Year
+							option(value=course.id)=course.name
+					.input-group-text
+						input(type="checkbox" name="fields[]" value="course")
+		
+		.form-group.row.mb-3
+			label(for="year").col-lg-2.col-form-label Year
 			.col-lg-4
 				.input-group
-					select( name="year" )#course.form-control
-						option( value="" disabled selected ) Select a year
+					select#year(name="year").form-control.form-select
+						option(value="" disabled selected) Select a year
 						for year in years
-							option( value=year.id )=year.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="year" )
-		.form-group.row
-			label( for="role" ).col-lg-2.col-form-label Role
+							option(value=year.id)=year.name
+					.input-group-text
+						input(type="checkbox" name="fields[]" value="year")
+		
+		.form-group.row.mb-3
+			label(for="role").col-lg-2.col-form-label Role
 			.col-lg-4
 				.input-group
-					select( name="role" )#course.form-control
-						option( value="" disabled selected ) Select a role
+					select#role(name="role").form-control.form-select
+						option(value="" disabled selected) Select a role
 						for role in roles
-							option( value=role.id )=role.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="role" )
-		.form-group.row
+							option(value=role.id)=role.name
+					.input-group-text
+						input(type="checkbox" name="fields[]" value="role")
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type="submit" ).btn.btn-primary Update
+				button(type="submit").btn.btn-primary Update
+		
 		h3 Items
 		- edit = true
 		- multi = true

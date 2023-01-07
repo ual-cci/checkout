@@ -1,23 +1,27 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove: ' + selected.name
-	- heading = "Are you sure you want to remove " + selected.name + "?"
-	- menu = "years"
+	- title = 'Remove'
+	- heading = `Are you sure you want to remove "${selected.name}"?`
+	- breadcrumb.push({name: selected.name})
+	- breadcrumb.push({name: 'Remove'})
+	- menu = 'years'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
-		+messageBlock( 'dark', 'white', 'Deleting this year will transfer all the users to the new year selected below.' )
-		.form-group.row
-			label( for="year" ).col-lg-2.col-form-label Transfer users to
+		+messageBlock('danger', 'white', 'Deleting this year will transfer all the users to the new year selected below.')
+		
+		.form-group.row.mb-3
+			label(for="year").col-lg-2.col-form-label Transfer users to
 			.col-lg-4
-				select( name="year", required )#year.form-control
-					option( value="" disabled selected ) Select a year
+				select#year(name="year", required).form-control.form-select
+					option(value="" disabled selected) Select a year
 					for year in years
-						option( value=year.id, disabled=year.disabled )=year.name
-		.form-group.row
+						option(value=year.id, disabled=year.disabled)=year.name
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type='submit' ).btn.btn-danger Yes, remove and transfer
+				button(type='submit').btn.btn-danger Yes, remove and transfer
 				|  
-				a( href="/years" ).btn.btn-outline-dark Cancel
+				a(href="/years").btn.btn-outline-secondary Cancel

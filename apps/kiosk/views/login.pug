@@ -1,5 +1,8 @@
 extends ../../../src/views/base.pug
 
+block prepend base
+	- fs = true
+
 block prepend title
 	- title = "Login"
 
@@ -16,14 +19,14 @@ block append css
 
 block contents
 	.col-12.text-center
-		form( method="post", action="/kiosk" ).form-signin
+		form(method="post", action="/kiosk").form-signin
 			+csrf
-			img( src="/imgs/logo.svg" width="128" height="128" ).mb-2
+			img(src="/imgs/logo.svg" height="128").mb-2
 			h1.mb-0=Options.get('application_name')
 			h5.text-muted=Options.get('organisation_name')
 			h5.mb-3.text-danger Kiosk Mode
 			include ../../../src/views/partials/flash.pug
 			label(for="barcode").sr-only barcode
 			input(type="barcode" name="barcode" placeholder="Barcode" autofocus required)#barcode.form-control.mb-3
-			button(type="submit").btn.btn-lg.btn-outline-dark.btn-block Login
-			a(href="/kiosk/exit").btn.btn-sm.btn-outline-danger.btn-block Exit Kiosk Mode
+			button(type="submit").btn.btn-lg.btn-primary.btn-block.w-100.mb-2 Login
+			a(href="/kiosk/exit").btn.btn-sm.btn-outline-danger.btn-block.w-100 Exit Kiosk Mode

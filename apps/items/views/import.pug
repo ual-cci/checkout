@@ -1,9 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Import items"
-	- heading = title
-	- menu = "items"
+	- title = "Import Items"
+	- breadcrumb.push({name: 'Import'})
+	- menu = 'items'
 
 block contents
 	p Data must include a header row.

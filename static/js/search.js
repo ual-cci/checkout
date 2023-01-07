@@ -157,7 +157,7 @@ function lazyAddSearchDIV(type, title, faclass) {
 
 		const span = document.createElement('span')
 		span.classList.add('fa')
-		span.classList.add('mr-2')
+		span.classList.add('me-2')
 		span.classList.add(`fa-${faclass}`)
 		heading.appendChild(span)
 
@@ -216,7 +216,7 @@ function addNoResultsFound() {
 function createStatusBadge(status) {
 	const span = document.createElement('span')
 	span.classList.add('badge')
-	span.classList.add('mr-1')
+	span.classList.add('me-1')
 	span.innerHTML = '&nbsp;'
 
 	let badgeClass = 'default'
@@ -242,7 +242,7 @@ function createStatusBadge(status) {
 			break
 	}
 
-	span.classList.add(`badge-${badgeClass}`)
+	span.classList.add(`bg-${badgeClass}`)
 	return span
 }
 

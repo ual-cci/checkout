@@ -5,21 +5,20 @@
 				.row
 					.col-lg-3
 						.input-group
-							.input-group-prepend
-								.input-group-text
-									span.fas.fa-qrcode
-							input( type="text", name="barcode", required, autocomplete="off" ).form-control#barcode
+							.input-group-text
+								span.fas.fa-qrcode
+							input(type="text", name="barcode", required, autocomplete="off").form-control#barcode
 					.col-lg-2
 						.input-group
-							select#locationMode.form-control
-								option( value="1" ) Just audit
-								option( value="2" ) Check location and audit
-								option( value="3" ) Update location and audit
+							select#locationMode.form-control.form-select
+								option(value="1") Just audit
+								option(value="2") Check location and audit
+								option(value="3") Update location and audit
 								
 					.col-lg-2
 						.input-group
-							select#location.form-control
-								option( value="" ) Select location
+							select#location.form-control.form-select
+								option(value="") Select location
 								for location in locations
-									option( value=location.id, data-barcode=(location.barcode ? location.barcode : null)) #{ location.name } [#{location.barcode}]
+									option(value=location.id, data-barcode=(location.barcode ? location.barcode : null)) #{ location.name } [#{location.barcode}]
 	.flash

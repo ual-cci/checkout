@@ -2,8 +2,8 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = "Create Department"
-	- heading = title
-	- menu = "departments"
+	- breadcrumb.push({name: 'Create'})
+	- menu = 'departments'
 
 block contents
 	- action = 'Create'

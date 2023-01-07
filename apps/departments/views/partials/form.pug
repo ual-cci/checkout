@@ -1,15 +1,18 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name", type="text", value=department.name, required )#name.form-control
-	.form-group.row
-		label( for="brand" ).col-lg-2.col-form-label Label Brand
+			input#name(name="name" type="text" value=department.name required).form-control
+	
+	.form-group.row.mb-3
+		label(for="brand").col-lg-2.col-form-label Label Brand
 		.col-lg-4
-			textarea( name="brand", rows="3", type="text", required )#brand.form-control=department.brand
-	.form-group.row
+			textarea#brand(name="brand" rows="3" type="text" required).form-control=department.brand
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action
 			|  
-			a( href="/departments" ).btn.btn-outline-dark Cancel
+			a(href="/departments").btn.btn-outline-secondary Cancel

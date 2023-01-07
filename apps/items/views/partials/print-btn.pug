@@ -1,4 +1,4 @@
 if loggedInUser.printer_id
-	a.btn.btn-outline-dark.btn-sm(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}` title=`Print label for ${item.name} to ${loggedInUser.printer_name}`)
+	a.btn.btn-sm.btn-outline-secondary.me-2(href=`/items/${item.id}/label?printer=${loggedInUser.printer_id}` title=`Print label for ${item.name} to ${loggedInUser.printer_name}`)
 		span.fas.fa-print
 		|  Print Label to #{loggedInUser.printer_name}

@@ -1,26 +1,27 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Permissions: ' + role.name
-	- heading = title
-	- menu = "roles"
+	- title = 'Set Permissions'
+	- breadcrumb.push({name: role.name})
+	- breadcrumb.push({name: 'Set Permissions'})
+	- menu = 'roles'
 
 block buttons 
 	+search
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
 		.table-responsive
 			table.table.table-striped.table-sm
 				tgroup
-					col( width='5%' )
-					col( width='15%' )
-					col( width='80%' )
+					col(width='5%')
+					col(width='15%')
+					col(width='80%')
 				thead
 					tr
 							th
-								input( type="checkbox", title="Check All", checked=edit_items ).checkall
+								input(type="checkbox", title="Check All", checked=edit_items).checkall
 							th Key
 							th Description
 				tbody
@@ -31,6 +32,6 @@ block contents
 							td(data-searchable=key): label(for=key).mb-0=key
 							td(data-searchable=desc)=desc
 		.form-group
-			button( type="submit" ).btn.btn-primary Set
+			button(type="submit").btn.btn-primary Set
 			|  
-			a( href="/roles" ).btn.btn-outline-dark Cancel
+			a(href="/roles").btn.btn-outline-secondary Cancel

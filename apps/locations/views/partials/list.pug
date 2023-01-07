@@ -26,10 +26,8 @@ if locations.length > 0
 							td
 								if location.barcode && currentUserCan('print')
 									+labelBtn( '/locations/' + location.id + '/label' )
-									+space
 								if currentUserCan('locations_edit')
 									+editBtn( '/locations/' + location.id + '/edit' )
-									+space
 								if currentUserCan('locations_remove')
 									+removeBtn( '/locations/' + location.id + '/remove' )
 else

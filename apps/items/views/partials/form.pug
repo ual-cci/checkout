@@ -1,82 +1,98 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name" type="text" value=( item ? item.name : '' ) required )#name.form-control
-	.form-group.row
-		label( for="barcode" ).col-lg-2.col-form-label Barcode
-		.col-lg-4
-			input( name="barcode" type="text" value=( item ? item.barcode : '' ) autocomplete="off" required )#barcode.form-control
-	.form-group.row
-		label( for="label" ).col-lg-2.col-form-label Label
-		.col-lg-4
-			select( name="label" required )#label.form-control
-				option( value="12mm" selected=( '12mm' == ( item ? item.label : '' ) ) ) 12mm Label
-				option( value="9mm" selected=( '9mm' == ( item ? item.label : '' ) ) ) 9mm Label
-				option( value="12mm_flag" selected=( '12mm_flag' == ( item ? item.label : '' ) ) ) 12mm Flag
-	.form-group.row
-		label( for="location" ).col-lg-2.col-form-label Location
-		.col-lg-4
-			select( name="location" required )#location.form-control
-				option( value="" disabled selected ) Select a location
-				for location in locations
-					option( value=location.id selected=( location.id == ( item ? item.location_id : '' ) ) ) #{ location.name }
-						if location.barcode
-							|  [#{location.barcode}]
-	.form-group.row
-		label( for="group" ).col-lg-2.col-form-label Group
-		.col-lg-4
-			select( name="group" )#group.form-control
-				option( value="" selected ) Select a group
-				for group in groups
-					option( value=group.id selected=( group.id == ( item ? item.group_id : '' ) ) )=group.name
-	.form-group.row
-		label( for="department" ).col-lg-2.col-form-label Department
-		.col-lg-4
-			select( name="department" )#department.form-control
-				option( value="" selected ) Select a department
-				for department in departments
-					option( value=department.id selected=( department.id == ( item ? item.department_id : '' ) ) )=department.name
-	.form-group.row
-		label( for="value" ).col-lg-2.col-form-label Value
+			input#name(name="name" type="text" value=(item ? item.name : '') required).form-control
+
+	.form-group.row.mb-3
+		label(for="barcode").col-lg-2.col-form-label Barcode
 		.col-lg-4
 			.input-group
-				.input-group-prepend
-					.input-group-text &pound;
-				input( name="value" type="number" step="0.01" value=( item ? item.value : '' ) )#value.form-control
-	.form-group.row
-		label( for="serialnumber" ).col-lg-2.col-form-label Serial number
+				span.input-group-text
+					span.fas.fa-qrcode
+				input#barcode(name="barcode" type="text" value=(item ? item.barcode : '') autocomplete="off" required).form-control
+
+	.form-group.row.mb-3
+		label(for="label").col-lg-2.col-form-label Label
 		.col-lg-4
-			input( name="serialnumber" type="text" value=( item ? item.serialnumber : '' ) )#serialnumber.form-control
-	.form-group.row
-		label( for="info_url" ).col-lg-2.col-form-label Information URL
+			select#label(name="label" required).form-select.form-control
+				option(value="12mm" selected=('12mm' == (item ? item.label : ''))) 12mm Label
+				option(value="9mm" selected=('9mm' == (item ? item.label : ''))) 9mm Label
+				option(value="12mm_flag" selected=('12mm_flag' == (item ? item.label : ''))) 12mm Flag
+
+	.form-group.row.mb-3
+		label(for="location").col-lg-2.col-form-label Location
 		.col-lg-4
-			input( name="info_url" type="text" value=( item ? item.info_url : '' ) )#info_url.form-control
-	.form-group.row
-		label( for="notes" ).col-lg-2.col-form-label Notes
+			select#location(name="location" required).form-select.form-control
+				option(value="" disabled selected) Select a location
+				for location in locations
+					option(value=location.id selected=(location.id == (item ? item.location_id : ''))) #{ location.name }
+						if location.barcode
+							|  [#{location.barcode}]
+
+	.form-group.row.mb-3
+		label(for="group").col-lg-2.col-form-label Group
 		.col-lg-4
-			textarea( name="notes" type="text" )#notes.form-control #{ item ? item.notes : '' }
-	.form-group.row
-		label( for="alert_msg" ).col-lg-2.col-form-label Alert Message
+			select#group(name="group").form-select.form-control
+				option(value="" selected) Select a group
+				for group in groups
+					option(value=group.id selected=(group.id == (item ? item.group_id : '')))=group.name
+
+	.form-group.row.mb-3
+		label(for="department").col-lg-2.col-form-label Department
 		.col-lg-4
-			textarea( name="alert_msg" type="text" )#alert_msg.form-control #{ item ? item.alert_msg : '' }
-	.form-group.row
+			select#department(name="department").form-select.form-control
+				option(value="" selected) Select a department
+				for department in departments
+					option(value=department.id selected=(department.id == (item ? item.department_id : '')))=department.name
+
+	.form-group.row.mb-3
+		label(for="value").col-lg-2.col-form-label Value
+		.col-lg-4
+			.input-group
+				span.input-group-text &pound;
+				input#value(name="value" type="number" step="0.01" value=(item ? item.value : '')).form-control
+
+	.form-group.row.mb-3
+		label(for="serialnumber").col-lg-2.col-form-label Serial number
+		.col-lg-4
+			input#serialnumber(name="serialnumber" type="text" value=(item ? item.serialnumber : '')).form-control
+
+	.form-group.row.mb-3
+		label(for="info_url").col-lg-2.col-form-label Information URL
+		.col-lg-4
+			input#info_url(name="info_url" type="text" value=(item ? item.info_url : '')).form-control
+
+	.form-group.row.mb-3
+		label(for="notes").col-lg-2.col-form-label Notes
+		.col-lg-4
+			textarea#notes(name="notes" type="text").form-control #{ item ? item.notes : '' }
+
+	.form-group.row.mb-3
+		label(for="alert_msg").col-lg-2.col-form-label Alert Message
+		.col-lg-4
+			textarea#alert_msg(name="alert_msg" type="text").form-control #{ item ? item.alert_msg : '' }
+
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
 			.checkbox
-				label( for="loanable" )
-						input( name="loanable" type="checkbox" value='true' checked=(item ? item.loanable : true) )#loanable
+				label(for="loanable")
+						input#loanable(name="loanable" type="checkbox" value='true' checked=(item ? item.loanable : true))
 						|  Item is loanable
-	.form-group.row
+
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
 			.checkbox
-				label( for="print" )
+				label(for="print")
 					if action == 'Create'
-						input( name="print" type="checkbox" checked )#print
+						input#print(name="print" type="checkbox" checked)
 						|  Print Barcode Labels
 					if action == 'Update'
-						input( name="print" type="checkbox" )#print
+						input#print(name="print" type="checkbox")
 						|  Reprint Barcode Labels
-	.form-group.row
+
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action

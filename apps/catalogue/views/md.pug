@@ -1,9 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Catalogue in Markdown"
-	- heading = title
-	- menu = "catalogue"
+	- title = `Markdown`
+	- breadcrumb.push({name: title})
+	- menu = 'catalogue'
 
 block buttons
 	+btn('sm', 'outline-dark', 'arrow-left', 'Back', '/catalogue')

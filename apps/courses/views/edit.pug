@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Edit: ' + course.name
-	- heading = title
-	- menu = "courses"
+	- title = 'Edit Course'
+	- breadcrumb.push({name: course.name})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'courses'
 
 block contents
 	- action = 'Update'

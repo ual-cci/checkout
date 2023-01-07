@@ -2,52 +2,41 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = item.name
-	- heading = title
-	- menu = "items"
+	- breadcrumb.push({name: item.name})
+	- menu = 'items'
 
 block buttons
 	if item.status != 'available'
 		if currentUserCan('items_return')
-			.btn-group.float-right(style='margin-left:.25em;')
-				a( href="/items/" + item.id + "/return", title=`Return ${item.name}` ).btn.btn-outline-success.btn-sm
-					span.fas.fa-sign-in-alt
-					|  Return
+			+btn('sm', 'outline-success', 'sign-in-alt', `Return`, `/items/${item.id}/return`, `Return ${item.name} [${item.barcode}]`)
 	if currentUserCan({or: ['items_broken', 'items_lost', 'items_sold']})
-		.dropdown.ml-2
-			button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+		.dropdown.me-2
+			button(type="button" data-bs-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
 				span.fas.fa-traffic-light
 				|  Change Status
-			.dropdown-menu.dropdown-menu-right
+			.dropdown-menu.dropdown-menu-end
 				if currentUserCan('items_broken')
-					a( href="/items/" + item.id + "/broken", title=`Mark ${item.name} as Broken` ).dropdown-item
+					a( href="/items/" + item.id + "/broken", title=`Mark ${item.name} [${item.barcode}] as broken` ).dropdown-item
 						span.fas.fa-heart-broken
 						|  Broken
 				if currentUserCan('items_lost')
-					a( href="/items/" + item.id + "/lost", title=`Mark ${item.name} as Lost` ).dropdown-item
+					a( href="/items/" + item.id + "/lost", title=`Mark ${item.name} [${item.barcode}] as lost` ).dropdown-item
 						span.fas.fa-compass
 						|  Lost
 				if currentUserCan('items_sold')
-					a( href="/items/" + item.id + "/sold", title=`Mark ${item.name} as Sold` ).dropdown-item
+					a( href="/items/" + item.id + "/sold", title=`Mark ${item.name} [${item.barcode}] as sold` ).dropdown-item
 						span.fas.fa-cash-register
 						|  Sold
-	| &nbsp;
 	if currentUserCan('print')
-		.btn-group.float-right(style='margin-left:.25em;')
+		.btn-group
 			include partials/print-btn.pug
-		| &nbsp;
-	.btn-group.float-right
+	.btn-group
 		if currentUserCan('items_clone')
-			a( href="/items/clone/" + item.id, title=`Clone ${item.name}` ).btn.btn-outline-success.btn-sm
-				span.fas.fa-clone
-				|  Clone
+			+btn('sm', 'outline-success', 'clone', `Clone`, `/items/clone/${item.id}`, `Clone ${item.name} [${item.barcode}]`, 'me-0')
 		if currentUserCan('items_edit')
-			a( href="/items/" + item.id + "/edit", title=`Edit ${item.name}` ).btn.btn-outline-primary.btn-sm
-				span.fas.fa-pencil-alt
-				|  Edit
+			+btn('sm', 'outline-primary', 'pencil-alt', `Edit`, `/items/${item.id}/edit`, `Edit ${item.name} [${item.barcode}]`, 'me-0')
 		if currentUserCan('items_remove')
-			a( href="/items/" + item.id + "/remove", title=`Remove ${item.name}` ).btn.btn-outline-danger.btn-sm
-				span.far.fa-trash-alt
-				|  Remove
+			+btn('sm', 'outline-danger', 'trash-alt', `Remove`, `/items/${item.id}/remove`, `Remove ${item.name} [${item.barcode}]`, 'me-10')
 
 block contents
 	include partials/info.pug

@@ -2,7 +2,9 @@
   "name": "Checkout",
   "scripts": {
     "start": "node app | ./node_modules/.bin/bunyan -c 'this.sensitive == undefined'",
-    "dev": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
+	"watch-css": "npx node-sass -rw ./static/scss -o ./static/css",
+	"dev": "NODE_ENV=development npx nodemon app",
+    "dev2": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
     "production": "npm run db:wait; npm run db:migrate; npm run start;",
     "db:wait": "node ./_helpers/db-test",
     "db:migrate": "knex migrate:latest",
@@ -10,14 +12,21 @@
     "db:seed": "knex seed:run"
   },
   "nodemon": {
-    "ignore": ["static/*", "logging/*", "migrations/*", "seeds/*", "_*", "docker/*"]
+    "ignore": [
+      "static/*",
+      "logging/*",
+      "migrations/*",
+      "seeds/*",
+      "_*",
+      "docker/*"
+    ]
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.1",
     "@passport-next/passport": "^3.1.0",
     "@passport-next/passport-local": "^1.2.1",
     "body-parser": "^1.20.0",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^5.3.0-alpha1",
     "bottleneck": "^2.19.5",
     "bunyan": "^1.8.15",
     "bunyan-middleware": "^1.0.2",
@@ -37,6 +46,7 @@
     "jquery": "^3.6.0",
     "knex": "^2.1.0",
     "moment": "^2.29.4",
+    "node-sass": "^8.0.0",
     "nodemailer": "^6.7.6",
     "pdfkit": "^0.13.0",
     "pg": "^8.7.3",

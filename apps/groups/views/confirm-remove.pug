@@ -1,23 +1,27 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove: ' + selected.name
-	- heading = "Are you sure you want to remove " + selected.name + "?"
-	- menu = "groups"
+	- title = 'Remove Group'
+	- heading = `Are you sure you want to remove "${selected.name}"?`
+	- breadcrumb.push({name: selected.name})
+	- breadcrumb.push({name: 'Remove'})
+	- menu = 'groups'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
-		+messageBlock( 'dark', 'white', 'Items do not have to be associated with a group by not selecting a new group the items will be removed from the group being deleted.' )
-		.form-group.row
-			label( for="group" ).col-lg-2.col-form-label Transfer items to
+		+messageBlock('danger', 'white', 'Items do not have to be associated with a group by not selecting a new group the items will be removed from the group being deleted.')
+		
+		.form-group.row.mb-3
+			label(for="group").col-lg-2.col-form-label Transfer items to
 			.col-lg-4
-				select( name="group" )#group.form-control
-					option( value="" disabled selected ) Select a group
+				select#group(name="group").form-control.form-select
+					option(value="" disabled selected) Select a group
 					for group in groups
-						option( value=group.id, disabled=group.disabled )=group.name
-		.form-group.row
+						option(value=group.id disabled=group.disabled)=group.name
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type='submit' ).btn.btn-danger Yes, remove group
+				button(type='submit').btn.btn-danger Yes, remove group
 				|  
-				a( href="/groups" ).btn.btn-outline-dark Cancel
+				a(href="/groups").btn.btn-outline-secondary Cancel

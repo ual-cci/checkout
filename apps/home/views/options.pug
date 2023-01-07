@@ -1,5 +1,8 @@
 extends ../../../src/views/base.pug
 
+block prepend base
+	- fs = true
+
 block navbar
 
 block header
@@ -20,7 +23,6 @@ block contents
 			include ../../../src/views/partials/flash.pug
 			
 			if Options.getBoolean('public_catalogue')
-				a(href="/catalogue").btn.btn-lg.btn-outline-dark.btn-block View Catalogue
-
+				a(href="/catalogue").btn.btn-lg.btn-outline-primary.btn-block.w-100.mb-2 View Catalogue
 			
-			a(href="/login").btn.btn-lg.btn-outline-dark.btn-block Staff Login
+			a(href="/login").btn.btn-lg.btn-outline-primary.btn-block.w-100 Staff Login

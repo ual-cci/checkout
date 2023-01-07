@@ -7,47 +7,52 @@ block append js
 	script(type="text/javascript" src="/js/password-requirements.js")
 
 block prepend title
-	- title = "Profile"
+	- title = 'Profile'
 	- heading = title
 
 block contents
-		form( method="post" )
+		form(method="post")
 			+csrf
-			.form-group.row
-				label( for="name" ).col-lg-2.col-form-label Name
+			
+			.form-group.row.mb-3
+				label(for="name").col-lg-2.col-form-label Name
 				.col-lg-4
-					input( name="name" type="text" value=loggedInUser.name required )#name.form-control
-			.form-group.row
-				label( for="email" ).col-lg-2.col-form-label Email
+					input#name(name="name" type="text" value=loggedInUser.name required).form-control
+			
+			.form-group.row.mb-3
+				label(for="email").col-lg-2.col-form-label Email
 				.col-lg-4
-					input( name="email" type="text" required value=loggedInUser.email autocomplete="off" )#email.form-control
+					input#email(name="email" type="text" required value=loggedInUser.email autocomplete="off").form-control
 					small.form-text.text-muted This is also the username you will login with.
+			
 			.page-header
 				h3.mb-3.pb-1.border-bottom Preferences
-			.form-group.row
-				label( for="printer" ).col-lg-2.col-form-label Default Printer
+			
+			.form-group.row.mb-3
+				label(for="printer").col-lg-2.col-form-label Default Printer
 				.col-lg-4
-					select( name="printer" )#printer.form-control
-						option( value="" ) None
+					select#printer(name="printer").form-control.form-select
+						option(value="") None
 						for printer in printers
-							option( value=printer.id selected=( printer.id == loggedInUser.printer_id ) )=printer.name
-			.form-group.row
-				label( for="template" ).col-lg-2.col-form-label Default Email Template
+							option(value=printer.id selected=(printer.id == loggedInUser.printer_id))=printer.name
+			
+			.form-group.row.mb-3
+				label(for="template").col-lg-2.col-form-label Default Email Template
 				.col-lg-4
-					select( name="template" )#template.form-control
-						option( value="" ) None
+					select#template(name="template").form-control.form-select
+						option(value="") None
 						for template in templates
-							option( value=template.id selected=( template.id == loggedInUser.template_id ) )=template.name
-			.form-group.row
-				label( for="audit_point" ).col-lg-2.col-form-label Audit Point
+							option(value=template.id selected=(template.id == loggedInUser.template_id))=template.name
+			
+			.form-group.row.mb-3
+				label(for="audit_point").col-lg-2.col-form-label Audit Point
 				.col-lg-4
 					.input-group
-						input(name="audit_point" type="text" value=(loggedInUser.audit_point?moment(loggedInUser.audit_point).format('HH:mm DD/MM/YYYY'):null))#audit_point.form-control
-						.input-group-append(data-target="#audit_point" data-toggle="datetimepicker")
-							.input-group-text
-								span.far.fa-calendar-alt
+						input#audit_point(name="audit_point" type="text" value=(loggedInUser.audit_point?moment(loggedInUser.audit_point).format('HH:mm DD/MM/YYYY'):null)).form-control
+						.input-group-text(data-target="#audit_point" data-toggle="datetimepicker")
+							span.far.fa-calendar-alt
 			
-			.form-group.row
+			.form-group.row.mb-3
 				label.col-lg-2.col-form-label Item Columns
 				.col-lg-4
 					table.table.table-striped.table-sm
@@ -63,14 +68,17 @@ block contents
 
 			.page-header
 				h3.mb-3.pb-1.border-bottom Change password
-			.form-group.row
-				label( for="password" ).col-lg-2.col-form-label Password
+			
+			.form-group.row.mb-3
+				label(for="password").col-lg-2.col-form-label Password
 				.col-lg-4
-					input( name="password" type="password" )#password.form-control.pw-req
-			.form-group.row
-				label( for="password" ).col-lg-2.col-form-label Verify
+					input#password(name="password" type="password").form-control.pw-req
+			
+			.form-group.row.mb-3
+				label(for="password").col-lg-2.col-form-label Verify
 				.col-lg-4
-					input(name="verify" type="password")#verify.form-control.pw-mat
-			.form-group.row
+					input#verify(name="verify" type="password").form-control.pw-mat
+			
+			.form-group.row.mb-3
 				.col-lg-4.offset-lg-2
-					button( type="submit" ).btn.btn-primary Update
+					button(type="submit").btn.btn-primary Update
