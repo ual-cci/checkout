@@ -1,5 +1,5 @@
-nav#sidebarMenu.col-lg-2.col-md-3.d-none.d-md-block.sidebar
-	.sidebar-sticky.pt-3
+nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
+	.position-sticky.pt-2
 		ul.nav.flex-column
 			if currentUserCan({or: ['checkout_issue', 'items_return', 'reservations_create', 'checkout_audit', 'users_create', 'checkout_history', 'print']})
 				li.nav-item

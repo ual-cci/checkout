@@ -242,14 +242,15 @@ body.noScroll {
 nav#sidebarMenu {
 	background-color: $gray-100;
 	border-right: 1px solid $gray-200;
+	font-size: 0.9em;
+	font-weight: 500;
 	position: fixed;
-	top: 0;
+	top: 3rem;
 	bottom: 0;
 	left: 0;
 	z-index: 100;
 	padding: 0;
-	font-size: 0.9em;
-	font-weight: 500;
+	overflow: scroll;
 
 	h6 {
 		padding-left: 1rem;
@@ -289,8 +290,8 @@ nav#sidebarMenu {
 	}
 
 	// Main nav bar
-
 	nav.navbar {
+
 		#search {
 			&:focus {
 				background-color: $gray-800;

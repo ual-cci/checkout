@@ -9202,14 +9202,15 @@ body.noScroll {
 nav#sidebarMenu {
   background-color: #f8f9fa;
   border-right: 1px solid #e9ecef;
+  font-size: 0.9em;
+  font-weight: 500;
   position: fixed;
-  top: 0;
+  top: 3rem;
   bottom: 0;
   left: 0;
   z-index: 100;
   padding: 0;
-  font-size: 0.9em;
-  font-weight: 500; }
+  overflow: scroll; }
   nav#sidebarMenu h6, nav#sidebarMenu .h6 {
     padding-left: 1rem;
     font-size: .9em;
