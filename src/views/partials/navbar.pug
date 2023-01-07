@@ -13,20 +13,35 @@ nav.navbar.navbar-expand-md.sticky-top
 				if currentUserCan('global_search')
 					input#search.form-control.w-100(type="search" placeholder="Search" aria-label="Search" autocomplete="off")
 				
-				.navbar-nav.me-auto
-					//- .nav-item: a.nav-link(href="/test") Test item
-					.nav-item.dropdown
-						a.nav-link.dropdown-toggle.me-2(href="#" id="topMenuAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")=loggedInUser.name
-						ul.dropdown-menu.dropdown-menu-end.me-2(aria-labelledby="topMenuAccountDropdown")
-							li: a.dropdown-item(href="/shortcuts")
-								span.far.fa-keyboard
-								|  Shortcuts
-							if currentUserCan('edit_profile')
-								li: hr.dropdown-divider
-								li: a.dropdown-item(href='/profile')
-									span.fas.fa-pencil-alt
-									|  Edit Profile
-							li: hr.dropdown-divider
-							li: a.dropdown-item(href=kioskMode ? "/kiosk/logout" : "/logout")
-								span.fas.fa-sign-out-alt
-								|  Logout
+				.navbar-nav
+					//- Future Feature
+					//- if currentUserCan('print')
+						.nav-item.dropdown
+							a.nav-link.dropdown-toggle(href="#" id="topMenuPrinterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+								span.fas.fa-print
+								|  PR
+							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuPrinterDropdown")
+								li: a.dropdown-item(href="?") Peckham Road
+								li: a.dropdown-item(href="?") Greencoat
+								li: a.dropdown-item(href="?") Eagle Wharf
+								li: a.dropdown-item(href="?") High Holborn
+					//- Future Feature
+					//- if currentUserCan('users_email')
+						.nav-item.dropdown
+							a.nav-link.dropdown-toggle(href="#" id="topMenuEmailDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+								span.fas.fa-envelope
+								|  Polite
+							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuEmailDropdown")
+								li: a.dropdown-item(href="?") Polite Email
+								li: a.dropdown-item(href="?") Summer Show
+								li: a.dropdown-item(href="?") Christmas 2022
+					if currentUserCan('edit_profile')
+						.nav-item.no-wrap: a.nav-link.text-nowrap.actionBtn(href="/profile")
+							span.fas.fa-user
+							|  #{loggedInUser.name}
+					else
+						.nav-item: .navbar-text.text-nowrap
+							span.fas.fa-user
+							|  #{loggedInUser.name}
+					.nav-item.me-2: a.nav-link.actionBtn(href=kioskMode ? "/kiosk/logout" : "/logout")
+						span.fas.fa-sign-out-alt
