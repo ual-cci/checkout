@@ -1,15 +1,18 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name", type="text", value=location.name, required )#name.form-control
-	.form-group.row
-		label( for="barcode" ).col-lg-2.col-form-label Barcode
+			input#name(name="name" type="text" value=location.name required).form-control
+	
+	.form-group.row.mb-3
+		label(for="barcode").col-lg-2.col-form-label Barcode
 		.col-lg-4
-			input( name="barcode", type="text", value=location.barcode )#barcode.form-control
-	.form-group.row
+			input#barcode(name="barcode" type="text" value=location.barcode).form-control
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
 			button( type="submit" ).btn.btn-primary=action
 			|  
-			a( href="/locations" ).btn.btn-outline-dark Cancel
+			a( href="/locations" ).btn.btn-outline-secondary Cancel

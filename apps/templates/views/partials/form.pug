@@ -1,30 +1,35 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name", type="text", value=( template && template.name ? template.name : null ), required ).form-control#name
-	.form-group.row
-		label( for="subject" ).col-lg-2.col-form-label Subject
+			input#name(name="name", type="text", value=(template && template.name ? template.name : null), required).form-control
+	
+	.form-group.row.mb-3
+		label(for="subject").col-lg-2.col-form-label Subject
 		.col-lg-4
-			input( name="subject", type="text", value=( template && template.subject ? template.subject : null ), required ).form-control#subject
-	.form-group.row
-		label( for="body" ).col-lg-2.col-form-label Body
+			input#subject(name="subject", type="text", value=(template && template.subject ? template.subject : null), required).form-control
+	
+	.form-group.row.mb-3
+		label(for="body").col-lg-2.col-form-label Body
 		.col-lg-4
-			textarea( name="body", rows="15", type="text", required )#body.form-control=(template && template.body ?template.body : '')
+			textarea#body(name="body", rows="15", type="text", required).form-control=(template && template.body ?template.body : '')
+	
 	.row
 		.col-lg-4.offset-lg-2
 			p.mb-0
 				small Supported template tags are: 
-				.badge.badge-pill.badge-secondary(title="Name of user receiving the email") [name]
+				.badge.badge-pill.text-bg-secondary(title="Name of user receiving the email") [name]
 				|  
-				.badge.badge-pill.badge-secondary(title="List of items") [items]
+				.badge.badge-pill.text-bg-secondary(title="List of items") [items]
 				|  
-				.badge.badge-pill.badge-secondary(title="Email sender name") [sender]
+				.badge.badge-pill.text-bg-secondary(title="Email sender name") [sender]
 				|  
-				.badge.badge-pill.badge-secondary(title="Organisation name") [org]
-	.form-group.row
+				.badge.badge-pill.text-bg-secondary(title="Organisation name") [org]
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action
 			|  
-			a( href="/templates" ).btn.btn-outline-dark Cancel
+			a(href="/templates").btn.btn-outline-secondary Cancel

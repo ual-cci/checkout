@@ -1,18 +1,21 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name", type="text", value=course.name, required ).form-control#name
-	.form-group.row
-		label( for="contact" ).col-lg-2.col-form-label Contact
+			input#name(name="name", type="text", value=course.name, required).form-control
+	
+	.form-group.row.mb-3
+		label(for="contact").col-lg-2.col-form-label Contact
 		.col-lg-4
-			select( name="contact" )#contact.form-control
-				option( value="", selected ) Select a course contact
+			select(name="contact")#contact.form-control.form-select
+				option(value="" selected) Select a course contact
 				for user in users
-					option( value=user.id, selected=( user.id == course.contact_id ) )=user.name
-	.form-group.row
+					option(value=user.id selected=(user.id == course.contact_id))=user.name
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action
 			|  
-			a( href="/courses" ).btn.btn-outline-dark Cancel
+			a(href="/courses").btn.btn-outline-secondary Cancel

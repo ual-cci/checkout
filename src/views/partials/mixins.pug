@@ -34,9 +34,9 @@ mixin item( name, id, url )
 			a( href=`/items/${id}` title=`View item: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('items_edit')
+		if currentUserCan('items_edit') && !multi
 			+actionBtn('pencil-alt', `/items/${id}/edit`, `Edit item: ${name}`)
-		if url
+		if url && !multi
 			+actionBtn('globe', url, 'View Item', '_blank')
 	else
 		| &mdash;
@@ -47,7 +47,7 @@ mixin user( name, id )
 			a( href=`/users/${id}` title=`View user: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('users_edit')
+		if currentUserCan('users_edit') && !multi
 			+actionBtn('pencil-alt', `/users/${id}/edit`, `Edit user: ${name}`)
 	else
 		| &mdash;
@@ -58,7 +58,7 @@ mixin role( name, id )
 			a( href=`/users/?role=${id}` title=`View users in role: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('roles_edit')
+		if currentUserCan('roles_edit') && !multi
 			+actionBtn('pencil-alt', `/roles/${id}/edit`, `Edit role: ${name}`)
 	else
 		| &mdash;
@@ -69,7 +69,7 @@ mixin course( name, id )
 			a( href=`/users/?course=${id}` title=`View users in course: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('courses_edit')
+		if currentUserCan('courses_edit') && !multi
 			+actionBtn('pencil-alt', `/courses/${id}/edit`, `Edit course: ${name}`)
 	else
 		| &mdash;
@@ -80,7 +80,7 @@ mixin year( name, id )
 			a( href=`/users/?year=${id}` title=`View users in year: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('years_edit')
+		if currentUserCan('years_edit') && !multi
 			+actionBtn('pencil-alt', `/years/${id}/edit`, `Edit year: ${name}`)
 	else
 		| &mdash;
@@ -91,7 +91,7 @@ mixin location( name, id )
 			a( href=`/items/?location=${id}` title=`View items in location: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('locations_edit')
+		if currentUserCan('locations_edit') && !multi
 			+actionBtn('pencil-alt', `/locations/${id}/edit`, `Edit location: ${name}`)
 	else
 		| &mdash;
@@ -102,7 +102,7 @@ mixin department( name, id )
 			a( href=`/items/?department=${id}` title=`View items in department: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('departments_edit')
+		if currentUserCan('departments_edit') && !multi
 			+actionBtn('pencil-alt', `/departments/${id}/edit`, `Edit department: ${name}`)
 	else
 		| &mdash;
@@ -113,7 +113,7 @@ mixin group( name, id )
 			a( href=`/items/?group=${id}` title=`View items in group: ${name}`  )=name
 		else
 			| #{name}
-		if currentUserCan('groups_edit')
+		if currentUserCan('groups_edit') && !multi
 			+actionBtn('pencil-alt', `/groups/${id}/edit`, `Edit group: ${name}`)
 	else
 		| &mdash;

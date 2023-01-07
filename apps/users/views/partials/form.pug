@@ -1,42 +1,43 @@
-form( method="post")
+form(method="post")
 	+csrf
+
 	.form-group.row.mb-3
-		label( for="barcode").col-lg-2.col-form-label Barcode
+		label(for="barcode").col-lg-2.col-form-label Barcode
 		.col-lg-4
-			input( name="barcode" type="text" value=user.barcode autocomplete="off" required)#barcode.form-control
+			input#barcode(name="barcode" type="text" value=user.barcode autocomplete="off" required).form-control
 	
 	.form-group.row.mb-3
-		label( for="name").col-lg-2.col-form-label Name
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name" type="text" value=user.name required)#name.form-control
+			input#name(name="name" type="text" value=user.name required).form-control
 	
 	.form-group.row.mb-3
-		label( for="email").col-lg-2.col-form-label Email
+		label(for="email").col-lg-2.col-form-label Email
 		.col-lg-4
-			input( name="email" type="text" required value=user.email autocomplete="off")#email.form-control
+			input#email(name="email" type="text" required value=user.email autocomplete="off").form-control
 	
 	.form-group.row.mb-3
-		label( for="course").col-lg-2.col-form-label Course
+		label(for="course").col-lg-2.col-form-label Course
 		.col-lg-4
-			select( name="course")#course.form-control.form-select
-				option( value="" disabled selected) Select a course
+			select#course(name="course").form-control.form-select
+				option(value="" disabled selected) Select a course
 				for course in courses
-					option( value=course.id selected=( course.id == user.course_id))=course.name
+					option(value=course.id selected=(course.id == user.course_id))=course.name
 	
 	.form-group.row.mb-3
-		label( for="year").col-lg-2.col-form-label Year
+		label(for="year").col-lg-2.col-form-label Year
 		.col-lg-4
-			select( name="year")#year.form-control.form-select
-				option( value="" disabled selected) Select a year
+			select#year(name="year").form-control.form-select
+				option(value="" disabled selected) Select a year
 				for year in years
-					option( value=year.id selected=( year.id == user.year_id))=year.name
+					option(value=year.id selected=(year.id == user.year_id))=year.name
 	
 	if action == 'Update'
 		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
 				.checkbox
-					label( for="disable")
-						input( name="disable" type="checkbox" checked=user.disable)#disable
+					label(for="disable")
+						input#disable(name="disable" type="checkbox" checked=user.disable)
 						|  Disable User
 	
 	if currentUserCan({or:['users_change_password','users_change_role']})
@@ -46,34 +47,34 @@ form( method="post")
 				
 			if currentUserCan('users_change_role')
 				.form-group.row.mb-3
-					label( for="role").col-lg-2.col-form-label Role
+					label(for="role").col-lg-2.col-form-label Role
 					.col-lg-4
-						select( name="role")#role.form-control.form-select
-							option( value="" selected) Select a role
+						select#role(name="role").form-control.form-select
+							option(value="" selected) Select a role
 							for role in roles
-								option( value=role.id selected=( role.id == user.role_id))=role.name
+								option(value=role.id selected=(role.id == user.role_id))=role.name
 				
 			if currentUserCan('users_change_password')
 				.form-group.row.mb-3
-					label( for="password").col-lg-2.col-form-label Change Password
+					label(for="password").col-lg-2.col-form-label Change Password
 					.col-lg-4
-						input( name="password" type="password")#password.form-control
+						input#password(name="password" type="password").form-control
 		//- .page-header
 			h3 Preferences
 
 		//- .form-group.row.mb-3
-			label( for="printer").col-lg-2.col-form-label Printer
+			label(for="printer").col-lg-2.col-form-label Printer
 			.col-lg-4
-				select( name="printer")#printer.form-control.form-select
-					option( value="") None
+				select#printer(name="printer").form-control.form-select
+					option(value="") None
 					for printer in printers
-						option( value=printer.id selected=( printer.id == user.printer_id))=printer.name
+						option(value=printer.id selected=(printer.id == user.printer_id))=printer.name
 
 		//- .form-group.row.mb-3
-			label( for="audit_point").col-lg-2.col-form-label Audit Point
+			label(for="audit_point").col-lg-2.col-form-label Audit Point
 			.col-lg-4
-				input( name="audit_point" type="datetime-local" value=moment( user.audit_point).format( 'YYYY-MM-DDTHH:MM') )#audit_point.form-control
+				input#audit_point(name="audit_point" type="datetime-local" value=moment(user.audit_point).format('YYYY-MM-DDTHH:MM')).form-control
 	
 	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit").btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action

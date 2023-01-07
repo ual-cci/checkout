@@ -1,19 +1,23 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name" type="text" value=group.name required )#name.form-control
-	.form-group.row
-		label( for="limiter" ).col-lg-2.col-form-label Limiter
+			input#name(name="name" type="text" value=group.name required).form-control
+	
+	.form-group.row.mb-3
+		label(for="limiter").col-lg-2.col-form-label Limiter
 		.col-lg-4
-			input( name="limiter" type="number" value=group.limiter )#limiter.form-control
-	.form-group.row
-		label( for="duration" ).col-lg-2.col-form-label Duration
+			input#limiter(name="limiter" type="number" value=group.limiter).form-control
+	
+	.form-group.row.mb-3
+		label(for="duration").col-lg-2.col-form-label Duration
 		.col-lg-4
-			input( name="duration" type="text" value=group.duration?group.duration.toISO():null )#duration.form-control
-	.form-group.row
+			input#duration(name="duration" type="text" value=group.duration?group.duration.toISO():null).form-control
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action
 			|  
-			a( href="/groups" ).btn.btn-outline-dark Cancel
+			a(href="/groups").btn.btn-outline-secondary Cancel

@@ -8,18 +8,20 @@ block prepend title
 	- menu = 'printers'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
 		+messageBlock('danger', 'white','Users do not have to be associated with a printer by not selecting a new printer the users will be removed have no default printer.')
-		.form-group.row
-			label( for="printer" ).col-lg-2.col-form-label Transfer users to
+		
+		.form-group.row.mb-3
+			label(for="printer").col-lg-2.col-form-label Transfer users to
 			.col-lg-4
-				select( name="printer" )#printer.form-control
-					option( value="" disabled selected ) Select a printer
+				select#printer(name="printer").form-control.form-select
+					option(value="" disabled selected) Select a printer
 					for printer in printers
-						option( value=printer.id, disabled=printer.disabled )=printer.name
-		.form-group.row
+						option(value=printer.id, disabled=printer.disabled)=printer.name
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type='submit' ).btn.btn-danger Yes, remove printer
+				button(type='submit').btn.btn-danger Yes, remove printer
 				|  
-				a( href="/printers" ).btn.btn-outline-dark Cancel
+				a(href="/printers").btn.btn-outline-secondary Cancel

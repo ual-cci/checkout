@@ -8,10 +8,11 @@ block prepend title
 	- menu = 'options'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
-		.form-group.row
+		
+		.form-group.row.mb-3
 			.col-lg-4
-				button( type='submit' ).btn.btn-danger Yes, reset option
+				button(type='submit').btn.btn-danger Yes, reset option
 				|  
-				a( href="/options" ).btn.btn-outline-dark Cancel
+				a(href="/options").btn.btn-outline-secondary Cancel

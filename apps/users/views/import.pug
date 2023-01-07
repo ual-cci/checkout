@@ -12,14 +12,14 @@ block contents
 
 		.form-group.mb-3
 			label(for="format").col-form-label Format
-			.col-md-1.row
+			.col-md-3.col-lg-2
 				select#format(name="format").form-control.form-select
 					option(value='tsv') TSV
 					option(value='csv') CSV
 		
 		.form-group.mb-3
 			label( for="data" ).col-form-label Data
-			textarea( name="data" type="text" rows="20" required )#data.form-control
+			textarea#data(name="data" type="text" rows="20" required).form-control
 		
 		.form-group.mb-3
-			input( type="submit" value="Next" ).btn.btn-primary
+			input(type="submit" value="Next").btn.btn-primary

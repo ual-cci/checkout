@@ -8,18 +8,20 @@ block prepend title
 	- menu = 'courses'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
 		+messageBlock('danger', 'white', 'Deleting this course will transfer all the users to the new course selected below.')
-		.form-group.row
-			label( for="course" ).col-lg-2.col-form-label Transfer users to
+		
+		.form-group.row.mb-3
+			label(for="course").col-lg-2.col-form-label Transfer users to
 			.col-lg-4
-				select( name="course", required )#course.form-control
-					option( value="" disabled selected ) Select a course
+				select#course(name="course" required).form-control.form-select
+					option(value="" disabled selected) Select a course
 					for course in courses
-						option( value=course.id, disabled=course.disabled )=course.name
-		.form-group.row
+						option(value=course.id disabled=course.disabled)=course.name
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type='submit' ).btn.btn-danger Yes, remove and transfer
+				button(type='submit').btn.btn-danger Yes, remove and transfer
 				|  
-				a( href="/courses" ).btn.btn-outline-dark Cancel
+				a(href="/courses").btn.btn-outline-secondary Cancel

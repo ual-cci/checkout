@@ -1,15 +1,18 @@
-form( method="post" )
+form(method="post")
 	+csrf
-	.form-group.row
-		label( for="name" ).col-lg-2.col-form-label Name
+	
+	.form-group.row.mb-3
+		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
-			input( name="name" type="text" value=role.name required )#name.form-control
-	.form-group.row
-		label( for="home" ).col-lg-2.col-form-label Home
+			input#name(name="name" type="text" value=role.name required).form-control
+	
+	.form-group.row.mb-3
+		label(for="home").col-lg-2.col-form-label Home
 		.col-lg-4
-			input( name="home" type="text" value=role.home required )#home.form-control
-	.form-group.row
+			input#home(name="home" type="text" value=role.home required).form-control
+	
+	.form-group.row.mb-3
 		.col-lg-4.offset-lg-2
-			button( type="submit" ).btn.btn-primary=action
+			button(type="submit").btn.btn-primary=action
 			|  
-			a( href="/roles" ).btn.btn-outline-dark Cancel
+			a(href="/roles").btn.btn-outline-secondary Cancel

@@ -8,18 +8,20 @@ block prepend title
 	- menu = 'departments'
 
 block contents
-	form( method="post" )
+	form(method="post")
 		+csrf
 		+messageBlock('danger', 'white', 'Deleting this department will transfer all the items to the new department selected below.')
-		.form-group.row
-			label( for="department" ).col-lg-2.col-form-label Transfer items to
+		
+		.form-group.row.mb-3
+			label(for="department").col-lg-2.col-form-label Transfer items to
 			.col-lg-4
-				select( name="department", required )#department.form-control
-					option( value="" disabled selected ) Select a department
+				select#department(name="department" required).form-control.form-select
+					option(value="" disabled selected) Select a department
 					for department in departments
-						option( value=department.id, disabled=department.disabled )=department.name
-		.form-group.row
+						option(value=department.id, disabled=department.disabled)=department.name
+		
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
-				button( type='submit' ).btn.btn-danger Yes, remove and transfer
+				button(type='submit').btn.btn-danger Yes, remove and transfer
 				|  
-				a( href="/departments" ).btn.btn-outline-dark Cancel
+				a(href="/departments").btn.btn-outline-secondary Cancel
