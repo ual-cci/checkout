@@ -1,9 +1,11 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove: ' + selected.name
-	- heading = "Are you sure you want to remove " + selected.name + "?"
-	- menu = "users"
+	- title = 'Remove User'
+	- heading = `Are you sure you want to remove "${selected.name}"?`
+	- breadcrumb.push({name: selected.name, url: `/users/${selected.id}`})
+	- breadcrumb.push({name: 'Remove'})
+	- menu = 'users'
 
 block contents
 	form( method="post" )

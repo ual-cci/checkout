@@ -2,8 +2,7 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = 'Departments'
-	- heading = title
-	- menu = "departments"
+	- menu = 'departments'
 	
 block buttons
 	if currentUserCan('departments_create')

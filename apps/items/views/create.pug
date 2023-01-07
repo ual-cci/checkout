@@ -2,11 +2,14 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	if template
-		- title = `Clone item "${item.name}"`	
+		- title = `Clone Item "${item.name}"`
+		- breadcrumb.push({name: item.name, url: `/items/${item.id}`})
+		- breadcrumb.push({name: 'Clone'})
+		- menu = 'items'
 	else
-		- title = "Create items"
-	- heading = title
-	- menu = "create items"
+		- title = "Create Items"
+		- breadcrumb.push({name: 'Create'})
+		- menu = 'create items'
 
 block contents
 	form(method="post" action="/items/create")

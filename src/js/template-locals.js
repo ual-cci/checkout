@@ -9,6 +9,7 @@ gitRev.short(str => {
 })
 
 function templateLocals(req, res, next) {
+	res.locals.breadcrumb = []
 	res.locals.git = git
 	if (process.env.NODE_ENV == "development") res.locals.dev = true
 	if (req.session.kioskMode > 0) res.locals.kioskMode = true

@@ -2,8 +2,8 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = user.name
-	- heading = title
-	- menu = "users"
+	- menu = 'users'
+	- breadcrumb.push({name: user.name})
 
 block buttons
 	if currentUserCan('users_email') && onloan.length > 0

@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Edit: " + group.name
-	- heading = title
-	- menu = "groups"
+	- title = 'Edit Group'
+	- breadcrumb.push({name: group.name})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'groups'
 
 block contents
 	- action = 'Update'

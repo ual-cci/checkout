@@ -1,9 +1,8 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Printers"
-	- heading = title
-	- menu = "printers"
+	- title = 'Printers'
+	- menu = 'printers'
 
 block buttons
 	if currentUserCan('printers_create')

@@ -36,6 +36,7 @@ function routeApps(mainApp, apps) {
 	apps.forEach(childApp => {
 		// Create the app
 		const new_app = require(childApp.app)(childApp)
+		new_app.locals.app_title = childApp.title
 		new_app.use(helmet())
 
 		// Use the app

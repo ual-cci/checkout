@@ -9,6 +9,7 @@ app.set('views', __dirname + '/views')
 
 app.use((req, res, next) => {
 	req.controller = new ReservationController()
+	res.locals.breadcrumb.push({name: app.locals.app_title, url: app.mountpath})
 	next()
 })
 

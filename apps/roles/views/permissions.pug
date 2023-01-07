@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Permissions: ' + role.name
-	- heading = title
-	- menu = "roles"
+	- title = 'Set Permissions'
+	- breadcrumb.push({name: role.name})
+	- breadcrumb.push({name: 'Set Permissions'})
+	- menu = 'roles'
 
 block buttons 
 	+search

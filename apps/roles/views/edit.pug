@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Edit: " + role.name
-	- heading = title
-	- menu = "roles"
+	- title = 'Edit Role'
+	- breadcrumb.push({name: role.name})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'roles'
 
 block contents
 	- action = 'Update'

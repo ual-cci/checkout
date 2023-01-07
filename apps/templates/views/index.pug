@@ -1,9 +1,8 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Email Templates"
-	- heading = title
-	- menu = "templates"
+	- title = 'Email Templates'
+	- menu = 'templates'
 
 block buttons
 	if currentUserCan('templates_create')

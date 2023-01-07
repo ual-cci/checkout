@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = `Editing "${template.name}"`
-	- heading = title
-	- menu = "templates"
+	- title = 'Edit Template'
+	- breadcrumb.push({name: template.name})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'templates'
 
 block contents
 	- action = 'Update'

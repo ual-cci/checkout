@@ -1,16 +1,16 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Switch to kiosk mode'
+	- title = 'Switch to Kiosk Mode'
 	- heading = "Are you sure you want to switch to kiosk mode?"
-	- menu = "kiosk"
+	- menu = 'kiosk mode'
 
 block contents
 	form( method="post" )
 		+csrf
-		+messageBlock('danger', 'white', 'Switching to kiosk mode means this computer is trusted to use barcode only authentication.')
+		+messageBlock('warning', 'black', 'Switching to kiosk mode means this computer is trusted to use barcode only authentication.')
 		.form-group.row
 			.col-lg-4
-				button( type='submit' ).btn.btn-success Activate kiosk mode
+				button( type='submit' ).btn.btn-warning Activate kiosk mode
 				|  
 				a( href="/" ).btn.btn-outline-dark Cancel

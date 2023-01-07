@@ -9,7 +9,12 @@ app.set('views', __dirname + '/views')
 
 app.use((req, res, next) => {
 	req.controller = new ItemController()
+	res.locals.breadcrumb.push({name: app.locals.app_title})
 	next()
+})
+
+app.get('/', auth.isLoggedIn, (req, res) => {
+	req.saveSessionAndRedirect('/items')
 })
 
 app.get('/insurance', auth.currentUserCan('generate_insurance_report'), (req, res) => {

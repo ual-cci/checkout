@@ -1,9 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Create User"
-	- heading = title
-	- menu = "users"
+	- title = 'Create User'
+	- breadcrumb.push({name: 'Create'})
+	- menu = 'users'
 
 block contents
 	- action = 'Create'

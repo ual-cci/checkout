@@ -1,9 +1,11 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Reset: ' + key
-	- heading = "Are you sure you want to reset " + key + "?"
-	- menu = "options"
+	- title = 'Reset Option'
+	- heading = `Are you sure you want to reset "${key}"?`
+	- breadcrumb.push({name: key})
+	- breadcrumb.push({name: 'Edit'})
+	- menu = 'options'
 
 block contents
 	form( method="post" )

@@ -2,7 +2,7 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = 'Shortcuts'
-	- heading = title
+	- breadcrumb.push({name: title})
 
 block contents
 	p There are a number of shortcuts built into #{Options.get('application_name')}, the following are applicable to your user role.

@@ -1,9 +1,10 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = 'Remove reservation'
+	- title = 'Remove Reservation'
 	- heading = "Are you sure you want to remove this reservation?"
-	- menu = "reservations"
+	- breadcrumb.push({name: title})
+	- menu = 'reservations'
 
 block contents
 	form( method="post" )

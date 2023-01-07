@@ -1,9 +1,9 @@
 extends ../../../src/views/base.pug
 
 block prepend title
-	- title = "Insurance Report"
-	- heading = title
-	- menu = "insurance"
+	- title = 'Insurance Report'
+	- breadcrumb.push({name: title})
+	- menu = 'insurance'
 
 block contents
 	form( method="post" )

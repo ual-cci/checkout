@@ -10,10 +10,12 @@ block base
 			link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
 			link(rel="manifest" href="/site.webmanifest")
 			block title
-				if title
-					title #{title} &mdash; #{Options.get('application_name')}
-				else
-					title #{Options.get('application_name')}
+				title
+					if title && title != app_title
+						| #{title} &mdash; 
+					if app_title && app_title != Options.get('application_name')
+						| #{app_title} &mdash; 
+					| #{Options.get('application_name')}
 			block head
 				block css
 					link(rel="stylesheet", href="/tempusdominus/css/tempusdominus-bootstrap-4.min.css")
@@ -39,6 +41,8 @@ block base
 					.row
 						include partials/sidebar.pug
 						main.col-12.col-lg-10.col-md-9.ms-auto
+							block breadcrumb
+								include partials/breadcrumb.pug
 							include partials/body.pug
 				else
 					main.col-12

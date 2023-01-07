@@ -2,8 +2,8 @@ extends ../../../src/views/base.pug
 
 block prepend title
 	- title = item.name
-	- heading = title
-	- menu = "items"
+	- breadcrumb.push({name: item.name})
+	- menu = 'items'
 
 block buttons
 	if item.status != 'available'

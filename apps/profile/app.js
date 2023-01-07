@@ -7,6 +7,7 @@ const app = express()
 
 app.use((req, res, next) => {
 	req.controller = new ProfileController()
+	res.locals.breadcrumb.push({name: app.locals.app_title, url: app.mountpath})
 	next()
 })
 
