@@ -9075,6 +9075,9 @@ html.fs {
 table.table a {
   text-decoration: none; }
 
+table.table td {
+  vertical-align: middle; }
+
 .clipboard {
   background-color: lightyellow;
   padding: 0 0.2em;
@@ -9092,7 +9095,7 @@ body.dev:before {
   background-size: 20px 10px;
   z-index: 1000; }
 
-body.dev .navbar {
+body.dev nav.navbar {
   top: 3px; }
 
 .actionBtn {
@@ -9103,12 +9106,44 @@ body.dev .navbar {
   .actionBtn:hover {
     opacity: 1; }
 
-nav#topMenu {
-  background-color: #ffc107; }
-  nav#topMenu a.navbar-brand {
-    color: black; }
-    nav#topMenu a.navbar-brand img {
-      margin-top: -4px; }
+nav.navbar {
+  background-color: #1a1c1f;
+  padding: 0;
+  height: 3rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; }
+  nav.navbar .brand {
+    padding: 0; }
+    nav.navbar .brand .navbar-brand {
+      height: 3rem;
+      width: 100%;
+      margin: 0;
+      padding-left: .7rem;
+      border-right: 1px solid rgba(0, 0, 0, 0.15);
+      color: white;
+      font-size: 1rem; }
+      nav.navbar .brand .navbar-brand:hover img {
+        height: 2.5em; }
+      nav.navbar .brand .navbar-brand img {
+        height: 2rem;
+        margin-right: .5rem;
+        transition: height .25s ease-out; }
+  nav.navbar .nav-item > a {
+    color: #ccc; }
+  nav.navbar #search {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 0;
+    height: 3rem;
+    color: #ccc;
+    transition: background-color .25s ease-out, color .25s ease-out; }
+    nav.navbar #search::placeholder {
+      color: #ccc; }
+    nav.navbar #search:focus {
+      color: black;
+      border: none;
+      box-shadow: none;
+      outline: 0 none;
+      background-color: white; }
 
 /* Search */
 .modalCover {
@@ -9165,6 +9200,8 @@ body.noScroll {
     width: 15em; }
 
 nav#sidebarMenu {
+  background-color: #f8f9fa;
+  border-right: 1px solid #e9ecef;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -9175,7 +9212,8 @@ nav#sidebarMenu {
   font-weight: 500; }
   nav#sidebarMenu h6, nav#sidebarMenu .h6 {
     padding-left: 1rem;
-    font-size: .9em; }
+    font-size: .9em;
+    font-weight: 400; }
   nav#sidebarMenu .nav-item a.nav-link:link, nav#sidebarMenu .nav-item a.nav-link:visited {
     color: var(--bs-secondary-color); }
   nav#sidebarMenu .nav-item a.nav-link span.fa {
@@ -9183,15 +9221,20 @@ nav#sidebarMenu {
     text-decoration: none; }
   nav#sidebarMenu .nav-item a.nav-link.active {
     color: #f8f9fa !important;
-    background-color: var(--bs-secondary-color); }
+    background-color: #0d6efd; }
   nav#sidebarMenu .nav-item a.nav-link.active, nav#sidebarMenu .nav-item a.nav-link:hover {
     color: black; }
 
 [data-bs-theme="dark"] .actionBtn {
   color: white; }
 
+[data-bs-theme="dark"] nav.navbar #search:focus {
+  background-color: #343a40;
+  color: white; }
+
 [data-bs-theme="dark"] nav#sidebarMenu {
-  background: #111; }
+  background: #111;
+  border-right: 1px solid black; }
   [data-bs-theme="dark"] nav#sidebarMenu .nav-item a.nav-link:hover {
     color: #f8f9fa; }
   [data-bs-theme="dark"] nav#sidebarMenu .nav-item a.nav-link.active {
@@ -9199,14 +9242,14 @@ nav#sidebarMenu {
     background-color: #212529; }
 
 [data-bs-theme="dark"] .searchList {
-  background-color: #212529;
+  background-color: #343a40;
   color: white; }
   [data-bs-theme="dark"] .searchList a {
-    background-color: #212529;
+    background-color: #343a40;
     border-top: 1px solid rgba(255, 255, 255, 0.125);
     color: white; }
     [data-bs-theme="dark"] .searchList a:hover {
       text-decoration: none;
-      background-color: #343a40; }
-    [data-bs-theme="dark"] .searchList a.selected {
       background-color: #495057; }
+    [data-bs-theme="dark"] .searchList a.selected {
+      background-color: #6c757d; }

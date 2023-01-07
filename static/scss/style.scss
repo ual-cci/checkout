@@ -50,10 +50,13 @@ html.fs {
 	}
 }
 
-
 table.table {
 	a {
 		text-decoration: none;
+	}
+
+	td {
+		vertical-align: middle;
 	}
 }
 
@@ -79,7 +82,7 @@ body.dev {
 		z-index: 1000;
 	}
 
-	.navbar {
+	nav.navbar {
 		top: 3px;
 	}
 }
@@ -97,14 +100,61 @@ body.dev {
 }
 
 // Top Nav
-nav#topMenu {
-	background-color: $yellow;
+nav.navbar {
+	background-color: #1a1c1f;
+	padding: 0;
+	height: 3rem;
+	box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
 
-	a.navbar-brand {
-		color: black;
+	.brand {
+		padding: 0;
 		
-		img {
-			margin-top: -4px;
+		.navbar-brand,  {
+			height: 3rem;
+			width: 100%;
+			margin: 0;
+			padding-left: .7rem;
+			border-right: 1px solid rgba(0,0,0,.15);
+			color: white;
+			font-size: 1rem;
+			
+			&:hover {
+				img {
+					height: 2.5em;
+				}
+			}
+
+			img {
+				height: 2rem;
+				margin-right: .5rem;
+				transition: height .25s ease-out;
+			}
+		}	
+	}
+	
+	.nav-item > a {
+		color: #ccc;
+	}
+	
+	#search {
+		background-color: rgba(255, 255, 255, .1);
+		border: none;
+		border-radius: 0;
+		height: 3rem;
+		color: #ccc;
+
+		transition: background-color .25s ease-out, color .25s ease-out;
+
+		&::placeholder {
+			color: #ccc;
+		}
+
+		&:focus {
+			color: black;
+			border: none;
+			box-shadow: none;
+			outline: 0 none;
+			background-color: rgba(255, 255, 255, 1);
 		}
 	}
 }
@@ -190,6 +240,8 @@ body.noScroll {
 
 // Side bar style
 nav#sidebarMenu {
+	background-color: $gray-100;
+	border-right: 1px solid $gray-200;
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -202,6 +254,7 @@ nav#sidebarMenu {
 	h6 {
 		padding-left: 1rem;
 		font-size: .9em;
+		font-weight: 400;
 	}
 
 	.nav-item {
@@ -218,7 +271,7 @@ nav#sidebarMenu {
 			// Side bar fade and active effects
 			&.active {
 				color: $light !important;
-				background-color: $text-muted;
+				background-color: $primary;
 			}
 			
 			&.active, &:hover {
@@ -235,9 +288,21 @@ nav#sidebarMenu {
 		color: white;
 	}
 
+	// Main nav bar
+
+	nav.navbar {
+		#search {
+			&:focus {
+				background-color: $gray-800;
+				color: white;
+			}
+		}
+	}
+
 	// Side bar 
 	nav#sidebarMenu {
 		background: #111;
+		border-right: 1px solid black;
 
 		// Sidebar fade and active effects - dark mode
 		.nav-item a.nav-link {
@@ -254,21 +319,21 @@ nav#sidebarMenu {
 
 	// Search list
 	.searchList {
-		background-color: $gray-900;
+		background-color: $gray-800;
 		color: white;
 
 		a {
-			background-color: $gray-900;
+			background-color: $gray-800;
 			border-top: 1px solid rgba(255,255,255,.125);
 			color: white;
 
 		&:hover {
 			text-decoration: none;
-			background-color: $gray-800;
+			background-color: $gray-700;
 		}
 
 		&.selected {
-			background-color: $gray-700;
+			background-color: $gray-600;
 		}
 		}
 	}
