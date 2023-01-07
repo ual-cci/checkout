@@ -9072,6 +9072,11 @@ html.fs {
         border-top-left-radius: 0;
         border-top-right-radius: 0; }
 
+#results .list-group :first-child {
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }
+
 table.table a {
   text-decoration: none; }
 
