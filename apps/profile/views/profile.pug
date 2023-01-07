@@ -31,7 +31,7 @@ block contents
 			.form-group.row.mb-3
 				label(for="printer").col-lg-2.col-form-label Default Printer
 				.col-lg-4
-					select#printer(name="printer").form-control
+					select#printer(name="printer").form-control.form-select
 						option(value="") None
 						for printer in printers
 							option(value=printer.id selected=(printer.id == loggedInUser.printer_id))=printer.name
@@ -39,7 +39,7 @@ block contents
 			.form-group.row.mb-3
 				label(for="template").col-lg-2.col-form-label Default Email Template
 				.col-lg-4
-					select#template(name="template").form-control
+					select#template(name="template").form-control.form-select
 						option(value="") None
 						for template in templates
 							option(value=template.id selected=(template.id == loggedInUser.template_id))=template.name
