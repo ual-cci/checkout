@@ -28,7 +28,6 @@ if printers.length > 0
 							td
 								if currentUserCan('printers_edit')
 									+editBtn( '/printers/' + printer.id + '/edit' )
-									+space
 								if currentUserCan('printers_remove')
 									+removeBtn( '/printers/' + printer.id + '/remove' )
 else
