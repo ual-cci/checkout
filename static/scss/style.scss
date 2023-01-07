@@ -138,7 +138,8 @@ nav.navbar {
 		}	
 	}
 	
-	.nav-item > a {
+	.nav-item > a,
+	.nav-item .navbar-text {
 		color: #ccc;
 	}
 	
