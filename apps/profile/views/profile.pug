@@ -42,7 +42,7 @@ block contents
 					table.table.table-striped.table-sm
 						thead
 							tr
-								th Show
+								th: input.checkall(type="checkbox" title="Check All")
 								th Description
 						tbody
 							for col, key in ItemColumns
