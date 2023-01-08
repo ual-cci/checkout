@@ -16,6 +16,7 @@ const Actions = require('../../src/models/actions.js')
 const Courses = require('../../src/models/courses.js')
 const Years = require('../../src/models/years.js')
 const Departments = require('../../src/models/departments.js')
+const Printers = require('../../src/models/printers.js')
 
 const Print = require('../../src/js/print')
 
@@ -32,6 +33,7 @@ class ApiController extends BaseController {
 			courses: new Courses(),
 			years: new Years(),
 			departments: new Departments(),
+			printers: new Printers(),
 		}
 	}
 
@@ -558,6 +560,35 @@ class ApiController extends BaseController {
 			res.json({
 				message: 'Item issued',
 				status: 'success'
+			})
+		})
+		.catch(err => this.displayErrorJson(req, res, err))
+	}
+
+	/**
+	* Change the current users selected printer
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	postSelectLabel(req, res) {
+		this.models.printers.getById(req.params.id)
+		.then(printer => {
+			if (!printer) {
+				throw ({
+					message: 'Unknown printer'
+				})
+			}
+			this.models.users.update(res.locals.loggedInUser.id, {printer_id: printer.id})
+			.then((result) => {
+				res.json({
+					status: 'success',
+					message: `Printer changed to ${printer.name}`,
+					printer: {
+						id: printer.id,
+						label: printer.label
+					}
+				})
 			})
 		})
 		.catch(err => this.displayErrorJson(req, res, err))
