@@ -7,6 +7,11 @@ form(method="post")
 			input#name(name="name", type="text", value=(template && template.name ? template.name : null), required).form-control
 	
 	.form-group.row.mb-3
+		label(for="label").col-lg-2.col-form-label Label
+		.col-lg-4
+			input#label(name="label" type="text" value=(template && template.label ? template.label : null) maxlength="10" required autocomplete="off").form-control
+	
+	.form-group.row.mb-3
 		label(for="subject").col-lg-2.col-form-label Subject
 		.col-lg-4
 			input#subject(name="subject", type="text", value=(template && template.subject ? template.subject : null), required).form-control

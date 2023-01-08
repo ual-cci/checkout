@@ -32,6 +32,7 @@ class TemplatesController extends BaseController {
 		const templates = {
 			name: req.body.name,
 			subject: req.body.subject,
+			label: req.body.label,
 			body: req.body.body
 		}
 
@@ -67,6 +68,7 @@ class TemplatesController extends BaseController {
 		const template = {
 			name: req.body.name,
 			subject: req.body.subject,
+			label: req.body.label,
 			body: req.body.body
 		}
 

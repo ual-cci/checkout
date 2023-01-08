@@ -17,6 +17,7 @@ const Courses = require('../../src/models/courses.js')
 const Years = require('../../src/models/years.js')
 const Departments = require('../../src/models/departments.js')
 const Printers = require('../../src/models/printers.js')
+const Templates = require('../../src/models/templates.js')
 
 const Print = require('../../src/js/print')
 
@@ -34,6 +35,7 @@ class ApiController extends BaseController {
 			years: new Years(),
 			departments: new Departments(),
 			printers: new Printers(),
+			templates: new Templates(),
 		}
 	}
 
@@ -584,6 +586,31 @@ class ApiController extends BaseController {
 				res.json({
 					status: 'success',
 					printer: printer.label
+				})
+			})
+		})
+		.catch(err => this.displayErrorJson(req, res, err))
+	}
+
+	/**
+	* Change the current users selected email template
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	getSelectTemplate(req, res) {
+		this.models.templates.getById(req.params.id)
+		.then(template => {
+			if (!template) {
+				throw ({
+					message: 'Unknown template'
+				})
+			}
+			this.models.users.update(res.locals.loggedInUser.id, {template_id: template.id})
+			.then((result) => {
+				res.json({
+					status: 'success',
+					template: template.label
 				})
 			})
 		})

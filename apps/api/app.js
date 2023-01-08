@@ -64,6 +64,10 @@ app.get('/select-printer/:id', auth.APIuserCan('print'), (req, res) => {
 	req.controller.getSelectLabel(req, res)
 })
 
+app.get('/select-template/:id', auth.APIuserCan('users_email'), (req, res) => {
+	req.controller.getSelectTemplate(req, res)
+})
+
 app.post('/new-user', auth.APIuserCan('users_create'), (req, res) => {
 	req.controller.postNewUser(req, res)
 })

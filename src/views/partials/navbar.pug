@@ -24,18 +24,20 @@ nav.navbar.navbar-expand-md.sticky-top
 									li: a.dropdown-item.printer(data-printer=printer.id)
 										| #{printer.name} 
 										span.badge.rounded-pill.text-bg-secondary=printer.label
-										
-								
-					//- Future Feature
-					//- if currentUserCan('users_email')
+
+					
+					if currentUserCan('users_email') && templates && templates.length > 1
 						.nav-item.dropdown
-							a.nav-link.dropdown-toggle(href="#" id="topMenuEmailDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+							a.nav-link.dropdown-toggle(href="#" id="topMenuTemplateDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
 								span.fas.fa-envelope
-								|  Polite
-							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuEmailDropdown")
-								li: a.dropdown-item(href="?") Polite Email
-								li: a.dropdown-item(href="?") Summer Show
-								li: a.dropdown-item(href="?") Christmas 2022
+								|  
+								span.template=loggedInUser.template_label
+							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuTemplateDropdown")
+								for template in templates
+									li: a.dropdown-item.template(data-template=template.id)
+										| #{template.name} 
+										span.badge.rounded-pill.text-bg-secondary=template.label
+
 					if currentUserCan('edit_profile')
 						.nav-item.no-wrap: a.nav-link.text-nowrap.actionBtn(href="/profile")
 							span.fas.fa-user
