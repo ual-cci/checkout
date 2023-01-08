@@ -23,10 +23,12 @@ function QShandleKeyboardInput(e) {
 function checkAll() {
 	if (checkAllBox.checked) {
 		document.querySelectorAll('.table input[type=checkbox]').forEach(elm => {
+			if (elm.disabled) return;
 			if (elm.parentElement.parentElement.style.display != 'none') elm.checked = true
 		})
 	} else {
 		document.querySelectorAll('.table input[type=checkbox]').forEach(elm => {
+			if (elm.disabled) return;
 			if (elm.parentElement.parentElement.style.display != 'none') elm.checked = false
 		})
 	}
