@@ -102,7 +102,8 @@ class ItemController extends BaseController {
 				loanable: req.query.loanable ? req.query.loanable : ''
 			}
 			const {orderBy, direction} = getSortBy(req.query.sortby, req.query.direction, {
-				mutator: SORTBY_MUTATIONS.ITEMS
+				mutator: SORTBY_MUTATIONS.ITEMS,
+				defaultSortby: res.locals.loggedInUser.columns.items.includes('barcode') ? 'barcode' : 'name'
 			})
 
 			// Get items
