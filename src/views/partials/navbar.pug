@@ -17,7 +17,8 @@ nav.navbar.navbar-expand-md.sticky-top
 						.nav-item.dropdown
 							a.nav-link.dropdown-toggle(href="#" id="topMenuPrinterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
 								span.fas.fa-print
-								|  #{loggedInUser.printer_label}
+								|  
+								span.printer=loggedInUser.printer_label
 							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuPrinterDropdown")
 								for printer in printers
 									li: a.dropdown-item.printer(data-printer=printer.id)
