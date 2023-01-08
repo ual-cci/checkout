@@ -571,7 +571,7 @@ class ApiController extends BaseController {
 	* @param {Object} req Express request object
 	* @param {Object} res Express response object
 	*/
-	postSelectLabel(req, res) {
+	getSelectLabel(req, res) {
 		this.models.printers.getById(req.params.id)
 		.then(printer => {
 			if (!printer) {
@@ -583,11 +583,7 @@ class ApiController extends BaseController {
 			.then((result) => {
 				res.json({
 					status: 'success',
-					message: `Printer changed to ${printer.name}`,
-					printer: {
-						id: printer.id,
-						label: printer.label
-					}
+					printer: printer.label
 				})
 			})
 		})
