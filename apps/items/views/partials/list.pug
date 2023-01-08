@@ -2,8 +2,8 @@ if items && items.length > 0
 	.table-responsive
 		table.table.table-striped.table-sm
 			thead
-				//- - console.log(columns)
 				tr
+					- console.log(columns)
 					if columns.includes('edit')
 						th: input(type="checkbox", title="Check All", checked=edit_items).checkall
 					if columns.includes('status')
@@ -107,7 +107,7 @@ if items && items.length > 0
 			tfoot
 				tr
 					th Total
-					th(style="font-weight: normal;" colspan=(edit ? "6" : "5")) #{item_count} items
+					th(style="font-weight: normal;") #{item_count} items
 					th £#{item_total.toFixed(2)}
 					th(colspan="5")
 else
