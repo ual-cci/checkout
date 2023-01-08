@@ -40,7 +40,7 @@ class UserModel extends BaseModel {
 			template: {
 				table: 'templates',
 				join: ['id', 'template_id'],
-				properties: ['id', 'name', 'subject', 'body']
+				properties: ['id', 'name', 'subject', 'label', 'body']
 			}
 		}
 	}
