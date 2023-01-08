@@ -574,22 +574,32 @@ class ApiController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getSelectLabel(req, res) {
-		this.models.printers.getById(req.params.id)
-		.then(printer => {
-			if (!printer) {
-				throw ({
-					message: 'Unknown printer'
+		if (req.params.id) {
+			this.models.printers.getById(req.params.id)
+			.then(printer => {
+				if (!printer) {
+					throw ({
+						message: 'Unknown printer'
+					})
+				}
+				this.models.users.update(res.locals.loggedInUser.id, {printer_id: printer.id})
+				.then((result) => {
+					res.json({
+						status: 'success',
+						printer: printer.label
+					})
 				})
-			}
-			this.models.users.update(res.locals.loggedInUser.id, {printer_id: printer.id})
+			})
+			.catch(err => this.displayErrorJson(req, res, err))
+		} else {
+			this.models.users.update(res.locals.loggedInUser.id, {printer_id: null})
 			.then((result) => {
 				res.json({
 					status: 'success',
-					printer: printer.label
+					printer: ''
 				})
 			})
-		})
-		.catch(err => this.displayErrorJson(req, res, err))
+		}
 	}
 
 	/**
@@ -599,22 +609,32 @@ class ApiController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getSelectTemplate(req, res) {
-		this.models.templates.getById(req.params.id)
-		.then(template => {
-			if (!template) {
-				throw ({
-					message: 'Unknown template'
+		if (req.params.id) {
+			this.models.templates.getById(req.params.id)
+			.then(template => {
+				if (!template) {
+					throw ({
+						message: 'Unknown template'
+					})
+				}
+				this.models.users.update(res.locals.loggedInUser.id, {template_id: req.params.id})
+				.then((result) => {
+					res.json({
+						status: 'success',
+						template: template.label
+					})
 				})
-			}
-			this.models.users.update(res.locals.loggedInUser.id, {template_id: template.id})
+			})
+			.catch(err => this.displayErrorJson(req, res, err))
+		} else {
+			this.models.users.update(res.locals.loggedInUser.id, {template_id: null})
 			.then((result) => {
 				res.json({
 					status: 'success',
-					template: template.label
+					template: ''
 				})
 			})
-		})
-		.catch(err => this.displayErrorJson(req, res, err))
+		}
 	}
 
 	/**

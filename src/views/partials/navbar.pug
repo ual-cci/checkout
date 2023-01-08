@@ -13,26 +13,28 @@ nav.navbar.navbar-expand-md.sticky-top
 					input#search.form-control.w-100(type="search" placeholder="Search" aria-label="Search" autocomplete="off")
 				
 				.navbar-nav.ms-auto
-					if currentUserCan('print') && printers && printers.length > 1
+					if currentUserCan('print') && printers && printers.length > 0
 						.nav-item.dropdown
 							a.nav-link.dropdown-toggle(href="#" id="topMenuPrinterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
 								span.fas.fa-print
 								|  
 								span.printer=loggedInUser.printer_label
 							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuPrinterDropdown")
+								li: a.dropdown-item.printer(data-printer='') None
 								for printer in printers
 									li: a.dropdown-item.printer(data-printer=printer.id)
 										| #{printer.name} 
 										span.badge.rounded-pill.text-bg-secondary=printer.label
 
 					
-					if currentUserCan('users_email') && templates && templates.length > 1
+					if currentUserCan('users_email') && templates && templates.length > 0
 						.nav-item.dropdown
 							a.nav-link.dropdown-toggle(href="#" id="topMenuTemplateDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
 								span.fas.fa-envelope
 								|  
 								span.template=loggedInUser.template_label
 							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuTemplateDropdown")
+								li: a.dropdown-item.template(data-template='') None
 								for template in templates
 									li: a.dropdown-item.template(data-template=template.id)
 										| #{template.name} 
