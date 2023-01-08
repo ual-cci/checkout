@@ -187,31 +187,31 @@ function issue(item, user, override, cb) {
 		user: user
 	}
 	if (override) query += '?override=true'
-	apiPOST(`/api/issue/${item}/${user}${query}`, cb)
+	apiPOST(`/issue/${item}/${user}${query}`, cb)
 }
 function returnItem(item, cb) {
-	apiPOST(`/api/return/${item}`, cb)
+	apiPOST(`/return/${item}`, cb)
 }
 function broken(item, cb) {
-	apiPOST(`/api/broken/${item}`, cb)
+	apiPOST(`/broken/${item}`, cb)
 }
 function lost(item, cb) {
-	apiPOST(`/api/lost/${item}`, cb)
+	apiPOST(`/lost/${item}`, cb)
 }
 function sold(item, cb) {
-	apiPOST(`/api/sold/${item}`, cb)
+	apiPOST(`/sold/${item}`, cb)
 }
 function label(item, cb) {
-	apiPOST(`/api/label/${item}`, cb)
+	apiPOST(`/label/${item}`, cb)
 }
 function audit(item, location, override, cb) {
-	apiPOST(`/api/audit/${item}`, {
+	apiPOST(`/audit/${item}`, {
 		location: location,
 		override: override
 	}, cb)
 }
 function newUser(name, barcode, email, course, year, cb) {
-	apiPOST(`/api/new-user`, {
+	apiPOST(`/new-user`, {
 		name: name,
 		barcode: barcode,
 		email: email,
@@ -503,38 +503,8 @@ function refreshHistory() {
 }
 setInterval(refreshHistory, 10000)
 
-
-
 function lazyResetKioskTimer() {
 	if (typeof resetKioskTimer == 'function') {
 		resetKioskTimer()
 	}
-}
-
-function apiPOST(path, data, cb) {
-	if (typeof data == 'function') {
-		cb = data
-		delete data
-	}
-
-	let request = {
-		url: path,
-		type: 'post',
-		headers: {
-			'CSRF-Token': token
-		},
-		xhrFields: {
-			withCredentials: true
-		},
-		dataType: 'json',
-		success: (data, status) => {
-			cb(data)
-		}
-	}
-
-	if (typeof data == 'object') {
-		request.data = data
-	}
-
-	jQuery.ajax(request)
 }
