@@ -68,7 +68,7 @@ block contents
 		- columns = loggedInUser.columns.items
 
 		// Always show the edit column
-		- columns.push('edit')
+		- columns.unshift('edit')
 		
 		// Show columns that are filtered on
 		for k in Object.keys(selected)
