@@ -39,9 +39,7 @@ if users && users.length > 0
 				for user in users
 					tr
 						if edit
-							td
-								if user.id != loggedInUser.id
-									input(type="checkbox" name="ids" value=user.id checked=multi)
+							td: input(type="checkbox" name="ids" value=user.id checked=multi disabled=(user.id == loggedInUser.id))
 						td(data-searchable=user.name): +user(user.name, user.id)
 						td: +role(user.role_name, user.role_id)
 						td: +course(user.course_name, user.course_id)
