@@ -7,6 +7,11 @@ form(method="post")
 			input#name(name="name" type="text" value=printer.name required autocomplete="off").form-control
 	
 	.form-group.row.mb-3
+		label(for="label").col-lg-2.col-form-label Label
+		.col-lg-4
+			input#label(name="label" type="text" value=printer.label maxlength="10" required autocomplete="off").form-control
+	
+	.form-group.row.mb-3
 		label(for="url").col-lg-2.col-form-label URL
 		.col-lg-4
 			input#url(name="url" type="text" value=printer.url required autocomplete="off").form-control

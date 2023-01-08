@@ -2,16 +2,18 @@ if printers.length > 0
 	.table-responsive
 		table.table.table-striped
 			tgroup
-				col( width="20%" )
-				col( width="40%" )
-				col( width="20%" )
-				col( width="20%" )
+				col(width="20%")
+				col(width="40%")
+				col(width="10%")
+				col(width="10%")
+				col(width="20%")
 			thead
 				tr
 					th Name
 						| 
 						span.fas.fa-angle-up.text-muted
 					th URL
+					th Label
 					th View
 					if currentUserCan({or:['printers_edit','printer_remove']})
 						th Manage
@@ -20,15 +22,16 @@ if printers.length > 0
 					tr
 						td(data-searchable=printer.name)=printer.name
 						td=printer.url
+						td=printer.label
 						td
-							a( href=printer.url, target='_blank' ).btn.btn-sm.btn-outline-secondary
+							a(href=printer.url, target='_blank').btn.btn-sm.btn-outline-secondary
 								span.fas.fa-globe
 								|  View
 						if currentUserCan({or:['printers_edit','printer_remove']})
 							td
 								if currentUserCan('printers_edit')
-									+editBtn( '/printers/' + printer.id + '/edit' )
+									+editBtn('/printers/' + printer.id + '/edit')
 								if currentUserCan('printers_remove')
-									+removeBtn( '/printers/' + printer.id + '/remove' )
+									+removeBtn('/printers/' + printer.id + '/remove')
 else
-	+messageBlock( 'warning', 'black','There are no printers to display.' )
+	+messageBlock('warning', 'black','There are no printers to display.')

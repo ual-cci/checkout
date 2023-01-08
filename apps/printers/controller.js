@@ -37,6 +37,7 @@ class PrintersController extends BaseController {
 
 		const values = {
 			name: req.body.name,
+			label: req.body.label,
 			url: req.body.url
 		}
 
@@ -70,6 +71,7 @@ class PrintersController extends BaseController {
 
 		const values = {
 			name: req.body.name,
+			label: req.body.label,
 			url: req.body.url
 		}
 		this.models.printers.update(req.params.id, values)
