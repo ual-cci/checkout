@@ -8,7 +8,6 @@ window.addEventListener('load', () => {
 })
 
 function detectDarkmode(e) {
-	console.log(e)
 	if (e.matches) {
 		document.getElementsByTagName('html')[0].dataset.bsTheme = 'dark'
 	} else {
