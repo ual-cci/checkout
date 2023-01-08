@@ -8,7 +8,7 @@ block prepend title
 block buttons
 	if currentUserCan('users_email') && onloan.length > 0
 		.btn-group.float-right(style='margin-left:.25em;')
-			a( href="/users/" + user.id + "/email", title=`Email ${user.name}` ).btn.btn-outline-dark.btn-sm
+			a( href="/users/" + user.id + "/email", title=`Email ${user.name}` ).btn.btn-outline-secondary.btn-sm
 				span.fas.fa-envelope
 				|  Generate email
 		|  &nbsp;

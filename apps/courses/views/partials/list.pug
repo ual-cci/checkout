@@ -24,9 +24,9 @@ if courses.length > 0
 						if currentUserCan({or: ['users_read','items_read']})
 							td
 								if currentUserCan('users_read')
-									+btn( 'sm', 'outline-dark', 'user', 'Users', '/users/?course=' + course.id )
+									+btn( 'sm', 'outline-secondary', 'user', 'Users', '/users/?course=' + course.id )
 								if currentUserCan('items_read')
-									+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?course=' + course.id )
+									+btn( 'sm', 'outline-secondary', 'box', 'Items', '/items/?course=' + course.id )
 						if currentUserCan({or:['courses_edit','courses_remove']})
 							td
 								if currentUserCan('courses_edit')

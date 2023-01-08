@@ -21,7 +21,7 @@ if locations.length > 0
 						td(data-searchable=location.barcode): +clipboard( location.barcode )
 						if currentUserCan('items_read')
 							td
-								+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?location=' + location.id )
+								+btn( 'sm', 'outline-secondary', 'box', 'Items', '/items/?location=' + location.id )
 						if currentUserCan({or:['locations_edit','locations_remove','print']})
 							td
 								if location.barcode && currentUserCan('print')

@@ -19,7 +19,7 @@ if departments.length > 0
 						td(data-searchable=department.name)=department.name
 						if currentUserCan('items_read')
 							td
-								+btn( 'sm', 'outline-dark', 'box', 'Items', '/items/?department=' + department.id )
+								+btn( 'sm', 'outline-secondary', 'box', 'Items', '/items/?department=' + department.id )
 						if currentUserCan({or:['departments_edit','departments_remove']})
 							td
 								if currentUserCan('departments_edit')
