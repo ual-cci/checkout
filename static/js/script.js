@@ -12,6 +12,7 @@ window.addEventListener('load', () => {
 	document.querySelectorAll('[data-template]').forEach(template => {
 		template.addEventListener('click', handleTemplateChange)
 	})
+	document.querySelector('#topMenuAuditPoint').addEventListener('click', handleAuditPointChange)
 })
 
 function detectDarkmode(e) {
@@ -23,7 +24,7 @@ function detectDarkmode(e) {
 }
 
 function handlePrinterChange() {
-	apiGET('select-printer', this.dataset.printer, (data) => {
+	apiGET(`/api/select-printer/${this.dataset.printer}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuPrinterDropdown .printer').innerText = data.printer
 		} else {
@@ -33,7 +34,7 @@ function handlePrinterChange() {
 }
 
 function handleTemplateChange() {
-	apiGET('select-template', this.dataset.template, (data) => {
+	apiGET(`/api/select-template/${this.dataset.template}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuTemplateDropdown .template').innerText = data.template
 		} else {
@@ -42,8 +43,8 @@ function handleTemplateChange() {
 	})
 }
 
-function apiGET(method, barcode, cb) {
-	jQuery.get('/api/' + method + '/' + barcode, function(data, status) {
+function apiGET(uri, cb) {
+	jQuery.get(uri, (data, status) => {
 		cb(data)
 	})
 }
