@@ -5,9 +5,6 @@ const auth = require('../../src/js/authentication.js')
 const moment = require('moment')
 
 const Users = require('../../src/models/users.js')
-const Printers = require('../../src/models/printers.js')
-const Templates = require('../../src/models/templates.js')
-
 const ItemColumns = require('../items/columns.json')
 
 class ProfileController extends BaseController {
@@ -15,9 +12,7 @@ class ProfileController extends BaseController {
 		super({path: config.path})
 
 		this.models = {
-			users: new Users(),
-			printers: new Printers(),
-			templates: new Templates()
+			users: new Users()
 		}
 	}
 
@@ -28,13 +23,7 @@ class ProfileController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getRoot(req, res) {
-		Promise.all([
-			this.models.printers.getAll(),
-			this.models.templates.getAll()
-		])
-		.then(([printers, templates]) => {
-			res.render('profile', {printers, templates, ItemColumns})
-		})
+		res.render('profile', {ItemColumns})
 	}
 
 	/**
@@ -65,8 +54,6 @@ class ProfileController extends BaseController {
 		const user = {
 			name: req.body.name,
 			email: req.body.email,
-			printer_id: req.body.printer ? req.body.printer : null,
-			template_id: req.body.template ? req.body.template : null,
 			columns: {
 				items: itemColumns
 			}

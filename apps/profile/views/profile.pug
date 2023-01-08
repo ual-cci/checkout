@@ -29,22 +29,6 @@ block contents
 				h3.mb-3.pb-1.border-bottom Preferences
 			
 			.form-group.row.mb-3
-				label(for="printer").col-lg-2.col-form-label Default Printer
-				.col-lg-4
-					select#printer(name="printer").form-control.form-select
-						option(value="") None
-						for printer in printers
-							option(value=printer.id selected=(printer.id == loggedInUser.printer_id))=printer.name
-			
-			.form-group.row.mb-3
-				label(for="template").col-lg-2.col-form-label Default Email Template
-				.col-lg-4
-					select#template(name="template").form-control.form-select
-						option(value="") None
-						for template in templates
-							option(value=template.id selected=(template.id == loggedInUser.template_id))=template.name
-			
-			.form-group.row.mb-3
 				label(for="audit_point").col-lg-2.col-form-label Audit Point
 				.col-lg-4
 					.input-group
