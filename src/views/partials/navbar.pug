@@ -13,17 +13,18 @@ nav.navbar.navbar-expand-md.sticky-top
 					input#search.form-control.w-100(type="search" placeholder="Search" aria-label="Search" autocomplete="off")
 				
 				.navbar-nav.ms-auto
-					//- Future Feature
-					//- if currentUserCan('print')
+					if currentUserCan('print') && printers && printers.length > 1
 						.nav-item.dropdown
 							a.nav-link.dropdown-toggle(href="#" id="topMenuPrinterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
 								span.fas.fa-print
-								|  PR
+								|  #{loggedInUser.printer_label}
 							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuPrinterDropdown")
-								li: a.dropdown-item(href="?") Peckham Road
-								li: a.dropdown-item(href="?") Greencoat
-								li: a.dropdown-item(href="?") Eagle Wharf
-								li: a.dropdown-item(href="?") High Holborn
+								for printer in printers
+									li: a.dropdown-item.printer(data-printer=printer.id)
+										| #{printer.name} 
+										span.badge.rounded-pill.text-bg-secondary=printer.label
+										
+								
 					//- Future Feature
 					//- if currentUserCan('users_email')
 						.nav-item.dropdown
