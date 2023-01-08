@@ -508,3 +508,31 @@ function lazyResetKioskTimer() {
 		resetKioskTimer()
 	}
 }
+
+function apiPOST(path, data, cb) {
+	if (typeof data == 'function') {
+		cb = data
+		delete data
+	}
+
+	let request = {
+		url: `/api/${path}`,
+		type: 'post',
+		headers: {
+			'CSRF-Token': token
+		},
+		xhrFields: {
+			withCredentials: true
+		},
+		dataType: 'json',
+		success: (data, status) => {
+			cb(data)
+		}
+	}
+
+	if (typeof data == 'object') {
+		request.data = data
+	}
+
+	jQuery.ajax(request)
+}
