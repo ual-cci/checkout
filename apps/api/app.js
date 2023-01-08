@@ -60,6 +60,10 @@ app.post('/label/:item', auth.APIuserCan('print'), (req, res) => {
 	req.controller.postLabel(req, res)
 })
 
+app.get('/select-printer/:id', auth.APIuserCan('print'), (req, res) => {
+	req.controller.getSelectLabel(req, res)
+})
+
 app.post('/new-user', auth.APIuserCan('users_create'), (req, res) => {
 	req.controller.postNewUser(req, res)
 })

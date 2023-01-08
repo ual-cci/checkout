@@ -35,7 +35,7 @@ class UserModel extends BaseModel {
 			printer: {
 				table: 'printers',
 				join: ['id', 'printer_id'],
-				properties: ['id', 'name', 'url']
+				properties: ['id', 'name', 'label', 'url']
 			},
 			template: {
 				table: 'templates',

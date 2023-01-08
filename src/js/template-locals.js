@@ -1,5 +1,7 @@
 const auth = require('./authentication')
 const Options = require('./options')()
+const Printers = require('../models/printers')
+const printers = new Printers()
 
 var gitRev = require('git-rev')
 var git = ''
@@ -9,6 +11,9 @@ gitRev.short(str => {
 })
 
 function templateLocals(req, res, next) {
+	printers.getAll().then((printers) => {
+		res.locals.printers = printers
+	})
 	res.locals.breadcrumb = []
 	res.locals.git = git
 	if (process.env.NODE_ENV == "development") res.locals.dev = true

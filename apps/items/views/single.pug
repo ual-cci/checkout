@@ -29,7 +29,10 @@ block buttons
 						|  Sold
 	if currentUserCan('print')
 		.btn-group
-			include partials/print-btn.pug
+			if loggedInUser.printer_id
+				a.btn.btn-sm.btn-outline-secondary.me-2(href=`/items/${item.id}/label` title=`Print label for ${item.name}`)
+					span.fas.fa-print
+					|  Print Label
 	.btn-group
 		if currentUserCan('items_clone')
 			+btn('sm', 'outline-success', 'clone', `Clone`, `/items/clone/${item.id}`, `Clone ${item.name} [${item.barcode}]`, 'me-0')
