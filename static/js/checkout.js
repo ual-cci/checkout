@@ -219,10 +219,10 @@ function newUser(name, barcode, email, course, year, cb) {
 		year: year
 	}, cb)
 }
-function find(barcode, cb) {barcode ? apiGET('find', barcode, cb) : null}
-function getItem(barcode, cb) {apiGET('item', barcode, cb)}
-function getUser(barcode, cb) {apiGET('user', barcode, cb)}
-function identify(barcode, cb) {apiGET('identify', barcode, cb)}
+function find(barcode, cb) {barcode ? apiGET(`/api/find/${barcode}`, cb) : null}
+function getItem(barcode, cb) {apiGET(`/api/item/${barcode}`, cb)}
+function getUser(barcode, cb) {apiGET(`/api/user/${barcode}`, cb)}
+function identify(barcode, cb) {apiGET(`/api/identify/${barcode}`, cb)}
 
 function getHistory() {
 	jQuery.get('/api/history', function(data, status) {

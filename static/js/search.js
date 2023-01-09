@@ -26,7 +26,7 @@ const titles = {
 }
 
 // API Search Function
-function search(term, cb) {term ? apiGET('search', term, cb) : null}
+function search(term, cb) {term ? apiGET('/api/search/${term}', cb) : null}
 
 jQuery(document).ready(function() {
 	searchInput = document.getElementById('search')
