@@ -12,7 +12,6 @@ window.addEventListener('load', () => {
 	document.querySelectorAll('[data-template]').forEach(template => {
 		template.addEventListener('click', handleTemplateChange)
 	})
-	document.querySelector('#topMenuAuditPoint').addEventListener('click', handleAuditPointChange)
 })
 
 function detectDarkmode(e) {
