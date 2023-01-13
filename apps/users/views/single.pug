@@ -8,17 +8,17 @@ block prepend title
 block buttons
 	if currentUserCan('users_email') && onloan.length > 0
 		.btn-group.float-right(style='margin-left:.25em;')
-			a( href="/users/" + user.id + "/email", title=`Email ${user.name}` ).btn.btn-outline-secondary.btn-sm
+			a(href="/users/" + user.id + "/email", title=`Email ${user.name}`).btn.btn-outline-secondary.btn-sm
 				span.fas.fa-envelope
 				|  Generate email
 		|  &nbsp;
 	.btn-group.float-right
 		if currentUserCan('users_edit')
-			a( href="/users/" + user.id + "/edit", title=`Edit ${user.name}` ).btn.btn-outline-primary.btn-sm
+			a(href="/users/" + user.id + "/edit", title=`Edit ${user.name}`).btn.btn-outline-primary.btn-sm
 				span.fas.fa-pencil-alt
 				|  Edit
 		if currentUserCan('users_remove')
-			a( href="/users/" + user.id + "/remove", title=`Remove ${user.name}` ).btn.btn-outline-danger.btn-sm
+			a(href="/users/" + user.id + "/remove", title=`Remove ${user.name}`).btn.btn-outline-danger.btn-sm
 				span.far.fa-trash-alt
 				|  Remove
 
@@ -27,14 +27,14 @@ block contents
 	h3.mt-3.mb-3.pb-1.border-bottom Items
 	ul.nav.nav-tabs
 		li.nav-item
-			a.nav-link.active( href="#onloan" aria-controls="users" role="tab" data-toggle="tab" ) On Loan
+			a.nav-link.active(href="#onloan" aria-controls="users" role="tab" data-bs-toggle="tab") On Loan
 		if currentUserCan('users_history')
 			li.nav-item
-				a.nav-link( href="#history" aria-controls="items" role="tab" data-toggle="tab" ) History
+				a.nav-link(href="#history" aria-controls="items" role="tab" data-bs-toggle="tab") History
 	.tab-content
-		#onloan( role="tabpanel" ).tab-pane.active
+		#onloan(role="tabpanel").tab-pane.active
 			include partials/onloan.pug
 		if currentUserCan('users_history')
-		#history( role="tabpanel" ).tab-pane
+		#history(role="tabpanel").tab-pane
 			include partials/history.pug
 	
