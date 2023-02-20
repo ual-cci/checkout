@@ -36,7 +36,7 @@ class BaseModel {
 	 */
 	create(values) {
 		return new Promise((resolve, reject) => {
-			const query = db(this.options.table).insert(values, 'id')
+			const query = db(this.options.table).insert(values, 'id').onConflict().ignore()
 
 			this.logQuery(query, 'create')
 
