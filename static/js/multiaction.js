@@ -1,17 +1,20 @@
-let multiForm, multiBtns, items, _csrf
+let multiForm, items, _csrf
+
+let interlockBtns, actionBtns
 
 window.addEventListener('load', () => {	
 	_csrf = document.getElementsByName('_csrf')[0].value
-
-	multiBtns = Array.from(document.getElementsByClassName('multi'))
-	if (multiBtns && multiBtns.length > 0) {
+	
+	actionBtns = Array.from(document.querySelectorAll('[data-action]'))
+	actionBtns.forEach(btn => {
+		btn.addEventListener('click', handleMultiActionButtons, false)
+	})
+	
+	interlockBtns = Array.from(document.querySelectorAll('.multi'))
+	if (interlockBtns && interlockBtns.length > 0) {
 		multiForm = document.getElementById('multi-form')
 		multiForm.addEventListener('change', handleCheckboxChange, false)
 		handleCheckboxChange()
-
-		multiBtns.forEach(btn => {
-			btn.addEventListener('click', handleMultiActionButtons, false)
-		})
 	}
 })
 
@@ -20,11 +23,11 @@ function handleCheckboxChange() {
 	const ids = fd.getAll('ids')
 
 	if (ids.length > 0) {
-		multiBtns.forEach(btn => {
+		interlockBtns.forEach(btn => {
 			btn.removeAttribute('disabled')
 		})
 	} else {
-		multiBtns.forEach(btn => {
+		interlockBtns.forEach(btn => {
 			btn.setAttribute('disabled', 'disabled')
 		})
 	}
