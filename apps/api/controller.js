@@ -357,9 +357,36 @@ class ApiController extends BaseController {
 		})
 		.then(() => {
 			const {item} = persist
+
+			let message = ''
+			let status = ''
+			switch (item.status) {
+				case AVAILABILITY.ON_LOAN:
+					status = 'success'
+					message = `Item returned from loan to ${item.owner_name}`
+					break;
+				case AVAILABILITY.LOST:
+					status = 'success'
+					message = 'Item found and returned to available stock.'
+					break;
+				case AVAILABILITY.BROKEN:
+					status = 'success'
+					message = 'Item repaired and returned to available stock.'
+					break;
+				case AVAILABILITY.SOLD:
+					status = 'success'
+					message = 'Item replaced and returned to available stock.'
+					break;
+				default:
+				case AVAILABILITY.AVAILABLE:
+					status = 'info'
+					message = 'Item was already available.'
+					break;
+			}
+
 			return res.json({
-				status: 'success',
-				message: 'Successfully returned',
+				status: status,
+				message: message,
 				barcode: item.barcode
 			})
 		})
