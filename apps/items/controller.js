@@ -370,7 +370,7 @@ class ItemController extends BaseController {
 				message: 'To generate multiple items the barcode must include # symbol(s) at the end'
 			},
 			{
-				condition: (barcode.includes('#') && quantity < 2),
+				condition: (barcode.includes('#') && quantity < 1),
 				message: 'To generate multiple items you must specify how many'
 			},
 			{
@@ -428,7 +428,7 @@ class ItemController extends BaseController {
 						item.group_id = req.body.group
 					}
 
-					if (quantity > 1 && barcodeFilter) {
+					if (quantity >= 1 && barcodeFilter) {
 						const index = x.toString().padStart(numLen, '0')
 						item.barcode = barcodeFilter[1] + index.toString()
 					}
