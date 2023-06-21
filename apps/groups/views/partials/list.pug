@@ -26,9 +26,7 @@ if groups.length > 0
 						td=(group.duration?group.duration.toPostgres():'–')
 						if currentUserCan('items_read')
 							td
-								a( href="/items/?group=" + group.id ).btn.btn-sm.btn-outline-secondary
-									span.fas.fa-box
-									|  Items
+								+btn( 'sm', 'outline-secondary', 'boxes', 'Items', '/items/?group=' + group.id )
 						if currentUserCan({or:['groups_edit','groups_remove']})
 							td
 								if currentUserCan('groups_edit')

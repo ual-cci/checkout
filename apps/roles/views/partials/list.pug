@@ -21,10 +21,7 @@ if roles.length > 0
 					tr
 						td(data-searchable=role.name)=role.name
 						if currentUserCan('users_read')
-							td
-								a( href="/users/?role=" + role.id ).btn.btn-sm.btn-outline-secondary
-									span.fas.fa-user
-									|  Users
+							td: +btn('sm', 'outline-secondary', 'users', 'Users', '/users/?role=' + role.id)
 						if currentUserCan({or:['roles_edit','roles_remove','roles_set_permissions']})
 							td
 								if currentUserCan('roles_edit')
