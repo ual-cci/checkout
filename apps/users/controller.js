@@ -323,6 +323,12 @@ class UsersController extends BaseController {
 			disable: req.body.disable ? true : false
 		}
 
+		if (!validator.isEmail(user.email)) {
+			req.flash('warning', 'Invalid email address.')
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}/edit`))
+			return
+		}
+
 		if (req.body.audit_point) {
 			user.audit_point = new Date(req.body.audit_point)
 		} else {
