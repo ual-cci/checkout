@@ -2,19 +2,29 @@ if years.length > 0
 	.table-responsive
 		table.table.table-striped.table-hover.table-condensed
 			tgroup
-				col( width="80%" )
-				col( width="20%" )
+				col(width="60%")
+				col(width="20%")
+				col(width="20%")
 			thead
 				tr
 					th Name
 						| 
 						span.fas.fa-angle-up.text-muted
+					if currentUserCan({or:['items_read','users_read']})
+						th View
 					if currentUserCan({or:['years_edit','years_remove']})
 						th Manage
 			tbody
 				for year in years
 					tr
 						td(data-searchable=year.name)=year.name
+						if currentUserCan({or:['items_read','users_read']})
+							td
+								if currentUserCan('users_read')
+									+btn('sm', 'outline-secondary', 'users', 'Users', '/users/?year=' + year.id)
+									|  
+								if currentUserCan('items_read')
+									+btn('sm', 'outline-secondary', 'boxes', 'Items', '/items/?year=' + year.id)
 						if currentUserCan({or:['years_edit','years_remove']})
 							td
 								if currentUserCan('years_edit')
