@@ -32,8 +32,9 @@ const Mail = {
 				if (err) {
 					console.log(err)
 					reject(err.message)
+				} else {
+					resolve(info.messageId)
 				}
-				resolve(info.messageId)
 			})
 		})
 	},
