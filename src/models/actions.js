@@ -80,7 +80,7 @@ class ActionModel extends BaseModel {
 			.delete()
 	}
 
-	removeByUserId(userId) {
+	removeUserId(userId) {
 		return this.query()
 			.where([
 				['user_id', userId]
@@ -90,6 +90,16 @@ class ActionModel extends BaseModel {
 				user_id: null
 			})
 	}
+
+	removeOperatorId(operatorId) {
+		return this.query()
+			.where([
+				['operator_id', operatorId]
+			])
+			.expose()
+			.update({
+				operator_id: null
+			})
 	}
 
 	getByUserId(userId) {

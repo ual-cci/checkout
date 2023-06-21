@@ -563,7 +563,10 @@ class UsersController extends BaseController {
 			if (items.length) {
 				throw new Error('Users cannot be deleted if they have items on loan to them')
 			}
-			return this.models.actions.removeByUserId(_user.id)
+			return Promise.all([
+				this.models.actions.removeUserId(_user.id),
+				this.models.actions.removeOperatorId(_user.id)
+			])
 		})
 		.then(() => {
 			return this.models.users.remove(_user.id)
