@@ -2,6 +2,7 @@
 const path = require('path')
 const moment = require('moment')
 const pug = require('pug')
+const validator = require('validator')
 
 const BaseController = require('../../src/js/common/BaseController.js')
 const {AVAILABILITY, ACTIONS} = require('../../src/js/common/constants')
@@ -695,10 +696,11 @@ class ApiController extends BaseController {
 			return cachedError('The user must have a unique barcode')
 		}
 
-		if (!req.body.email) {
-			return cachedError('The user must have an email address')
+		if (!validator.isEmail(req.body.email)) {
+			return cachedError('The user must have a valid email address')
 		}
 
+		
 		if (!req.body.course) {
 			return cachedError('User must be attached to a course')
 		}
