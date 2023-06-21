@@ -86,7 +86,10 @@ class ActionModel extends BaseModel {
 				['user_id', userId]
 			])
 			.expose()
-			.delete()
+			.update({
+				user_id: null
+			})
+	}
 	}
 
 	getByUserId(userId) {
