@@ -93,6 +93,22 @@ block contents
 					span.far.fa-trash-alt
 					|  Remove
 				|  
+			if currentUserCan({or: ['items_broken', 'items_lost', 'items_sold']})
+				.dropdown.d-inline
+					button(data-bs-toggle="dropdown" disabled).multi.btn.btn-sm.btn-outline-secondary.dropdown-toggle
+						span.fas.fa-traffic-light
+						|  Change Status
+					.dropdown-menu.dropdown-menu-end
+						button(data-action="/items/broken").multi.dropdown-item
+							span.fas.fa-heart-broken
+							|  Broken
+						button(data-action="/items/lost").multi.dropdown-item
+							span.fas.fa-compass
+							|  Lost
+						button(data-action="/items/sold").multi.dropdown-item
+							span.fas.fa-cash-register
+							|  Sold
+				|  
 			if currentUserCan('print')
 				button(disabled type="button" data-action="/items/label").multi.btn.btn-sm.btn-outline-secondary
 					span.fas.fa-print
