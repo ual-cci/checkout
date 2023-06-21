@@ -14,7 +14,7 @@ block buttons
 			span.fas.fa-file-csv
 			|  Import Users
 	.dropdown.me-2
-		button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+		button(type="button" data-bs-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
 			span.fas.fa-bolt
 			|  Reports
 		.dropdown-menu.dropdown-menu-right
@@ -25,15 +25,15 @@ block buttons
 		button(type="submit" form="filter").btn.btn-outline-secondary.btn-sm
 			span.fas.fa-filter
 			|  Filter
-		button(type="button" data-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+		button(type="button" data-bs-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
 		.dropdown-menu.dropdown-menu-right
 			h6.dropdown-header User Categorisation
-			a(data-toggle="collapse" href="#roleFilter").dropdown-item Role
-			a(data-toggle="collapse" href="#courseFilter").dropdown-item Course
-			a(data-toggle="collapse" href="#yearFilter").dropdown-item Year
+			a(data-bs-toggle="collapse" href="#roleFilter").dropdown-item Role
+			a(data-bs-toggle="collapse" href="#courseFilter").dropdown-item Course
+			a(data-bs-toggle="collapse" href="#yearFilter").dropdown-item Year
 			.dropdown-divider
 			h6.dropdown-header User Meta Data
-			a(data-toggle="collapse" href="#statusFilter").dropdown-item Status
+			a(data-bs-toggle="collapse" href="#statusFilter").dropdown-item Status
 			
 	if Object.values(selected).join('') != ''
 		a(href=filter_path + "?clear=").btn.btn-outline-secondary.btn-sm.me-2
