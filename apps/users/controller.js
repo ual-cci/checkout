@@ -443,6 +443,11 @@ class UsersController extends BaseController {
 					email: data[headingMap.email]
 				}
 
+				if (!validator.isEmail(user.email)) {
+					errors.push(`Email '${user.email}' is invalid.`)
+					reject(user)
+				}
+
 				if (data[headingMap.role] > 0) {
 					user.role_id = parseInt(data[headingMap.role])
 				} else if (req.body.role) {
@@ -480,7 +485,7 @@ class UsersController extends BaseController {
 				} else {
 					resolve(user)
 				}
-			}).catch(err => console.log(err))
+			}).catch(err => console.log('User import error:', err))
 		}
 
 		req.body.users.forEach(data => {
