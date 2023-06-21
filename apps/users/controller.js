@@ -1,4 +1,5 @@
 const pug = require('pug')
+const validator = require('validator')
 
 const config = require('./config.json')
 const BaseController = require('../../src/js/common/BaseController.js')
