@@ -1,3 +1,5 @@
+const validator = require('validator')
+
 const BaseController = require('../../src/js/common/BaseController.js')
 const config = require('./config.json')
 
@@ -57,6 +59,12 @@ class ProfileController extends BaseController {
 			columns: {
 				items: itemColumns
 			}
+		}
+
+		if (!validator.isEmail(user.email)) {
+			req.flash('warning', 'Invalid email address.')
+			req.saveSessionAndRedirect(this.getRoute())
+			return
 		}
 
 		if (req.body.audit_point) {
