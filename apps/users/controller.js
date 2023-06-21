@@ -210,7 +210,8 @@ class UsersController extends BaseController {
 
 					let actions = []
 					ids.forEach((id) => {
-						actions.push(this.models.actions.removeByUserId(id))
+						actions.push(this.models.actions.removeUserId(id))
+						actions.push(this.models.actions.removeOperatorId(id))
 					})
 					Promise.all(actions)
 						.then(() => {
