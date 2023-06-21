@@ -3,7 +3,6 @@ if items && items.length > 0
 		table.table.table-striped.table-sm
 			thead
 				tr
-					- console.log(columns)
 					if columns.includes('edit')
 						th: input(type="checkbox", title="Check All", checked=edit_items).checkall
 					if columns.includes('status')

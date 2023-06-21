@@ -42,7 +42,6 @@ class CatalogueController extends BaseController {
 		.then(items => {
 			let md = `*This list was updated on ${moment().format('DD/MM/YYYY')}.*\n\n`
 			items.forEach(item => {
-				console.log(item.urls.length)
 				if (item.urls.length == 1 && item.urls[0] != '') {
 					md += ` - [${item.name}](${item.urls[0]})`
 				} else if (item.urls.length > 1) {
