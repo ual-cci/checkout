@@ -187,57 +187,92 @@ mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
 
 mixin status( status )
 	if status == 'available'
-		span.badge.text-bg-success Available
-	else if status == 'returned'
-		span.badge.text-bg-success Returned
-	else if status == 'found'
-		span.badge.text-bg-success Found
-	else if status == 'repaired'
-		span.badge.text-bg-success Repaired
-	else if status == 'on-loan'
-		span.badge.text-bg-danger On Loan
-	else if status == 'broken'
-		span.badge.text-bg-warning Broken
-	else if status == 'lost'
-		span.badge.text-bg-warning Lost
+		span.badge.text-bg-success
+			span.fas.fa-thumbs-up
+			|  Available
 	else if status == 'sold'
-		span.badge.text-bg-secondary Sold
-	else if status == 'issued'
-		span.badge.text-bg-danger Issued
-	else if status == 'replaced'
-		span.badge.text-bg-success Replaced
+		span.badge.text-bg-secondary
+			span.fas.fa-cash-register
+			|  Sold
+	else if status == 'on-loan'
+		span.badge.text-bg-danger
+			span.fas.fa-thumbs-down
+			|  On Loan
+	else if status == 'broken'
+		span.badge.text-bg-warning
+			span.fas.fa-heart-broken
+			|  Broken
+	else if status == 'lost'
+		span.badge.text-bg-warning
+			span.fas.fa-compass
+			|  Lost
 	else if status == 'unavailable'
-		span.badge.text-bg-info Unavailable
+		span.badge.text-bg-info
+			span.fas.fa-xmark
+			|  Unavailable
+	
+	else if status == 'returned'
+		span.badge.text-bg-success
+			span.fas.fa-person-arrow-down-to-line
+			|  Returned
+	else if status == 'found'
+		span.badge.text-bg-success
+			span.fas.fa-arrows-down-to-line
+			|  Found
+	else if status == 'repaired'
+		span.badge.text-bg-success
+			span.fas.fa-wrench
+			|  Repaired
+	else if status == 'issued'
+		span.badge.text-bg-danger
+			span.fas.fa-person-walking-dashed-line-arrow-right
+			|  Issued
+	else if status == 'replaced'
+		span.badge.text-bg-success
+			span.fas.fa-arrows-rotate
+			|  Replaced
 	else if status == 'audited'
-		span.badge.text-bg-secondary Audited
+		span.badge.text-bg-secondary
+			span.fas.fa-clipboard-list
+			|  Audited
 	else if status == 'reserve'
-		span.badge.text-bg-danger Reserve
+		span.badge.text-bg-danger
+			span.fas.fa-handshake
+			|  Reserve
 	else if status == 'maintenance'
-		span.badge.text-bg-primary Maintenance
+		span.badge.text-bg-primary
+			span.fas.fa-toolbox
+			|  Maintenance
 	else
 		span.badge.badge-info=status
 
 mixin statusPill( status )
 	if status == 'available'
-		span.badge.text-bg-success(title='Available') &nbsp
+		span.badge.text-bg-success(title='Available')
+			span.fas.fa-thumbs-up
+	else if status == 'sold'
+		span.badge.text-bg-secondary(title='Sold')
+			span.fas.fa-cash-register
+	else if status == 'broken'
+		span.badge.text-bg-warning(title='Broken')
+			span.fas.fa-heart-broken
+	else if status == 'lost'
+		span.badge.text-bg-warning(title='Lost')
+			span.fas.fa-compass
+	else if status == 'on-loan'
+		span.badge.text-bg-danger(title='On Loan')
+			span.fas.fa-thumbs-down
+	else if status == 'unavailable'
+		span.badge.text-bg-info(title='Unavailable')
+			span.fas.fa-xmark
 	else if status == 'returned'
 		span.badge.text-bg-success(title='Returned') &nbsp;
 	else if status == 'found'
 		span.badge.text-bg-success(title='Found') &nbsp;
 	else if status == 'repaired'
 		span.badge.text-bg-success(title='Repaired') &nbsp;
-	else if status == 'on-loan'
-		span.badge.text-bg-danger(title='On Loan') &nbsp;
-	else if status == 'broken'
-		span.badge.text-bg-warning(title='Broken') &nbsp;
-	else if status == 'lost'
-		span.badge.text-bg-warning(title='Lost') &nbsp;
 	else if status == 'issued'
 		span.badge.text-bg-danger(title='Issued') &nbsp;
-	else if status == 'sold'
-		span.badge.text-bg-secondary(title='Sold') &nbsp;
-	else if status == 'unavailable'
-		span.badge.text-bg-info(title='Unavailable') &nbsp;
 	else if status == 'audited'
 		span.badge.text-bg-secondary(title='Audited') &nbsp;
 	else if status == 'reserve'
