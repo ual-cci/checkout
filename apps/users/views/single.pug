@@ -23,18 +23,30 @@ block buttons
 				|  Remove
 
 block contents
-	include partials/info.pug
-	h3.mt-3.mb-3.pb-1.border-bottom Items
-	ul.nav.nav-tabs
-		li.nav-item
-			a.nav-link.active(href="#onloan" aria-controls="users" role="tab" data-bs-toggle="tab") On Loan
-		if currentUserCan('users_history')
-			li.nav-item
-				a.nav-link(href="#history" aria-controls="items" role="tab" data-bs-toggle="tab") History
-	.tab-content
-		#onloan(role="tabpanel").tab-pane.active
-			include partials/onloan.pug
-		if currentUserCan('users_history')
-		#history(role="tabpanel").tab-pane
-			include partials/history.pug
-	
+	.row
+		.col-lg-3.col-md-4.mb-3
+			include partials/info.pug
+		.col-lg-9.col-md-8
+			if onloan.length > 0
+				.card.mb-3
+					.card-header
+							span.fas.fa-person-walking-dashed-line-arrow-right
+							|  On Loan
+					include partials/onloan.pug
+			else
+				.card.mb-3.bg-info.text-black
+					.card-body
+						span.fas.fa-circle-info
+						|  No items on loan.
+			if currentUserCan('users_history')
+				if history.length > 0
+					.card.mb-3
+						.card-header
+							span.fas.fa-clock-rotate-left
+							|  History
+						include partials/history.pug
+				else
+					.card.mb-3.bg-info.text-black
+						.card-body
+							span.fas.fa-circle-info
+							|  No items have previously been loaned to this user.

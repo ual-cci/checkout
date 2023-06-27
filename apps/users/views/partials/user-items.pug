@@ -2,11 +2,11 @@ if items.length > 0
 	.table-responsive
 		table.table.table-striped
 			colgroup
-				col(width="40%")
+				col(width="30%")
 				col(width="15%")
 				col(width="15%")
 				if currentUserCan({or: ['items_return', 'items_broken', 'items_lost', 'items_sold']})
-					col(width="30%")
+					col(width="40%")
 			thead
 				tr
 					th Name

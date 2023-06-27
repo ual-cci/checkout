@@ -1,36 +1,64 @@
-.row
-	.col-md-4
-		.row
-			.col-md-5.font-weight-bold.text-md-right Status
-			.col-md-7
-				if user.disable
-					| Disabled
-				else
-					| Active
-			.col-md-5.font-weight-bold.text-md-right Role
-			.col-md-7: +role( user.role_name, user.role_id )
-				
-			if user.pw_attempts > 0
-				.col-md-5.font-weight-bold.text-md-right Password Attempts 
-				.col-md-7=user.pw_attempts
-					if user.pw_attempts >= Options.get('password_tries')
-						|  (Locked Out)
-						if currentUserCan('users_reset_password_attempts')
-							|  – 
-							a( href=`/users/${user.id}/reset` ) Reset
-	.col-md-4
-		.row
-			.col-md-5.font-weight-bold.text-md-right Barcode
-			.col-md-7: +clipboard( user.barcode )
-			if user.course_contact_id
-				.col-md-5.font-weight-bold.text-md-right Staff Contact
-				.col-md-7: +user( user.course_contact_name, user.course_contact_id )
-			.col-md-5.font-weight-bold.text-md-right Email
-			.col-md-7: +email( user.email )
-			
-	.col-md-4
-		.row
-			.col-md-5.font-weight-bold.text-md-right Course
-			.col-md-7: +course( user.course_name, user.course_id )
-			.col-md-5.font-weight-bold.text-md-right Year
-			.col-md-7: +year( user.year_name, user.year_id )
+.card.mb-3(class=(user.disable?'bg-danger text-white':'bg-success text-white'))
+	.card-header
+		span.fas.fa-user
+		|  Status
+	.card-body
+		if user.disable
+			| Disabled
+		else
+			| Active
+
+.card.mb-3
+	.card-header
+		span.fas.fa-envelope
+		|  Email
+	.card-body
+		+email( user.email )
+
+.card.mb-3
+	.card-header
+		span.fas.fa-barcode
+		|  Barcode
+	.card-body
+		+clipboard( user.barcode )
+		
+if user.pw_attempts > 0
+	.card.mb-3
+		.card-header
+		span.fas.fa-key
+		|  Password Attempts
+		.card-body= user.pw_attempts
+			if user.pw_attempts >= Options.get('password_tries')
+				|  (Locked Out)
+				if currentUserCan('users_reset_password_attempts')
+					|  – 
+					a( href=`/users/${user.id}/reset` ) Reset
+
+if user.course_contact_id
+	.card.mb-3
+		.card-header
+		span.fas.fa-person-contact
+		|  Staff Contact
+		.card-body
+			+user( user.course_contact_name, user.course_contact_id )
+
+.card.mb-3
+	.card-header
+		span.fas.fa-user-graduate
+		|  Course
+	.card-body
+		+course( user.course_name, user.course_id )
+
+.card.mb-3
+	.card-header
+		span.fas.fa-user-clock
+		|  Year
+	.card-body
+		+year( user.year_name, user.year_id )
+
+.card.mb-3
+	.card-header
+		span.fas.fa-user-tag
+		|  Role
+	.card-body
+		+role( user.role_name, user.role_id )

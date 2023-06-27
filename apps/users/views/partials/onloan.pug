@@ -1,5 +1,2 @@
-if onloan.length > 0
-	- items = onloan
-	include user-items.pug
-else
-	+messageBlock( 'warning', 'black','No items on loan.' )
+- items = onloan
+include user-items.pug
