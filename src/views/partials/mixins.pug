@@ -186,104 +186,46 @@ mixin sortUserHead( text, slug, sort_by, sort_dir, selected )
 		|  
 		span.fas( class=( sort_dir == 'asc' ? 'fa-angle-up' : 'fa-angle-down' ) ).text-muted
 
-mixin status( status )
-	if status == 'available'
-		span.badge.text-bg-success
-			span.fas.fa-thumbs-up
-			|  Available
-	else if status == 'sold'
-		span.badge.text-bg-secondary
-			span.fas.fa-cash-register
-			|  Sold
-	else if status == 'on-loan'
-		span.badge.text-bg-danger
-			span.fas.fa-thumbs-down
-			|  On Loan
-	else if status == 'broken'
-		span.badge.text-bg-warning
-			span.fas.fa-heart-broken
-			|  Broken
-	else if status == 'lost'
-		span.badge.text-bg-warning
-			span.fas.fa-compass
-			|  Lost
-	else if status == 'unavailable'
-		span.badge.text-bg-info
-			span.fas.fa-xmark
-			|  Unavailable
-	
-	else if status == 'emailed'
-		span.badge.text-bg-info
-			span.fas.fa-envelope
-			|  Emailed
-	else if status == 'returned'
-		span.badge.text-bg-success
-			span.fas.fa-person-arrow-down-to-line
-			|  Returned
-	else if status == 'found'
-		span.badge.text-bg-success
-			span.fas.fa-arrows-down-to-line
-			|  Found
-	else if status == 'repaired'
-		span.badge.text-bg-success
-			span.fas.fa-wrench
-			|  Repaired
-	else if status == 'issued'
-		span.badge.text-bg-danger
-			span.fas.fa-person-walking-dashed-line-arrow-right
-			|  Issued
-	else if status == 'replaced'
-		span.badge.text-bg-success
-			span.fas.fa-arrows-rotate
-			|  Replaced
-	else if status == 'audited'
-		span.badge.text-bg-secondary
-			span.fas.fa-clipboard-list
-			|  Audited
-	else if status == 'reserve'
-		span.badge.text-bg-danger
-			span.fas.fa-handshake
-			|  Reserve
-	else if status == 'maintenance'
-		span.badge.text-bg-primary
-			span.fas.fa-toolbox
-			|  Maintenance
-	else
-		span.badge.badge-info=status
+-
+	const statuses = {
+		'available': {css: 'text-bg-success', icon: 'fa-thumbs-up', text: 'Available'},
+		'sold': {css: 'text-bg-secondary', icon: 'fa-cash-register', text: 'Sold'},
+		'on-loan': {css: 'text-bg-danger', icon: 'fa-person-walking', text: 'On Loan'},
+		'broken': {css: 'text-bg-warning', icon: 'fa-heart-broken', text: 'Broken'},
+		'lost': {css: 'text-bg-warning', icon: 'fa-compass', text: 'Lost'},
+		'unavailable': {css: 'text-bg-info', icon: 'fa-xmark', text: 'Unavailable'},
+		'emailed': {css: 'text-bg-info', icon: 'fa-envelope', text: 'Emailed'},
+		'returned': {css: 'text-bg-success', icon: 'fa-person-arrow-down-to-line', text: 'Returned'},
+		'found': {css: 'text-bg-success', icon: 'fa-arrows-down-to-line', text: 'Found'},
+		'repaired': {css: 'text-bg-success', icon: 'fa-wrench', text: 'Repaired'},
+		'issued': {css: 'text-bg-danger', icon: 'fa-person-walking-dashed-line-arrow-right', text: 'Issued'},
+		'replaced': {css: 'text-bg-success', icon: 'fa-arrows-rotate', text: 'Replaced'},
+		'audited': {css: 'text-bg-secondary', icon: 'fa-clipboard-list', text: 'Audited'},
+		'reserve': {css: 'text-bg-danger', icon: 'fa-handshake', text: 'Reserve'},
+		'maintenance': {css: 'text-bg-primary', icon: 'fa-toolbox', text: 'Maintenance'}
+	}
 
-mixin statusPill( status )
-	if status == 'available'
-		span.badge.text-bg-success(title='Available')
-			span.fas.fa-thumbs-up
-	else if status == 'sold'
-		span.badge.text-bg-secondary(title='Sold')
-			span.fas.fa-cash-register
-	else if status == 'broken'
-		span.badge.text-bg-warning(title='Broken')
-			span.fas.fa-heart-broken
-	else if status == 'lost'
-		span.badge.text-bg-warning(title='Lost')
-			span.fas.fa-compass
-	else if status == 'on-loan'
-		span.badge.text-bg-danger(title='On Loan')
-			span.fas.fa-thumbs-down
-	else if status == 'unavailable'
-		span.badge.text-bg-info(title='Unavailable')
-			span.fas.fa-xmark
-	else if status == 'returned'
-		span.badge.text-bg-success(title='Returned') &nbsp;
-	else if status == 'found'
-		span.badge.text-bg-success(title='Found') &nbsp;
-	else if status == 'repaired'
-		span.badge.text-bg-success(title='Repaired') &nbsp;
-	else if status == 'issued'
-		span.badge.text-bg-danger(title='Issued') &nbsp;
-	else if status == 'audited'
-		span.badge.text-bg-secondary(title='Audited') &nbsp;
-	else if status == 'reserve'
-		span.badge.text-bg-danger(title='Reserve') &nbsp;
-	else if status == 'maintenance'
-		span.badge.text-bg-primary(title='Maintenance') &nbsp;
+mixin status(status)
+	if Object.keys(statuses).includes(status)
+		span.badge(class=statuses[status].css)
+			span.fas(class=statuses[status].icon)
+			|  #{statuses[status].text}
+	else
+		span.badge.text-bg-info=status
+
+mixin statusListItem(status)
+	if Object.keys(statuses).includes(status)
+		li.list-group-item(class=statuses[status].css)
+			span.fas(class=statuses[status].icon)
+			|  #{statuses[status].text}
+	else
+		li.list-group-item.text-bg-info
+			|  #{status}
+
+mixin statusPill(status)
+	if Object.keys(statuses).includes(status)
+		span.badge(class=statuses[status].css title=statuses[status].text)
+			span.fas(class=statuses[status].icon)
 	else
 		span.badge.text-bg-info(title=status) &nbsp;
 
