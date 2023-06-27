@@ -8,102 +8,91 @@ block prepend title
 block contents
 	form( action="/items/edit" method="post" )
 		+csrf
-		.form-group.row
+		.form-group.row.mb-3
 			label( for="name" ).col-lg-2.col-form-label Name
 			.col-lg-4
 				.input-group
 					input( name="name" type="text" )#name.form-control
-					.input-group-append
-							.input-group-text
-								input( type="checkbox" name="fields[]" value="name" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="name" )
+		.form-group.row.mb-3
 			label( for="label" ).col-lg-2.col-form-label Label
 			.col-lg-4
 				.input-group
-					select( name="label" required )#label.form-control
+					select( name="label" required )#label.form-control.form-select
 						option( value="12mm" ) 12mm Label
 						option( value="12mm_flag" ) 12mm Flag
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="label" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="label" )
+		.form-group.row.mb-3
 			label( for="location" ).col-lg-2.col-form-label Location
 			.col-lg-4
 				.input-group
-					select( name="location" )#location.form-control
+					select( name="location" )#location.form-control.form-select
 						option( value="" disabled selected ) Select a location
 						for location in locations
 							option( value=location.id )=location.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="location" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="location" )
+		.form-group.row.mb-3
 			label( for="group" ).col-lg-2.col-form-label Group
 			.col-lg-4
 				.input-group
-					select( name="group" )#group.form-control
+					select( name="group" )#group.form-control.form-select
 						option( value="" selected ) Select a group
 						for group in groups
 							option( value=group.id )=group.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="group" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="group" )
+		.form-group.row.mb-3
 			label( for="department" ).col-lg-2.col-form-label Department
 			.col-lg-4
 				.input-group
-					select( name="department" )#department.form-control
+					select( name="department" )#department.form-control.form-select
 						option( value="" selected ) Select a department
 						for department in departments
 							option( value=department.id )=department.name
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="department" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="department" )
+		.form-group.row.mb-3
 			label( for="loanable" ).col-lg-2.col-form-label Loanable
 			.col-lg-4
 				.input-group
-					select( name="loanable" )#loanable.form-control
+					select( name="loanable" )#loanable.form-control.form-select
 						option( value="true" selected ) Item is loanable
 						option( value="false" ) Item not loanable
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="loanable" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="loanable" )
+		.form-group.row.mb-3
 			label( for="value" ).col-lg-2.col-form-label Value
 			.col-lg-4
 				.input-group
-					.input-group-prepend
-						.input-group-text &pound;
+					.input-group-text &pound;
 					input( name="value" type="number" step="0.01" )#value.form-control
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="value" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="value" )
+		.form-group.row.mb-3
 			label( for="info_url" ).col-lg-2.col-form-label Information URL
 			.col-lg-4
 				.input-group
 					input( name="info_url" type="text" )#info_url.form-control
-					.input-group-append
-							.input-group-text
-								input( type="checkbox" name="fields[]" value="info_url" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="info_url" )
+		.form-group.row.mb-3
 			label( for="notes" ).col-lg-2.col-form-label Notes
 			.col-lg-4
 				.input-group
 					textarea( name="notes" )#notes.form-control
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="notes" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="notes" )
+		.form-group.row.mb-3
 			label( for="alert_msg" ).col-lg-2.col-form-label Alert Message
 			.col-lg-4
 				.input-group
 					textarea( name="alert_msg" )#alert_msg.form-control
-					.input-group-append
-						.input-group-text
-							input( type="checkbox" name="fields[]" value="alert_msg" )
-		.form-group.row
+					.input-group-text
+						input( type="checkbox" name="fields[]" value="alert_msg" )
+		.form-group.row.mb-3
 			.col-lg-4.offset-lg-2
 				button( type="submit" ).btn.btn-outline-secondary Update
 		h3 Items
