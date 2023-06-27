@@ -1,0 +1,35 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Email Multiple Users'
+	- heading = 'Are you sure you want to send this template to the following users?'
+	- breadcrumb.push({name: 'Email'})
+	- menu = 'users'
+
+block contents
+	form(method="post")
+		+csrf
+		.card.mb-3 
+			.card-body
+				pre=template
+
+		.form-group.row.mb-3
+			.col-12
+				ul
+					for user in users
+						li=user.name
+							|  <
+							+email(user.email)
+							| >
+			.col-12
+				.checkbox
+					label(for="confirm")
+						input(id="confirm" name="confirm" type="checkbox")
+						|  I am sure I want to email this template to all users.
+		
+		.form-group.row.mb-3
+			.col-12
+				input(type="hidden" name="ids" value=ids)
+				button(type='submit').btn.btn-warning Yes, send the email
+				|  
+				a( href="/users").btn.btn-outline-secondary Cancel
