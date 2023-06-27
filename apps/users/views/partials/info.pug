@@ -37,8 +37,8 @@ if user.pw_attempts > 0
 if user.course_contact_id
 	.card.mb-3
 		.card-header
-		span.fas.fa-person-contact
-		|  Staff Contact
+			span.fas.fa-person-chalkboard
+			|  Staff Contact
 		.card-body
 			+user( user.course_contact_name, user.course_contact_id )
 
