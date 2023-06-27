@@ -3,16 +3,18 @@ if history.length > 0
 		table.table.table-striped
 			thead
 				tr
+					th Status
+					th When
 					th Name
 					th Barcode
-					th When
 					th Operator
 			tbody
 				for row in history
 					tr
+						td: +status( row.action )
+						td: +relative( row.datetime )
 						td: +item( row.item_name, row.item_id )
 						td: +clipboard( row.item_barcode )
-						td: +relative( row.datetime )
 						td: +user( row.operator_name, row.operator_id )
 else
 	+messageBlock( 'warning', 'black','No items have previously been loaned to this user.' )

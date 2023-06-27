@@ -6,7 +6,7 @@ const Mail = {
 	_transporter: null,
 	_limiter: null,
 
-	queueTemplate: (to, replyTo, subject, template, tags) => {
+	queueTemplate: (to, replyTo, subject, template, tags, cb) => {
 		const msg = {
 			from: Options.getText('smtp_from_address'),
 			to: to,
@@ -20,6 +20,9 @@ const Mail = {
 		Mail._limiter.wrap(Mail._send).withOptions({id: msgID}, msg)
 			.then((result) => {
 				console.log(`Message sent - ${result}`)
+				if (cb) {
+					cb()
+				}
 			})
 			.catch((error) => {
 				console.log(`Message error - ${error}`)

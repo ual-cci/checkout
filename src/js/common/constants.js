@@ -21,7 +21,8 @@ module.exports = {
 		ISSUED: 'issued',
 		BROKEN: 'broken',
 		LOST: 'lost',
-		SOLD: 'sold'
+		SOLD: 'sold',
+		EMAILED: 'emailed'
 	},
 	SORTBY_MUTATIONS: {
 		DEFAULT: (sortBy) => {

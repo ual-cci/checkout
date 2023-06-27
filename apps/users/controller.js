@@ -17,7 +17,7 @@ const Printers = require('../../src/models/printers')
 const Roles = require('../../src/models/roles')
 
 const {getSortBy} = require('../../src/js/utils.js')
-const {STATUS, SORTBY_MUTATIONS} = require('../../src/js/common/constants')
+const {STATUS, SORTBY_MUTATIONS, ACTIONS} = require('../../src/js/common/constants')
 
 class UsersController extends BaseController {
 	constructor() {
@@ -640,7 +640,13 @@ class UsersController extends BaseController {
 				sender: replyTo.name
 			}
 
-			Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags)
+			Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags, () => {
+				this.models.actions.create({
+					action: ACTIONS.EMAILED,
+					user_id: user.id,
+					operator_id: req.user.id
+				})
+			})
 			req.flash('success', `Email queued to send to ${user.name}`)
 			req.saveSessionAndRedirect(`${this.getRoute()}/${user.id}`)
 		})
@@ -678,8 +684,14 @@ class UsersController extends BaseController {
 								org: Options.getText('organisation_name'),
 								sender: replyTo.name
 							}
-							
-							Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags)	
+
+							Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags, () => {
+								this.models.actions.create({
+									action: ACTIONS.EMAILED,
+									user_id: user.id,
+									operator_id: req.user.id
+								})
+							})
 						}
 					})
 				})

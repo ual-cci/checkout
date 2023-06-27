@@ -2,7 +2,8 @@ mixin csrf
 	input( type="hidden", name="_csrf", value=csrf )
 
 mixin clipboard( text )
-	span( data-clipboard-text=text, title="Click to copy" ).clipboard=text
+	if ( text )
+		span( data-clipboard-text=text, title="Click to copy" ).clipboard=text
 
 mixin email( address )
 	a( href="mailto:" + address )=address
@@ -211,6 +212,10 @@ mixin status( status )
 			span.fas.fa-xmark
 			|  Unavailable
 	
+	else if status == 'emailed'
+		span.badge.text-bg-info
+			span.fas.fa-envelope
+			|  Emailed
 	else if status == 'returned'
 		span.badge.text-bg-success
 			span.fas.fa-person-arrow-down-to-line
