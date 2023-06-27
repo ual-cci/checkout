@@ -285,6 +285,101 @@ class ItemController extends BaseController {
 		}
 	}
 
+	postMultiAction(req, res) {
+		if (!req.body.ids) {
+			req.flash('danger', 'At least one item must be selected')
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+
+		let message = {}
+		switch (req.params.action) {
+			case 'lost':
+				message = {
+					title: 'Lost',
+					action: 'lost',
+					actioned: 'marked lost',
+				}
+				break;
+			case 'broken':
+				message = {
+					title: 'Broken',
+					action: 'broken',
+					actioned: 'marked broken'
+				}
+				break;
+			case 'sold':
+				message = {
+					title: 'Sold',
+					action: 'sold',
+					actioned: 'marked sold'
+				}
+				break;
+			default:
+				req.flash('danger', 'Invalid Action')
+				req.saveSessionAndRedirect(this.getRoute())
+				return;
+				break;
+		}
+
+		const ids = req.body.ids.split(',')
+
+		if (req.body.confirm) {
+			if (!req.body.ids) {
+				req.flash('danger', 'At least one item must be selected')
+				req.saveSessionAndRedirect(this.getRoute())
+				return;
+			}
+
+			let actions = []
+			ids.forEach((id) => {
+				switch (req.params.action) {
+					case 'lost':
+						actions.push(this.models.actions.create({
+							item_id: id,
+							action: ACTIONS.LOST,
+							operator_id: req.user.id
+						}))
+						actions.push(this.models.items.changeStatusById(id, ACTIONS.LOST))
+						break;
+					case 'broken':
+						actions.push(this.models.actions.create({
+							item_id: id,
+							action: ACTIONS.BROKEN,
+							operator_id: req.user.id
+						}))
+						actions.push(this.models.items.changeStatusById(id, ACTIONS.BROKEN))
+						break;
+					case 'sold':
+						actions.push(this.models.actions.create({
+							item_id: id,
+							action: ACTIONS.SOLD,
+							operator_id: req.user.id
+						}))
+						actions.push(this.models.items.changeStatusById(id, ACTIONS.SOLD))
+						break;
+				}
+			})
+			Promise.all(actions)
+				.then((a,b,c) => {
+					req.flash('success', 'Items updated')
+					req.saveSessionAndRedirect(this.getRoute())
+				})
+				.catch(err => {
+					this.displayError(req, res, err, this.getRoute())
+				})
+		} else {
+			this.models.items.getMultipleByIds(ids)
+				.then((items) => {
+					const ids = items.map((i) => {
+						return i.id
+					}).join(',')
+					res.render('confirm-multi-action', {items, ids, message})
+				})
+				.catch(err => this.displayError(req, res, err, this.getRoute()))
+		}
+	}
+
 	/**
 	* Get create page with necessary data
 	*

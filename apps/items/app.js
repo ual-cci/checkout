@@ -29,6 +29,10 @@ app.post('/remove', auth.currentUserCan('items_multi_remove'), (req, res) => {
 	req.controller.postMultiRemove(req, res)
 })
 
+app.post('/status/:action', auth.currentUserCan('items_multi_status'), (req, res) => {
+	req.controller.postMultiAction(req, res)
+})
+
 // Import items
 app.get('/import', auth.currentUserCan('items_import'), (req, res) => {
 	req.controller.getImport(req, res)

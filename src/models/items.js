@@ -153,7 +153,7 @@ class ItemModel extends BaseModel {
 				})
 	}
 
-	changeStatus(barcode, status) {
+	changeStatusByBarcode(barcode, status) {
 		return this.getByBarcode(barcode)
 				.then(item => {
 					if (!item) {
@@ -174,20 +174,41 @@ class ItemModel extends BaseModel {
 				})
 	}
 
+	changeStatusById(id, status) {
+		return this.getById(id)
+				.then(item => {
+					if (!item) {
+						throw new Error('Unknown item')
+					}
+
+					return this.query()
+						.update(item.id, {
+							status: status,
+							owner_id: null,
+							issued: null,
+							due: null,
+							updated: new Date()
+						})
+						.then(id => {
+							return item
+						})
+				})
+	}
+
 	return(barcode) {
-		return this.changeStatus(barcode, AVAILABILITY.AVAILABLE)
+		return this.changeStatusByBarcode(barcode, AVAILABILITY.AVAILABLE)
 	}
 
 	broken(barcode) {
-		return this.changeStatus(barcode, AVAILABILITY.BROKEN)
+		return this.changeStatusByBarcode(barcode, AVAILABILITY.BROKEN)
 	}
 
 	lost(barcode) {
-		return this.changeStatus(barcode, AVAILABILITY.LOST)
+		return this.changeStatusByBarcode(barcode, AVAILABILITY.LOST)
 	}
 	
 	sold(barcode) {
-		return this.changeStatus(barcode, AVAILABILITY.SOLD)
+		return this.changeStatusByBarcode(barcode, AVAILABILITY.SOLD)
 	}
 
 	issue(itemId, userId, operator, dueDate) {

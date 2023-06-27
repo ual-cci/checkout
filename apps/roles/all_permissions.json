@@ -23,6 +23,7 @@
   "items_sold": "User can mark items sold.",
   "items_multi_edit": "User can edit multiple items.",
   "items_multi_remove": "User can remove multiple items.",
+  "items_multi_status": "User can update the status of multiple items.",
   "groups_read": "User can view groups.",
   "groups_create": "User can create groups.",
   "groups_edit": "User can edit groups.",

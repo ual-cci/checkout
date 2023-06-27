@@ -1,0 +1,32 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = `${message.title} Items`
+	- heading = `Are you sure you want to mark the following items as ${message.action}?`
+	- breadcrumb.push({name: 'Status'})
+	- breadcrumb.push({name: message.title})
+	- menu = 'items'
+
+block contents
+	form(method="post")
+		+csrf
+		.form-group.row
+			.col-lg-12
+				ul
+					for item in items
+						li=item.name
+							|  (
+							+clipboard(item.barcode)
+							| )
+		.form-group.row.mb-3
+			.col-lg-12
+				.checkbox
+					label(for="confirm")
+						input(name="confirm" type="checkbox")#confirm
+						|  I am sure I want to mark all of these items #{message.action}.
+		.form-group.row
+			.col-lg-12
+				input(type="hidden" name="ids" value=ids)
+				button(type='submit').btn.btn-warning Yes, mark these items as #{message.action}
+				|  
+				a(href="/items").btn.btn-outline-secondary Cancel
