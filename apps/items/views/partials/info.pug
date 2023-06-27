@@ -1,46 +1,79 @@
-if item.alert_msg
-	.alert( class='alert-info' )
-		strong Alert:
-		|  #{item.alert_msg}
-.row
-	.col-4
-		.row
-			.col-5.font-weight-bold.text-right Status
-			.col-7: +status( item.loanable ? item.status : 'unavailable' )
-			if item.owner_id
-				.col-5.font-weight-bold.text-right Owner
-				.col-7: +user( item.owner_name, item.owner_id )
-			if item.status == 'on-loan'
-				.col-5.font-weight-bold.text-right Issued
-				.col-7: +fulldate( item.issued )
-				.col-5.font-weight-bold.text-right Due
-				.col-7: +relative( item.due, true )
-			if item.audited
-				.col-5.font-weight-bold.text-right Last audited
-				.col-7: +relative( item.audited )
-	.col-4
-		.row
-			.col-5.font-weight-bold.text-right Barcode
-			.col-7: +clipboard(item.barcode)
-			if item.value
-				.col-5.font-weight-bold.text-right Value
-				.col-7 £#{item.value}
-			if item.serialnumber
-				.col-5.font-weight-bold.text-right Serial number
-				.col-7: +clipboard(item.serialnumber)
-			if item.info_url
-				.col-5.font-weight-bold.text-right Information URL
-				.col-7: a(href=item.info_url target="_blank") Open Link
-			if item.notes
-				.col-5.font-weight-bold.text-right Notes
-				.col-7=item.notes
-	.col-4
-		.row
-			.col-5.font-weight-bold.text-right Location
-			.col-7: +location(item.location_name, item.location_id)
-			if item.group_id
-				.col-5.font-weight-bold.text-right Group
-				.col-7: +group(item.group_name, item.group_id)
-			if item.department_id
-				.col-5.font-weight-bold.text-right Department
-				.col-7: +department(item.department_name, item.department_id)
+.card.mb-3
+	ul.list-group.list-group-flush
+		+statusListItem( item.loanable ? item.status : 'unavailable' )
+		if item.owner_id
+			li.list-group-item Owner: 
+				+user( item.owner_name, item.owner_id )
+		if item.status == 'on-loan'
+			li.list-group-item Issued: 
+				+date( item.issued )
+			li.list-group-item Due: 
+				+relative( item.due, true )
+
+.card.mb-3
+	.card-header
+		span.fas.fa-qrcode
+		|  Barcode
+	.card-body
+		+clipboard( item.barcode )
+
+if item.audited
+	.card.mb-3
+		.card-header
+			span.fas.fa-user
+			|  Last Audited
+		.card-body
+			+relative( item.audited )
+
+if item.value
+	.card.mb-3
+		.card-header
+			span.fas.fa-money-bill
+			|  Value
+		.card-body
+			| £#{item.value}
+
+if item.serialnumber
+	.card.mb-3
+		.card-header
+			span.fas.fa-money-bill
+			|  Serial Number
+		.card-body
+			+clipboard(item.serialnumber)
+
+if item.info_url
+	.card.mb-3
+		.card-header
+			span.fas.fa-globe
+			|  Information URL
+		.card-body
+			a(href=item.info_url target="_blank") Open Link
+
+if item.notes
+	.card.mb-3
+		.card-header
+			span.fas.fa-money-bill
+			|  Notes
+		.card-body: item.notes
+
+.card.mb-3
+	.card-header
+		span.fas.fa-location-arrow
+		|  Location
+	.card-body
+		+location(item.location_name, item.location_id)
+
+if item.group_id
+	.card.mb-3
+		.card-header
+			span.fas.fa-object-group
+			|  Group
+		.card-body
+			+group(item.group_name, item.group_id)
+if item.department_id
+	.card.mb-3
+		.card-header
+			span.fas.fa-building
+			|  Department
+		.card-body
+			+department(item.department_name, item.department_id)
