@@ -25,8 +25,8 @@
 if user.pw_attempts > 0
 	.card.mb-3
 		.card-header
-		span.fas.fa-key
-		|  Password Attempts
+			span.fas.fa-key
+			|  Password Attempts
 		.card-body= user.pw_attempts
 			if user.pw_attempts >= Options.get('password_tries')
 				|  (Locked Out)
