@@ -637,7 +637,8 @@ class UsersController extends BaseController {
 				name: to.name,
 				items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
 				org: Options.getText('organisation_name'),
-				sender: replyTo.name
+				sender: replyTo.name,
+				user_barcode: user.barcode
 			}
 
 			Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags, () => {
@@ -682,7 +683,8 @@ class UsersController extends BaseController {
 								name: to.name,
 								items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
 								org: Options.getText('organisation_name'),
-								sender: replyTo.name
+								sender: replyTo.name,
+								user_barcode: user.barcode
 							}
 
 							Mail.queueTemplate(to, replyTo, req.user.template_subject, req.user.template_body, tags, () => {
