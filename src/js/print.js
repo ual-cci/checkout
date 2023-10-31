@@ -1,6 +1,7 @@
 const PDFDocument = require('pdfkit')
 const bwipjs = require('bwip-js')
 const ipp = require('ipp')
+const fs = require('fs')
 
 const Options = require('./options')()
 
@@ -14,6 +15,11 @@ const Print = {
 		var doc = new PDFDocument({
 			autoFirstPage: false
 		})
+
+		if (!fs.existsSync('temp_pdfs/')) fs.mkdirSync('temp_pdfs/');
+
+		var item_code = codes.length > 0 ? codes[0].text : 'string'
+		doc.pipe(fs.createWriteStream('temp_pdfs/'+ item_code +'.pdf'));
 
 		var docSize = ''
 		var barcodes = []

@@ -22,6 +22,11 @@ Quick steps to install Checkout standalone for production or development:
 
 Optionally for production you can install pm2: `npm install -g pm2` then use it to run Checkout `pm2-runtime ecosystem.config.js`
 
+## dev mode login
+
+user: `Esperanza51@yahoo.com`
+password: `password`
+
 ## Docker
 Docker is pretty straight-forward also:
 

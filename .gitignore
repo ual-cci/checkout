@@ -3,6 +3,8 @@
 *.log
 npm-debug.log*
 
+temp_pdfs
+
 # Runtime data
 pids
 *.pid
