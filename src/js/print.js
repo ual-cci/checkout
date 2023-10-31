@@ -96,7 +96,7 @@ const Print = {
 			page.fontSize(4.5)
 			page.font('Helvetica-Bold')
 
-			page.text(Options.getText('label_brand'), pt(1), pt(1), {
+			page.text(Options.getText('label_brand').replace(/\r\n|\r/g, '\n'), pt(1), pt(1), {
 				width: pt(10),
 				align: 'left',
 				weight: 'bold',
@@ -140,7 +140,7 @@ const Print = {
 					page.fontSize(4.5)
 					page.font('Helvetica-Bold')
 
-					page.text(Options.getText('label_brand'), pt(1), pt(1), {
+					page.text(Options.getText('label_brand').replace(/\r\n|\r/g, '\n'), pt(1), pt(1), {
 						width: pt(10),
 						align: 'left',
 						weight: 'bold',
