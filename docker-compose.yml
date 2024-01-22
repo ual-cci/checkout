@@ -1,11 +1,11 @@
 version: "3"
 services:
-  postgres:
-    image: "postgres:10-alpine"
+  postgres14:
+    image: "postgres:14-alpine"
     networks:
       - database
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data14:/var/lib/postgresql/data
     env_file: ./docker.env
   nodejs:
     build:
@@ -14,11 +14,11 @@ services:
       - database
       - web
     depends_on:
-      - postgres
+      - postgres14
     restart: unless-stopped
     env_file: ./docker.env
     environment:
-      - POSTGRES_HOST=postgres
+      - POSTGRES_HOST=postgres14
       - POSTGRES_PORT=5432
       - APP_HOST=
       - APP_PORT=3000
@@ -41,4 +41,4 @@ networks:
   database:
   web:
 volumes:
-  pg_data:
+  pg_data14:
