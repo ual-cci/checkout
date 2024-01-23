@@ -263,9 +263,6 @@ function handleKeyboardPress(e) {
 			case 82: // R
 				jQuery('.return.nav-link').tab('show')
 				break
-			case 69: // E
-				jQuery('.reservation.nav-link').tab('show')
-				break
 			case 78: // N
 				jQuery('.new-user.nav-link').tab('show')
 				break

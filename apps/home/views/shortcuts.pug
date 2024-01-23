@@ -12,10 +12,10 @@ block contents
 			li #[kbd Alt] + #[kbd Shift] + #[kbd F] – Will open global search at the top
 				br
 				| When open users can use the up/down arrows to nagivate, enter to select, escape to close the menu
-		if currentUserCan({or: ['checkout_issue', 'items_return', 'reservations_create', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
+		if currentUserCan({or: ['checkout_issue', 'items_return', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
 			li #[kbd Alt] + #[kbd Shift] + #[kbd K] – Will go to the Kiosk
 		li #[kbd Alt] + #[kbd Shift] + #[kbd Q] – Will move the text input to quick search if the page has one
-	if currentUserCan({or: ['checkout_issue', 'items_return', 'reservations_create', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
+	if currentUserCan({or: ['checkout_issue', 'items_return', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
 		h3 Kiosk Shortcuts
 		ul
 			li #[kbd Escape] – Will highlight the scanning field when on the kiosk screen		
@@ -23,8 +23,6 @@ block contents
 				li #[kbd Alt] + #[kbd Shift] + #[kbd I] – Opens the Issue tab
 			if currentUserCan('items_return')
 				li #[kbd Alt] + #[kbd Shift] + #[kbd R] – Opens the Return tab
-			if currentUserCan('reservations_create')
-				li #[kbd Alt] + #[kbd Shift] + #[kbd E] – Opens the New Reservations tab
 			if currentUserCan('users_create')
 				li #[kbd Alt] + #[kbd Shift] + #[kbd N] – Opens the New User tab
 			if currentUserCan('print')
