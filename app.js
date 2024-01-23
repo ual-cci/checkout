@@ -16,6 +16,7 @@ const server = http.Server(app)
 
 app.use(helmet())
 
+// Static routes must come before sessions
 app.use(express.static('./static'))
 app.use('/bootstrap', express.static('./node_modules/bootstrap/dist'))
 app.use('/buzz', express.static('./node_modules/buzz/dist'))
