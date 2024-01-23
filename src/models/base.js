@@ -134,7 +134,7 @@ class BaseModel {
 	 */
 	removeMultiple(ids) {
 		return new Promise((resolve, reject) => {
-			const query = this.query().getMultipleByIds(ids).delete()
+			const query = this.emptyQuery().expose().whereIn('id', ids).delete()
 
 			this.logQuery(query, 'removeMultiple')
 
