@@ -133,6 +133,7 @@ class ItemModel extends BaseModel {
 			.count('items.id AS stock')
 			.orderBy('name', 'asc')
 			.where('loanable', true)
+			.whereIn('status', ['available','on-loan'])
 			.groupBy('items.name')
 	}
 
