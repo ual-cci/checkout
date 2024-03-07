@@ -16,8 +16,6 @@ if items && items.length > 0
 						th: +sortItemHead('Group', 'group', sortby, direction, selected, filter_path, sortable)
 					if columns.includes('location')
 						th: +sortItemHead('Location', 'location', sortby, direction, selected, filter_path, sortable)
-					if columns.includes('department')
-						th: +sortItemHead('Department', 'department', sortby, direction, selected, filter_path, sortable)
 					if columns.includes('value')
 						th: +sortItemHead('Value', 'value', sortby, direction, selected, filter_path, sortable)
 					if columns.includes('owner')
@@ -62,12 +60,6 @@ if items && items.length > 0
 								td: +location(item.location_name, item.location_id)
 							else
 								td=item.location_name
-						if columns.includes('department')
-							if actionable
-								td: +department(item.department_name, item.department_id)
-							else
-								td=item.department_name
-						
 						if columns.includes('value')
 							if parseFloat(item.value) > 0
 								- value = parseFloat(item.value)

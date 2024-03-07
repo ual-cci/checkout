@@ -12,7 +12,7 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 						span.me-2.fa.fa-book
 						| Catalogue
 		
-		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'departments_read']})
+		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Items
 			ul.nav.flex-column
 				if currentUserCan('items_create')
@@ -35,11 +35,6 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 						a.nav-link(href="/locations" class=(menu=='locations'?'active':''))
 							span.me-2.fa.fa-location-arrow
 							| Locations
-				if currentUserCan('departments_read')
-					li.nav-item
-						a.nav-link(href="/departments" class=(menu=='departments'?'active':''))
-							span.me-2.fa.fa-building
-							| Departments
 					
 		if currentUserCan({or: ['users_read', 'courses_read', 'years_read', 'roles_read']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Users

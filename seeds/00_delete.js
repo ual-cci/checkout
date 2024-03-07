@@ -9,7 +9,6 @@ exports.seed = (knex) => {
 		.then(() => deleteTables(knex, ['permissions']))
 		.then(() => deleteTables(knex, [
 			'courses',
-			'departments',
 			'groups',
 			'locations',
 			'printers',

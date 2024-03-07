@@ -45,16 +45,6 @@ block contents
 					.input-group-text
 						input( type="checkbox" name="fields[]" value="group" )
 		.form-group.row.mb-3
-			label( for="department" ).col-lg-2.col-form-label Department
-			.col-lg-4
-				.input-group
-					select( name="department" )#department.form-control.form-select
-						option( value="" selected ) Select a department
-						for department in departments
-							option( value=department.id )=department.name
-					.input-group-text
-						input( type="checkbox" name="fields[]" value="department" )
-		.form-group.row.mb-3
 			label( for="loanable" ).col-lg-2.col-form-label Loanable
 			.col-lg-4
 				.input-group
@@ -100,5 +90,5 @@ block contents
 		- multi = true
 		- sortby = 'barcode'
 		- direction = 'asc'
-		- columns = ['edit', 'barcode', 'name', 'group', 'location', 'department']
+		- columns = ['edit', 'barcode', 'name', 'group', 'location']
 		include partials/list.pug

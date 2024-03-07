@@ -51,7 +51,7 @@ class ItemController extends BaseController {
 		.expose()
 		.then(items => {
 			var data = []
-			data.push(['Name','Serial Number','Value','Department','Location','Group'].join(delimiter))
+			data.push(['Name','Serial Number','Value','Location','Group'].join(delimiter))
 
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i]
@@ -59,7 +59,6 @@ class ItemController extends BaseController {
 				row.push(this._default(item.name))
 				row.push(this._default(item.serialnumber))
 				row.push(this._default(item.value))
-				row.push(this._default(item.department_name))
 				row.push(this._default(item.location_name))
 				row.push(this._default(item.group_name))
 				data.push(row.join(delimiter))

@@ -3,7 +3,6 @@ const BaseController = require('../../src/js/common/BaseController.js')
 const Items = require('../../src/models/items.js')
 const Groups = require('../../src/models/groups.js')
 const Locations = require('../../src/models/locations.js')
-const Departments = require('../../src/models/departments.js')
 const Courses = require('../../src/models/courses.js')
 const Years = require('../../src/models/years.js')
 const Printers = require('../../src/models/printers.js')
@@ -26,7 +25,6 @@ class ItemController extends BaseController {
 			items: new Items(),
 			groups: new Groups(),
 			locations: new Locations(),
-			departments: new Departments(),
 			courses: new Courses(),
 			years: new Years(),
 			printers: new Printers(),
@@ -84,15 +82,13 @@ class ItemController extends BaseController {
 		Promise.all([
 			this.models.groups.getAll(),
 			this.models.locations.getAll(),
-			this.models.departments.getAll(),
 			this.models.courses.getAll(),
 			this.models.years.getAll()
 		])
-		.then(([groups, locations, departments, courses, years]) => {
+		.then(([groups, locations, courses, years]) => {
 			const selected = {
 				status: req.query.status ? req.query.status : '',
 				location: req.query.location ? req.query.location : '',
-				department: req.query.department ? req.query.department : '',
 				group: req.query.group ? req.query.group : '',
 				course: req.query.course ? req.query.course : '',
 				year: req.query.year ? req.query.year : '',
@@ -126,9 +122,6 @@ class ItemController extends BaseController {
 			})
 			.if((req.query.location), query => {
 				query.where('location_id', req.query.location)
-			})
-			.if((req.query.department), query => {
-				query.where('department_id', req.query.department)
 			})
 			.if((req.query.due), (query) => {
 				if (req.query.due == 'overdue') query.where('due', '<=', new Date())
@@ -164,7 +157,6 @@ class ItemController extends BaseController {
 				res.render('index', {
 					items,
 					locations,
-					departments,
 					groups,
 					courses,
 					years,
@@ -194,11 +186,11 @@ class ItemController extends BaseController {
 		if (!Array.isArray(req.body.ids)) {
 			ids = req.body.ids.split(',')
 		}
-		
+
 		// Checks if its a request with data
 		if (req.body.fields) {
-			const keys = ['name', 'label', 'group', 'location', 'department', 'notes', 'value', 'serialnumber', 'loanable', 'info_url', 'alert_msg']
-			const values = ['name', 'label', 'group_id', 'location_id', 'department_id', 'notes', 'value', 'serialnumber', 'loanable', 'info_url', 'alert_msg']
+			const keys = ['name', 'label', 'group', 'location', 'notes', 'value', 'serialnumber', 'loanable', 'info_url', 'alert_msg']
+			const values = ['name', 'label', 'group_id', 'location_id', 'notes', 'value', 'serialnumber', 'loanable', 'info_url', 'alert_msg']
 			const item = {}
 
 			keys.forEach((k, index) => {
@@ -217,10 +209,9 @@ class ItemController extends BaseController {
 		} else {
 			Promise.all([
 				this.models.groups.getAll(),
-				this.models.locations.getAll(),
-				this.models.departments.getAll()
+				this.models.locations.getAll()
 			])
-			.then(([groups, locations, departments]) => {
+			.then(([groups, locations]) => {
 				this.models.items.query()
 				.orderBy([
 					['barcode', 'asc']
@@ -231,8 +222,7 @@ class ItemController extends BaseController {
 					res.render('edit-multiple', {
 						items,
 						groups,
-						locations,
-						departments
+						locations
 					})
 				})
 			})
@@ -389,12 +379,11 @@ class ItemController extends BaseController {
 	getCreate(req, res) {
 		Promise.all([
 			this.models.locations.getAll(),
-			this.models.departments.getAll(),
 			this.models.groups.getAll()
 		])
-		.then(([locations, departments, groups]) => {
+		.then(([locations, groups]) => {
 			if (locations.length > 0) {
-				res.render('create', {locations: locations, departments: departments, groups: groups, item: {}, template:false})
+				res.render('create', {locations: locations, groups: groups, item: {}, template:false})
 			} else {
 				req.flash('warning', 'Create at least one location before creating items')
 				req.saveSessionAndRedirect(this.getRoute())
@@ -411,17 +400,16 @@ class ItemController extends BaseController {
 	getTemplateItem(req, res) {
 		Promise.all([
 			this.models.locations.getAll(),
-			this.models.departments.getAll(),
 			this.models.groups.getAll(),
 			this.models.items.getById(req.params.id)
 		])
-		.then(([locations, departments, groups, item]) => {
+		.then(([locations, groups, item]) => {
 			if (!item) {
 				throw new Error('Item not found')
 			}
 
 			if (locations.length > 0) {
-				// Get the first number in the barcode and suggest it as the next item				
+				// Get the first number in the barcode and suggest it as the next item
 				let start = item.barcode.match(/[0-9]+/g)
 				if (start != undefined) {
 					start = parseInt(start[0])
@@ -431,7 +419,7 @@ class ItemController extends BaseController {
 				// Convert numbers in barcode to hashes and suggest it as the barcode generation label
 				item.barcode = item.barcode.replaceAll(/[0-9]/g, '#')
 
-				res.render('create', {locations: locations, departments: departments, groups: groups, item: item, template:true})
+				res.render('create', {locations: locations, groups: groups, item: item, template:true})
 			} else {
 				req.flash('warning', 'Create at least one location before creating items')
 				req.saveSessionAndRedirect(this.getRoute())
@@ -492,77 +480,71 @@ class ItemController extends BaseController {
 			let numLen = 2
 			if (barcodeFilter) numLen = barcodeFilter[2].length
 
-			this.models.departments.getById(req.body.department)
-			.then((department) => {
-				for (let i = 0; i < quantity; i++) {
-					let x = start + i
+			for (let i = 0; i < quantity; i++) {
+				let x = start + i
 
-					let item = {
-						name: req.body.name.trim(),
-						barcode: barcode,
-						label: req.body.label,
-						value: req.body.value,
-						location_id: req.body.location,
-						department_id: req.body.department,
-						info_url: req.body.info_url,
-						notes: req.body.notes,
-						alert_msg: req.body.alert_msg,
-						status: AVAILABILITY.AVAILABLE,
-						loanable: (req.body.loanable == 'true' ? true : false)
-					}
+				let item = {
+					name: req.body.name.trim(),
+					barcode: barcode,
+					label: req.body.label,
+					value: req.body.value,
+					location_id: req.body.location,
+					info_url: req.body.info_url,
+					notes: req.body.notes,
+					alert_msg: req.body.alert_msg,
+					status: AVAILABILITY.AVAILABLE,
+					loanable: (req.body.loanable == 'true' ? true : false)
+				}
 
-					if (quantity == 1) {
-						item.serialnumber = req.body.serialnumber
-					}
+				if (quantity == 1) {
+					item.serialnumber = req.body.serialnumber
+				}
 
-					if (!req.body.value) {
-						item.value = 0.0
-					}
+				if (!req.body.value) {
+					item.value = 0.0
+				}
 
-					if (req.body.group) {
-						item.group_id = req.body.group
-					}
+				if (req.body.group) {
+					item.group_id = req.body.group
+				}
 
-					if (quantity >= 1 && barcodeFilter) {
-						const index = x.toString().padStart(numLen, '0')
-						item.barcode = barcodeFilter[1] + index.toString()
-					}
+				if (quantity >= 1 && barcodeFilter) {
+					const index = x.toString().padStart(numLen, '0')
+					item.barcode = barcodeFilter[1] + index.toString()
+				}
 
-					// Push item into array to be inserted into database
-					items.push(item)
+				// Push item into array to be inserted into database
+				items.push(item)
 
-					// Push item details into array to be printed
-					if (req.body.print) {
-						barcodes.push({
-							barcode: item.barcode,
-							text: item.name,
-							type: item.label,
-							brand: department.brand
-						})
+				// Push item details into array to be printed
+				if (req.body.print) {
+					barcodes.push({
+						barcode: item.barcode,
+						text: item.name,
+						type: item.label,
+						brand: department.brand
+					})
+				}
+			}
+			this.models.items.create(items)
+			.then(id => {
+				req.flash('success', `${items.length} item${items.length > 1 ? 's' : ''} created`)
+
+				if (req.body.print) {
+					if (req.user.printer_id) {
+						Print.labels(barcodes, req.user.printer_url)
+						req.flash('info', `Labels printed to ${req.user.printer_name}`)
+					} else {
+						req.flash('warning', 'No printer configured')
 					}
 				}
+				if (quantity == 1) {
+					req.saveSessionAndRedirect(`${this.getRoute()}/${id[0].id}`)
+				} else {
+					req.saveSessionAndRedirect(this.getRoute())
+				}
 			})
-			.then(() => {
-				this.models.items.create(items)
-				.then(id => {
-					req.flash('success', `${items.length} item${items.length > 1 ? 's' : ''} created`)
-
-					if (req.body.print) {
-						if (req.user.printer_id) {
-							Print.labels(barcodes, req.user.printer_url)
-							req.flash('info', `Labels printed to ${req.user.printer_name}`)
-						} else {
-							req.flash('warning', 'No printer configured')
-						}
-					}
-					if (quantity == 1) {
-						req.saveSessionAndRedirect(`${this.getRoute()}/${id[0].id}`)
-					} else {
-						req.saveSessionAndRedirect(this.getRoute())
-					}
-				})
-				.catch(err => this.displayError(req, res, err, this.getRoute('/create')))
-			})
+			.catch(err => this.displayError(req, res, err, this.getRoute('/create')))
 		}
 	}
 
@@ -599,12 +581,11 @@ class ItemController extends BaseController {
 
 		Promise.all([
 			this.models.locations.getAll(),
-			this.models.departments.getAll(),
 			this.models.groups.getAll()
 		])
-		.then(([locations, departments, groups]) => {
+		.then(([locations, groups]) => {
 			if (locations.length > 0) {
-				res.render('process', {locations: locations, departments: departments, groups: groups, data: data})
+				res.render('process', {locations: locations, groups: groups, data: data})
 			} else {
 				req.flash('warning', 'Create at least one location before creating items')
 				req.saveSessionAndRedirect(this.getRoute())
@@ -627,7 +608,7 @@ class ItemController extends BaseController {
 		}
 
 		// Map heading order
-		const expectedHeadings = ['name','value','label','barcode','serialnumber','notes','group','location','department']
+		const expectedHeadings = ['name','value','label','barcode','serialnumber','notes','group','location']
 		var headingMap = {}
 		expectedHeadings.forEach(head => {
 			headingMap[head] = req.body.cols.indexOf(head)
@@ -660,14 +641,6 @@ class ItemController extends BaseController {
 					item.group_id = data[headingMap.group]
 				} else if (req.body.group) {
 					item.group_id = req.body.group
-				}
-
-				if (headingMap.department > 0) {
-					item.department_id = data[headingMap.department]
-				} else if (req.body.department) {
-					item.department_id = req.body.department
-				} else {
-					throw new Error('No default department was specified and one of more rows were missing a department')
 				}
 
 				if (headingMap.location > 0) {
@@ -826,10 +799,9 @@ class ItemController extends BaseController {
 		Promise.all([
 			this.models.items.getById(req.params.id),
 			this.models.groups.getAll(),
-			this.models.locations.getAll(),
-			this.models.departments.getAll()
+			this.models.locations.getAll()
 		])
-		.then(([item, groups, locations, departments]) => {
+		.then(([item, groups, locations]) => {
 			if (!item) {
 				throw new Error('Item not found')
 			}
@@ -837,8 +809,7 @@ class ItemController extends BaseController {
 			res.render('edit', {
 				item,
 				groups,
-				locations,
-				departments
+				locations
 			})
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
@@ -870,10 +841,6 @@ class ItemController extends BaseController {
 
 		if (req.body.group != '') {
 			item.group_id = req.body.group
-		}
-
-		if (req.body.department != '') {
-			item.department_id = req.body.department
 		}
 
 		this.models.items.update(req.params.id, item)
@@ -1107,8 +1074,8 @@ class ItemController extends BaseController {
 			} else {
 				req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
 			}
-			
-			
+
+
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
 	}

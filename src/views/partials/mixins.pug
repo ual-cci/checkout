@@ -97,17 +97,6 @@ mixin location( name, id )
 	else
 		| &mdash;
 		
-mixin department( name, id )
-	if name
-		if currentUserCan('items_read')
-			a( href=`/items/?department=${id}` title=`View items in department: ${name}`  )=name
-		else
-			| #{name}
-		if currentUserCan('departments_edit') && !multi
-			+actionBtn('pencil-alt', `/departments/${id}/edit`, `Edit department: ${name}`)
-	else
-		| &mdash;
-		
 mixin group( name, id )
 	if name
 		if currentUserCan('items_read')
@@ -153,7 +142,6 @@ mixin sortItemHead(text, slug, sort_by, sort_dir, selected, filter_path, sortabl
 	if selected
 		- status = (selected.status ? selected.status : '')
 		- location = (selected.location ? selected.location : '')
-		- department = (selected.department ? selected.department : '')
 		- group = (selected.group ? selected.group : '')
 		- course = (selected.course ? selected.course : '')
 		- year = (selected.year ? selected.year : '')
@@ -162,7 +150,7 @@ mixin sortItemHead(text, slug, sort_by, sort_dir, selected, filter_path, sortabl
 		- scanned = (selected.scanned ? selected.scanned : '')
 	
 	if sortable
-		a(href=`${filter_path}?status=${status}&location=${location}&department=${department}&group=${group}&course=${course}&year=${year}&due=${due}&audited=${audited}&scanned=${scanned}&sortby=${slug}&direction=${alt_dir}`)=text
+		a(href=`${filter_path}?status=${status}&location=${location}&group=${group}&course=${course}&year=${year}&due=${due}&audited=${audited}&scanned=${scanned}&sortby=${slug}&direction=${alt_dir}`)=text
 	else
 		| #{text}
 	if sort_by == slug

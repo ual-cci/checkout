@@ -40,10 +40,6 @@ include ../partials/mixins.pug
 				.row
 					.col-md-5.font-weight-bold Location
 					.col-md-7: +location(item.location_name, item.location_id)
-				if item.department_id
-					.row
-						.col-md-5.font-weight-bold Department
-						.col-md-7: +department(item.department_name, item.department_id)
 				if item.group_id
 					.row
 						.col-md-5.font-weight-bold Group

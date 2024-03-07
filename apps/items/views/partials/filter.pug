@@ -20,15 +20,6 @@ form(method="get")#filter
 				for location in locations
 					option(value=location.id selected=(location.id == selected.location)) #{ location.name }
 	
-	.form-group.row.collapse.mb-1#departmentFilter(class=(selected.department?'show':''))
-		label(for="department").col-sm-2 Department
-		.col-md-5.col-sm-9
-			select#department(name="department").form-control.form-select.form-select-sm
-				option(value="" selected)
-				option(disabled) ──────────
-				for department in departments
-					option(value=department.id selected=(department.id == selected.department)) #{ department.name }
-	
 	if courses
 		.form-group.row.collapse.mb-1#courseFilter(class=(selected.course?'show':''))
 			label(for="course").col-sm-2 Course
