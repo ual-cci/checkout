@@ -36,7 +36,6 @@ class HistoryController extends BaseController {
 
 	getDay(req, res) {
 		const current_date = moment(req.params.date, 'YYYY-MM-DD', true)
-		console.log(current_date.isValid())
 
 		if (!current_date.isValid()) {
 			req.flash('warning', `Invalid date`)
@@ -59,7 +58,6 @@ class HistoryController extends BaseController {
 		const start_date = moment(current_date).startOf('day')
 		const end_date = moment(current_date).endOf('day')
 		const previous_date = moment(current_date).subtract(1, 'day')
-
 		const next_date = moment(current_date).add(1, 'day')
 
 		this.models.actions.getDateRange(start_date, end_date)
