@@ -774,32 +774,6 @@ class ApiController extends BaseController {
 		})
 		.catch(err => this.displayErrorJson(req, res, err))
 	}
-
-	/**
-	 * Gets the actions for the current day
-	 *
-	 * @param {Object} req Express request object
-	 * @param {Object} res Express response object
-	 */
-	getHistory(req, res) {
-		this.models.actions.getDateRange(
-			moment().startOf('day'),
-			moment().endOf('day')
-		)
-		.then(actions => {
-			const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/history.pug'), {
-				actions,
-				moment,
-				currentUserCan: function(perm) {
-					return auth.userCan(req.user, perm)
-				},
-			})
-
-			res.json({
-				actions: html
-			})
-		})
-	}
 }
 
 module.exports = ApiController

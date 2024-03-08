@@ -8,7 +8,6 @@
   "options_read": "User can read site wide options.",
   "options_edit": "User can edit site wide options.",
   "checkout_issue": "User can issue items and mark them lost or broken.",
-  "checkout_history": "User can view Checkout desk history for today.",
   "checkout_audit": "User can audit items from Checkout desk, this includes changing item locations.",
   "items_read": "User can view items.",
   "items_history": "User can view item loaning history.",

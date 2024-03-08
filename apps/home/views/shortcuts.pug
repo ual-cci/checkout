@@ -12,10 +12,10 @@ block contents
 			li #[kbd Alt] + #[kbd Shift] + #[kbd F] – Will open global search at the top
 				br
 				| When open users can use the up/down arrows to nagivate, enter to select, escape to close the menu
-		if currentUserCan({or: ['checkout_issue', 'items_return', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
+		if currentUserCan({or: ['checkout_issue', 'items_return', 'users_create', 'print', 'checkout_audit']})
 			li #[kbd Alt] + #[kbd Shift] + #[kbd K] – Will go to the Kiosk
 		li #[kbd Alt] + #[kbd Shift] + #[kbd Q] – Will move the text input to quick search if the page has one
-	if currentUserCan({or: ['checkout_issue', 'items_return', 'users_create', 'print', 'checkout_audit', 'checkout_history']})
+	if currentUserCan({or: ['checkout_issue', 'items_return', 'users_create', 'print', 'checkout_audit']})
 		h3 Kiosk Shortcuts
 		ul
 			li #[kbd Escape] – Will highlight the scanning field when on the kiosk screen		
@@ -28,6 +28,4 @@ block contents
 			if currentUserCan('print')
 				li #[kbd Alt] + #[kbd Shift] + #[kbd L] – Opens the Label tab
 			if currentUserCan('checkout_audit')
-				li #[kbd Alt] + #[kbd Shift] + #[kbd A] – Opens the Audit tab 
-			if currentUserCan('checkout_history')
-				li #[kbd Alt] + #[kbd Shift] + #[kbd H] – Opens the History tab 
+				li #[kbd Alt] + #[kbd Shift] + #[kbd A] – Opens the Audit tab

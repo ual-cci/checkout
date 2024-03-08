@@ -45,7 +45,7 @@ const Authentication = {
 				.then(hash => {
 					const {user} = persist
 					persist.successful = false // Default to a failed login
-					
+
 					if (hash == user.pw_hash) {
 						persist.successful = true // This is what makes the login work
 
@@ -62,7 +62,7 @@ const Authentication = {
 							message: 'Incorrect password'
 						}
 					}
-					
+
 					// Transparently check and update password hashes if necessary
 					if (user.pw_iterations < process.env.USER_PW_ITERATIONS) {
 						Authentication.generatePassword(password)
@@ -123,7 +123,6 @@ const Authentication = {
 								if (p == 'items_broken') return true
 								if (p == 'items_lost') return true
 								if (p == 'items_sold') return true
-								if (p == 'checkout_history') return true
 								if (p == 'groups_override') return true
 								if (p == 'users_create') return true
 								if (p == 'print') return true
@@ -179,7 +178,7 @@ const Authentication = {
 			})
 		})
 	},
-	
+
 	// Checks password meets requirements
 	passwordRequirements: (password) => {
 		if (!password)

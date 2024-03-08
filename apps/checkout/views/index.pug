@@ -45,18 +45,10 @@ block contents
 			a.audit.nav-item.nav-link( href="#audit" data-bs-toggle="tab" class=(set_active=='audit'?'active':null) ) Audit
 				|  
 				span.badge.text-bg-secondary.d-none.d-lg-inline A
-			
-		if currentUserCan('checkout_history')
-			if ! set_active
-				- set_active = 'history';
-			a.history.nav-item.nav-link( href="#history" data-bs-toggle="tab" class=(set_active=='history'?'active':null)) History
-				|  
-				span.badge.text-bg-secondary.d-none.d-lg-inline H
-			
+							
 	.tab-content.break
 		include partials/issue.pug
 		include partials/return.pug
 		include partials/new-user.pug
 		include partials/audit.pug
 		include partials/label.pug
-		include partials/history.pug
