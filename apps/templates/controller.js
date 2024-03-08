@@ -25,8 +25,16 @@ class TemplatesController extends BaseController {
 	}
 
 	postCreate(req, res) {
-		if (req.body.name == '') {
-			return this.displayError(req, res, '', this.getRoute('/create'), 'The template requires a name')
+		if (!req.body.name) {
+			req.flash('danger', 'The template requires a name')
+			req.saveSessionAndRedirect(this.getRoute('/create'))
+			return
+		}
+
+		if (!req.body.type) {
+			req.flash('danger', 'The template requires a type')
+			req.saveSessionAndRedirect(this.getRoute('/create'))
+			return
 		}
 
 		const templates = {
@@ -62,8 +70,16 @@ class TemplatesController extends BaseController {
 	}
 
 	postEdit(req, res) {
-		if (req.body.name == '') {
-			return this.displayError(req, res, '', this.getRoute(`/${req.params.id}/edit`), 'The template requires a name')
+		if (!req.body.name) {
+			req.flash('danger', 'The template requires a name')
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}/edit`))
+			return
+		}
+
+		if (!req.body.type) {
+			req.flash('danger', 'The template requires a type')
+			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}/edit`))
+			return
 		}
 
 		const template = {
