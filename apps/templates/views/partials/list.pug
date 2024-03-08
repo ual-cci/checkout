@@ -2,8 +2,9 @@ if templates.length > 0
 	.table-responsive
 		table.table.table-striped.table-hover.table-condensed
 			tgroup
+				col(width="20%")
 				col(width="30%")
-				col(width="40%")
+				col(width="10%")
 				col(width="10%")
 				col(width="20%")
 			thead
@@ -13,6 +14,7 @@ if templates.length > 0
 						span.fas.fa-angle-up.text-muted
 					th Subject
 					th Label
+					th Type
 					if currentUserCan({or:['templates_edit','templates_remove']})
 						th Manage
 			tbody
@@ -21,6 +23,7 @@ if templates.length > 0
 						td=template.name
 						td=template.subject
 						td=template.label
+						td: +status(template.type)
 						if currentUserCan({or:['templates_edit','templates_remove']})
 							td
 								if currentUserCan('templates_edit')

@@ -21,7 +21,7 @@ class TemplatesController extends BaseController {
 	}
 
 	getCreate(req, res) {
-		res.render('create', {template: null})
+		res.render('create', {template: false})
 	}
 
 	postCreate(req, res) {
@@ -33,7 +33,8 @@ class TemplatesController extends BaseController {
 			name: req.body.name,
 			subject: req.body.subject,
 			label: req.body.label,
-			body: req.body.body
+			body: req.body.body,
+			type: req.body.type
 		}
 
 		this.models.templates.create(templates)
@@ -69,7 +70,8 @@ class TemplatesController extends BaseController {
 			name: req.body.name,
 			subject: req.body.subject,
 			label: req.body.label,
-			body: req.body.body
+			body: req.body.body,
+			type: req.body.type
 		}
 
 		this.models.templates.update(req.params.id, template)

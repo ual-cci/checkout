@@ -5,17 +5,36 @@ form(method="post")
 		label(for="name").col-lg-2.col-form-label Name
 		.col-lg-4
 			input#name(name="name", type="text", value=(template && template.name ? template.name : null), required).form-control
-	
+
 	.form-group.row.mb-3
 		label(for="label").col-lg-2.col-form-label Label
 		.col-lg-4
 			input#label(name="label" type="text" value=(template && template.label ? template.label : null) maxlength="10" required autocomplete="off").form-control
+			small.form-text.text-muted This should be kept to an Emoji or a few letters. 
+
+	.form-group.row.mb-3
+		label(for="type").col-lg-2.col-form-label Type
+		.col-lg-4
+			select#type(name="type").form-select.form-control
+				option(value="" disabled selected=(!template.type)) Select a template type
+				option(value="all-items" selected=(template.type == 'all-items')) All Items
+				option(value="selected-items" selected=(template.type == 'selected-items')) Selected Items
+				option(value="overdue-items" selected=(template.type == 'overdue-items')) Overdue Items
+			p: small.form-text.text-muted
+				strong All Items:
+				|  Lists all items on loan to the user, email only generaated if they have at least 1 item.
+			p: small.form-text.text-muted
+				strong Selected Items:
+				|  Only lists selected items in the email.
+			p: small.form-text.text-muted
+				strong Overdue Items:
+				|  Only lists overdue items in the email, email only generaated if they have at least 1 item is overdue.
 	
 	.form-group.row.mb-3
 		label(for="subject").col-lg-2.col-form-label Subject
 		.col-lg-4
 			input#subject(name="subject", type="text", value=(template && template.subject ? template.subject : null), required).form-control
-	
+
 	.form-group.row.mb-3
 		label(for="body").col-lg-2.col-form-label Body
 		.col-lg-4
