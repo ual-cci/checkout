@@ -9,6 +9,11 @@
 		"type": "single-text",
 		"purpose": "Displayed under the application name on the login screen and in the footer."
 	},
+	"label_brand": {
+		"default": "Checkout",
+		"type": "multiline-text",
+		"purpose": "Displayed at the top of printed labels."
+	},
 	"github_url": {
 		"default": "https://github.com/ual-cci/checkout",
 		"type": "single-text",

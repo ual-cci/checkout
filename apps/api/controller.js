@@ -686,8 +686,7 @@ class ApiController extends BaseController {
 			Print.label({
 				barcode: item.barcode,
 				text: item.name,
-				type: item.label,
-				brand: item.department_brand
+				type: item.label
 			}, req.user.printer_url)
 
 			return res.json({

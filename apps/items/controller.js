@@ -8,7 +8,6 @@ const Years = require('../../src/models/years.js')
 const Printers = require('../../src/models/printers.js')
 const Actions = require('../../src/models/actions.js')
 
-// TODO
 const Print = require('../../src/js/print')
 const {getSortBy} = require('../../src/js/utils.js')
 const {AVAILABILITY, ACTIONS, SORTBY_MUTATIONS} = require('../../src/js/common/constants')
@@ -521,8 +520,7 @@ class ItemController extends BaseController {
 					barcodes.push({
 						barcode: item.barcode,
 						text: item.name,
-						type: item.label,
-						brand: department.brand
+						type: item.label
 					})
 				}
 			}
@@ -742,8 +740,7 @@ class ItemController extends BaseController {
 			Print.label({
 				barcode: _item.barcode,
 				text: _item.name,
-				type: _item.label,
-				brand: _item.department_brand
+				type: _item.label
 			}, printer.url)
 
 			req.flash('info', `Label printed to ${printer.name}`)
@@ -772,8 +769,7 @@ class ItemController extends BaseController {
 						return {
 							barcode: item.barcode,
 							text: item.name,
-							type: item.label,
-							brand: item.department_brand
+							type: item.label
 						}
 					})
 
@@ -854,8 +850,7 @@ class ItemController extends BaseController {
 							Print.label({
 								barcode: item.barcode,
 								text: item.name,
-								type: item.label,
-								brand: item.department_brand
+								type: item.label
 							}, req.user.printer_url)
 							req.flash('info', `Label reprinted to ${req.user.printer_name}`)
 						})

@@ -18,7 +18,7 @@ const Print = {
 
 		if (!fs.existsSync('temp_pdfs/')) fs.mkdirSync('temp_pdfs/');
 
-		var item_code = codes.length > 0 ? codes[0].barcode + codes[0].brand : 'string'
+		var item_code = codes.length > 0 ? codes[0].barcode : 'string'
 		doc.pipe(fs.createWriteStream('temp_pdfs/'+ item_code +'.pdf'));
 
 		var docSize = ''
@@ -29,17 +29,17 @@ const Print = {
 				default:
 				case '9mm':
 					size = "Custom.9x12mm"
-					barcodes.push(Print.add9mmLabel(doc, code.barcode, code.text, code.brand))
+					barcodes.push(Print.add9mmLabel(doc, code.barcode, code.text))
 					break
 
 				case '12mm':
 					size = "Custom.12x17mm"
-					barcodes.push(Print.add12mmLabel(doc, code.barcode, code.text, code.brand))
+					barcodes.push(Print.add12mmLabel(doc, code.barcode, code.text))
 					break
 
 				case '12mm_flag':
 					size = "Custom.12x50mm"
-					barcodes.push(Print.add12mmFlag(doc, code.barcode, code.text, code.brand))
+					barcodes.push(Print.add12mmFlag(doc, code.barcode, code.text))
 					break
 
 				case '36mm':
@@ -75,7 +75,7 @@ const Print = {
 
 			page.fontSize(3)
 			page.font('Helvetica')
-			
+
 			page.text(barcode, pt(1), pt(8.5), {
 				width: pt(7),
 				align: 'left'
@@ -85,7 +85,7 @@ const Print = {
 			})
 		})
 	},
-	add12mmLabel: function(doc, barcode, text, brand) {
+	add12mmLabel: function(doc, barcode, text) {
 		return new Promise(function(resolve, reject) {
 			Print.generate2DBarcodeImage(barcode).then(function(png) {
 			var page = doc.addPage({
@@ -96,7 +96,7 @@ const Print = {
 			page.fontSize(4.5)
 			page.font('Helvetica-Bold')
 
-			page.text(brand, pt(1), pt(1), {
+			page.text(Options.getText('label_brand'), pt(1), pt(1), {
 				width: pt(10),
 				align: 'left',
 				weight: 'bold',
@@ -119,7 +119,7 @@ const Print = {
 			})
 		})
 	},
-	add12mmFlag: function(doc, barcode, text, brand) {
+	add12mmFlag: function(doc, barcode, text) {
 		return new Promise(function(resolve, reject) {
 			var w = 12
 			var h = 50
@@ -140,7 +140,7 @@ const Print = {
 					page.fontSize(4.5)
 					page.font('Helvetica-Bold')
 
-					page.text(brand, pt(1), pt(1), {
+					page.text(Options.getText('label_brand'), pt(1), pt(1), {
 						width: pt(10),
 						align: 'left',
 						weight: 'bold',

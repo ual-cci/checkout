@@ -8,7 +8,7 @@ form(method="post")
 			if option.type == "number"
 				input#value(name="value" type="number" value=option.value required placeholder=option.default).form-control
 			else if option.type == "multiline-text"
-				textarea(rows=3 ).form-control=option.value
+				textarea(rows=3 name="value").form-control=option.value
 			else if option.type == "boolean"
 				.form-check
 					input#valueTrue(type="radio" name="value" value="true" checked=(option.value == "true" ? true : false)).form-check-input
