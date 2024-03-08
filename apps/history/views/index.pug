@@ -5,6 +5,15 @@ block prepend title
 	- heading = title
 	- menu = 'history'
 
+block buttons
+	if (next_url)
+		+btn('sm', 'outline-secondary', 'calendar', `Today`, `/history`)
+	ul.pagination.pagination-sm.mb-0
+		li.page-item: a.page-link(href=previous_url) &laquo;
+		li.page-item: .page-link(style="width: 250px;text-align: center;")=current_date
+		li.page-item: a.page-link(class=(!next_url ? 'disabled' : '') href=next_url) &raquo;
+	
+
 block contents
 	- filter_path = '/history/'
 	include partials/list.pug

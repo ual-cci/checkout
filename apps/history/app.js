@@ -17,4 +17,8 @@ app.get('/', auth.currentUserCanOrOptionOverride('view_history'), (req, res) => 
 	req.controller.getRoot(req, res)
 })
 
+app.get('/:date', auth.currentUserCanOrOptionOverride('view_history'), (req, res) => {
+	req.controller.getDay(req, res)
+})
+
 module.exports = config => app

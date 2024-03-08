@@ -31,12 +31,45 @@ class HistoryController extends BaseController {
 	* @param {Object} res Express response object
 	*/
 	getRoot(req, res) {
-		this.models.actions.getDateRange(
-			moment().startOf('day'),
-			moment().endOf('day')
-		)
+		res.redirect(this.getRoute(`/${moment().format('YYYY-MM-DD')}`))
+	}
+
+	getDay(req, res) {
+		const current_date = moment(req.params.date, 'YYYY-MM-DD', true)
+		console.log(current_date.isValid())
+
+		if (!current_date.isValid()) {
+			req.flash('warning', `Invalid date`)
+			req.saveSessionAndRedirect(this.getRoute())
+			return
+		}
+
+		if (current_date.isBefore(moment('2000-01-01'))) {
+			req.flash('warning', `Dates before 2000 are not supported`)
+			req.saveSessionAndRedirect(this.getRoute())
+			return
+		}
+
+		if (current_date.isAfter(moment())) {
+			req.flash('warning', `Dates in the future are not supported`)
+			req.saveSessionAndRedirect(this.getRoute())
+			return
+		}
+
+		const start_date = moment(current_date).startOf('day')
+		const end_date = moment(current_date).endOf('day')
+		const previous_date = moment(current_date).subtract(1, 'day')
+
+		const next_date = moment(current_date).add(1, 'day')
+
+		this.models.actions.getDateRange(start_date, end_date)
 		.then(actions => {
-			res.render('index', {actions})
+			res.render('index', {
+				actions,
+				current_date: current_date.format("dddd Do MMMM YYYY"),
+				previous_url: `/history/${previous_date.format('YYYY-MM-DD')}`,
+				next_url: next_date.isBefore(moment()) ? `/history/${next_date.format('YYYY-MM-DD')}` : ''
+			})
 		})
 	}
 }
