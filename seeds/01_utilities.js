@@ -12,17 +12,6 @@ function createCourses(knex) {
 	})
 }
 
-function createDepartments(knex) {
-	return createFactory(knex, {
-		table: 'departments',
-		createFunc: () => {
-			return {
-				name: faker.name.jobArea()
-			}
-		}
-	})
-}
-
 function createGroups(knex) {
 	return createFactory(knex, {
 		table: 'groups',
@@ -81,7 +70,6 @@ function createYears(knex) {
 exports.seed = (knex) => {
 	return Promise.all([
 		createCourses(knex),
-		createDepartments(knex),
 		createGroups(knex),
 		createLocations(knex),
 		createPrinters(knex),

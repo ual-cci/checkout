@@ -11,7 +11,6 @@ const icons = {
 	courses: 'user-graduate',
 	groups: 'object-group',
 	locations: 'location-arrow',
-	departments: 'building',
 	years: 'user-clock'
 }
 
@@ -21,7 +20,6 @@ const titles = {
 	courses: 'Courses',
 	groups: 'Groups',
 	locations: 'Locations',
-	departments: 'Departments',
 	years: 'Years'
 }
 

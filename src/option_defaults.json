@@ -1,54 +1,71 @@
 {
 	"application_name": {
 		"default": "Checkout",
+		"type": "single-text",
 		"purpose": "Displayed in the header, footer and login screen."
 	},
 	"organisation_name": {
 		"default": "University of Something",
+		"type": "single-text",
 		"purpose": "Displayed under the application name on the login screen and in the footer."
+	},
+	"label_brand": {
+		"default": "Checkout",
+		"type": "multiline-text",
+		"purpose": "Displayed at the top of printed labels."
 	},
 	"github_url": {
 		"default": "https://github.com/ual-cci/checkout",
+		"type": "single-text",
 		"purpose": "URL of GitHub repository in the footer.",
 		"example": "https://github.com/username/checkout"
 	},
 	"password_tries": {
 		"default": 5,
+		"type": "number",
 		"purpose": "Number of allowed user login attempts before the account is locked out."
 	},
 	"kiosk_tries": {
 		"default": 10,
+		"type": "number",
 		"purpose": "Number of allowed kiosk login attempts before kiosk mode is disabled."
 	},
 	"public_catalogue": {
 		"default": "false",
+		"type": "boolean",
 		"purpose": "Make the catalogue of items available without login."
 	},
 	"smtp_from_address": {
 		"default": "",
+		"type": "single-text",
 		"purpose": "Where should emails come from?",
 		"example": "Checkout <checkout@example.com>"
 	},
 	"smtp_url": {
 		"default": "",
+		"type": "single-text",
 		"purpose": "SMTP Hostname",
 		"example": "smtp.example.com"
 	},
 	"smtp_username": {
 		"default": "",
+		"type": "single-text",
 		"purpose": "SMTP Username",
 		"example": "checkout@example.com"
 	},
 	"smtp_password": {
 		"default": "",
+		"type": "password",
 		"purpose": "SMTP Password"
 	},
 	"smtp_port": {
 		"default": "587",
+		"type": "number",
 		"purpose": "SMTP Port"
 	},
 	"smtp_secure": {
 		"default": "false",
+		"type": "boolean",
 		"purpose": "SMTP Secure"
 	}
 }

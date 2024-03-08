@@ -15,10 +15,8 @@ const app = express()
 const server = http.Server(app)
 
 app.use(helmet())
-sessions(app)
-auth(app)
-app.use(flash())
 
+// Static routes must come before sessions
 app.use(express.static('./static'))
 app.use('/bootstrap', express.static('./node_modules/bootstrap/dist'))
 app.use('/buzz', express.static('./node_modules/buzz/dist'))
@@ -27,6 +25,10 @@ app.use('/jquery', express.static('./node_modules/jquery/dist'))
 app.use('/fontawesome', express.static('./node_modules/@fortawesome/fontawesome-free'))
 app.use('/moment', express.static('./node_modules/moment/min'))
 app.use('/tempusdominus', express.static('./node_modules/tempusdominus-bootstrap-4/build'))
+
+sessions(app)
+auth(app)
+app.use(flash())
 
 // Use PUG to render pages
 app.set('views', './src/views')

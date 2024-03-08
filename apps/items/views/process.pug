@@ -36,9 +36,6 @@ block contents
 											if col == 'location'
 												- location_index = x
 												option(value='location' selected=true) Location
-											if col == 'department'
-												- department_index = x
-												option(value='department' selected=true) Department
 					else
 						tr
 							for col, x in row
@@ -60,13 +57,6 @@ block contents
 												option(value=location.id selected=(col==location.name.toLowerCase()?true:false))=location.name
 													if location.barcode
 														|  [#{location.barcode}]
-									if x == department_index
-										- displayed = true
-										select(name=`items[${y}][]`).form-control
-											- col = col.toLowerCase()
-											option(value="") Unknown
-											for department in departments
-												option(value=department.id selected=(col==department.name.toLowerCase()?true:false))=department.name
 									if ! displayed
 										| #{col}
 										input(type='hidden' name=`items[${y}][]` value=col)
@@ -88,12 +78,5 @@ block contents
 						option( value=location.id ) #{ location.name }
 							if location.barcode
 								|  [#{location.barcode}]
-		.form-group.row
-			label( for="department" ).col-sm-2.col-form-label Department
-			.col-lg-4
-				select( name="department")#department.form-control
-					option( value="" selected ) Select a department
-					for department in departments
-						option( value=department.id )=department.name
 		.form-group.offset-lg-2
 				input( type="submit" value="Import" ).btn.btn-primary

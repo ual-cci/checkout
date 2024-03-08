@@ -22,11 +22,6 @@ class ItemModel extends BaseModel {
 				join: ['id', 'location_id'],
 				properties: ['id', 'name']
 			},
-			department: {
-				table: 'departments',
-				join: ['id', 'department_id'],
-				properties: ['id', 'name', 'brand']
-			},
 			user: {
 				prefix: 'owner_',
 				table: 'users',
@@ -49,7 +44,7 @@ class ItemModel extends BaseModel {
 	}
 
 	get bootstrap() {
-		return ['group', 'location', 'department', 'user', 'course', 'year']
+		return ['group', 'location', 'user', 'course', 'year']
 	}
 
 	get properties() {
@@ -66,23 +61,6 @@ class ItemModel extends BaseModel {
 				})
 				.then(() => {
 					resolve(newLocationId)
-				})
-				.catch(err => {
-					reject(err)
-				})
-		})
-	}
-
-	updateDepartment(oldDepartmentId, newDepartmentId) {
-		return new Promise((resolve, reject) => {
-			this.query()
-				.expose()
-				.where('department_id', oldDepartmentId)
-				.update({
-					'department_id': newDepartmentId
-				})
-				.then(() => {
-					resolve(newDepartmentId)
 				})
 				.catch(err => {
 					reject(err)
@@ -133,6 +111,7 @@ class ItemModel extends BaseModel {
 			.count('items.id AS stock')
 			.orderBy('name', 'asc')
 			.where('loanable', true)
+			.whereIn('status', ['available','on-loan'])
 			.groupBy('items.name')
 	}
 
@@ -206,7 +185,7 @@ class ItemModel extends BaseModel {
 	lost(barcode) {
 		return this.changeStatusByBarcode(barcode, AVAILABILITY.LOST)
 	}
-	
+
 	sold(barcode) {
 		return this.changeStatusByBarcode(barcode, AVAILABILITY.SOLD)
 	}

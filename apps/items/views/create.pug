@@ -79,17 +79,6 @@ block contents
 							if location.barcode
 								|  [#{location.barcode}]
 		
-		if departments.length == 1
-			input(type="hidden" name="department" value=departments[0].id)
-		else 
-			.form-group.row.mb-3
-				label(for="department").col-sm-2.col-form-label Department
-				.col-lg-4
-					select#department(name="department" required).form-select.form-control
-						option(value="") Select a department
-						for department in departments
-							option(value=department.id selected=(department.id==item.department_id?true:false))=department.name
-						
 		// Number of items to create
 		h3.mb-3.pb-1.border-bottom Barcode
 		

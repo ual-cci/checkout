@@ -3,8 +3,21 @@ form(method="post")
 	
 	.form-group.row.mb-3
 		label(for="value").col-lg-2.col-form-label Value
+
 		.col-lg-4
-			input#value(name="value" type="text" value=option.value required placeholder=option.default).form-control
+			if option.type == "number"
+				input#value(name="value" type="number" value=option.value required placeholder=option.default).form-control
+			else if option.type == "multiline-text"
+				textarea(rows=3 name="value").form-control=option.value
+			else if option.type == "boolean"
+				.form-check
+					input#valueTrue(type="radio" name="value" value="true" checked=(option.value == "true" ? true : false)).form-check-input
+					label(for="valueTrue").form-check-label True
+				.form-check
+					input#valueFalse(type="radio" name="value" value="false" checked=(option.value == "false" ? true : false)).form-check-input
+					label(for="valueFalse").form-check-label False
+			else
+				input#value(name="value" type="text" value=option.value required placeholder=option.default).form-control
 			if option.example
 				small.form-text.text-muted Example: #{option.example}
 	

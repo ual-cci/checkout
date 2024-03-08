@@ -224,11 +224,6 @@ function getItem(barcode, cb) {apiGET(`/api/item/${barcode}`, cb)}
 function getUser(barcode, cb) {apiGET(`/api/user/${barcode}`, cb)}
 function identify(barcode, cb) {apiGET(`/api/identify/${barcode}`, cb)}
 
-function getHistory() {
-	jQuery.get('/api/history', function(data, status) {
-		jQuery('#history .items').html(data.actions)
-	})
-}
 
 function empty(clear) {
 	one_item = null
@@ -263,9 +258,6 @@ function handleKeyboardPress(e) {
 			case 82: // R
 				jQuery('.return.nav-link').tab('show')
 				break
-			case 69: // E
-				jQuery('.reservation.nav-link').tab('show')
-				break
 			case 78: // N
 				jQuery('.new-user.nav-link').tab('show')
 				break
@@ -274,9 +266,6 @@ function handleKeyboardPress(e) {
 				break
 			case 65: // A
 				jQuery('.audit.nav-link').tab('show')
-				break
-			case 72: // H
-				jQuery('.history.nav-link').tab('show')
 				break
 			case 88: // X
 				if (typeof kioskLogout == 'function') kioskLogout()
@@ -346,9 +335,6 @@ function focus() {
 			break
 		case 'new-user':
 			jQuery('#new-user input[name="barcode"]').focus()
-			break
-		case 'history':
-			getHistory()
 			break
 	}
 }
@@ -495,13 +481,6 @@ function clearUserForm() {
 	jQuery('#new-user form [name="course"]').val('')
 	jQuery('#new-user form [name="year"]').val('')
 }
-
-function refreshHistory() {
-	if (jQuery('#mode .nav-link.active').attr('href').substr(1) == 'history') {
-		getHistory()
-	}
-}
-setInterval(refreshHistory, 10000)
 
 function lazyResetKioskTimer() {
 	if (typeof resetKioskTimer == 'function') {

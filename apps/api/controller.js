@@ -16,7 +16,6 @@ const Users = require('../../src/models/users.js')
 const Actions = require('../../src/models/actions.js')
 const Courses = require('../../src/models/courses.js')
 const Years = require('../../src/models/years.js')
-const Departments = require('../../src/models/departments.js')
 const Printers = require('../../src/models/printers.js')
 const Templates = require('../../src/models/templates.js')
 
@@ -34,7 +33,6 @@ class ApiController extends BaseController {
 			actions: new Actions(),
 			courses: new Courses(),
 			years: new Years(),
-			departments: new Departments(),
 			printers: new Printers(),
 			templates: new Templates(),
 		}
@@ -54,11 +52,10 @@ class ApiController extends BaseController {
 			this.models.items.search(term),
 			this.models.groups.search(term),
 			this.models.locations.search(term),
-			this.models.departments.search(term),
 			this.models.courses.search(term),
 			this.models.years.search(term)
 		])
-		.then(([users, items, groups, locations, departments, courses, years]) => {
+		.then(([users, items, groups, locations, courses, years]) => {
 			let result = {}
 
 			if (auth.userCan(req.user, 'items_read'))
@@ -73,8 +70,6 @@ class ApiController extends BaseController {
 				result.years = years
 			if (auth.userCan(req.user, 'locations_read'))
 				result.locations = locations
-			if (auth.userCan(req.user, 'departments_read'))
-				result.departments = departments
 
 			res.json(result)
 		})
@@ -691,8 +686,7 @@ class ApiController extends BaseController {
 			Print.label({
 				barcode: item.barcode,
 				text: item.name,
-				type: item.label,
-				brand: item.department_brand
+				type: item.label
 			}, req.user.printer_url)
 
 			return res.json({
@@ -727,7 +721,7 @@ class ApiController extends BaseController {
 			return cachedError('The user must have a valid email address')
 		}
 
-		
+
 		if (!req.body.course) {
 			return cachedError('User must be attached to a course')
 		}
@@ -779,32 +773,6 @@ class ApiController extends BaseController {
 			})
 		})
 		.catch(err => this.displayErrorJson(req, res, err))
-	}
-
-	/**
-	 * Gets the actions for the current day
-	 *
-	 * @param {Object} req Express request object
-	 * @param {Object} res Express response object
-	 */
-	getHistory(req, res) {
-		this.models.actions.getDateRange(
-			moment().startOf('day'),
-			moment().endOf('day')
-		)
-		.then(actions => {
-			const html = pug.renderFile(path.join(__dirname, '../../src/views/modules/history.pug'), {
-				actions,
-				moment,
-				currentUserCan: function(perm) {
-					return auth.userCan(req.user, perm)
-				},
-			})
-
-			res.json({
-				actions: html
-			})
-		})
 	}
 }
 

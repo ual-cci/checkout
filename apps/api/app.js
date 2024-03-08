@@ -72,8 +72,5 @@ app.post('/new-user', auth.APIuserCan('users_create'), (req, res) => {
 	req.controller.postNewUser(req, res)
 })
 
-app.get('/history', auth.APIuserCan('checkout_history'), (req, res) => {
-	req.controller.getHistory(req, res)
-})
 
 module.exports = config => app

@@ -4,7 +4,6 @@
 	"name": "Name",
 	"group": "Group",
 	"location": "Location",
-	"department": "Department",
 	"value": "Value",
 	"owner": "Owner",
 	"course": "Owner's course",
