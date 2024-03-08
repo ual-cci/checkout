@@ -5,6 +5,7 @@
   "activate_kiosk_mode": "User can put the session into kiosk mode.",
   "global_search": "User can use global search in top nar bar.",
   "view_catalogue": "User can view item catalogue.",
+  "view_history": "User can view Checkout history.",
   "options_read": "User can read site wide options.",
   "options_edit": "User can edit site wide options.",
   "checkout_issue": "User can issue items and mark them lost or broken.",

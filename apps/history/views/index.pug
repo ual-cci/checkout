@@ -1,0 +1,10 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = "History"
+	- heading = title
+	- menu = 'history'
+
+block contents
+	- filter_path = '/history/'
+	include partials/list.pug

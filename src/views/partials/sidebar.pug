@@ -12,7 +12,7 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 						span.me-2.fa.fa-book
 						| Catalogue
 		
-		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read']})
+		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'view_history']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Items
 			ul.nav.flex-column
 				if currentUserCan('items_create')
@@ -25,6 +25,11 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 						a.nav-link(href="/items" class=(menu=='items'?'active':''))
 							span.me-2.fa.fa-boxes
 							| Items
+				if currentUserCan('view_history')
+					li.nav-item
+						a.nav-link(href="/history" class=(menu=='history'?'active':''))
+							span.me-2.fa.fa-clock
+							| History
 				if currentUserCan('groups_read')
 					li.nav-item
 						a.nav-link(href="/groups" class=(menu=='groups'?'active':''))
