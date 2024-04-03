@@ -9,9 +9,6 @@ window.addEventListener('load', () => {
 	document.querySelectorAll('[data-printer]').forEach(printer => {
 		printer.addEventListener('click', handlePrinterChange)
 	})
-	document.querySelectorAll('[data-template]').forEach(template => {
-		template.addEventListener('click', handleTemplateChange)
-	})
 })
 
 function detectDarkmode(e) {
@@ -26,16 +23,6 @@ function handlePrinterChange() {
 	apiGET(`/api/select-printer/${this.dataset.printer}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuPrinterDropdown .printer').innerText = data.printer
-		} else {
-			console.log(data)
-		}
-	})
-}
-
-function handleTemplateChange() {
-	apiGET(`/api/select-template/${this.dataset.template}`, (data) => {
-		if (data.status == 'success') {
-			document.querySelector('#topMenuTemplateDropdown .template').innerText = data.template
 		} else {
 			console.log(data)
 		}

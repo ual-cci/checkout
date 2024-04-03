@@ -26,20 +26,6 @@ nav.navbar.navbar-expand-md.sticky-top
 										| #{printer.name} 
 										span.badge.rounded-pill.text-bg-secondary=printer.label
 
-					
-					if currentUserCan('users_email') && templates && templates.length > 0
-						.nav-item.dropdown
-							a.nav-link.dropdown-toggle(href="#" id="topMenuTemplateDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
-								span.fas.fa-envelope
-								|  
-								span.template=loggedInUser.template_label
-							ul.dropdown-menu.dropdown-menu-end(aria-labelledby="topMenuTemplateDropdown")
-								li: a.dropdown-item.template(data-template='') None
-								for template in templates
-									li: a.dropdown-item.template(data-template=template.id)
-										| #{template.name} 
-										span.badge.rounded-pill.text-bg-secondary=template.label
-
 					if currentUserCan('edit_profile')
 						.nav-item.no-wrap: a.nav-link.text-nowrap.actionBtn(href="/profile")
 							span.fas.fa-user

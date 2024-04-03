@@ -626,41 +626,6 @@ class ApiController extends BaseController {
 	}
 
 	/**
-	* Change the current users selected email template
-	*
-	* @param {Object} req Express request object
-	* @param {Object} res Express response object
-	*/
-	getSelectTemplate(req, res) {
-		if (req.params.id) {
-			this.models.templates.getById(req.params.id)
-			.then(template => {
-				if (!template) {
-					throw ({
-						message: 'Unknown template'
-					})
-				}
-				this.models.users.update(res.locals.loggedInUser.id, {template_id: req.params.id})
-				.then((result) => {
-					res.json({
-						status: 'success',
-						template: template.label
-					})
-				})
-			})
-			.catch(err => this.displayErrorJson(req, res, err))
-		} else {
-			this.models.users.update(res.locals.loggedInUser.id, {template_id: null})
-			.then((result) => {
-				res.json({
-					status: 'success',
-					template: ''
-				})
-			})
-		}
-	}
-
-	/**
 	* Attempts to print a label for any given item
 	*
 	* @param {Object} req Express request object
