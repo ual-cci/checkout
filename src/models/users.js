@@ -36,11 +36,6 @@ class UserModel extends BaseModel {
 				table: 'printers',
 				join: ['id', 'printer_id'],
 				properties: ['id', 'name', 'label', 'url']
-			},
-			template: {
-				table: 'templates',
-				join: ['id', 'template_id'],
-				properties: ['id', 'name', 'subject', 'label', 'body']
 			}
 		}
 	}
@@ -56,7 +51,6 @@ class UserModel extends BaseModel {
 			'audit_point',
 			'printer_id',
 			'role_id',
-			'template_id',
 			'columns',
 			'last_emailed'
 		]
@@ -76,7 +70,6 @@ class UserModel extends BaseModel {
 			'audit_point',
 			'printer_id',
 			'role_id',
-			'template_id',
 			'last_emailed'
 		]
 	}
