@@ -1,24 +1,26 @@
 const BaseController = require('../../src/js/common/BaseController.js')
 
-const Mail = require('../../src/js/mail')()
+const {AVAILABILITY, ACTIONS} = require('../../src/js/common/constants')
+const Actions = require('../../src/models/actions.js')
 
 const config = require('./config.json')
 
 class OptionsController extends BaseController {
 	constructor() {
 		super({path: config.path})
+		this.models = {
+			actions: new Actions()
+		}
 	}
 
 	getRoot(req, res) {
-		const counts = Mail._limiter.counts()
-		let status = [
-			{name: 'Received', count: counts.RECEIVED},
-			{name: 'Queued', count: counts.QUEUED},
-			{name: 'Running', count: counts.RUNNING},
-			{name: 'Executing', count: counts.EXECUTING}
-		]
-		const queue = Mail._limiter.jobs()
-		res.render('index', {status, queue})
+		Promise.all([
+			this.models.actions.getByAction(ACTIONS.PENDING_EMAIL),
+			this.models.actions.getByAction(ACTIONS.EMAILED)
+		])
+		.then(([queue, sent]) => {
+			res.render('index', {queue, sent})
+		})
 	}
 }
 

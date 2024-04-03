@@ -12,22 +12,29 @@ block contents
 						th State
 						th Count
 				tbody
-					for state in status
-						tr
-							td=state.name
-							td=state.count
+					tr
+						td Queued
+						td=queue.length
+					tr
+						td Sent
+						td=sent.length
 
 	if queue.length > 0
-		h2 Message Queue
+		.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-1.pb-2.mb-3.border-bottom
+				h3 Queued
+				.btn-toolbar.mb-2.mb-md-0
 		.table-responsive
 			table.table.table-striped.table-condensed
 				thead
 					tr
-						th Message
+						th Sender 
+						th To
+						th Scheduled
 				tbody
 					for mail in queue
 						tr
-							td=mail
+							td=mail.operator_name
+							td=mail.owner_name 
+							td: +relative(mail.datetime)
 	else
 		+messageBlock( 'warning', 'black','There are no messages in the queue.' )
-
