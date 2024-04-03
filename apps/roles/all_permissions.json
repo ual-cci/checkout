@@ -66,5 +66,6 @@
   "templates_create": "User can create email templates.",
   "templates_edit": "User can edit email templates.",
   "templates_remove": "User can remove email templates.",
-  "email_queue_read": "User can view the email queue."
+  "email_queue_read": "User can view the email queue.",
+  "email_queue_remove": "User can remove emails from the queue before they are sent."
 }
