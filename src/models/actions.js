@@ -38,7 +38,7 @@ class ActionModel extends BaseModel {
 	}
 
 	get properties() {
-		return ['id', 'item_id', 'user_id', 'datetime', 'action', 'operator_id']
+		return ['id', 'item_id', 'user_id', 'datetime', 'action', 'operator_id', 'metadata']
 	}
 
 	create(values) {
