@@ -11,6 +11,10 @@ class TemplatesModel extends BaseModel {
 	getAll() {
 		return this.orderBy([['name']]).retrieve()
 	}
+
+	getByType(templateType) {
+		return this.query().where([['type', templateType]]).retrieve()
+	}
 }
 
 module.exports = TemplatesModel

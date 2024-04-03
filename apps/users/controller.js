@@ -15,6 +15,7 @@ const Items = require('../../src/models/items')
 const Actions = require('../../src/models/actions')
 const Printers = require('../../src/models/printers')
 const Roles = require('../../src/models/roles')
+const Templates = require('../../src/models/templates')
 
 const {getSortBy} = require('../../src/js/utils.js')
 const {STATUS, SORTBY_MUTATIONS, ACTIONS} = require('../../src/js/common/constants')
@@ -31,6 +32,7 @@ class UsersController extends BaseController {
 			actions: new Actions(),
 			printers: new Printers(),
 			roles: new Roles(),
+			templates: new Templates(),
 		}
 	}
 
@@ -142,7 +144,7 @@ class UsersController extends BaseController {
 				req.saveSessionAndRedirect(this.getRoute())
 			})
 			.catch(err => this.displayError(req, res, err, this.getRoute()))
-		} else {		
+		} else {
 			let persist = {}
 
 			Promise.all([
@@ -194,7 +196,7 @@ class UsersController extends BaseController {
 			return this.displayError(req, res, 'At least one user must be selected.', this.getRoute())
 		}
 
-		
+
 		if (req.body.confirm) {
 			let userLoans = []
 			ids.forEach((id) => {
@@ -261,15 +263,19 @@ class UsersController extends BaseController {
 
 			return Promise.all([
 				this.models.items.getOnLoanByUserId(req.params.id),
-				this.models.actions.getByUserId(req.params.id)
+				this.models.actions.getByUserId(req.params.id),
+				this.models.templates.getByType('all-items'),
+				this.models.templates.getByType('overdue-items')
 			])
 		})
-		.then(([items, actions]) => {
+		.then(([items, actions, all, overdue]) => {
 			const {user} = persist
 			res.render('single', {
 				user,
 				onloan: items,
-				history: actions
+				history: actions,
+				all,
+				overdue
 			})
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))
@@ -627,7 +633,7 @@ class UsersController extends BaseController {
 				name: user.name,
 				address: user.email
 			}
-						
+
 			const replyTo = {
 				name: req.user.name,
 				address: req.user.email
@@ -670,7 +676,7 @@ class UsersController extends BaseController {
 					name: req.user.name,
 					address: req.user.email
 				}
-	
+
 				users.forEach((user) => {
 					this.models.items.getOnLoanByUserId(user.id).then(items => {
 						if (items.length > 0) {
@@ -678,7 +684,7 @@ class UsersController extends BaseController {
 								name: user.name,
 								address: user.email
 							}
-	
+
 							const tags = {
 								name: to.name,
 								items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
@@ -697,7 +703,7 @@ class UsersController extends BaseController {
 						}
 					})
 				})
-				
+
 				req.flash('success', `Emails queued`)
 				req.saveSessionAndRedirect(`${this.getRoute()}`)
 			} else {

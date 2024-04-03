@@ -1,0 +1,26 @@
+if currentUserCan('users_email')
+	if all.length > 0 || overdue.length > 0
+		.dropdown
+			button(type='button' data-bs-toggle="dropdown").btn.btn-outline-secondary.btn-sm.dropdown-toggle
+				span.fas.fa-envelope
+				|  Email
+			.dropdown-menu
+				if overdue.length > 0
+					h6.dropdown-header
+						span.fas.fa-clock
+						|  Overdue Items
+					for template in overdue
+						a(href=`/users/${user.id}/email?template=${template.id}` title=`Email ${user.name} with ${template.label}`).dropdown-item=template.name
+							|  
+							span.badge.rounded-pill.text-bg-secondary=template.label
+				if all.length > 0 && overdue.length > 0
+					hr.dropdown-divider
+				if all.length > 0
+					h6.dropdown-header
+						span.fas.fa-box
+						|  All Items
+					for template in all
+						a(href=`/users/${user.id}/email?template=${template.id}` title=`Email ${user.name} with ${template.label}`).dropdown-item=template.name
+							|  
+							span.badge.rounded-pill.text-bg-secondary=template.label
+		| &nbsp;
