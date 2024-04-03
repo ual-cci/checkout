@@ -1,0 +1,18 @@
+extends ../../../src/views/base.pug
+
+block prepend title
+	- title = 'Remove'
+	- breadcrumb.push({name: 'Remove'})
+	- heading = `Are you sure you want to remove the email to "${selected.owner_name}" from the queue?`
+	- menu = 'email-queue'
+
+block contents
+	form(method="post")
+		+csrf
+		+messageBlock('danger', 'white', 'This will remove the email from the queue.')
+		
+		.form-group.row.mb-3
+			.col-lg-4
+				button(type='submit').btn.btn-danger Yes, remove email from queue
+				|  
+				a(href="/email-queue").btn.btn-outline-secondary Cancel

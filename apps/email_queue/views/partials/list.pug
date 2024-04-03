@@ -1,0 +1,24 @@
+if queue.length > 0
+	.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-1.pb-2.mb-3.border-bottom
+			h3 Queued
+			.btn-toolbar.mb-2.mb-md-0
+	.table-responsive
+		table.table.table-striped.table-condensed
+			thead
+				tr
+					th To
+					th Sender 
+					th Scheduled
+					if currentUserCan('email_queue_remove')
+						th Manage
+			tbody
+				for mail in queue
+					tr
+						td=mail.owner_name 
+						td=mail.operator_name
+						td: +relative(mail.datetime)
+						if currentUserCan('email_queue_remove')
+							td
+								+removeBtn( '/email-queue/' + mail.id + '/remove' )
+else
+	+messageBlock( 'warning', 'black','There are no messages in the queue.' )
