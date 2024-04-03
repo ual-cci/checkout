@@ -22,7 +22,8 @@ module.exports = {
 		BROKEN: 'broken',
 		LOST: 'lost',
 		SOLD: 'sold',
-		EMAILED: 'emailed'
+		EMAILED: 'emailed',
+		PENDING_EMAIL: 'pending-email'
 	},
 	SORTBY_MUTATIONS: {
 		DEFAULT: (sortBy) => {
