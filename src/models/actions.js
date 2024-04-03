@@ -116,6 +116,17 @@ class ActionModel extends BaseModel {
 			.retrieve()
 	}
 
+	getByAction(actionSlug) {
+		return this.query()
+			.where([
+				['action', actionSlug]
+			])
+			.orderBy([
+				['datetime', 'desc']
+			])
+			.retrieve()
+	}
+
 	getDateRange(start, end) {
 		return this.query()
 			.lookup(['item'])
