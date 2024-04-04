@@ -1,44 +1,44 @@
 version: "3"
 services:
-  postgres14:
-    image: "postgres:14-alpine"
-    networks:
-      - database
-    volumes:
-      - pg_data14:/var/lib/postgresql/data
-    env_file: ./docker.env
-  nodejs:
-    build:
-      context: .
-    networks:
-      - database
-      - web
-    depends_on:
-      - postgres14
-    restart: unless-stopped
-    env_file: ./docker.env
-    environment:
-      - POSTGRES_HOST=postgres14
-      - POSTGRES_PORT=5432
-      - APP_HOST=
-      - APP_PORT=3000
-      - APP_COOKIE=checkout_session
-      - USER_PW_ITERATIONS=350000
-      - LOG_PATH=./logs
-      - LOG_STDOUT=true
-  nginx:
-    build:
-      context: ./docker/nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: always
-    depends_on:
-      - nodejs
-    networks:
-      - web
+    postgres14:
+        image: "postgres:14-alpine"
+        networks:
+            - database
+        volumes:
+            - pg_data14:/var/lib/postgresql/data
+        env_file: ./docker.env
+    nodejs:
+        build:
+            context: .
+        networks:
+            - database
+            - web
+        depends_on:
+            - postgres14
+        restart: unless-stopped
+        env_file: ./docker.env
+        environment:
+            - POSTGRES_HOST=postgres14
+            - POSTGRES_PORT=5432
+            - APP_HOST=
+            - APP_PORT=3000
+            - APP_COOKIE=checkout_session
+            - USER_PW_ITERATIONS=350000
+            - LOG_PATH=./logs
+            - LOG_STDOUT=true
+    nginx:
+        build:
+            context: ./docker/nginx
+        ports:
+            - "80:80"
+            - "443:443"
+        restart: always
+        depends_on:
+            - nodejs
+        networks:
+            - web
 networks:
-  database:
-  web:
+    database:
+    web:
 volumes:
-  pg_data14:
+    pg_data14:
