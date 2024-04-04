@@ -1,6 +1,6 @@
 const {faker} = require('@faker-js/faker/locale/en_GB')
 const auth = require('../src/js/authentication.js')
-const { createFactory } = require('./_helper')
+const {createFactory} = require('../src/js/seed_helper')
 
 function createUsers(knex, printerId, courseId, yearId, roleId, password) {
 	return createFactory(knex, {

@@ -3,7 +3,7 @@ const MAX_ATTEMPTS = 3
 function createFactory(knex, {attempt = 0, createFunc, table, num = 5}) {
 	return knex(table)
 		.del()
-		.then(function() {
+		.then(() => {
 			const items = []
 
 			for (let i = 0; i < num; i++) {

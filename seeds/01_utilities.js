@@ -1,5 +1,5 @@
 const {faker} = require('@faker-js/faker/locale/en_GB')
-const {createFactory} = require('./_helper.js')
+const {createFactory} = require('../src/js/seed_helper')
 
 function createCourses(knex) {
 	return createFactory(knex, {
