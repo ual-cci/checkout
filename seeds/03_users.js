@@ -42,15 +42,14 @@ function getRole(knex) {
 }
 
 function getPassword(pwd) {
-	return new Promise((resolve, reject) => {
-		auth.generatePassword(pwd, password => resolve(password))
-	})
+	return auth.generatePassword(pwd, password => resolve(password))
 }
 
 exports.seed = (knex) => {
 	const TEST_PASSWORD = 'password'
 	console.log(`Test User Password: "${TEST_PASSWORD}"`)
 	console.log('You should delete these users before going to production as they have full access.')
+
 	return Promise.all([
 		getPrinter(knex),
 		getCourse(knex),
