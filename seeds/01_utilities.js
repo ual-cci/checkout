@@ -1,5 +1,5 @@
-const {faker} = require('@faker-js/faker')
-const { createFactory } = require('./_helper.js')
+const {faker} = require('@faker-js/faker/locale/en_GB')
+const {createFactory} = require('./_helper.js')
 
 function createCourses(knex) {
 	return createFactory(knex, {
@@ -18,8 +18,8 @@ function createGroups(knex) {
 		createFunc: () => {
 			return {
 				name: faker.commerce.productName(),
-				limiter: faker.datatype.number(10),
-				duration: `${ faker.datatype.number(10) + 1 } days`
+				limiter: faker.number.int(10),
+				duration: `${faker.number.int(10) + 1} days`
 			}
 		}
 	})
@@ -30,8 +30,8 @@ function createLocations(knex) {
 		table: 'locations',
 		createFunc: () => {
 			return {
-				name: faker.company.companyName(),
-				barcode: faker.datatype.uuid().substring(0, 6)
+				name: faker.company.name(),
+				barcode: faker.string.uuid().substring(0, 6)
 			}
 		}
 	})
@@ -63,6 +63,7 @@ function createYears(knex) {
 			{ name: '2nd Year' },
 			{ name: '3rd Year' },
 			{ name: 'Staff' },
+			{ name: 'Technician' },
 			{ name: 'N/A' },
 		]))
 }

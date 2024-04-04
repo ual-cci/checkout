@@ -1,5 +1,5 @@
-const {faker} = require('@faker-js/faker')
-const { createFactory } = require('./_helper')
+const {faker} = require('@faker-js/faker/locale/en_GB')
+const {createFactory} = require('./_helper')
 
 function createPermissions(knex, id) {
 	var allPerms = Object.keys(require('../apps/roles/all_permissions.json'))

@@ -1,8 +1,6 @@
-const {faker} = require('@faker-js/faker')
+const {faker} = require('@faker-js/faker/locale/en_GB')
 const auth = require('../src/js/authentication.js')
 const { createFactory } = require('./_helper')
-
-faker.locale = 'en_GB'
 
 function createUsers(knex, printerId, courseId, yearId, roleId, password) {
 	return createFactory(knex, {
@@ -13,7 +11,7 @@ function createUsers(knex, printerId, courseId, yearId, roleId, password) {
 			console.log(`User login: ${email}`)
 			return {
 				email: email,
-				name: [faker.name.firstName(), faker.name.lastName()].join(' '),
+				name: [faker.person.firstName(), faker.person.lastName()].join(' '),
 				pw_hash: password.hash,
 				pw_salt: password.salt,
 				printer_id: printerId,
