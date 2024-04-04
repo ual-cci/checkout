@@ -26,23 +26,19 @@ function createUsers(knex, printerId, courseId, yearId, roleId, password) {
 }
 
 function getPrinter(knex) {
-	return knex('printers')
-		.first()
+	return knex('printers').first()
 }
 
 function getCourse(knex) {
-	return knex('courses')
-		.first()
+	return knex('courses').first()
 }
 
 function getYear(knex) {
-	return knex('years')
-		.first()
+	return knex('years').first()
 }
 
 function getRole(knex) {
-	return knex('roles')
-		.first()
+	return knex('roles').first()
 }
 
 function getPassword(pwd) {
