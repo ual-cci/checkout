@@ -2,7 +2,7 @@
   "name": "Checkout",
   "scripts": {
     "start": "node app | ./node_modules/.bin/bunyan -c 'this.sensitive == undefined'",
-    "watch-css": "npx node-sass -rw ./static/scss -o ./static/css",
+    "watch-css": "npx sass -w ./static/scss:./static/css",
     "dev": "NODE_ENV=development npx nodemon app",
     "dev2": "NODE_ENV=development node ./node_modules/.bin/nodemon app | ./node_modules/.bin/bunyan -o short -c 'this.sanitised != true'",
     "production": "npm run db:wait; npm run db:migrate; npm run start;",
