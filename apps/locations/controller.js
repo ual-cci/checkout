@@ -4,8 +4,6 @@ const Locations = require('../../src/models/locations.js')
 const Items = require('../../src/models/items.js')
 const Printers = require('../../src/models/printers.js')
 
-const Print = require('../../src/js/print')
-
 const config = require('./config.json')
 
 class LocationController extends BaseController {
@@ -182,11 +180,12 @@ class LocationController extends BaseController {
 				throw new Error('Invalid printer')
 			}
 
-			Print.label({
-				barcode: 'L:' + location.barcode,
-				text: location.barcode,
-				type: '36mm'
-			}, printer.url)
+			// TODO - Replace this with BullMQ
+			// Print.label({
+			// 	barcode: 'L:' + location.barcode,
+			// 	text: location.barcode,
+			// 	type: '36mm'
+			// }, printer.url)
 
 			req.flash('info', `Label printed to ${printer.name}`)
 			req.saveSessionAndRedirect(this.getRoute())

@@ -8,7 +8,6 @@ const Years = require('../../src/models/years.js')
 const Printers = require('../../src/models/printers.js')
 const Actions = require('../../src/models/actions.js')
 
-const Print = require('../../src/js/print')
 const {getSortBy} = require('../../src/js/utils.js')
 const {AVAILABILITY, ACTIONS, SORTBY_MUTATIONS} = require('../../src/js/common/constants')
 
@@ -530,7 +529,8 @@ class ItemController extends BaseController {
 
 				if (req.body.print) {
 					if (req.user.printer_id) {
-						Print.labels(barcodes, req.user.printer_url)
+						// TODO - Replace this with BullMQ
+						// Print.labels(barcodes, req.user.printer_url)
 						req.flash('info', `Labels printed to ${req.user.printer_name}`)
 					} else {
 						req.flash('warning', 'No printer configured')
@@ -737,11 +737,12 @@ class ItemController extends BaseController {
 				throw new Error('Invalid printer')
 			}
 
-			Print.label({
-				barcode: _item.barcode,
-				text: _item.name,
-				type: _item.label
-			}, printer.url)
+			// TODO - Replace this with BullMQ
+			// Print.label({
+			// 	barcode: _item.barcode,
+			// 	text: _item.name,
+			// 	type: _item.label
+			// }, printer.url)
 
 			req.flash('info', `Label printed to ${printer.name}`)
 			if (req.get('referer') && req.get('referer').indexOf(`items/${req.params.id}`) < 0) {
@@ -773,7 +774,8 @@ class ItemController extends BaseController {
 						}
 					})
 
-					Print.labels(barcodes, req.user.printer_url)
+					// TODO - Replace this with BullMQ
+					// Print.labels(barcodes, req.user.printer_url)
 
 					req.flash('success', `Printed those labels to ${req.user.printer_name}`)
 					req.saveSessionAndRedirect(this.getRoute())
@@ -847,11 +849,12 @@ class ItemController extends BaseController {
 				if (req.user.printer_id) {
 					this.models.items.getById(req.params.id)
 						.then(item => {
-							Print.label({
-								barcode: item.barcode,
-								text: item.name,
-								type: item.label
-							}, req.user.printer_url)
+							// TODO - Replace this with BullMQ
+							// Print.label({
+							// 	barcode: item.barcode,
+							// 	text: item.name,
+							// 	type: item.label
+							// }, req.user.printer_url)
 							req.flash('info', `Label reprinted to ${req.user.printer_name}`)
 						})
 				} else {

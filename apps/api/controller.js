@@ -19,8 +19,6 @@ const Years = require('../../src/models/years.js')
 const Printers = require('../../src/models/printers.js')
 const Templates = require('../../src/models/templates.js')
 
-const Print = require('../../src/js/print')
-
 class ApiController extends BaseController {
 	constructor() {
 		super({path: config.path})
@@ -683,11 +681,12 @@ class ApiController extends BaseController {
 				})
 			}
 
-			Print.label({
-				barcode: item.barcode,
-				text: item.name,
-				type: item.label
-			}, req.user.printer_url)
+			// TODO - Replace this with BullMQ
+			// Print.label({
+			// 	barcode: item.barcode,
+			// 	text: item.name,
+			// 	type: item.label
+			// }, req.user.printer_url)
 
 			return res.json({
 				status: 'success',
