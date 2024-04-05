@@ -106,7 +106,6 @@ class BaseModel {
 	 * @param {Number} id
 	 */
 	remove(id) {
-		console.log(this)
 		return new Promise((resolve, reject) => {
 			const query = this.emptyQuery().expose()
 				.where('id', id)
