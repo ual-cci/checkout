@@ -11,8 +11,13 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 					a.nav-link(href="/catalogue" class=(menu=='catalogue'?'active':''))
 						span.me-2.fa.fa-book
 						| Catalogue
-		
-		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'view_history']})
+			if currentUserCan('view_history')
+					li.nav-item
+						a.nav-link(href="/history" class=(menu=='history'?'active':''))
+							span.me-2.fa.fa-clock
+							| History
+				
+		if currentUserCan({or: ['items_create', 'items_read', 'groups_read', 'locations_read']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Items
 			ul.nav.flex-column
 				if currentUserCan('items_create')
@@ -25,11 +30,6 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 						a.nav-link(href="/items" class=(menu=='items'?'active':''))
 							span.me-2.fa.fa-boxes
 							| Items
-				if currentUserCan('view_history')
-					li.nav-item
-						a.nav-link(href="/history" class=(menu=='history'?'active':''))
-							span.me-2.fa.fa-clock
-							| History
 				if currentUserCan('groups_read')
 					li.nav-item
 						a.nav-link(href="/groups" class=(menu=='groups'?'active':''))
@@ -65,23 +65,8 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 							span.me-2.fa.fa-user-tag
 							| Roles
 		
-		if currentUserCan({or: ['templates_read', 'view_queues']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Email
-			ul.nav.flex-column.mb-2
-				if currentUserCan('view_queues')
-					li.nav-item
-						a.nav-link(href="/email-queue" class=(menu=='email-queue'?'active':''))
-							span.me-2.fa.fa-inbox
-							| Send Queue
-				if currentUserCan('templates_read')
-					li.nav-item
-						a.nav-link(href="/templates" class=(menu=='templates'?'active':''))
-							span.me-2.fa.fa-mail-bulk
-							| Templates
-				
-
-		if currentUserCan({or: ['activate_kiosk_mode', 'generate_insurance_report', 'printers_read', 'options_read']})
-			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Administration
+		if currentUserCan({or: ['activate_kiosk_mode', 'generate_insurance_report', 'view_queues']})
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Tools
 			ul.nav.flex-column.mb-2
 				if currentUserCan('activate_kiosk_mode')
 					li.nav-item
@@ -93,6 +78,25 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 						a.nav-link(href="/reports/insurance" class=(menu=='insurance'?'active':''))
 							span.me-2.fa.fa-file-alt
 							| Insurance Report
+				if currentUserCan('view_queues')
+					li.nav-item
+						a.nav-link(href="/email-queue" class=(menu=='email-queue'?'active':''))
+							span.me-2.fa.fa-inbox
+							| Email Queue
+				if currentUserCan('view_queues')
+					li.nav-item
+						a.nav-link(href="/queues")
+							span.me-2.fa.fa-hourglass-half
+							| Queues
+				
+		if currentUserCan({or: ['templates_read', 'printers_read', 'options_read']})
+			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Configuration				
+			ul.nav.flex-column.mb-2
+				if currentUserCan('templates_read')
+					li.nav-item
+						a.nav-link(href="/templates" class=(menu=='templates'?'active':''))
+							span.me-2.fa.fa-mail-bulk
+							| Email Templates
 				if currentUserCan('printers_read')
 					li.nav-item
 						a.nav-link(href="/printers" class=(menu=='printers'?'active':''))
