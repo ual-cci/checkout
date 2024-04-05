@@ -65,10 +65,10 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 							span.me-2.fa.fa-user-tag
 							| Roles
 		
-		if currentUserCan({or: ['templates_read', 'email_queue_read']})
+		if currentUserCan({or: ['templates_read', 'view_queues']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Email
 			ul.nav.flex-column.mb-2
-				if currentUserCan('email_queue_read')
+				if currentUserCan('view_queues')
 					li.nav-item
 						a.nav-link(href="/email-queue" class=(menu=='email-queue'?'active':''))
 							span.me-2.fa.fa-inbox

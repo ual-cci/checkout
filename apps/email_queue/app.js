@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 	next()
 })
 
-app.get('/', auth.currentUserCan('email_queue_read'), (req, res) => {
+app.get('/', auth.currentUserCan('view_queues'), (req, res) => {
 	req.controller.getRoot(req, res)
 })
 
