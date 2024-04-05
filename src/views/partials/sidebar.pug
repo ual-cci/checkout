@@ -85,9 +85,11 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 							| Email Queue
 				if currentUserCan('view_queues')
 					li.nav-item
-						a.nav-link(href="/queues")
+						a.nav-link(href="/queues" target="_blank" title="Opens Bull Board in a new window")
 							span.me-2.fa.fa-hourglass-half
 							| Queues
+							|  
+							span.me-2.fa.fa-arrow-up-right-from-square.float-end
 				
 		if currentUserCan({or: ['templates_read', 'printers_read', 'options_read']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Configuration				
