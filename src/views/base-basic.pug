@@ -8,32 +8,40 @@ html
 			title #{title}
 		block head
 			block css
-				link(rel="stylesheet", href="/bootstrap/css/bootstrap.min.css")
-				link(rel="stylesheet", href="/tempusdominus/css/tempusdominus-bootstrap-4.min.css")
 				link(rel="stylesheet", href="/css/style.css")
 				link(rel="stylesheet", href="/fontawesome/css/solid.min.css")
 				link(rel="stylesheet", href="/fontawesome/css/all.min.css")
 			block js
+				script(src="/clipboard/clipboard.min.js")
+				script(src="/js/script.js")
 	body
-		nav.navbar.navbar-expand-md.sticky-top.p-0.shadow.bg-dark.navbar-dark
-			a(href="/").navbar-brand.col-md-3.col-lg-2.me-0.px-3.d-flex.align-items-center
-				img(src="/imgs/icon.svg" width="22" height="22")
-				span.me-2.align Checkout
-			.navbar-nav.me-auto
-				a(href="/logout").nav-link.me-2 Logout
-		div.container-fluid
+		nav.navbar.navbar-expand-md.sticky-top
+			.container-fluid.col-lg-2.col-md-3.brand
+				a(href="/").navbar-brand.d-flex.align-items-center
+					img(src="/imgs/logo.svg").d-inline-block.align-text-top
+					| Checkout
+				button.navbar-toggler.ms-auto(type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle sidebar")
+						span.navbar-toggler-icon
+							.nav-item.no-wrap: a.nav-link.text-nowrap.actionBtn(href="/logout")
+								span.fas.fa-sign-out-alt
+			.container-fluid.col-lg-10.col-md-9.p-0
+				.navbar-collapse.collapse
+					.navbar-nav.ms-auto
+						.nav-item.me-2: a.nav-link.actionBtn(href="/logout")
+							span.fas.fa-sign-out-alt
+		.container-fluid
 			.row
-				nav#sidebarMenu.col-md-3.col-lg-2.d-md-block.bg-light.sidebar.collapse
-					.sidebar-sticky.pt-3
+				nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
+					.position-sticky.pt-2
 						ul.nav.flex-column
 							li.nav-item
 								a.nav-link(href="/")
 									span.me-2.fa.fa-arrow-left
 									| Back
 
-				main.col-md-9.me-sm-auto.col-lg-10.px-md-4
+				main.col-12.col-lg-10.col-md-9.ms-auto
 					.row
-						.col-12.pt-3
+						.col-12.pt-1
 							block header
 								.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
 									h1.h2=heading
