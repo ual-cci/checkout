@@ -48,3 +48,4 @@ database
 .nosync
 docker/nginx/config/sites-available/checkout.config
 docker/nginx/config/sites-enabled/*
+docker/nginx/config/sites-available/checkout.conf
