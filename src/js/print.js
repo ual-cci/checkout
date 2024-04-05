@@ -1,6 +1,6 @@
 const PDFDocument = require('pdfkit')
 const bwipjs = require('bwip-js')
-const ipp = require('ipp')
+const ipp = require('@sealsystems/ipp')
 const fs = require('fs')
 
 const Options = require('./options')()
