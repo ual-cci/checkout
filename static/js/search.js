@@ -102,8 +102,10 @@ function moveSearchSelection() {
 	document.querySelectorAll('.searchList a.selected').forEach((el) => {el.classList.remove('selected')})
 
 	const selected = document.querySelectorAll('.searchList a:not([style*="display: none;"]')[searchSelectIndex]
-	selected.classList.add('selected')
-	selected.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
+	if (selected) {
+		selected.classList.add('selected')
+		selected.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
+	}
 }
 
 function handleSearchInputFocus() {
