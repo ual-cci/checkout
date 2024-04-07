@@ -1,6 +1,6 @@
 let searchTypeTimeout
 let searchInput
-let searchDropdown
+let searchList
 let modalCover
 
 let searchSelectIndex = -1;
@@ -26,21 +26,18 @@ const titles = {
 // API Search Function
 function search(term, cb) {term ? apiGET(`/api/search/${term}`, cb) : null}
 
-jQuery(document).ready(function() {
+window.addEventListener('load', () => {
 	searchInput = document.getElementById('search')
 
 	if (searchInput) {
 		searchInput.addEventListener('input', handleSearchInput)
 		searchInput.addEventListener('focus', handleSearchInputFocus)
-		window.addEventListener('resize', positionSearchDropdown)
+		window.addEventListener('resize', positionsearchList)
 	}
 	document.addEventListener('keydown', handleKeyboardInput)
 })
 
 function handleKeyboardInput(e) {
-
-	// console.log(e)
-
 	// Alt + K - Go to kiosk
 	if (e.altKey && e.shiftKey && e.which == 75) {
 		e.preventDefault()
@@ -61,11 +58,11 @@ function handleKeyboardInput(e) {
 
 				if (searchInput.value == '') {
 					searchInput.blur()
-					removeSearchDropdown()
+					removeSearchList()
 				} else {
 					searchInput.value = ''
 					clearSearchResults()
-					jQuery(modalCover).fadeOut()
+					removeSearchList()
 				}
 			}
 
@@ -117,7 +114,7 @@ function handleSearchInputFocus() {
 
 function searchTimer() {
 	if (!searchInput || searchInput.value) {
-		createSearchDropdown()
+		createsearchList()
 	}
 
 	search(searchInput.value, (data) => {
@@ -149,7 +146,7 @@ function processDataSet(type, data) {
 }
 
 function lazyAddSearchDIV(type, title, faclass) {
-	if (searchDropdown && !searchDropdown.querySelector(`[data-type='${type}']`)) {
+	if (searchList && !searchList.querySelector(`[data-type='${type}']`)) {
 		const div = document.createElement('div')
 		div.dataset.type = type
 
@@ -163,20 +160,20 @@ function lazyAddSearchDIV(type, title, faclass) {
 
 		heading.innerHTML += title
 
-		searchDropdown.appendChild(div)
-		searchDropdown.insertBefore(heading, div)
+		searchList.appendChild(div)
+		searchList.insertBefore(heading, div)
 	}
 }
 
 function handleSearchInput(e) {
-	if (searchInput.value == '') removeSearchDropdown()
+	if (searchInput.value == '') removeSearchList()
 	clearTimeout(searchTypeTimeout)
 	searchTypeTimeout = setTimeout(searchTimer, 100)
 }
 
 function clearSearchResults() {
 	searchSelectIndex = -1
-	if (searchDropdown) searchDropdown.innerText = ''
+	if (searchList) searchList.innerText = ''
 }
 
 function addOverflow(type) {
@@ -188,10 +185,20 @@ function addOverflow(type) {
 	span.classList.add('fa-ellipsis-h')
 	a.appendChild(span)
 
-	searchDropdown.querySelector(`[data-type=${type}]`).appendChild(a)
+	searchList.querySelector(`[data-type=${type}]`).appendChild(a)
 	a.addEventListener('click', (e) => {
-		jQuery(e.target.parentElement.querySelectorAll('.object')).slideDown()
-		jQuery(e.target).slideUp()
+
+		// Reval extra search results
+		e.target.parentElement.querySelectorAll('.object').forEach((elm) => {
+			elm.style.display = ''
+			setTimeout(() => {
+				elm.classList.remove('closed')
+			},1)
+		})
+
+		// Hide overflow item
+		e.target.classList.add('closed')
+
 		moveSearchSelection()
 	})
 }
@@ -201,16 +208,17 @@ function addSearchResult(object, type, path, display) {
 	a.classList.add('object')
 	a.href = `/${path}/${object.id}`
 	a.style.display = display
+	if (display == 'none') a.classList.add('closed')
 
 	if (type == 'items') a.appendChild(createStatusBadge(object.status))
 	a.innerHTML += `<strong>${object.name}</strong>`
 	if (object.barcode) a.innerHTML += `<br>${object.barcode}`
 
-	searchDropdown.querySelector(`[data-type=${type}]`).appendChild(a)
+	searchList.querySelector(`[data-type=${type}]`).appendChild(a)
 }
 
 function addNoResultsFound() {
-	searchDropdown.innerHTML = '<p>No results</p>'
+	searchList.innerHTML = '<p>No results</p>'
 }
 
 function createStatusBadge(status) {
@@ -246,45 +254,55 @@ function createStatusBadge(status) {
 	return span
 }
 
-function createSearchDropdown() {
+function createsearchList() {
 	document.body.classList.add('noScroll')
 
 	// Make search a modal
 	if (!modalCover) {
 		modalCover = document.createElement('div')
 		modalCover.classList.add('modalCover')
-		modalCover.style.display = 'none'
 		document.body.appendChild(modalCover)
+
 		modalCover.addEventListener('click', () => {
-			removeSearchDropdown()
+			removeSearchList()
 		})
 	}
-	jQuery(modalCover).fadeIn()
+	// Fade in modalCover
+	setTimeout(() => {
+		modalCover.style.display = ''
+		modalCover.classList.add('open')
+	}, 1)
 
 	// Add search dropdown
-	if (!searchDropdown) {
-		searchDropdown = document.createElement('div')
-		searchDropdown.classList.add('searchList')
-		positionSearchDropdown()
-		searchDropdown.style.display = 'none'
-		document.body.appendChild(searchDropdown)
+	if (!searchList) {
+		searchList = document.createElement('div')
+		searchList.classList.add('searchList')
+		positionsearchList()
+		document.body.appendChild(searchList)
 	}
-	jQuery(searchDropdown).slideDown()
 
+	// Slide down searchList
+	setTimeout(() => {searchList.classList.add('open')}, 1)
 }
 
-function positionSearchDropdown() {
-	if (searchDropdown) {
+function positionsearchList() {
+	if (searchList) {
 		const searchInputPosition = searchInput.getBoundingClientRect()
 		const navbarPosition = document.querySelector('nav.navbar').getBoundingClientRect()
-		searchDropdown.style.top = `${navbarPosition.bottom}px`
-		searchDropdown.style.width = `${searchInputPosition.width}px`
-		searchDropdown.style.left = `${searchInputPosition.left}px`
+		searchList.style.top = `${navbarPosition.bottom}px`
+		searchList.style.width = `${searchInputPosition.width}px`
+		searchList.style.left = `${searchInputPosition.left}px`
 	}
 }
 
-function removeSearchDropdown() {
-	jQuery(modalCover).fadeOut()
-	jQuery(searchDropdown).slideUp()
+function removeSearchList() {
+	// Fade out modalCover
+	modalCover.classList.remove('open')
+	setTimeout(() => {
+		modalCover.style = 'display:none'
+	}, 400)
+
+	// Slide up searchList
+	searchList.classList.remove('open')
 	document.body.classList.remove('noScroll')
 }
