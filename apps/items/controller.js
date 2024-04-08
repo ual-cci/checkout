@@ -8,6 +8,8 @@ const Years = require('../../src/models/years.js')
 const Printers = require('../../src/models/printers.js')
 const Actions = require('../../src/models/actions.js')
 
+const Queue = require('../../src/js/queue.js')()
+
 const {getSortBy} = require('../../src/js/utils.js')
 const {AVAILABILITY, ACTIONS, SORTBY_MUTATIONS} = require('../../src/js/common/constants')
 
@@ -474,7 +476,7 @@ class ItemController extends BaseController {
 
 		if (!this._checkFields(checks, '/create', req, res)) {
 			const items = []
-			const barcodes = []
+			const labels = []
 			let numLen = 2
 			if (barcodeFilter) numLen = barcodeFilter[2].length
 
@@ -516,10 +518,13 @@ class ItemController extends BaseController {
 
 				// Push item details into array to be printed
 				if (req.body.print) {
-					barcodes.push({
+					labels.push({
+						printer_id: req.user.printer_id,
 						barcode: item.barcode,
 						text: item.name,
-						type: item.label
+						type: item.label,
+						source: 'Items - postCreate',
+						user: req.user.name
 					})
 				}
 			}
@@ -529,9 +534,8 @@ class ItemController extends BaseController {
 
 				if (req.body.print) {
 					if (req.user.printer_id) {
-						// TODO - Replace this with BullMQ
-						// Print.labels(barcodes, req.user.printer_url)
-						req.flash('info', `Labels printed to ${req.user.printer_name}`)
+						Queue.task('Labels', labels)
+						req.flash('info', `Labels queued to print on ${req.user.printer_name}`)
 					} else {
 						req.flash('warning', 'No printer configured')
 					}
@@ -737,14 +741,16 @@ class ItemController extends BaseController {
 				throw new Error('Invalid printer')
 			}
 
-			// TODO - Replace this with BullMQ
-			// Print.label({
-			// 	barcode: _item.barcode,
-			// 	text: _item.name,
-			// 	type: _item.label
-			// }, printer.url)
+			Queue.task('Labels', {
+				printer_id: printer.id,
+				barcode: _item.barcode,
+				text: _item.name,
+				type: _item.label,
+				source: 'Items - getLabel',
+				user: req.user.name
+			})
 
-			req.flash('info', `Label printed to ${printer.name}`)
+			req.flash('info', `Label queued to print on  ${printer.name}`)
 			if (req.get('referer') && req.get('referer').indexOf(`items/${req.params.id}`) < 0) {
 				req.saveSessionAndRedirect(this.getRoute())
 			} else {
@@ -766,18 +772,20 @@ class ItemController extends BaseController {
 		if (req.user.printer_id) {
 			this.models.items.getMultipleByIds(req.body.ids.split(','))
 				.then(items => {
-					const barcodes = items.map(item => {
+					const labels = items.map(item => {
 						return {
+							printer_id: req.user.printer_id,
 							barcode: item.barcode,
 							text: item.name,
-							type: item.label
+							type: item.label,
+							source: 'Items - getMultiPrint',
+							user: req.user.name
 						}
 					})
 
-					// TODO - Replace this with BullMQ
-					// Print.labels(barcodes, req.user.printer_url)
+					Queue.task('Labels', labels)
 
-					req.flash('success', `Printed those labels to ${req.user.printer_name}`)
+					req.flash('success', `Labels queued to print on ${req.user.printer_name}`)
 					req.saveSessionAndRedirect(this.getRoute())
 				})
 				.catch(err => this.displayError(req, res, err, this.getRoute()))
@@ -849,20 +857,25 @@ class ItemController extends BaseController {
 				if (req.user.printer_id) {
 					this.models.items.getById(req.params.id)
 						.then(item => {
-							// TODO - Replace this with BullMQ
-							// Print.label({
-							// 	barcode: item.barcode,
-							// 	text: item.name,
-							// 	type: item.label
-							// }, req.user.printer_url)
-							req.flash('info', `Label reprinted to ${req.user.printer_name}`)
+							Queue.task('Labels', {
+								printer_id: req.user.printer_id,
+								barcode: item.barcode,
+								text: item.name,
+								type: item.label,
+								source: 'Items - postEdit',
+								user: req.user.name
+							})
+
+							req.flash('info', `Label queued to print on ${req.user.printer_name}`)
+							req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
 						})
 				} else {
 					req.flash('warning', 'No printer configured')
+					req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
 				}
+			} else {
+				req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
 			}
-
-			req.saveSessionAndRedirect(this.getRoute(`/${req.params.id}`))
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute(`/${req.params.id}`)))
 	}

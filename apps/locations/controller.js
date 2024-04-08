@@ -4,6 +4,8 @@ const Locations = require('../../src/models/locations.js')
 const Items = require('../../src/models/items.js')
 const Printers = require('../../src/models/printers.js')
 
+const Queue = require('../../src/js/queue.js')()
+
 const config = require('./config.json')
 
 class LocationController extends BaseController {
@@ -180,14 +182,16 @@ class LocationController extends BaseController {
 				throw new Error('Invalid printer')
 			}
 
-			// TODO - Replace this with BullMQ
-			// Print.label({
-			// 	barcode: 'L:' + location.barcode,
-			// 	text: location.barcode,
-			// 	type: '36mm'
-			// }, printer.url)
+			Queue.task('Labels', {
+				printer_id: printer.id,
+				barcode: 'L:' + location.barcode,
+				text: location.barcode,
+				type: '36mm',
+				source: 'Location - getLabel',
+				user: req.user.name
+			})
 
-			req.flash('info', `Label printed to ${printer.name}`)
+			req.flash('info', `Label queued to print on ${printer.name}`)
 			req.saveSessionAndRedirect(this.getRoute())
 		})
 		.catch(err => this.displayError(req, res, err, this.getRoute()))

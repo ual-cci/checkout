@@ -9,6 +9,8 @@ const {AVAILABILITY, ACTIONS} = require('../../src/js/common/constants')
 const auth = require('../../src/js/authentication')
 const config = require('./config.json')
 
+const Queue = require('../../src/js/queue.js')()
+
 const Items = require('../../src/models/items.js')
 const Locations = require('../../src/models/locations.js')
 const Groups = require('../../src/models/groups.js')
@@ -676,21 +678,23 @@ class ApiController extends BaseController {
 
 			if (!req.user.printer_id) {
 				throw ({
-					message: 'You have not assigned a printer in your profile',
+					message: 'No printer selected',
 					barcode: item.barcode
 				})
 			}
 
-			// TODO - Replace this with BullMQ
-			// Print.label({
-			// 	barcode: item.barcode,
-			// 	text: item.name,
-			// 	type: item.label
-			// }, req.user.printer_url)
+			Queue.task('Labels', {
+				printer_id: req.user.printer_url,
+				barcode: item.barcode,
+				text: item.name,
+				type: item.label,
+				source: 'API',
+				user: req.user.name
+			})
 
 			return res.json({
 				status: 'success',
-				message: `Label printed to ${req.user.printer_name}`,
+				message: `Label queued to print on  ${req.user.printer_name}`,
 				barcode: item.barcode
 			})
 		})
