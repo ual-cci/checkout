@@ -163,7 +163,7 @@ function flash(data) {
 
 	// Append flash alert to active tab and set timeout
 	document.getElementById(activeTab).prepend(flashElm)
-	setTimeout(function() {flashElm.remove()}, 5000)
+	setTimeout(function() {flashElm.remove()}, 10000)
 }
 
 function addModule(data) {
