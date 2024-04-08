@@ -261,7 +261,7 @@ class ApiController extends BaseController {
 				if (match) {
 					// location set, but matches
 					return 1
-			 } else if (!match && req.body.override == 'true') {
+			 } else if (!match && req.body.override == true) {
 					// location set, doesn't match but updated
 					this.models.items.update(item.id, {
 						location_id: location.id

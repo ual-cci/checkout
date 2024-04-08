@@ -23,7 +23,7 @@ function detectDarkmode(e) {
 }
 
 function handlePrinterChange() {
-	apiGET(`/select-printer/${this.dataset.printer}`, (data) => {
+	apiGET(`select-printer/${this.dataset.printer}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuPrinterDropdown .printer').innerText = data.printer
 		} else {
@@ -33,7 +33,7 @@ function handlePrinterChange() {
 }
 
 function handleTemplateChange() {
-	apiGET(`/select-template/${this.dataset.template}`, (data) => {
+	apiGET(`select-template/${this.dataset.template}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuTemplateDropdown .template').innerText = data.template
 		} else {
@@ -47,38 +47,16 @@ function apiGET(path, cb) {
 }
 
 function apiPOST(path, data, cb) {
-	if (typeof data == 'function') {
-		cb = data
-		delete data
-	}
-
-	let request = {
-		url: `/api/${path}`,
-		type: 'post',
-		headers: {
-			'CSRF-Token': token
-		},
-		xhrFields: {
-			withCredentials: true
-		},
-		dataType: 'json',
-		success: (data, status) => {
-			cb(data)
-		}
-	}
-
-	if (typeof data == 'object') {
-		request.data = data
-	}
-
-	jQuery.ajax(request)
+	apiRequest("POST", path, data, cb)
 }
 
 function apiRequest(method, path, data, cb) {
 	if (typeof data == 'function') {
 		cb = data
-		delete data
+		data = undefined
 	}
+
+	console.log('apiRequest', method, path, data)
 
 	const req = new XMLHttpRequest()
 	req.open(method, `/api/${path}`)
@@ -98,5 +76,14 @@ function apiRequest(method, path, data, cb) {
 		}
 	})
 
-	req.send()
+	if (method == 'POST' || method == 'post') req.setRequestHeader('CSRF-Token', token)
+
+	if (data) {
+		const json = JSON.stringify(data)
+		req.withCredentials = true
+		req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		req.send(json)
+	} else {
+		req.send()
+	}
 }

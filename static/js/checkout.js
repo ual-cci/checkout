@@ -271,31 +271,31 @@ function issue(item, user, override, cb) {
 		user: user
 	}
 	if (override) query += '?override=true'
-	apiPOST(`/issue/${item}/${user}${query}`, cb)
+	apiPOST(`issue/${item}/${user}${query}`, cb)
 }
 function returnItem(item, cb) {
-	apiPOST(`/return/${item}`, cb)
+	apiPOST(`return/${item}`, cb)
 }
 function broken(item, cb) {
-	apiPOST(`/broken/${item}`, cb)
+	apiPOST(`broken/${item}`, cb)
 }
 function lost(item, cb) {
-	apiPOST(`/lost/${item}`, cb)
+	apiPOST(`lost/${item}`, cb)
 }
 function sold(item, cb) {
-	apiPOST(`/sold/${item}`, cb)
+	apiPOST(`sold/${item}`, cb)
 }
 function label(item, cb) {
-	apiPOST(`/label/${item}`, cb)
+	apiPOST(`label/${item}`, cb)
 }
 function audit(item, location, override, cb) {
-	apiPOST(`/audit/${item}`, {
+	apiPOST(`audit/${item}`, {
 		location: location,
 		override: override
 	}, cb)
 }
 function newUser(name, barcode, email, course, year, cb) {
-	apiPOST(`/new-user`, {
+	apiPOST(`new-user`, {
 		name: name,
 		barcode: barcode,
 		email: email,
@@ -303,10 +303,10 @@ function newUser(name, barcode, email, course, year, cb) {
 		year: year
 	}, cb)
 }
-function find(barcode, cb) {barcode ? apiGET(`/find/${barcode}`, cb) : null}
-function getItem(barcode, cb) {apiGET(`/item/${barcode}`, cb)}
-function getUser(barcode, cb) {apiGET(`/user/${barcode}`, cb)}
-function identify(barcode, cb) {apiGET(`/identify/${barcode}`, cb)}
+function find(barcode, cb) {barcode ? apiGET(`find/${barcode}`, cb) : null}
+function getItem(barcode, cb) {apiGET(`item/${barcode}`, cb)}
+function getUser(barcode, cb) {apiGET(`user/${barcode}`, cb)}
+function identify(barcode, cb) {apiGET(`identify/${barcode}`, cb)}
 
 function empty(clear) {
 	one_item = null
@@ -529,9 +529,10 @@ function handleAuditSubmit(e) {
 	} else {
 		let location = document.querySelector('#location').value
 		let mode = document.querySelector('#locationMode').value
-		const override = false
+		let override = false
 		if (mode == 3) override = true
 		if (mode == 1) location = null
+
 		audit(term, location, override, (data) => {
 			if (data.status == 'success') auditSuccessSound.play()
 			if (data.status == 'danger') auditErrorSound.play()
