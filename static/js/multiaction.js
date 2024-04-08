@@ -2,14 +2,14 @@ let multiForm, items, _csrf
 
 let interlockBtns, actionBtns
 
-window.addEventListener('load', () => {	
+window.addEventListener('DOMContentLoaded', () => {
 	_csrf = document.getElementsByName('_csrf')[0].value
-	
+
 	actionBtns = Array.from(document.querySelectorAll('[data-action]'))
 	actionBtns.forEach(btn => {
 		btn.addEventListener('click', handleMultiActionButtons, false)
 	})
-	
+
 	interlockBtns = Array.from(document.querySelectorAll('.multi'))
 	if (interlockBtns && interlockBtns.length > 0) {
 		multiForm = document.getElementById('multi-form')
@@ -63,13 +63,13 @@ function createForm(ids, action) {
 	form.setAttribute('action', action)
 	form.setAttribute('method', 'post')
 	form.setAttribute('id', 'hidden-form')
-	
+
 	const csrfInput = document.createElement('input')
 	csrfInput.setAttribute('type', 'hidden')
 	csrfInput.setAttribute('name', '_csrf')
 	csrfInput.value = _csrf
 	form.appendChild(csrfInput)
-	
+
 	const idsInput = document.createElement('input')
 	idsInput.setAttribute('type', 'hidden')
 	idsInput.setAttribute('name', 'ids')

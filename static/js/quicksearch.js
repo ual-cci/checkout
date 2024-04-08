@@ -1,6 +1,6 @@
 let searchTextField, checkAllBox
 
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
 	searchTextField = document.querySelector('#searchText input')
 	if (searchTextField) {
 		searchTextField.addEventListener('input', quickSearch)
@@ -36,7 +36,7 @@ function checkAll() {
 
 function quickSearch() {
 	const searchText = searchTextField.value.toLowerCase()
-	
+
 	if (checkAllBox) checkAllBox.checked = false
 
 	document.querySelectorAll('tbody tr').forEach(tr => {
