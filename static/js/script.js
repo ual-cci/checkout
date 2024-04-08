@@ -56,8 +56,6 @@ function apiRequest(method, path, data, cb) {
 		data = undefined
 	}
 
-	console.log('apiRequest', method, path, data)
-
 	const req = new XMLHttpRequest()
 	req.open(method, `/api/${path}`)
 
