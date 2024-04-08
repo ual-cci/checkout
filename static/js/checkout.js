@@ -203,7 +203,7 @@ function addModule(data) {
 	}
 
 	setTimeout(() => {
-		modulesElm.remove()
+		moduleElm.remove()
 		if (document.querySelectorAll('#modules .bg-primary')) clearActive()
 	}, 60000)
 
