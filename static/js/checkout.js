@@ -1,54 +1,63 @@
-var auditErrorSound = new buzz.sound("/sounds/audit-error.wav")
-var auditSuccessSound = new buzz.sound("/sounds/audit-success.wav")
-var locationErrorSound = new buzz.sound("/sounds/location-error.mp3")
-var locationSuccessSound = new buzz.sound("/sounds/location-success.mp3")
-var warningSound = new buzz.sound("/sounds/warning.mp3")
-var errorSound = new buzz.sound("/sounds/error.mp3")
+const auditErrorSound = new buzz.sound("/sounds/audit-error.wav")
+const auditSuccessSound = new buzz.sound("/sounds/audit-success.wav")
+const locationErrorSound = new buzz.sound("/sounds/location-error.mp3")
+const locationSuccessSound = new buzz.sound("/sounds/location-success.mp3")
+const warningSound = new buzz.sound("/sounds/warning.mp3")
+const errorSound = new buzz.sound("/sounds/error.mp3")
 
-var locationRegex = /^L:(.+)$/
+const locationRegex = /^L:(.+)$/
 
-var token
-var typeTimeout
-var flashTimeout
-var one_item
-var last_item
+let token
+let typeTimeout
+let flashTimeout
+let one_item
+let last_item
 
-var current = {}
-var cursor = 0
+let current = {}
+let cursor = 0
 
-jQuery(document).ready(function() {
+let newUserForm
+
+window.addEventListener('DOMContentLoaded', () => {
 	token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
+	newUserForm = {
+		barcode: document.querySelector('#new-user form [name="barcode"]'),
+		name: document.querySelector('#new-user form [name="name"]'),
+		email: document.querySelector('#new-user form [name="email"]'),
+		course: document.querySelector('#new-user form [name="course"]'),
+		year: document.querySelector('#new-user form [name="year"]')
+	}
+
 	focus()
-	jQuery('#find input').bind('input', handleFindInput)
+
 	document.addEventListener('keydown', handleKeyboardPress)
-	jQuery('#find').bind('submit', handleIssueSubmit)
-	jQuery('#return').bind('submit', handleReturnSubmit)
-	jQuery('#audit').bind('submit', handleAuditSubmit)
-	jQuery('#label').bind('submit', handleLabelSubmit)
-	jQuery('#new-user form').bind('submit', handleUserSubmit)
-	jQuery(document).delegate('#modules [data-btn-action]', 'click', handleItemButtons)
-	jQuery(document).delegate('#modules .card-header', 'click', handlePanelClick)
-	jQuery(document).delegate('#issue .flash .override', 'click', handleOverride)
-	jQuery(document).delegate('#results .list-group-item', 'click', handleResultClick)
-	jQuery('#mode .nav-link').on('shown.bs.tab', function(a) {focus()})
+	document.querySelector('#find input').addEventListener('input', handleFindInput)
+	document.querySelector('#find').addEventListener('submit', handleIssueSubmit)
+	document.querySelector('#return').addEventListener('submit', handleReturnSubmit)
+	document.querySelector('#audit').addEventListener('submit', handleAuditSubmit)
+	document.querySelector('#label').addEventListener('submit', handleLabelSubmit)
+	document.querySelector('#new-user form').addEventListener('submit', handleUserSubmit)
+	document.querySelectorAll('#mode .nav-link').forEach((elm) => {
+		elm.addEventListener('shown.bs.tab', () => {focus()})
+	})
 })
 
-
-
 function findTimer() {
-	find(jQuery('#find input').val(), function(data) {
+	find(document.querySelector('#find input').value, (data) => {
 		empty()
 
-		var last_item
+		let last_item
 
 		// Process items
 		if (data.items.length > 0) {
 			for (i in data.items) {
 				last_item = data.items[i]
 				last_item.type = 'item'
-				addResult(data.items[i], 'item')
+				addResult(data.items[i])
 			}
-			jQuery('.items a').tab('show')
+		} else {
+			addResult({name: 'No items found', type:'item', disable: true})
 		}
 
 		// Process users
@@ -56,9 +65,16 @@ function findTimer() {
 			for (i in data.users) {
 				last_item = data.users[i]
 				last_item.type = 'user'
-				addResult(data.users[i], 'user')
+				addResult(data.users[i])
 			}
-			if (current.type != 'user') jQuery('.users a').tab('show')
+		} else {
+			addResult({name: 'No users found', type:'user', disable: true})
+		}
+
+		if (data.items.length > data.users.length) {
+			document.querySelector('.items a').click()
+		} else {
+			document.querySelector('.users a').click()
 		}
 
 		if (data.users.length + data.items.length == 1) one_item = last_item
@@ -72,7 +88,7 @@ function updateCurrent() {
 function select(type, barcode) {
 	switch (type) {
 		case 'user':
-			getUser(barcode, function(data) {
+			getUser(barcode, (data) => {
 				if (data.html) {
 					addModule(data)
 					focus()
@@ -85,7 +101,7 @@ function select(type, barcode) {
 			if (current && current.type == 'user') {
 				issue(barcode, current.barcode, false, handleItemIssue)
 			} else {
-				getItem(barcode, function(data) {
+				getItem(barcode, (data) => {
 					if (data.html) {
 						addModule(data)
 					}
@@ -102,86 +118,154 @@ function handleItemIssue(data) {
 }
 
 function flash(data) {
-	var activeTab = '#' + jQuery('#mode .nav-link.active').attr('href').substr(1) + ' .flash'
+	const flashLimit = 3
+	const activeTab = document.querySelector('#mode .nav-link.active').href.split('#')[1]
 
-	jQuery(activeTab).children().slice(10).remove()
+	const flashes = document.querySelectorAll(`#${activeTab} .alert`)
+	// Trim the list
+	if (flashes && flashes.length >= flashLimit) {
+		Array.from(flashes).slice(flashLimit-1).forEach(elm => {
+			elm.remove()
+		})
+	}
 
+	// Play alert sounds
 	if (data.status == 'warning') warningSound.play()
 	if (data.status == 'danger') errorSound.play()
 
-	var html = '<div class="alert">'
-		if (data.barcode) html += '<strong>' + data.barcode + '</strong>: '
-		html += data.message
-		if (data.override) html += `<button style="margin-top:-.25emmargin-right:-.75em" class="override btn btn-sm btn-outline-${data.status} float-right">Override</button>`
-		if (data.override) jQuery('#issue .flash button.override').remove()
-	html += '</div>'
-	var alert = jQuery(html).addClass('alert-' + data.status)
+	// Create alert flash
+	const flashElm = document.createElement('div')
+	flashElm.classList.add('alert')
+	flashElm.classList.add(`alert-${data.status}`)
+	flashElm.innerHTML = data.message
 
-	jQuery(activeTab).prepend(alert)
-	setTimeout(function() {jQuery(alert).remove()}, 5000)
+	// Create and prepend barcode if it exists
+	if (data.barcode) {
+		const barcodeElm = document.createElement('strong')
+		barcodeElm.innerText = `${data.barcode}: `
+		flashElm.prepend(barcodeElm)
+	}
+
+	if (data.override) {
+		// Remove existing override buttons
+		document.querySelectorAll('button.override').forEach(elm => {
+			elm.remove()
+		})
+
+		// Create and append override button with event handler
+		const overrideElm = document.createElement('button')
+		overrideElm.className = 'btn btn-sm float-end override'
+		overrideElm.classList.add(`btn-outline-${data.status}`)
+		overrideElm.innerText = 'Override'
+		flashElm.append(overrideElm)
+		overrideElm.addEventListener('click', handleOverride)
+	}
+
+	// Append flash alert to active tab and set timeout
+	document.getElementById(activeTab).prepend(flashElm)
+	setTimeout(function() {flashElm.remove()}, 5000)
 }
 
 function addModule(data) {
+	const moduleLimit = 10
+	const modulesElm = document.querySelector('#modules')
+
 	clearActive()
 
-	// Trim the list
-	jQuery('#modules').children().slice(10).remove()
-
-	// Remove exi
-	jQuery('#modules [data-barcode="' + data.barcode + '"]').remove()
+	// Remove exiting if it exists
+	const existingElm = document.querySelector(`#modules [data-barcode="${data.barcode}"]`)
+	if (existingElm) existingElm.remove()
 
 	if (data.type == 'user') {
 		current = data
-		jQuery('.find').addClass('bg-primary')
-		jQuery('#results .items a').tab('show')
+		document.querySelector('.find').classList.add('bg-primary')
+		document.querySelector('#results .items a').click()
 	} else {
 		current = null
 	}
 
-	var module = jQuery(data.html)
-	jQuery('#modules').prepend(module)
-	setTimeout(function() {
-		jQuery(module).remove()
-		if (jQuery('#modules .bg-primary').length == 0) clearActive()
+	const parser = new DOMParser()
+	const moduleDOM = parser.parseFromString(data.html, 'text/html')
+	const moduleElm = moduleDOM.body.childNodes[0]
+	modulesElm.prepend(moduleElm)
+
+	moduleElm.querySelectorAll('[data-btn-action]').forEach((elm) => {
+		elm.addEventListener('click', handleItemButtons)
+	})
+
+	moduleElm.querySelector('.card-header').addEventListener('click', handlePanelClick)
+
+	// Trim the list
+	if (modulesElm && modulesElm.children.length >= moduleLimit) {
+		Array.from(modulesElm.children).slice(moduleLimit-1).forEach((elm) => {
+			elm.remove();
+		})
+	}
+
+	setTimeout(() => {
+		modulesElm.remove()
+		if (document.querySelectorAll('#modules .bg-primary')) clearActive()
 	}, 60000)
 
 }
 function addResult(result, type) {
-	var html = '<li class="list-group-item" data-type="' + type + '" data-barcode="' + result.barcode + '"><small>'
-	if (result.loanable) {
-		switch (result.status) {
-			case 'unavailable':
-				html += ' <span class="badge text-bg-success">&nbsp</span>'
-				break
-			case 'available':
-				html += ' <span class="badge text-bg-success">&nbsp</span>'
-				break
-			case 'on-loan':
-				html += ' <span class="badge text-bg-danger">&nbsp</span>'
-				break
-			case 'lost':
-			case 'broken':
-				html += ' <span class="badge text-bg-warning">&nbsp</span>'
-				break
-			case undefined:
-				break
-			default:
-				html += ' <span class="badge text-bg-secondary">&nbsp</span>'
-				break
+	const statusElm = document.createElement('span')
+		statusElm.classList.add('badge')
+		statusElm.innerHTML = '&nbsp;'
+
+		if (result.type == 'item') {
+			if (result.loanable) {
+				switch (result.status) {
+					case 'available':
+						statusElm.classList.add('text-bg-success')
+						break
+					case 'on-loan':
+						statusElm.classList.add('text-bg-danger')
+						break
+					case 'lost':
+					case 'broken':
+						statusElm.classList.add('text-bg-warning')
+						break
+					default:
+						statusElm.classList.add('text-bg-secondary')
+						break
+				}
+			} else {
+				statusElm.classList.add('text-bg-info')
+			}
+		} else if (result.type = 'user') {
+			if (result.disable) {
+				statusElm.classList.add('text-bg-secondary')
+			} else {
+				statusElm.classList.add('text-bg-success')
+			}
 		}
-	} else {
-		html += ' <span class="badge text-bg-secondary">&nbsp</span>'
-	}
-	html += ' <strong>' + result.name + '</strong>'
-	html += '<br />'
-	html += result.barcode
-	html += '</small></li>'
-	if (result.disable) html = jQuery(html).addClass('disabled')
-	jQuery('#results #' + type + 's .list-group').append(html)
+
+		const resultElm = document.createElement('li')
+			resultElm.dataset.type = result.type
+			resultElm.classList.add('list-group-item')
+
+			const resultNameElm = document.createElement('strong')
+			resultNameElm.innerText = result.name
+			resultElm.appendChild(resultNameElm)
+
+			if (result.barcode) {
+				const resultBarcodeElm = document.createElement('div')
+				resultBarcodeElm.innerText = result.barcode
+				resultBarcodeElm.prepend(statusElm)
+
+				resultElm.dataset.barcode = result.barcode
+				resultElm.appendChild(resultBarcodeElm)
+		}
+
+
+	if (result.disable) resultElm.classList.add('disabled')
+	resultElm.addEventListener('click', handleResultClick)
+	document.querySelector(`#results #${result.type}s .list-group`).appendChild(resultElm)
 }
 
 function issue(item, user, override, cb) {
-	var query = ''
+	let query = ''
 	last_item = {
 		item: item,
 		user: user
@@ -219,24 +303,30 @@ function newUser(name, barcode, email, course, year, cb) {
 		year: year
 	}, cb)
 }
-function find(barcode, cb) {barcode ? apiGET(`/api/find/${barcode}`, cb) : null}
-function getItem(barcode, cb) {apiGET(`/api/item/${barcode}`, cb)}
-function getUser(barcode, cb) {apiGET(`/api/user/${barcode}`, cb)}
-function identify(barcode, cb) {apiGET(`/api/identify/${barcode}`, cb)}
-
+function find(barcode, cb) {barcode ? apiGET(`/find/${barcode}`, cb) : null}
+function getItem(barcode, cb) {apiGET(`/item/${barcode}`, cb)}
+function getUser(barcode, cb) {apiGET(`/user/${barcode}`, cb)}
+function identify(barcode, cb) {apiGET(`/identify/${barcode}`, cb)}
 
 function empty(clear) {
 	one_item = null
-	jQuery('#results #users ul').empty()
-	jQuery('#results #items ul').empty()
-	if (clear) jQuery('#find input').val('')
+
+	document.querySelectorAll('#results #users ul li').forEach((el) => el.remove())
+	document.querySelectorAll('#results #items ul li').forEach((el) => el.remove())
+
+	if (clear)
+		document.querySelector('#find input').value = ''
 }
+
 function clearActive() {
 	empty(true)
 	current = {}
-	jQuery('.find').removeClass('bg-primary')
-	jQuery('#results .users a').tab('show')
-	jQuery('#modules .bg-primary').addClass('bg-dark').removeClass('bg-primary')
+	document.querySelector('.find').classList.remove('bg-primary')
+	document.querySelector('#results .users a').click()
+	if (document.querySelector('#modules .bg-primary')) {
+		document.querySelector('#modules .bg-primary').classList.add('bg-dark')
+		document.querySelector('#modules .bg-primary').classList.remove('bg-primary')
+	}
 }
 
 function handleKeyboardPress(e) {
@@ -253,19 +343,19 @@ function handleKeyboardPress(e) {
 		e.preventDefault()
 		switch(e.which) {
 			case 73: // I
-				jQuery('.issue.nav-link').tab('show')
+				document.querySelector('.issue.nav-link').click()
 				break
 			case 82: // R
-				jQuery('.return.nav-link').tab('show')
+				document.querySelector('.return.nav-link').click()
 				break
 			case 78: // N
-				jQuery('.new-user.nav-link').tab('show')
+				document.querySelector('.new-user.nav-link').click()
 				break
 			case 76: // L
-				jQuery('.print.nav-link').tab('show')
+				document.querySelector('.print.nav-link').click()
 				break
 			case 65: // A
-				jQuery('.audit.nav-link').tab('show')
+				document.querySelector('.audit.nav-link').click()
 				break
 			case 88: // X
 				if (typeof kioskLogout == 'function') kioskLogout()
@@ -287,14 +377,13 @@ function handleIssueSubmit(e) {
 		one_item = null
 		return
 	}
-	var term = jQuery('#find input').val()
-
+	const term = document.querySelector('#find input').value
 	identify(term, function(data) {
 		if (data.kind == 'unknown') {
-			jQuery('.new-user.nav-link').tab('show')
-			jQuery('#new-user #barcode').val(term)
+			document.querySelector('.new-user.nav-link').click()
+			document.querySelector('#new-user #barcode').value = term
 			flash({status: 'warning', message: 'Unknown barcode', barcode: term})
-			jQuery('#new-user [name=name]').focus()
+			document.querySelector('#new-user [name=name]').focus()
 		} else {
 			select(data.kind, data.barcode)
 			empty(true)
@@ -306,10 +395,10 @@ function handleReturnSubmit(e) {
 	lazyResetKioskTimer()
 	e.preventDefault()
 
-	var term = jQuery('#return input').val()
-	jQuery('#return input').val('')
+	const term = document.querySelector('#return input').value
+	document.querySelector('#return input').value = ''
 
-	returnItem(term, function(data) {
+	returnItem(term, (data) => {
 		if (data) {
 			flash(data)
 		} else {
@@ -320,52 +409,55 @@ function handleReturnSubmit(e) {
 
 function focus() {
 	lazyResetKioskTimer()
-	switch(jQuery('#mode .nav-link.active').attr('href').substr(1)) {
+	const activeTab = document.querySelector('#mode .nav-link.active').href.split('#')[1]
+
+	switch(activeTab) {
 		case 'return':
-			jQuery('#return input').focus()
+			document.querySelector('#return input').focus()
 			break
 		case 'issue':
-			jQuery('#find input').focus()
+			document.querySelector('#find input').focus()
 			break
 		case 'audit':
-			jQuery('#audit input').focus()
+			document.querySelector('#audit input').focus()
 			break
 		case 'label':
-			jQuery('#label input').focus()
+			document.querySelector('#label input').focus()
 			break
 		case 'new-user':
-			jQuery('#new-user input[name="barcode"]').focus()
+			document.querySelector('#new-user input[name="barcode"]').focus()
 			break
 	}
 }
 
 function handleItemButtons() {
 	lazyResetKioskTimer()
-	var clicked = jQuery(this).closest('.card')
-	var type = jQuery(clicked).data('type')
-	var barcode = jQuery(clicked).data('barcode')
 
-	switch (jQuery(this).data('btn-action')) {
+	const clicked = this.closest('.card')
+	const type = clicked.dataset.type
+	const barcode = clicked.dataset.barcode
+
+	switch (this.dataset.btnAction) {
 		case 'return':
-			returnItem(barcode, function(data) {
+			returnItem(barcode, (data) => {
 				flash(data)
 				select('item', data.barcode)
 			})
 			break
 		case 'broken':
-			broken(barcode, function(data) {
+			broken(barcode, (data) => {
 				flash(data)
 				select('item', data.barcode)
 			})
 			break
 		case 'lost':
-			lost(barcode, function(data) {
+			lost(barcode, (data) => {
 				flash(data)
 				select('item', data.barcode)
 			})
 			break;
 		case 'sold':
-			sold(barcode, function(data) {
+			sold(barcode, (data) => {
 				flash(data)
 				select('item', data.barcode)
 			})
@@ -377,28 +469,31 @@ function handleOverride() {
 	lazyResetKioskTimer()
 	if (last_item) {
 		issue(last_item.item, last_item.user, true, handleItemIssue)
-		jQuery(this).parent().remove()
+		this.parentElement.remove()
 	}
 }
 
 function handleResultClick() {
 	lazyResetKioskTimer()
-	var type = jQuery(this).data('type')
-	var barcode = jQuery(this).data('barcode')
-	if (jQuery(this).hasClass('disabled')) return flash({status: 'warning', message: 'Cannot select a disabled user account'})
+
+	const type = this.dataset.type
+	const barcode = this.dataset.barcode
+
+	if (this.classList.contains('disabled')) return flash({status: 'warning', message: 'Cannot select a disabled user account'})
+
 	select(type, barcode)
 	empty(true)
 }
 
 function handlePanelClick() {
 	lazyResetKioskTimer()
-	var clicked = jQuery(this).closest('.card')
-	select(clicked.data('type'), clicked.data('barcode'))
+	const clicked = this.closest('.card')
+	select(clicked.dataset.type, clicked.dataset.barcode)
 }
 
 function handleFindInput(e) {
 	lazyResetKioskTimer()
-	if (jQuery('#find input').val() == '') empty()
+	if (document.querySelector('#find input').value == '') empty()
 	clearTimeout(typeTimeout)
 	typeTimeout = setTimeout(findTimer, 100)
 }
@@ -406,14 +501,17 @@ function handleFindInput(e) {
 function handleAuditSubmit(e) {
 	e.preventDefault()
 
-	var term = jQuery('#audit input').val()
-	jQuery('#audit input').val('')
+	const barcodeInput = document.querySelector('#audit input')
 
-	var locationMatch = term.match(locationRegex)
+	const term = barcodeInput.value
+	barcodeInput.value = ''
+
+	const locationMatch = term.match(locationRegex)
 	if (locationMatch) {
-		var child = jQuery('#location').children('option[data-barcode="' + locationMatch[1].trim() + '"]')
-		if (child.length == 1) {
-			jQuery('#location').val(child.val())
+		const child = document.querySelector('#location option[data-barcode="' + locationMatch[1].trim() + '"]')
+
+		if (child) {
+			document.querySelector('#location').value = child.value
 			locationSuccessSound.play()
 			flash({
 				barcode: locationMatch[1],
@@ -429,12 +527,12 @@ function handleAuditSubmit(e) {
 			})
 		}
 	} else {
-		var location = jQuery('#location').val()
-		var mode = jQuery('#locationMode').val()
-		var override = false
+		let location = document.querySelector('#location').value
+		let mode = document.querySelector('#locationMode').value
+		const override = false
 		if (mode == 3) override = true
 		if (mode == 1) location = null
-		audit(term, location, override, function(data) {
+		audit(term, location, override, (data) => {
 			if (data.status == 'success') auditSuccessSound.play()
 			if (data.status == 'danger') auditErrorSound.play()
 			flash(data)
@@ -446,10 +544,12 @@ function handleLabelSubmit(e) {
 	e.preventDefault()
 	lazyResetKioskTimer()
 
-	var term = jQuery('#label input').val()
-	jQuery('#label input').val('')
+	const barcodeInput = document.querySelector('#label input')
 
-	label(term, function(data) {
+	const term = barcodeInput.value
+	barcodeInput.value = ''
+
+	label(term, (data) => {
 		flash(data)
 	})
 }
@@ -458,16 +558,16 @@ function handleUserSubmit(e) {
 	e.preventDefault()
 	lazyResetKioskTimer()
 
-	var name = jQuery('#new-user form [name="name"]').val()
-	var barcode = jQuery('#new-user form [name="barcode"]').val()
-	var email = jQuery('#new-user form [name="email"]').val()
-	var course = jQuery('#new-user form [name="course"]').val()
-	var year = jQuery('#new-user form [name="year"]').val()
+	const barcode = newUserForm.barcode.value
+	const name = newUserForm.name.value
+	const email = newUserForm.email.value
+	const course = newUserForm.course.value
+	const year = newUserForm.year.value
 
 	newUser(name, barcode, email, course, year, function(data) {
 		if (data.status == 'success') {
 			select(data.redirect.type, data.redirect.barcode)
-			jQuery('a.issue').tab('show')
+			document.querySelector('a.issue').click()
 			clearUserForm()
 		}
 		flash(data)
@@ -475,43 +575,15 @@ function handleUserSubmit(e) {
 }
 
 function clearUserForm() {
-	jQuery('#new-user form [name="name"]').val('')
-	jQuery('#new-user form [name="barcode"]').val('')
-	jQuery('#new-user form [name="email"]').val('')
-	jQuery('#new-user form [name="course"]').val('')
-	jQuery('#new-user form [name="year"]').val('')
+	newUserForm.barcode.value = ''
+	newUserForm.name.value = ''
+	newUserForm.email.value = ''
+	newUserForm.course.value = ''
+	newUserForm.year.value = ''
 }
 
 function lazyResetKioskTimer() {
 	if (typeof resetKioskTimer == 'function') {
 		resetKioskTimer()
 	}
-}
-
-function apiPOST(path, data, cb) {
-	if (typeof data == 'function') {
-		cb = data
-		delete data
-	}
-
-	let request = {
-		url: `/api/${path}`,
-		type: 'post',
-		headers: {
-			'CSRF-Token': token
-		},
-		xhrFields: {
-			withCredentials: true
-		},
-		dataType: 'json',
-		success: (data, status) => {
-			cb(data)
-		}
-	}
-
-	if (typeof data == 'object') {
-		request.data = data
-	}
-
-	jQuery.ajax(request)
 }

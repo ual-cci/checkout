@@ -11897,6 +11897,16 @@ html.fs body .form-signin input[type=password] {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+#results li {
+  font-size: 0.875em;
+  cursor: pointer;
+}
+#results li.disabled {
+  cursor: not-allowed;
+}
+#results .badge {
+  margin-right: 0.3em;
+}
 
 table.table a {
   text-decoration: none;
@@ -12137,6 +12147,11 @@ nav#sidebarMenu .nav-item a.nav-link.active, nav#sidebarMenu .nav-item a.nav-lin
 }
 [data-bs-theme=dark] .searchList a.selected {
   background-color: #6c757d;
+}
+
+button.override {
+  margin-top: -0.25em;
+  margin-right: -0.25em;
 }
 
 /*# sourceMappingURL=style.css.map */

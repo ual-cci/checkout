@@ -24,7 +24,7 @@ const titles = {
 }
 
 // API Search Function
-function search(term, cb) {term ? apiGET(`/api/search/${term}`, cb) : null}
+function search(term, cb) {term ? apiGET(`/search/${term}`, cb) : null}
 
 window.addEventListener('DOMContentLoaded', () => {
 	searchInput = document.getElementById('search')

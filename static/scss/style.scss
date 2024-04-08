@@ -50,11 +50,27 @@ html.fs {
 	}
 }
 
-#results .list-group li:first-child {
-	border-top: 0;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
+#results {
+	.list-group li:first-child {
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	li {
+		font-size: 0.875em;
+		cursor: pointer;
+
+		&.disabled {
+			cursor: not-allowed;
+		}
+	}
+
+	.badge {
+		margin-right: .3em;
+	}
 }
+
 
 table.table {
 	a {
@@ -367,4 +383,9 @@ nav#sidebarMenu {
 		}
 		}
 	}
+}
+
+button.override {
+	margin-top: -.25em;
+	margin-right: -.25em;
 }

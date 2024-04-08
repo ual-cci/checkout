@@ -23,7 +23,7 @@ function detectDarkmode(e) {
 }
 
 function handlePrinterChange() {
-	apiGET(`/api/select-printer/${this.dataset.printer}`, (data) => {
+	apiGET(`/select-printer/${this.dataset.printer}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuPrinterDropdown .printer').innerText = data.printer
 		} else {
@@ -33,7 +33,7 @@ function handlePrinterChange() {
 }
 
 function handleTemplateChange() {
-	apiGET(`/api/select-template/${this.dataset.template}`, (data) => {
+	apiGET(`/select-template/${this.dataset.template}`, (data) => {
 		if (data.status == 'success') {
 			document.querySelector('#topMenuTemplateDropdown .template').innerText = data.template
 		} else {
@@ -42,8 +42,61 @@ function handleTemplateChange() {
 	})
 }
 
-function apiGET(uri, cb) {
-	jQuery.get(uri, (data, status) => {
-		cb(data)
+function apiGET(path, cb) {
+	apiRequest('GET', path, cb)
+}
+
+function apiPOST(path, data, cb) {
+	if (typeof data == 'function') {
+		cb = data
+		delete data
+	}
+
+	let request = {
+		url: `/api/${path}`,
+		type: 'post',
+		headers: {
+			'CSRF-Token': token
+		},
+		xhrFields: {
+			withCredentials: true
+		},
+		dataType: 'json',
+		success: (data, status) => {
+			cb(data)
+		}
+	}
+
+	if (typeof data == 'object') {
+		request.data = data
+	}
+
+	jQuery.ajax(request)
+}
+
+function apiRequest(method, path, data, cb) {
+	if (typeof data == 'function') {
+		cb = data
+		delete data
+	}
+
+	const req = new XMLHttpRequest()
+	req.open(method, `/api/${path}`)
+
+	req.addEventListener('readystatechange', e => {
+		if (e.target.readyState === XMLHttpRequest.DONE) {
+			if (e.target.status == 200) {
+				const result = JSON.parse(e.target.response)
+				cb(result)
+			} else {
+				flash({
+					status: 'warning',
+					barcode: 'API Error',
+					message: `${e.target.statusText} [${e.target.status}]`
+				})
+			}
+		}
 	})
+
+	req.send()
 }
