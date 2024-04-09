@@ -684,12 +684,16 @@ class ApiController extends BaseController {
 			}
 
 			Queue.task('Labels', {
-				printer_id: req.user.printer_url,
-				barcode: item.barcode,
-				text: item.name,
-				type: item.label,
+				printer_id: req.user.printer_id,
 				source: 'API',
-				user: req.user.name
+				user: req.user.name,
+				labels: [
+					{
+						barcode: item.barcode,
+						text: item.name,
+						type: item.label,
+					}
+				]
 			})
 
 			return res.json({

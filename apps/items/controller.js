@@ -519,12 +519,9 @@ class ItemController extends BaseController {
 				// Push item details into array to be printed
 				if (req.body.print) {
 					labels.push({
-						printer_id: req.user.printer_id,
 						barcode: item.barcode,
 						text: item.name,
-						type: item.label,
-						source: 'Items - postCreate',
-						user: req.user.name
+						type: item.label
 					})
 				}
 			}
@@ -534,7 +531,13 @@ class ItemController extends BaseController {
 
 				if (req.body.print) {
 					if (req.user.printer_id) {
-						Queue.task('Labels', labels)
+						Queue.task('Labels', {
+							printer_id: req.user.printer_id,
+							source: 'Items - postCreate',
+							user: req.user.name,
+							labels: labels
+						})
+
 						req.flash('info', `Labels queued to print on ${req.user.printer_name}`)
 					} else {
 						req.flash('warning', 'No printer configured')
@@ -742,12 +745,16 @@ class ItemController extends BaseController {
 			}
 
 			Queue.task('Labels', {
-				printer_id: printer.id,
-				barcode: _item.barcode,
-				text: _item.name,
-				type: _item.label,
+				printer_id: req.user.printer_id,
 				source: 'Items - getLabel',
-				user: req.user.name
+				user: req.user.name,
+				labels: [
+					{
+						barcode: _item.barcode,
+						text: _item.name,
+						type: _item.label
+					}
+				]
 			})
 
 			req.flash('info', `Label queued to print on  ${printer.name}`)
@@ -774,16 +781,18 @@ class ItemController extends BaseController {
 				.then(items => {
 					const labels = items.map(item => {
 						return {
-							printer_id: req.user.printer_id,
 							barcode: item.barcode,
 							text: item.name,
-							type: item.label,
-							source: 'Items - getMultiPrint',
-							user: req.user.name
+							type: item.label
 						}
 					})
 
-					Queue.task('Labels', labels)
+					Queue.task('Labels', {
+						printer_id: req.user.printer_id,
+						source: 'Items - getMultiPrint',
+						user: req.user.name,
+						labels: labels
+					})
 
 					req.flash('success', `Labels queued to print on ${req.user.printer_name}`)
 					req.saveSessionAndRedirect(this.getRoute())
@@ -859,11 +868,15 @@ class ItemController extends BaseController {
 						.then(item => {
 							Queue.task('Labels', {
 								printer_id: req.user.printer_id,
-								barcode: item.barcode,
-								text: item.name,
-								type: item.label,
 								source: 'Items - postEdit',
-								user: req.user.name
+								user: req.user.name,
+								labels: [
+									{
+										barcode: item.barcode,
+										text: item.name,
+										type: item.label
+									}
+								]
 							})
 
 							req.flash('info', `Label queued to print on ${req.user.printer_name}`)

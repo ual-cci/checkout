@@ -184,11 +184,15 @@ class LocationController extends BaseController {
 
 			Queue.task('Labels', {
 				printer_id: printer.id,
-				barcode: 'L:' + location.barcode,
-				text: location.barcode,
-				type: '36mm',
 				source: 'Location - getLabel',
-				user: req.user.name
+				user: req.user.name,
+				labels: [
+					{
+						barcode: 'L:' + location.barcode,
+						text: location.barcode,
+						type: '36mm'
+					}
+				]
 			})
 
 			req.flash('info', `Label queued to print on ${printer.name}`)
