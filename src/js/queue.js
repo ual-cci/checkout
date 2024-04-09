@@ -21,6 +21,7 @@ const Queue = {
 	task: (queue, task) => {
 		let title = 'Task'
 		if (queue == 'Labels') title = 'Print Label'
+		if (task.user) title += ` – ${task.user}`
 		Queue.queues.labels.add(title, task)
 	},
 }
