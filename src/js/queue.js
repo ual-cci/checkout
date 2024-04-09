@@ -1,25 +1,27 @@
-const Options = require('./options')()
+const {Queue: BullMQ} = require('bullmq')
 
 const Queue = {
-
-	_firstRun: () => {
-		// Connect to redis
+	MQ: null,
+	queues: {
+		labels: null
 	},
 
-	_task: (queue, task) => {
-		console.log(`${queue}: `, task)
-		// Queue the task
+	_firstRun: (cb) => {
+		Queue.MQ = (name) => new BullMQ(name, {
+			connection: {
+				port: process.env.REDIS_PORT,
+				host: process.env.REDIS_HOST,
+				password: process.env.REDIS_PASSWORD,
+				tls: process.env.REDIS_TLS == 'true' ? true : false,
+			}
+		})
+		Queue.queues.labels = Queue.MQ('Labels')
 	},
 
 	task: (queue, task) => {
-		// Split multiple tasks into seperate ones
-		if (Array.isArray(task)) {
-			task.forEach(i => {
-				Queue._task(queue, i)
-			})
-		} else {
-			Queue._task(queue, task)
-		}
+		let title = 'Task'
+		if (queue == 'Labels') title = 'Print Label'
+		Queue.queues.labels.add(title, task)
 	},
 }
 
