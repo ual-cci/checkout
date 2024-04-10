@@ -183,7 +183,7 @@ class LocationController extends BaseController {
 			}
 
 			Queue.task('Labels', {
-				printer_id: printer.id,
+				printer_url: printer.url,
 				source: 'Location - getLabel',
 				user: req.user.name,
 				labels: [

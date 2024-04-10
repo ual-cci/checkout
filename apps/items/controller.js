@@ -532,7 +532,7 @@ class ItemController extends BaseController {
 				if (req.body.print) {
 					if (req.user.printer_id) {
 						Queue.task('Labels', {
-							printer_id: req.user.printer_id,
+							printer_url: req.user.printer_url,
 							source: 'Items - postCreate',
 							user: req.user.name,
 							labels: labels
@@ -745,7 +745,7 @@ class ItemController extends BaseController {
 			}
 
 			Queue.task('Labels', {
-				printer_id: req.user.printer_id,
+				printer_url: req.user.printer_url,
 				source: 'Items - getLabel',
 				user: req.user.name,
 				labels: [
@@ -788,7 +788,7 @@ class ItemController extends BaseController {
 					})
 
 					Queue.task('Labels', {
-						printer_id: req.user.printer_id,
+						printer_url: req.user.printer_url,
 						source: 'Items - getMultiPrint',
 						user: req.user.name,
 						labels: labels
@@ -867,7 +867,7 @@ class ItemController extends BaseController {
 					this.models.items.getById(req.params.id)
 						.then(item => {
 							Queue.task('Labels', {
-								printer_id: req.user.printer_id,
+								printer_url: req.user.printer_url,
 								source: 'Items - postEdit',
 								user: req.user.name,
 								labels: [
