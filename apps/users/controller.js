@@ -136,13 +136,13 @@ class UsersController extends BaseController {
 				user.disable = user.disable == 'disabled' ? true : false
 			}
 
-			this.models.users.updateMultiple(ids, user)
+		this.models.users.updateMultiple(ids, user)
 			.then(() => {
 				req.flash('success', 'User updated')
 				req.saveSessionAndRedirect(this.getRoute())
 			})
 			.catch(err => this.displayError(req, res, err, this.getRoute()))
-		} else {		
+		} else {
 			let persist = {}
 
 			Promise.all([
@@ -194,7 +194,7 @@ class UsersController extends BaseController {
 			return this.displayError(req, res, 'At least one user must be selected.', this.getRoute())
 		}
 
-		
+
 		if (req.body.confirm) {
 			let userLoans = []
 			ids.forEach((id) => {
@@ -391,8 +391,9 @@ class UsersController extends BaseController {
 		if (req.body.format == 'csv') format = ','
 
 		if (req.body.data) {
-			data = req.body.data.trim().split('\r\n')
-			data = data.map(d => d.split(format))
+			data = req.body.data.trim().split('\r\n')	// Split on new lines
+			data = data.filter(d => d != '')			// Filter blank lines
+			data = data.map(d => d.split(format))		// Split on seperator
 		} else {
 			req.flash('danger', 'No data provided')
 			req.saveSessionAndRedirect(this.getRoute())
@@ -402,10 +403,18 @@ class UsersController extends BaseController {
 		Promise.all([
 			this.models.courses.getAll(),
 			this.models.years.getAll(),
-			this.models.roles.getAll()
+			this.models.roles.getAll(),
+			this.models.users.getAll()
 		])
-		.then(([courses, years, roles]) => {
-			res.render('process', {courses: courses, years: years, roles: roles, data: data})
+		.then(([courses, years, roles, users]) => {
+			let lookup = {}
+
+			users.forEach(u => {
+				lookup[u.barcode] = u.id
+				lookup[u.email] = u.id
+			})
+
+			res.render('process', {courses, years, roles, lookup, users, data})
 		})
 	}
 
@@ -426,7 +435,7 @@ class UsersController extends BaseController {
 		}
 
 		// Map heading order
-		const expectedHeadings = ['name','barcode','email','course','year','role','password']
+		const expectedHeadings = ['action','user_id','name','barcode','email','course','year','role','password']
 		var headingMap = {}
 		expectedHeadings.forEach(head => {
 			headingMap[head] = req.body.cols.indexOf(head)
@@ -436,12 +445,15 @@ class UsersController extends BaseController {
 		const errors = []
 
 		const generateUser = (data) => {
-
 			return new Promise((resolve, reject) => {
 				var user = {
 					name: data[headingMap.name],
 					barcode: data[headingMap.barcode],
 					email: data[headingMap.email]
+				}
+
+				if (data[headingMap.action] == 'update') {
+					user.user_id = parseInt(data[headingMap.user_id])
 				}
 
 				if (!validator.isEmail(user.email)) {
@@ -490,20 +502,35 @@ class UsersController extends BaseController {
 		}
 
 		req.body.users.forEach(data => {
-			promises.push(generateUser(data))
+			if (data[headingMap.action] == 'create' || data[headingMap.action] == 'update') {
+				promises.push(generateUser(data))
+			} else {
+				console.log('Ignored user import:', data)
+			}
 		})
 
 		Promise.all(promises)
 		.then(users => {
 			if (errors.length === 0 ) {
-				this.models.users.create(users)
-					.then(result => {
-						req.flash('success', 'Users imported')
-						req.saveSessionAndRedirect(this.getRoute())
-					}).catch(err => this.displayError(req, res, err, this.getRoute('/import')))
+				let createUsers = users.filter(user => {return user.user_id == undefined})
+				let updateUsers = users.filter(user => {return user.user_id != undefined})
+
+				let promises = []
+				if (createUsers.length > 0) promises.push(this.models.users.create(createUsers))
+				if (updateUsers.length > 0) {
+					updateUsers.forEach(u => {
+						const user_id = u.user_id
+						delete u.user_id
+						promises.push(this.models.users.update(user_id, u))
+					})
 				}
 
-			else {
+				Promise.all(promises)
+				.then(result => {
+					req.flash('success', 'User data import complete')
+					req.saveSessionAndRedirect(this.getRoute())
+				}).catch(err => this.displayError(req, res, err, this.getRoute('/import')))
+			} else {
 				const errList =  [...new Set(errors)]
 				errList.forEach(error => req.flash('danger', error))
 				req.saveSessionAndRedirect(this.getRoute('/import'))
@@ -627,7 +654,7 @@ class UsersController extends BaseController {
 				name: user.name,
 				address: user.email
 			}
-						
+
 			const replyTo = {
 				name: req.user.name,
 				address: req.user.email
@@ -670,7 +697,7 @@ class UsersController extends BaseController {
 					name: req.user.name,
 					address: req.user.email
 				}
-	
+
 				users.forEach((user) => {
 					this.models.items.getOnLoanByUserId(user.id).then(items => {
 						if (items.length > 0) {
@@ -678,7 +705,7 @@ class UsersController extends BaseController {
 								name: user.name,
 								address: user.email
 							}
-	
+
 							const tags = {
 								name: to.name,
 								items: items.map((item) => {return `\t• ${item.name} (${item.barcode})`}).join("\n"),
@@ -697,7 +724,7 @@ class UsersController extends BaseController {
 						}
 					})
 				})
-				
+
 				req.flash('success', `Emails queued`)
 				req.saveSessionAndRedirect(`${this.getRoute()}`)
 			} else {
