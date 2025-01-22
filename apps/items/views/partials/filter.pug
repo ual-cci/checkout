@@ -50,6 +50,7 @@ form(method="get")#filter
 				option(value='on-loan' selected=(selected.status == 'on-loan')) On Loan
 				option(value='broken' selected=(selected.status == 'broken')) Broken
 				option(value='lost' selected=(selected.status == 'lost')) Lost
+				option(value='sold' selected=(selected.status == 'sold')) Sold
 	
 	.form-group.row.collapse.mb-1#loanableFilter(class=(selected.loanable?'show':''))
 		label(for="loanable").col-sm-2 Loanable
