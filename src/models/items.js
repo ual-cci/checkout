@@ -105,14 +105,17 @@ class ItemModel extends BaseModel {
 	getCatalogue() {
 		return this.emptyQuery()
 			.expose()
-			.select('items.name',
+			.select('items.name', 'items.location_id', 'locations.name as location_name',
 				db.raw(`SUM(CASE WHEN "items"."status" = 'available' THEN 1 ELSE 0 END) AS available`),
 				db.raw(`ARRAY_REMOVE(ARRAY_AGG(DISTINCT "items"."info_url"), NULL) AS urls`))
 			.count('items.id AS stock')
-			.orderBy('name', 'asc')
-			.where('loanable', true)
-			.whereIn('status', ['available','on-loan'])
+			.leftJoin('locations', 'locations.id', 'items.location_id')
+			.where('items.loanable', true)
+			.whereIn('items.status', ['available','on-loan'])
 			.groupBy('items.name')
+			.groupBy('items.location_id')
+			.groupBy('locations.name')
+			.orderBy('items.name', 'asc')
 	}
 
 	audit(barcode) {
