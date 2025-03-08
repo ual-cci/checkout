@@ -37,6 +37,11 @@ class CatalogueController extends BaseController {
 				if (locations[item.location_id] == undefined) {
 					locations[item.location_id] = {'name': item.location_name, items: []}
 				}
+
+				item.urls = item.urls.filter(url => {
+					if (url != '') return url
+				})
+
 				locations[item.location_id].items.push(item)
 			})
 
@@ -53,6 +58,11 @@ class CatalogueController extends BaseController {
 				if (locations[item.location_id] == undefined) {
 					locations[item.location_id] = {'name': item.location_name, items: []}
 				}
+
+				item.urls = item.urls.filter(url => {
+					if (url != '') return url
+				})
+
 				locations[item.location_id].items.push(item)
 			})
 
