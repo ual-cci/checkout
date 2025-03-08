@@ -70,7 +70,7 @@ class CatalogueController extends BaseController {
 
 			locations.forEach(location => {
 				md += `\n## ${location.name}\n`
-				items.forEach(item => {
+				location.items.forEach(item => {
 					if (item.urls.length == 1 && item.urls[0] != '') {
 						md += ` - [${item.name}](${item.urls[0]})`
 					} else if (item.urls.length > 1) {
