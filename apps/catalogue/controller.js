@@ -40,9 +40,7 @@ class CatalogueController extends BaseController {
 				locations[item.location_id].items.push(item)
 			})
 
-			res.render('index', {
-				locations
-			})
+			res.render('index', {locations})
 		})
 	}
 
@@ -50,25 +48,33 @@ class CatalogueController extends BaseController {
 		// Get items
 		this.models.items.getCatalogue()
 		.then(items => {
-			let md = `*This list was updated on ${moment().format('DD/MM/YYYY')}.*\n`
-			let lastLocation = ''
+			let locations = []
 			items.forEach(item => {
-				if (lastLocation != item.location_id) {
-					md += `\n# ${item.location_name}\n`
+				if (locations[item.location_id] == undefined) {
+					locations[item.location_id] = {'name': item.location_name, items: []}
 				}
-				lastLocation = item.location_id
-				if (item.urls.length == 1 && item.urls[0] != '') {
-					md += ` - [${item.name}](${item.urls[0]})`
-				} else if (item.urls.length > 1) {
-					md += ` - ${item.name}`
-					item.urls.forEach((u, i) => {
-						md += ` [🌐${i+1}](${u})`
-					})
-				} else {
-					md += ` - ${item.name}`
-				}
-				md += '\n'
+				locations[item.location_id].items.push(item)
 			})
+
+			let md = `*This list was updated on ${moment().format('DD/MM/YYYY')}.*\n`
+
+			locations.forEach(location => {
+				md += `\n## ${location.name}\n`
+				items.forEach(item => {
+					if (item.urls.length == 1 && item.urls[0] != '') {
+						md += ` - [${item.name}](${item.urls[0]})`
+					} else if (item.urls.length > 1) {
+						md += ` - ${item.name}`
+						item.urls.forEach((u, i) => {
+							md += ` [🌐${i+1}](${u})`
+						})
+					} else {
+						md += ` - ${item.name}`
+					}
+					md += '\n'
+				})
+			})
+
 			res.render('md', {md})
 		})
 	}
