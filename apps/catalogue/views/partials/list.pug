@@ -1,32 +1,39 @@
-if items && items.length > 0
-	.table-responsive
-		table.table.table-striped.table-sm
-			thead
-				tr
-					th Name
-						| 
-						span.fas.fa-angle-up.text-muted
-					th Availability
-					th
-			tbody
-				for item in items
+-console.log(locations['4'].items)
+if locations && Object.keys(locations).length > 0
+	for location in locations
+		h3=location.name
+		.table-responsive
+			table.table.table-striped.table-sm
+				colgroup 
+					col(width="60%")
+					col(width="10%")
+					col(width="30%")
+				thead
 					tr
-						td(data-searchable=item.name)
-							if (item.urls.length == 1 && item.urls[0] != '')
-								a(href=item.urls[0] target="_blank")=item.name
-							else if item.urls.length > 1
-								a(href=item.urls[0] target="_blank")=item.name
-								|  –
-								for url, i in item.urls
-									+actionBtn('globe', url, `View info URL: ${i+1}`, '_target', i+1)
-							else
-								| #{item.name}
-							
-						td #{item.available} / #{item.stock}
-						td
-							.progress
-								- percent = (item.available / item.stock) * 100
-								- percentage = `${Math.round(percent)}%`
-								.progress-bar(style=`width: ${percentage}` class=(percent <= 25 ? 'bg-danger' : (percent <= 50 ? 'bg-warning' : 'bg-success')))=percentage
+						th Name
+							| 
+							span.fas.fa-angle-up.text-muted
+						th Availability
+						th
+				tbody
+					for item in location.items
+						tr
+							td(data-searchable=item.name)
+								if (item.urls.length == 1 && item.urls[0] != '')
+									a(href=item.urls[0] target="_blank")=item.name
+								else if item.urls.length > 1
+									a(href=item.urls[0] target="_blank")=item.name
+									|  –
+									for url, i in item.urls
+										+actionBtn('globe', url, `View info URL: ${i+1}`, '_target', i+1)
+								else
+									| #{item.name}
+								
+							td #{item.available} / #{item.stock}
+							td
+								.progress
+									- percent = (item.available / item.stock) * 100
+									- percentage = `${Math.round(percent)}%`
+									.progress-bar(style=`width: ${percentage}` class=(percent <= 25 ? 'bg-danger' : (percent <= 50 ? 'bg-warning' : 'bg-success')))=percentage
 else
 	+messageBlock('warning', 'black', 'There are no items to display.')
