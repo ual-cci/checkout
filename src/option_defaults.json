@@ -67,5 +67,20 @@
 		"default": "false",
 		"type": "boolean",
 		"purpose": "SMTP Secure"
+	},
+	"labeller_prefix": {
+		"default": "",
+		"type": "single-text",
+		"purpose": "Labeller code prefix"
+	},
+	"labeller_last_seq": {
+		"default": "0",
+		"type": "number",
+		"purpose": "Labeller last sequence"
+	},
+	"labeller_length": {
+		"default": "6",
+		"type": "number",
+		"purpose": "Labeller code length"
 	}
 }

@@ -10,25 +10,25 @@ const Print = {
 		Print.labels([code], printer)
 	},
 	labels: function(codes, printer) {
-		var buffer = []
+		let buffer = []
 
-		var doc = new PDFDocument({
+		const doc = new PDFDocument({
 			autoFirstPage: false
 		})
 
 		if (!fs.existsSync('temp_pdfs/')) fs.mkdirSync('temp_pdfs/');
 
-		var item_code = codes.length > 0 ? codes[0].barcode : 'string'
+		let item_code = codes.length > 0 ? codes[0].barcode : 'string'
 		doc.pipe(fs.createWriteStream('temp_pdfs/'+ item_code +'.pdf'));
 
-		var docSize = ''
-		var barcodes = []
+		const docSize = ''
+		let barcodes = []
 		for (c in codes) {
-			var code = codes[c]
+			const code = codes[c]
 			switch(code.type) {
 				default:
 				case '9mm':
-					size = "Custom.9x12mm"
+					size = "Custom.9x10mm"
 					barcodes.push(Print.add9mmLabel(doc, code.barcode, code.text))
 					break
 
@@ -40,6 +40,16 @@ const Print = {
 				case '12mm_flag':
 					size = "Custom.12x50mm"
 					barcodes.push(Print.add12mmFlag(doc, code.barcode, code.text))
+					break
+
+				case 'compact_12mm':
+					size = "Custom.12x14mm"
+					barcodes.push(Print.addCompact12mmLabel(doc, code.barcode, code.text))
+					break
+
+				case 'compact_12mm_flag':
+					size = "Custom.12x50mm"
+					barcodes.push(Print.addCompact12mmFlag(doc, code.barcode, code.text))
 					break
 
 				case '36mm':
@@ -59,72 +69,72 @@ const Print = {
 			Print.send(buffer, printer, size)
 		})
 	},
-	add9mmLabel: function(doc, barcode, text) {
-		return new Promise(function(resolve, reject) {
-			Print.generate2DBarcodeImage(barcode).then(function(png) {
-			var page = doc.addPage({
-				size: [pt(10), pt(9)],
-				layout: 'landscape',
-				margin: 0
-			})
+	add9mmLabel: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+				const page = doc.addPage({
+					size: [pt(10), pt(9)],
+					layout: 'landscape',
+					margin: 0
+				})
 
-			page.image(png, pt(1), pt(1), {
-				width: pt(7),
-				height: pt(7)
-			})
+				page.image(png, pt(1), pt(1), {
+					width: pt(7),
+					height: pt(7)
+				})
 
-			page.fontSize(3)
-			page.font('Helvetica')
+				page.fontSize(3.33)
+                page.font('Helvetica-Bold')
 
-			page.text(barcode, pt(1), pt(8.5), {
-				width: pt(7),
-				align: 'left'
-			})
+				page.text(text, pt(1), pt(8.5), {
+					width: pt(7),
+					align: 'center'
+				})
 
-			resolve(page)
+				resolve(page)
 			})
 		})
 	},
-	add12mmLabel: function(doc, barcode, text) {
-		return new Promise(function(resolve, reject) {
-			Print.generate2DBarcodeImage(barcode).then(function(png) {
-			var page = doc.addPage({
-				size: [pt(17), pt(12)],
-				layout: 'landscape',
-				margin: 0
-			})
-			page.fontSize(4.5)
-			page.font('Helvetica-Bold')
+	add12mmLabel: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+				const page = doc.addPage({
+					size: [pt(17), pt(12)],
+					layout: 'landscape',
+					margin: 0
+				})
+				page.fontSize(4.5)
+				page.font('Helvetica-Bold')
 
-			page.text(Options.getText('label_brand').replace(/\r\n|\r/g, '\n'), pt(1), pt(1), {
-				width: pt(10),
-				align: 'left',
-				weight: 'bold',
-				lineGap: -1.5
-			})
+				page.text(Options.getText('label_brand').replace(/\r\n|\r/g, '\n'), pt(1), pt(1), {
+					width: pt(10),
+					align: 'left',
+					weight: 'bold',
+					lineGap: -1.5
+				})
 
-			page.image(png, pt(1), pt(5.5), {
-				width: pt(9),
-				height: pt(9)
-			})
+				page.image(png, pt(1), pt(5.5), {
+					width: pt(9),
+					height: pt(9)
+				})
 
-			page.fontSize(4)
-			page.font('Helvetica')
-			page.text(barcode, pt(1), pt(15), {
-				width: pt(9),
-				align: 'left'
-			})
+				page.fontSize(4)
+				page.font('Helvetica')
+				page.text(text, pt(1), pt(15), {
+					width: pt(9),
+					align: 'left'
+				})
 
-			resolve(page)
+				resolve(page)
 			})
 		})
 	},
-	add12mmFlag: function(doc, barcode, text) {
-		return new Promise(function(resolve, reject) {
-			var w = 12
-			var h = 50
-			Print.generate2DBarcodeImage(barcode).then(function(png) {
-				var page = doc.addPage({
+	add12mmFlag: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			const w = 12
+			const h = 50
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+				const page = doc.addPage({
 					size: [pt(h), pt(w)],
 					layout: 'landscape',
 					margin: 0
@@ -154,7 +164,7 @@ const Print = {
 
 					page.fontSize(4)
 					page.font('Helvetica')
-					page.text(barcode, pt(1), pt(16), {
+					page.text(text, pt(1), pt(16), {
 						width: pt(9),
 						align: 'left'
 					})
@@ -172,10 +182,80 @@ const Print = {
 			})
 		})
 	},
-	add36mmLabel: function(doc, barcode, text) {
-		return new Promise(function(resolve, reject) {
-			Print.generate2DBarcodeImage(barcode).then(function(png) {
-				var page = doc.addPage({
+	addCompact12mmLabel: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+                const page = doc.addPage({
+                    size: [pt(14), pt(12)],
+                    layout: 'landscape',
+                    margin: 0
+                })
+
+                page.image(png, pt(1), pt(1), {
+                    width: pt(10),
+                    height: pt(10)
+                })
+
+                page.fontSize(4.75)
+                page.font('Helvetica-Bold')
+                
+                page.text(text, pt(1), pt(12), {
+                    width: pt(10),
+                    align: 'center'
+                })
+
+                resolve(page)
+			})
+		})
+	},
+	addCompact12mmFlag: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			const w = 12
+			const h = 50
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+				const page = doc.addPage({
+					size: [pt(h), pt(w)],
+					layout: 'landscape',
+					margin: 0
+				})
+
+				for (let i = 0; i < 2; i++) {
+					if (i == 1) {
+						doc.save()
+						doc.rotate(180, {
+							origin:[pt(w/2), pt(h/2)]
+						})
+					}
+
+					page.image(png, pt(1), pt(1), {
+						width: pt(10),
+						height: pt(10)
+					})
+
+					page.fontSize(4.75)
+					page.font('Helvetica-Bold')
+					page.text(text, pt(1), pt(12), {
+						width: pt(10),
+						align: 'center'
+					})
+				}
+
+				doc.restore()
+				page.moveTo(pt(0), pt(h/2))
+					.lineTo(pt(w),pt(h/2))
+					.lineWidth(pt(0.25))
+					.lineCap('round')
+					.dash(pt(0.125), {space:pt(2)})
+					.stroke()
+
+				resolve(page)
+			})
+		})
+	},
+	add36mmLabel: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+				const page = doc.addPage({
 					size: [pt(36), pt(36)],
 					layout: 'landscape',
 					margin: 0
@@ -197,8 +277,8 @@ const Print = {
 			})
 		})
 	},
-	generate2DBarcodeImage: function(barcode) {
-		return new Promise(function(resolve, reject) {
+	generate2DBarcodeImage: (barcode) => {
+		return new Promise((resolve, reject) => {
 			bwipjs.toBuffer({
 				bcid: 'azteccode',
 				scale: 20,
@@ -207,14 +287,14 @@ const Print = {
 				width: 10,
 				rotate: 'N',
 				monochrome: true
-			}, function(err, png) {
+			}, (err, png) => {
 				if (err) return reject(err)
 					return resolve(png)
 			})
 		})
 	},
-	send: function(buffer, printer, size) {
-		var file = {
+	send: (buffer, printer_url, size) => {
+		const file = {
 			"job-attributes-tag": {
 				"media": [size]
 			},
@@ -226,8 +306,8 @@ const Print = {
 			data: Buffer.concat(buffer)
 		}
 
-		var printer = ipp.Printer(printer)
-		printer.execute("Print-Job", file, function (err, res) {
+		const printer = ipp.Printer(printer_url)
+		printer.execute("Print-Job", file, (err, res) => {
 			delete buffer
 		})
 	},

@@ -60,7 +60,7 @@ app.post('/label/:item', auth.APIuserCan('print'), (req, res) => {
 	req.controller.postLabel(req, res)
 })
 
-app.get('/select-printer/:id?', auth.APIuserCan('print'), (req, res) => {
+app.get('/select-printer/:id?', auth.APIuserCan({or: ['print', 'labeller']}), (req, res) => {
 	req.controller.getSelectLabel(req, res)
 })
 
