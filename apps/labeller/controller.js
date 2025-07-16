@@ -45,6 +45,12 @@ class LabellerController extends BaseController {
 		const count = parseInt(req.body.qty) || 1
 		const dupe = parseInt(req.body.dupe) || 1
 
+		if (!req.user.printer_id) {
+			req.flash('danger', `You have not selected a printer.`)
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+
 		if (!validTypes.includes(req.body.label)) {
 			req.flash('danger', `Invalid label type selected.`)
 			req.saveSessionAndRedirect(this.getRoute())
@@ -116,6 +122,12 @@ class LabellerController extends BaseController {
 		const type = req.body.label || 'compact_12mm'
 		const count = parseInt(req.body.qty) || 1
 		let code = req.body.code.toUpperCase()
+
+		if (!req.user.printer_id) {
+			req.flash('danger', `You have not selected a printer.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint`)
+			return;
+		}
 		
 		if (!validTypes.includes(req.body.label)) {
 			req.flash('danger', `Invalid label type selected.`)
