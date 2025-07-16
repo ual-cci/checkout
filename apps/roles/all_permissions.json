@@ -2,6 +2,7 @@
   "edit_profile": "User can edit their own profile.",
   "print": "User can print labels.",
   "labeller": "User can use the sequencial labelling feature.",
+  "reprint": "User can use the reprint label feature.",
   "generate_insurance_report": "User can generate a downloadable insurance report",
   "activate_kiosk_mode": "User can put the session into kiosk mode.",
   "global_search": "User can use global search in top nar bar.",

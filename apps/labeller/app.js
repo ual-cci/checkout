@@ -21,4 +21,12 @@ app.post('/', auth.currentUserCan('labeller'), (req, res) => {
 	req.controller.postRoot(req, res)
 })
 
+app.get('/reprint', auth.currentUserCan('reprint'), (req, res) => {
+	req.controller.getReprint(req, res)
+})
+
+app.post('/reprint', auth.currentUserCan('reprint'), (req, res) => {
+	req.controller.postReprint(req, res)
+})
+
 module.exports = config => app

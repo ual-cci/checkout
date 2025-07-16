@@ -16,6 +16,11 @@ nav#sidebarMenu.col-lg-2.col-md-3.collapse.d-md-block
 					a.nav-link(href="/labeller" class=(menu=='labeller'?'active':''))
 						span.me-2.fa.fa-tags
 						| Labeller
+			if currentUserCan('reprint')
+				li.nav-item
+					a.nav-link(href="/labeller/reprint" class=(menu=='reprint'?'active':''))
+						span.me-2.fa.fa-repeat
+						| Reprint
 		if currentUserCan({or: ['items_read', 'items_create', 'groups_read', 'locations_read', 'view_history']})
 			h6.sidebar-heading.d-flex.justify-content-between.align-items-center.mt-3.mb-1.text-muted Items
 			ul.nav.flex-column

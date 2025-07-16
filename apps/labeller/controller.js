@@ -100,6 +100,71 @@ class LabellerController extends BaseController {
 		}
 		req.saveSessionAndRedirect(`${this.getRoute()}?type=${type}`)
 	}
+
+	getReprint(req, res) {
+		let type = 'compact_12mm'
+
+		if (validTypes.includes(req.query.type)) {
+			type = req.query.type
+		}
+
+		res.render('reprint', {type, max_length: Options.getInt('labeller_length')})
+	}
+
+	postReprint(req, res) {
+		let labels = []
+		const type = req.body.label || 'compact_12mm'
+		const count = parseInt(req.body.qty) || 1
+		let code = req.body.code.toUpperCase()
+		
+		if (!validTypes.includes(req.body.label)) {
+			req.flash('danger', `Invalid label type selected.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint`)
+			return;
+		}
+
+		if (count > 25) {
+			req.flash('danger', `You cannot print more than 25 labels at a time.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+
+		if (count < 0) {
+			req.flash('danger', `You must print at least 1 label.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+
+		if (code.length > Options.getInt('labeller_length')) {
+			req.flash('danger', `Label should not be longer than ${Options.getInt('labeller_length')} characters.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+
+		if (code.length < Options.getInt('labeller_length')) {
+			req.flash('danger', `Label should not be at least ${Options.getInt('labeller_length')} characters.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+		if (!code.match(/([A-F0-9]{6})/)) {
+			req.flash('danger', `Label should be in hexadecimal format (0-F).`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+		
+		const label = {
+			barcode: Options.getText('labeller_prefix') + code,
+			text: spaceFormat(code),
+			type: type
+		}
+		for (let d = 0; d < count; d++) {
+			labels.push(label)
+		}
+		Print.labels(labels, req.user.printer_url)
+
+		req.flash('success', `A label "${code}" was printed to "${req.user.printer_name}".`)
+		req.saveSessionAndRedirect(`${this.getRoute()}/reprint/?type=${type}`)
+	}
 }
 
 function spaceFormat(input) {
