@@ -90,7 +90,6 @@ class LabellerController extends BaseController {
 			}
 			// Handle adding duplicates
 			for (let d = 0; d < dupe; d++) {
-				console.log(label)
 				labels.push(label)
 			}
 		}
