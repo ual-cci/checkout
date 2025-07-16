@@ -11,6 +11,7 @@ const Print = {
 	},
 	labels: function(codes, printer) {
 		let buffer = []
+		let size = ''
 
 		const doc = new PDFDocument({
 			autoFirstPage: false
