@@ -41,8 +41,9 @@ class LabellerController extends BaseController {
 	postRoot(req, res) {
 		let labels = []
 		const start = Options.getInt('labeller_last_seq')
-		const count = parseInt(req.body.qty) || 1
 		const type = req.body.label || 'compact_12mm'
+		const count = parseInt(req.body.qty) || 1
+		const dupe = parseInt(req.body.dupe) || 1
 
 		if (!validTypes.includes(req.body.label)) {
 			req.flash('danger', `Invalid label type selected.`)
@@ -62,6 +63,18 @@ class LabellerController extends BaseController {
 			return;
 		}
 		
+		if (dupe > 5) {
+			req.flash('danger', `You cannot print more than 5 duplicates of each label.`)
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+
+		if (dupe < 0) {
+			req.flash('danger', `You must print at least 1 instance of each label.`)
+			req.saveSessionAndRedirect(this.getRoute())
+			return;
+		}
+		
 		for (let num = start; num < start + count; num++) {
 			let code = formatNum(num)
 			const label = {
@@ -69,7 +82,11 @@ class LabellerController extends BaseController {
 				text: spaceFormat(code),
 				type: type
 			}
-			labels.push(label)
+			// Handle adding duplicates
+			for (let d = 0; d < dupe; d++) {
+				console.log(label)
+				labels.push(label)
+			}
 		}
 
 		Options.set('labeller_last_seq', start + count, () => {})
