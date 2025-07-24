@@ -250,7 +250,7 @@ function createStatusBadge(status, loanable) {
 			break
 	}
 
-	if (loanable) badgeClass = 'info'
+	if (!loanable) badgeClass = 'info'
 
 	span.classList.add(`bg-${badgeClass}`)
 	return span
