@@ -45,6 +45,13 @@ block contents
 			a.audit.nav-item.nav-link( href="#audit" data-bs-toggle="tab" class=(set_active=='audit'?'active':null) ) Audit
 				|  
 				span.badge.text-bg-secondary.d-none.d-lg-inline A
+			
+		if currentUserCan('checkout_disable')
+			if ! set_active
+				- set_active = 'disable';
+			a.disable.nav-item.nav-link( href="#disable" data-bs-toggle="tab" class=(set_active=='disable'?'active':null) ) Disable
+				|  
+				span.badge.text-bg-secondary.d-none.d-lg-inline D
 							
 	.tab-content.break
 		include partials/issue.pug
@@ -52,3 +59,4 @@ block contents
 		include partials/new-user.pug
 		include partials/audit.pug
 		include partials/label.pug
+		include partials/disable.pug

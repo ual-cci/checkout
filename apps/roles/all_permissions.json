@@ -12,6 +12,7 @@
   "options_edit": "User can edit site wide options.",
   "checkout_issue": "User can issue items and mark them lost or broken.",
   "checkout_audit": "User can audit items from Checkout desk, this includes changing item locations.",
+  "checkout_disable": "User can disable items from Checkout desk.",
   "items_read": "User can view items.",
   "items_history": "User can view item loaning history.",
   "items_create": "User can create items.",

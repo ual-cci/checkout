@@ -60,6 +60,10 @@ app.post('/label/:item', auth.APIuserCan('print'), (req, res) => {
 	req.controller.postLabel(req, res)
 })
 
+app.post('/disable/:item', auth.APIuserCan('checkout_disable'), (req, res) => {
+	req.controller.postDisable(req, res)
+})
+
 app.get('/select-printer/:id?', auth.APIuserCan({or: ['print', 'labeller']}), (req, res) => {
 	req.controller.getSelectLabel(req, res)
 })

@@ -25,6 +25,7 @@ jQuery(document).ready(function() {
 	jQuery('#return').bind('submit', handleReturnSubmit)
 	jQuery('#audit').bind('submit', handleAuditSubmit)
 	jQuery('#label').bind('submit', handleLabelSubmit)
+	jQuery('#disable').bind('submit', handleDisableSubmit)
 	jQuery('#new-user form').bind('submit', handleUserSubmit)
 	jQuery(document).delegate('#modules [data-btn-action]', 'click', handleItemButtons)
 	jQuery(document).delegate('#modules .card-header', 'click', handlePanelClick)
@@ -204,6 +205,9 @@ function sold(item, cb) {
 function label(item, cb) {
 	apiPOST(`/label/${item}`, cb)
 }
+function disable(item, cb) {
+	apiPOST(`/disable/${item}`, cb)
+}
 function audit(item, location, override, cb) {
 	apiPOST(`/audit/${item}`, {
 		location: location,
@@ -267,11 +271,14 @@ function handleKeyboardPress(e) {
 			case 65: // A
 				jQuery('.audit.nav-link').tab('show')
 				break
+			case 68: // D
+				jQuery('.disable.nav-link').tab('show')
+				break
 			case 88: // X
 				if (typeof kioskLogout == 'function') kioskLogout()
 				break
 			default:
-				// console.log(e.which)
+				console.log(e.which)
 				break
 		}
 	}
@@ -332,6 +339,9 @@ function focus() {
 			break
 		case 'label':
 			jQuery('#label input').focus()
+			break
+		case 'disable':
+			jQuery('#disable input').focus()
 			break
 		case 'new-user':
 			jQuery('#new-user input[name="barcode"]').focus()
@@ -450,6 +460,18 @@ function handleLabelSubmit(e) {
 	jQuery('#label input').val('')
 
 	label(term, function(data) {
+		flash(data)
+	})
+}
+
+function handleDisableSubmit(e) {
+	e.preventDefault()
+	lazyResetKioskTimer()
+
+	var term = jQuery('#disable input').val()
+	jQuery('#disable input').val('')
+
+	disable(term, function(data) {
 		flash(data)
 	})
 }

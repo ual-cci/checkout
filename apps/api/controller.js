@@ -699,6 +699,36 @@ class ApiController extends BaseController {
 	}
 
 	/**
+	* Attempts to disable any given item
+	*
+	* @param {Object} req Express request object
+	* @param {Object} res Express response object
+	*/
+	postDisable(req, res) {
+		this.models.items.getByBarcode(req.params.item)
+		.then(item => {
+			if (!item) {
+				throw ({
+					message: 'Unknown item',
+					barcode: req.params.item
+				})
+			}
+
+			this.models.items.update(item.id, {
+				loanable: false
+			})
+			.then(result => {
+				return res.json({
+					status: 'success',
+					message: `Item marked as disabled`,
+					barcode: item.barcode
+				})
+			})
+		})
+		.catch(err => this.displayErrorJson(req, res, err))
+	}
+
+	/**
 	* Endpoint to create a new user
 	*
 	* @param {Object} req Express request object
