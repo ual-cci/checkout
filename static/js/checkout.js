@@ -171,7 +171,7 @@ function addResult(result, type) {
 				break
 		}
 	} else {
-		html += ' <span class="badge text-bg-secondary">&nbsp</span>'
+		html += ' <span class="badge text-bg-info">&nbsp</span>'
 	}
 	html += ' <strong>' + result.name + '</strong>'
 	html += '<br />'
