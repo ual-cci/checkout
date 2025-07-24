@@ -210,7 +210,7 @@ function addSearchResult(object, type, path, display) {
 	a.style.display = display
 	if (display == 'none') a.classList.add('closed')
 
-	if (type == 'items') a.appendChild(createStatusBadge(object.status))
+	if (type == 'items') a.appendChild(createStatusBadge(object.status, object.loanable))
 	a.innerHTML += `<strong>${object.name}</strong>`
 	if (object.barcode) a.innerHTML += `<br>${object.barcode}`
 
@@ -221,7 +221,7 @@ function addNoResultsFound() {
 	searchList.innerHTML = '<p>No results</p>'
 }
 
-function createStatusBadge(status) {
+function createStatusBadge(status, loanable) {
 	const span = document.createElement('span')
 	span.classList.add('badge')
 	span.classList.add('me-1')
@@ -249,6 +249,8 @@ function createStatusBadge(status) {
 			badgeClass = 'default'
 			break
 	}
+
+	if (loanable) badgeClass = 'info'
 
 	span.classList.add(`bg-${badgeClass}`)
 	return span
