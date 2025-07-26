@@ -184,7 +184,7 @@ class LocationController extends BaseController {
 
 			Print.label({
 				barcode: 'L:' + location.barcode,
-				text: location.barcode,
+				text: 'L: ' + location.barcode,
 				type: '36mm'
 			}, printer.url)
 

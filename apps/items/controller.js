@@ -519,7 +519,7 @@ class ItemController extends BaseController {
 				if (req.body.print) {
 					barcodes.push({
 						barcode: item.barcode,
-						text: item.name,
+						text: item.barcode,
 						type: item.label
 					})
 				}
@@ -739,7 +739,7 @@ class ItemController extends BaseController {
 
 			Print.label({
 				barcode: _item.barcode,
-				text: _item.name,
+				text: _item.barcode,
 				type: _item.label
 			}, printer.url)
 
@@ -768,7 +768,7 @@ class ItemController extends BaseController {
 					const barcodes = items.map(item => {
 						return {
 							barcode: item.barcode,
-							text: item.name,
+							text: item.barcode,
 							type: item.label
 						}
 					})
@@ -849,7 +849,7 @@ class ItemController extends BaseController {
 						.then(item => {
 							Print.label({
 								barcode: item.barcode,
-								text: item.name,
+								text: item.barcode,
 								type: item.label
 							}, req.user.printer_url)
 							req.flash('info', `Label reprinted to ${req.user.printer_name}`)
