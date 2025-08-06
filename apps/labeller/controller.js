@@ -58,8 +58,8 @@ class LabellerController extends BaseController {
 			return;
 		}
 
-		if (count > 25) {
-			req.flash('danger', `You cannot print more than 25 labels at a time.`)
+		if (count > 100) {
+			req.flash('danger', `You cannot print more than 100 labels at a time.`)
 			req.saveSessionAndRedirect(this.getRoute())
 			return;
 		}
@@ -70,8 +70,8 @@ class LabellerController extends BaseController {
 			return;
 		}
 		
-		if (dupe > 5) {
-			req.flash('danger', `You cannot print more than 5 duplicates of each label.`)
+		if (dupe > 3) {
+			req.flash('danger', `You cannot print more than 3 duplicates of each label.`)
 			req.saveSessionAndRedirect(this.getRoute())
 			return;
 		}
@@ -135,8 +135,8 @@ class LabellerController extends BaseController {
 			return;
 		}
 
-		if (count > 25) {
-			req.flash('danger', `You cannot print more than 25 labels at a time.`)
+		if (count > 3) {
+			req.flash('danger', `You cannot print more than 3 labels at a time.`)
 			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
 			return;
 		}
