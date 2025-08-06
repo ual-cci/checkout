@@ -8,6 +8,7 @@ const Options = require('../../src/js/options')()
 
 const validTypes = [
 	'9mm',
+	'9mm_flag',
 	'compact_12mm',
 	'compact_12mm_flag',
 	'12mm',

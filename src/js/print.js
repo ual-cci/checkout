@@ -33,6 +33,11 @@ const Print = {
 					barcodes.push(Print.add9mmLabel(doc, code.barcode, code.text))
 					break
 
+				case '9mm_flag':
+					size = "Custom.9x35mm"
+					barcodes.push(Print.add9mmFlag(doc, code.barcode, code.text))
+					break
+
 				case '12mm':
 					size = "Custom.12x17mm"
 					barcodes.push(Print.add12mmLabel(doc, code.barcode, code.text))
@@ -91,6 +96,51 @@ const Print = {
 					width: pt(7),
 					align: 'center'
 				})
+
+				resolve(page)
+			})
+		})
+	},
+	add9mmFlag: (doc, barcode, text) => {
+		return new Promise((resolve, reject) => {
+			const w = 9
+			const h = 35
+			Print.generate2DBarcodeImage(barcode).then((png) => {
+				const page = doc.addPage({
+					size: [pt(h), pt(w)],
+					layout: 'landscape',
+					margin: 0
+				})
+
+				for (let i = 0; i < 2; i++) {
+					if (i == 1) {
+						doc.save()
+						doc.rotate(180, {
+							origin:[pt(w/2), pt(h/2)]
+						})
+					}
+
+					page.image(png, pt(1), pt(1), {
+						width: pt(7),
+						height: pt(7)
+					})
+
+					page.fontSize(3.33)
+					page.font('Helvetica-Bold')
+
+					page.text(text, pt(1), pt(8.5), {
+						width: pt(7),
+						align: 'center'
+					})
+				}
+
+				doc.restore()
+				page.moveTo(pt(0), pt(h/2))
+					.lineTo(pt(w),pt(h/2))
+					.lineWidth(pt(0.25))
+					.lineCap('round')
+					.dash(pt(0.125), {space:pt(2)})
+					.stroke()
 
 				resolve(page)
 			})
