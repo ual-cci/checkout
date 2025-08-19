@@ -2,6 +2,7 @@ const moment = require('moment')
 
 const BaseController = require('../../src/js/common/BaseController.js')
 const config = require('./config.json')
+const auth = require('../../src/js/authentication')
 
 const Print = require('../../src/js/print')
 const Options = require('../../src/js/options')()
@@ -81,7 +82,13 @@ class LabellerController extends BaseController {
 			req.saveSessionAndRedirect(this.getRoute())
 			return;
 		}
-		
+
+		if (!auth.userCan(req.user, 'labeller_duplicate')) {
+			req.flash('danger', `You do not have access to the duplicate feature, only 1 copy of each label has been printed.`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+
 		for (let num = start; num < start + count; num++) {
 			let code = formatNum(num)
 			const label = {
@@ -158,8 +165,15 @@ class LabellerController extends BaseController {
 			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
 			return;
 		}
+
 		if (!code.match(/([A-F0-9]{6})/)) {
 			req.flash('danger', `Label should be in hexadecimal format (0-F).`)
+			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
+			return;
+		}
+
+		if (!auth.userCan(req.user, 'labeller_duplicate')) {
+			req.flash('danger', `You do not have access to the duplicate feature, only 1 copy of each label has been printed.`)
 			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
 			return;
 		}
