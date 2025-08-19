@@ -83,7 +83,7 @@ class LabellerController extends BaseController {
 			return;
 		}
 
-		if (!auth.userCan(req.user, 'labeller_duplicate')) {
+		if (!auth.userCan(req.user, 'labeller_duplicate') && dupe != 1) {
 			req.flash('danger', `You do not have access to the duplicate feature, only 1 copy of each label has been printed.`)
 			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
 			return;
@@ -172,7 +172,7 @@ class LabellerController extends BaseController {
 			return;
 		}
 
-		if (!auth.userCan(req.user, 'labeller_duplicate')) {
+		if (!auth.userCan(req.user, 'labeller_duplicate') && count != 1) {
 			req.flash('danger', `You do not have access to the duplicate feature, only 1 copy of each label has been printed.`)
 			req.saveSessionAndRedirect(`${this.getRoute()}/reprint?type=${type}`)
 			return;
